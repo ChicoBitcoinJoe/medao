@@ -1,7 +1,7 @@
 <div style="position:fixed; top:5px; left: 5px;">
     <md-button class="nav-button blue-background" ng-show="(screenIsSmall && view.panels.medao) || (!view.panels.manage && screenIsBig)" ng-click="showPanel('manage')">
         <md-icon style="margin:3px;" aria-label="back" md-svg-src="libs/fonts/ic_keyboard_arrow_left_white_24px.svg"></md-icon>
-        auction&nbsp
+        actions&nbsp
     </md-button>
     <md-button class="nav-button blue-background" ng-show="view.panels.posts && screenIsSmall" ng-click="showPanel('medao')">
         <md-icon style="margin:3px;" aria-label="back" md-svg-src="libs/fonts/ic_keyboard_arrow_left_white_24px.svg"></md-icon>
@@ -20,27 +20,61 @@
 </div>
 <div style="width:100%; height:100vh;">
     <div layout="column" layout-gt-sm="row" layout-fill>
-        <div ng-show="view.panels.manage || screenIsReallyBig" layout="column" layout-fill layout-padding layout-margin flex flex-gt-sm="50">
-            <h3>Auction</h3>
-            <div layout="column">
-                <h2>Admin Function</h2>
-                <h4 style="margin-bottom:0px;">Set Work Hours (7 day cooldown)</h4>
-                <div style="margin-top:0px;padding-top:0px;">
-                    <md-input-container class="md-block" md-no-float>
-                        <label>Hours per week (0-40)</label>
-                        <input type="number" ng-model="medao.setAuctionReward.hours" min="0" max="40">
-                    </md-input-container>
-                    <div layout="column">
-                        <div layout="row" flex>
-                            <md-button class="nav-button md-raised md-warn" ng-click="medao.setAuctionReward.hours = 40;" flex>Full Time</md-button>
-                            <md-button class="nav-button md-raised md-warn" ng-click="medao.setAuctionReward.hours = 30;" flex>Three Quarter</md-button>
+        <div ng-show="view.panels.manage || screenIsReallyBig" layout="column" layout-fill flex flex-gt-sm="50">
+            <div style="overflow:hidden" layout="column" layout-fill>
+                <h3 layout="row" layout-padding layout-margin>MeDao Actions</h3>
+                <div style="overflow:auto">
+                    <div layout="column" layout-padding>
+                        <h4 style="margin-bottom:0px;">Place Bid</h4>
+                        <div style="margin-top:0px;padding-top:0px;">
+                            <md-input-container class="md-block" md-no-float>
+                                <label>Ether</label>
+                                <input type="number" ng-model="medao.placeBid.ether">
+                            </md-input-container>
+                            <div layout="row">
+                                <span flex></span>
+                                <md-button class="nav-button md-raised md-primary" ng-disabled="!(medao.placeBid.ether > 0)">place</md-button>
+                            </div>
                         </div>
-                        <div layout="row" flex>
-                            <md-button class="nav-button md-raised md-warn" ng-click="medao.setAuctionReward.hours = 20;" flex>Half Time</md-button>
-                            <md-button class="nav-button md-raised md-warn" ng-click="medao.setAuctionReward.hours = 10;" flex>Quarter</md-button>
+                        <h4 style="margin-bottom:0px;">Remove Bid</h4>
+                        <div style="margin-top:0px;padding-top:0px;">
+                            <md-input-container class="md-block" md-no-float>
+                                <label>Bid ID</label>
+                                <input type="number" ng-model="medao.removeBid.bidID">
+                            </md-input-container>
+                            <div layout="row">
+                                <span flex></span>
+                                <md-button class="nav-button md-raised md-primary" ng-disabled="!(medao.removeBid.bidID > 0)">remove</md-button>
+                            </div>
                         </div>
-                        <span hide-xs flex></span>
-                        <md-button class="nav-button md-raised md-primary" ng-disabled="!validAuctionReward()">Set</md-button>
+                        <h4 style="margin-bottom:0px;">Submit Proof of Work</h4>
+                        <div style="margin-top:0px;padding-top:0px;">
+                            <md-input-container class="md-block" md-no-float>
+                                <label>Hours</label>
+                                <input type="number" ng-model="medao.submitProofOfWork.burnAmount">
+                            </md-input-container>
+                            <div layout="row">
+                                <md-button class="nav-button md-raised md-warn">Max</md-button>
+                                <span flex></span>
+                                <md-button class="nav-button md-raised md-primary" ng-disabled="!(medao.submitProofOfWork.burnAmount > 0)">Submit</md-button>
+                            </div>
+                        </div>
+                    </div>
+                    <div layout="column" layout-padding>
+                        <h3>Admin Functions</h3>
+                        <h4 style="margin-bottom:0px;">Set Auction Reward (7 day cooldown)</h4>
+                        <div style="margin-top:0px;padding-top:0px;">
+                            <md-input-container class="md-block" md-no-float>
+                                <label>Hours per week (0-40)</label>
+                                <input type="number" ng-model="medao.setAuctionReward.hours" min="0" max="40">
+                            </md-input-container>
+                            <div layout="row">
+                                <md-button class="nav-button md-raised md-warn" ng-click="medao.setAuctionReward.hours = 40;" flex>Full Time</md-button>
+                                <md-button class="nav-button md-raised md-warn" ng-click="medao.setAuctionReward.hours = 20;" flex>Half Time</md-button>
+                                <span hide-xs flex></span>
+                                <md-button class="nav-button md-raised md-primary" ng-disabled="!validAuctionReward()">Set</md-button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

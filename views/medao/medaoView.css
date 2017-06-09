@@ -10,7 +10,7 @@
     overflow-y: scroll;
 }
 
-.post-list::-webkit-scrollbar {
+::-webkit-scrollbar {
    display: none;
 }
 

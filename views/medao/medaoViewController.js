@@ -14,6 +14,53 @@ function($q,$scope,$location,$mdMedia,Web3Service,Registry,MeDao,Token,Auction){
         }
     };
     
+    $scope.currentAccount = {
+        address: null,
+        ether: {
+            balance: null,
+            inWei: null
+        },
+        token: {
+            //tokenAddress:balance
+        }
+    };
+    
+    $scope.medao = {
+        address: null,
+        founder: null,
+        pow: null,
+        redeemedHours: null,
+        outstandingHours: null,
+        token: {
+            address: null,
+            name: null,
+            supply: null,
+            balance: null
+        },
+        auction: {
+            address: null,
+            reward: null,
+            period: null,
+            timestamp: null,
+            highestBid: null,
+            placeBid: {
+                ether: null
+            }
+        },
+        setAuctionReward: {
+            hours: null
+        },
+        submitProofOfWork: {
+            burnAmount: null
+        },
+        placeBid: {
+            ether: null
+        },
+        removeBid: {
+            bidID: null
+        }
+    };
+    
     $scope.showPanel = function(panel){
         if(panel =='posts' || panel == 'manage')
             $scope.view.secondary = panel;
@@ -60,44 +107,6 @@ function($q,$scope,$location,$mdMedia,Web3Service,Registry,MeDao,Token,Auction){
             $scope.view.panels.posts = false;
         }
     });
-    
-    $scope.currentAccount = {
-        address: null,
-        ether: {
-            balance: null,
-            inWei: null
-        },
-        token: {
-            //tokenAddress:balance
-        }
-    };
-    
-    $scope.medao = {
-        address: null,
-        founder: null,
-        pow: null,
-        redeemedHours: null,
-        outstandingHours: null,
-        token: {
-            address: null,
-            name: null,
-            supply: null,
-            balance: null
-        },
-        auction: {
-            address: null,
-            reward: null,
-            period: null,
-            timestamp: null,
-            highestBid: null,
-            placeBid: {
-                ether: null
-            }
-        },
-        setAuctionReward: {
-            hours: null
-        }
-    };
     
     $scope.maxBid = function(){
         $scope.medao.auction.placeBid.ether = $scope.currentAccount.ether.balance;
