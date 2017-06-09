@@ -7,11 +7,11 @@ html.md-default-theme, html, body.md-default-theme, body {
 }
 
 .blue-background {
-    background-color: rgba(33,33,55,1);
+    background-color: rgba(22,33,55,1);
 }
 
-.green-background {
-    background-color: rgba(33,55,33,1);
+.darker-background {
+    background-color: rgba(0,0,0,0.13);
 }
 
 input {

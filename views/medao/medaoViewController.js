@@ -21,7 +21,7 @@ function($q,$scope,$location,$mdMedia,Web3Service,Registry,MeDao,Token,Auction){
             inWei: null
         },
         token: {
-            //tokenAddress:balance
+            balance: null
         }
     };
     
@@ -34,8 +34,7 @@ function($q,$scope,$location,$mdMedia,Web3Service,Registry,MeDao,Token,Auction){
         token: {
             address: null,
             name: null,
-            supply: null,
-            balance: null
+            supply: null
         },
         auction: {
             address: null,
@@ -140,29 +139,22 @@ function($q,$scope,$location,$mdMedia,Web3Service,Registry,MeDao,Token,Auction){
         });
     };
     
-    Web3Service.getCurrentAccount()
-    .then(function(account){
-        $scope.currentAccount.address = account;
-        return Web3Service.getEtherBalance(account);
-    }).then(function(etherBalanceInWei){
-        $scope.currentAccount.ether.balance = web3.fromWei(etherBalanceInWei,'ether').toNumber();
-        $scope.currentAccount.ether.inWei = etherBalanceInWei.toString();
-    }).catch(function(err){
-        console.error(err);
-    });
-    
-    Registry.getMeDaoAddress(MeDaoAccount)
-    .then(function(medaoAddress){
-        console.log(medaoAddress);
-        $scope.medao.address =  medaoAddress;
+    $q.all([Registry.getMeDaoAddress(MeDaoAccount),Web3Service.getCurrentAccount()])
+    .then(function(array){
+        $scope.medao.address =  array[0];
+        $scope.currentAccount.address = array[1];
         return $q.all([
-            MeDao.getToken(medaoAddress),
-            MeDao.getAuction(medaoAddress)
+            MeDao.getToken($scope.medao.address),
+            MeDao.getAuction($scope.medao.address),
+            Web3Service.getEtherBalance($scope.currentAccount.address)
         ]);
     }).then(function(array){
         console.log(array);
         $scope.medao.token.address = array[0];
         $scope.medao.auction.address = array[1];
+        var etherBalanceInWei = array[2];
+        $scope.currentAccount.ether.balance = web3.fromWei(etherBalanceInWei,'ether').toNumber();
+        $scope.currentAccount.ether.inWei = etherBalanceInWei.toString();
         return $q.all([
             MeDao.getAuctionReward($scope.medao.address),
             MeDao.getAuctionTimestamp($scope.medao.address),
@@ -170,6 +162,7 @@ function($q,$scope,$location,$mdMedia,Web3Service,Registry,MeDao,Token,Auction){
             MeDao.getProofOfWork($scope.medao.token.address),
             Token.getName($scope.medao.token.address),
             Token.getCurrentSupply($scope.medao.token.address),
+            Token.getBalanceOf($scope.medao.token.address,$scope.currentAccount.address),
             Auction.getHighestBid($scope.medao.auction.address)
         ]);
     }).then(function(array){
@@ -180,7 +173,8 @@ function($q,$scope,$location,$mdMedia,Web3Service,Registry,MeDao,Token,Auction){
         $scope.medao.pow = array[3].toNumber();
         $scope.medao.token.name = array[4].toString();
         $scope.medao.token.supply = Math.round(array[5].toNumber() / 3600);
-        $scope.medao.auction.highestBid = web3.fromWei(array[6],'ether').toNumber();
+        $scope.currentAccount.token.balance = array[6] / 3600;
+        $scope.medao.auction.highestBid = web3.fromWei(array[7],'ether').toNumber();
         
         $scope.medao.redeemedHours = $scope.medao.pow / 3600;
         $scope.medao.outstandingHours = $scope.medao.token.supply / 3600;

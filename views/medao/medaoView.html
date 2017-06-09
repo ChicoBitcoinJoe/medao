@@ -9,7 +9,7 @@
     </md-button>
 </div>
 <div style="position:fixed; top:5px; right: 5px;">
-    <md-button class="nav-button blue-background" ng-show="(!view.panels.posts && screenIsBig) || (screenIsSmall && view.panels.medao)" ng-click="showPanel('posts')">
+    <md-button hide-gt-lg class="nav-button blue-background" ng-show="(!view.panels.posts && screenIsBig) || (screenIsSmall && view.panels.medao)" ng-click="showPanel('posts')">
         posts&nbsp
         <md-icon style="margin:3px;" aria-label="back" md-svg-src="libs/fonts/ic_keyboard_arrow_right_white_24px.svg"></md-icon>
     </md-button>
@@ -20,7 +20,7 @@
 </div>
 <div style="width:100%; height:100vh;">
     <div layout="column" layout-gt-sm="row" layout-fill>
-        <div ng-show="view.panels.manage || screenIsReallyBig" layout="column" layout-fill flex flex-gt-sm="50">
+        <div class="darker-background" ng-show="view.panels.manage || screenIsReallyBig" layout="column" layout-fill flex flex-gt-sm="50">
             <div style="overflow:hidden" layout="column" layout-fill>
                 <h3 layout="row" layout-padding layout-margin>MeDao Actions</h3>
                 <div style="overflow:auto">
@@ -32,6 +32,7 @@
                                 <input type="number" ng-model="medao.placeBid.ether">
                             </md-input-container>
                             <div layout="row">
+                                <md-button class="nav-button md-raised md-warn">max</md-button>
                                 <span flex></span>
                                 <md-button class="nav-button md-raised md-primary" ng-disabled="!(medao.placeBid.ether > 0)">place</md-button>
                             </div>
@@ -54,9 +55,9 @@
                                 <input type="number" ng-model="medao.submitProofOfWork.burnAmount">
                             </md-input-container>
                             <div layout="row">
-                                <md-button class="nav-button md-raised md-warn">Max</md-button>
+                                <md-button class="nav-button md-raised md-warn">max</md-button>
                                 <span flex></span>
-                                <md-button class="nav-button md-raised md-primary" ng-disabled="!(medao.submitProofOfWork.burnAmount > 0)">Submit</md-button>
+                                <md-button class="nav-button md-raised md-primary" ng-disabled="!(medao.submitProofOfWork.burnAmount > 0)">submit</md-button>
                             </div>
                         </div>
                     </div>
@@ -69,10 +70,10 @@
                                 <input type="number" ng-model="medao.setAuctionReward.hours" min="0" max="40">
                             </md-input-container>
                             <div layout="row">
-                                <md-button class="nav-button md-raised md-warn" ng-click="medao.setAuctionReward.hours = 40;" flex>Full Time</md-button>
-                                <md-button class="nav-button md-raised md-warn" ng-click="medao.setAuctionReward.hours = 20;" flex>Half Time</md-button>
+                                <md-button class="nav-button md-raised md-warn" ng-click="medao.setAuctionReward.hours = 40;" flex>full time</md-button>
+                                <md-button class="nav-button md-raised md-warn" ng-click="medao.setAuctionReward.hours = 20;" flex>half time</md-button>
                                 <span hide-xs flex></span>
-                                <md-button class="nav-button md-raised md-primary" ng-disabled="!validAuctionReward()">Set</md-button>
+                                <md-button class="nav-button md-raised md-primary" ng-disabled="!validAuctionReward()">set</md-button>
                             </div>
                         </div>
                     </div>
@@ -85,6 +86,7 @@
             </div>
             <div layout="column" layout-align="top center">
                 <h1>{{medao.token.name}}</h1>
+                <p>... owes you {{currentAccount.token.balance}} hours of work</p>
             </div>
             <br>
             <div layout="row" flex>
@@ -96,13 +98,13 @@
                 <div layout="column" layout-align="top center" flex>
                     <h3 style="margin-bottom:0px;">Work Hours</h3>
                     <p style="margin-top:0px;">next week</p>
-                    <h2 style="margin-top:0px; color:rgba(255,211,255,0.87)">+ {{medao.auction.reward}} hours</h2>
+                    <h2 style="margin-top:0px;">+ {{medao.auction.reward}} hours</h2>
                 </div>
             </div>
             <div layout="row" flex>
                 <div layout="column" layout-align="top center" flex>
-                    <h3 style="">Hours Owed</h3>
-                    <h2 style="margin-top:0px; color:rgba(255,211,255,0.87)">147 hours</h2>
+                    <h3 style="">Hours Held</h3>
+                    <h2 style="margin-top:0px;">147 hours</h2>
                 </div>
                 <div layout="column" layout-align="top center" flex>
                     <h3 style="">Salary Forecast</h3>
@@ -111,17 +113,14 @@
             </div>
             <div layout="row" flex>
                 <div layout="column" layout-align="top center" flex>
-                    <h3 style="margin-bottom:0px;">Next Auction</h3>
-                    <p style="margin-top:0px;">1 hour reward</p>
+                    <h3 style="">Next Auction</h3>
                     <h2 style="margin-top:0px; ">01h 24m</h2>
                 </div>
                 <div layout="column" layout-align="top center" flex>
-                    <h3 style="margin-bottom:0px;">Highest Bid</h3>
-                    <p style="margin-top:0px;">&nbsp</p>
+                    <h3 style="">Highest Bid</h3>
                     <h2 style="margin-top:0px; color:rgba(111,222,111,0.87)">0.15 eth</h2>
                 </div>
             </div>
-            <br>
         </div>
         <div ng-show="view.panels.posts || screenIsReallyBig" layout="column" layout-align="center center" layout-fill flex flex-gt-sm="50">
             <div style="overflow:hidden" layout="column" layout-fill>
