@@ -7,16 +7,15 @@ function ($q,Web3Service) {
 
     );
     
-    
     var service = {
         getHighestBid: function(auctionAddress){
             var deferred = $q.defer();
             var AuctionInstance = AuctionContract.at(auctionAddress);
             
-            AuctionInstance.getHighestBid(
-            function(err, highest){
+            AuctionInstance.top_teir(
+            function(err, highestBid){
                 if(!err){
-                    deferred.resolve(highest);
+                    deferred.resolve(highestBid);
                 } else {
                     deferred.reject(err);
                 }
@@ -24,13 +23,62 @@ function ($q,Web3Service) {
             
             return deferred.promise;
         },
-        placeBid: function(auctionAddress, amountInWei){
+        getTeirInfo: function(auctionAddress,teir){
+            var deferred = $q.defer();
+            var AuctionInstance = AuctionContract.at(auctionAddress);
+            
+            AuctionInstance.teir(teir,
+            function(err, teirInfo){
+                if(!err){
+                    deferred.resolve(teirInfo);
+                } else {
+                    deferred.reject(err);
+                }
+            });
+            
+            return deferred.promise;
+        },
+        getTotalTeirs: function(auctionAddress){
+            var deferred = $q.defer();
+            var AuctionInstance = AuctionContract.at(auctionAddress);
+            
+            AuctionInstance.total_teirs(
+            function(err, total){
+                if(!err){
+                    deferred.resolve(total);
+                } else {
+                    deferred.reject(err);
+                }
+            });
+            
+            return deferred.promise;
+        },
+        placeBid: function(auctionAddress, amountInWei, touchingTeir){
             var deferred = $q.defer();
             var AuctionInstance = AuctionContract.at(auctionAddress);
             
             Web3Service.getCurrentAccount()
             .then(function(account){
-                AuctionInstance.placeBid(amountInWei, {from:account},
+                console.log(account,amountInWei,touchingTeir);
+                AuctionInstance.placeBid(amountInWei, touchingTeir, {from:account,value:amountInWei},
+                function(err,tx){
+                    if(!err){
+                        deferred.resolve(tx);
+                    } else {
+                        deferred.reject(err);
+                    }
+                })
+            });
+            
+            return deferred.promise;
+        },
+        removeBid: function(auctionAddress, bid_id){
+            var deferred = $q.defer();
+            var AuctionInstance = AuctionContract.at(auctionAddress);
+            
+            Web3Service.getCurrentAccount()
+            .then(function(account){
+                AuctionInstance.removeBid(bid_id, {from:account},
                 function(err,tx){
                     if(!err){
                         deferred.resolve(tx);

@@ -1,5 +1,5 @@
 <div style="position:fixed; top:5px; left: 5px;">
-    <md-button class="nav-button blue-background" ng-show="(screenIsSmall && view.panels.medao) || (!view.panels.manage && screenIsBig)" ng-click="showPanel('manage')">
+    <md-button hide-gt-lg class="nav-button blue-background" ng-show="(screenIsSmall && view.panels.medao) || (!view.panels.manage && screenIsBig)" ng-click="showPanel('manage')">
         <md-icon style="margin:3px;" aria-label="back" md-svg-src="libs/fonts/ic_keyboard_arrow_left_white_24px.svg"></md-icon>
         actions&nbsp
     </md-button>
@@ -25,27 +25,34 @@
                 <h3 layout="row" layout-padding layout-margin>MeDao Actions</h3>
                 <div style="overflow:auto">
                     <div layout="column" layout-padding>
+                        <p>Bid Info Goes Here</p>
+                        <div ng-repeat="value in medao.auction.teirs" layout="row">
+                            {{value}}
+                        </div>
+                    </div>
+                    <div layout="column" layout-padding>
                         <h4 style="margin-bottom:0px;">Place Bid</h4>
                         <div style="margin-top:0px;padding-top:0px;">
                             <md-input-container class="md-block" md-no-float>
                                 <label>Ether</label>
-                                <input type="number" ng-model="medao.placeBid.ether">
+                                <input type="number" ng-model="medao.auction.placeBid.ether">
                             </md-input-container>
                             <div layout="row">
-                                <md-button class="nav-button md-raised md-warn">max</md-button>
+                                <md-button class="nav-button md-raised md-warn" ng-click="medao.auction.placeBid.ether = currentAccount.ether.balance">max</md-button>
+                                <md-button class="nav-button md-raised" ng-click="medao.auction.placeBid.ether = medao.auction.highestBid">highest</md-button>
                                 <span flex></span>
-                                <md-button class="nav-button md-raised md-primary" ng-disabled="!(medao.placeBid.ether > 0)">place</md-button>
+                                <md-button class="nav-button md-raised md-primary" ng-disabled="!(medao.auction.placeBid.ether > 0)" ng-click="placeBid('0')">place</md-button>
                             </div>
                         </div>
                         <h4 style="margin-bottom:0px;">Remove Bid</h4>
                         <div style="margin-top:0px;padding-top:0px;">
                             <md-input-container class="md-block" md-no-float>
                                 <label>Bid ID</label>
-                                <input type="number" ng-model="medao.removeBid.bidID">
+                                <input type="number" ng-model="medao.auction.removeBid.bidID">
                             </md-input-container>
                             <div layout="row">
                                 <span flex></span>
-                                <md-button class="nav-button md-raised md-primary" ng-disabled="!(medao.removeBid.bidID > 0)">remove</md-button>
+                                <md-button class="nav-button md-raised md-primary" ng-disabled="!(medao.auction.removeBid.bidID > 0)" ng-click="removeBid()">remove</md-button>
                             </div>
                         </div>
                         <h4 style="margin-bottom:0px;">Submit Proof of Work</h4>
@@ -62,7 +69,6 @@
                         </div>
                     </div>
                     <div layout="column" layout-padding>
-                        <h3>Admin Functions</h3>
                         <h4 style="margin-bottom:0px;">Set Auction Reward (7 day cooldown)</h4>
                         <div style="margin-top:0px;padding-top:0px;">
                             <md-input-container class="md-block" md-no-float>
@@ -71,7 +77,7 @@
                             </md-input-container>
                             <div layout="row">
                                 <md-button class="nav-button md-raised md-warn" ng-click="medao.setAuctionReward.hours = 40;" flex>full time</md-button>
-                                <md-button class="nav-button md-raised md-warn" ng-click="medao.setAuctionReward.hours = 20;" flex>half time</md-button>
+                                <md-button class="nav-button md-raised" ng-click="medao.setAuctionReward.hours = 20;" flex>half time</md-button>
                                 <span hide-xs flex></span>
                                 <md-button class="nav-button md-raised md-primary" ng-disabled="!validAuctionReward()">set</md-button>
                             </div>
@@ -86,7 +92,7 @@
             </div>
             <div layout="column" layout-align="top center">
                 <h1>{{medao.token.name}}</h1>
-                <p>... owes you {{currentAccount.token.balance}} hours of work</p>
+                <p>... owes you <b style="font-size:18px;color:rgba(155,55,55,0.87);">{{currentAccount.token.balance}}</b> hours of work</p>
             </div>
             <br>
             <div layout="row" flex>
@@ -114,11 +120,12 @@
             <div layout="row" flex>
                 <div layout="column" layout-align="top center" flex>
                     <h3 style="">Next Auction</h3>
-                    <h2 style="margin-top:0px; ">01h 24m</h2>
+                    <h2 ng-show="!timer.alarm" style="margin-top:0px; ">{{timer.text}}</h2>
+                    <md-button ng-show="timer.alarm" class="md-raised md-warn" ng-click="startAuction()">Start</md-button>
                 </div>
                 <div layout="column" layout-align="top center" flex>
                     <h3 style="">Highest Bid</h3>
-                    <h2 style="margin-top:0px; color:rgba(111,222,111,0.87)">0.15 eth</h2>
+                    <h2 style="margin-top:0px; color:rgba(111,222,111,0.87)">{{medao.auction.highestBid}} eth</h2>
                 </div>
             </div>
         </div>

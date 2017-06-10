@@ -53,12 +53,10 @@ function ($q,Web3Service) {
         startAuction: function(medaoAddress){
             var deferred = $q.defer();
             var MeDaoInstance = MeDaoContract.at(medaoAddress);
-            var promises = [Web3Service.getCurrentAccount(),Web3Service.getGasPrice()];
             
-            $q.all(promises).then(function(array){
-                var account = array[0]
-                var gasPrice = array[1];
-                MeDaoInstance.startAuction({from:account, gasPrice:gasPrice},
+            Web3Service.getCurrentAccount().then(
+            function(account){
+                MeDaoInstance.startAuction({from:account},
                 function(err, tx){
                     if(!err)
                         deferred.resolve(tx);
