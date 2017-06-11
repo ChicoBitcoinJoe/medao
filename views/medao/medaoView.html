@@ -10,7 +10,7 @@
 </div>
 <div style="position:fixed; top:5px; right: 5px;">
     <md-button hide-gt-lg class="nav-button blue-background" ng-show="(!view.panels.posts && screenIsBig) || (screenIsSmall && view.panels.medao)" ng-click="showPanel('posts')">
-        posts&nbsp
+        comments&nbsp
         <md-icon style="margin:3px;" aria-label="back" md-svg-src="libs/fonts/ic_keyboard_arrow_right_white_24px.svg"></md-icon>
     </md-button>
     <md-button class="nav-button blue-background" ng-show="view.panels.manage && screenIsSmall" ng-click="showPanel('medao')">
@@ -25,27 +25,34 @@
                 <h3 layout="row" layout-padding layout-margin>MeDao Actions</h3>
                 <div style="overflow:auto">
                     <div layout="column" layout-padding>
-                        <p>Bid Info Goes Here</p>
-                        <div ng-repeat="value in medao.auction.teirs" layout="row">
-                            {{value}}
-                        </div>
-                    </div>
-                    <div layout="column" layout-padding>
-                        <h4 style="margin-bottom:0px;">Place Bid</h4>
-                        <div style="margin-top:0px;padding-top:0px;">
+                        <h3 style="margin-bottom:0px;">Place Bid <small>(Top 5 Bidding Teirs)</small></h3>
+                        <div> </div>
+                        <div>
+                            <div layout="column" layout-align="center center">
+                                <p>A bid placed on a new teir must have an adjecent teir (or anchor teir) selected. This can be eventually automated away. Click on a teir to set it as the anchor teir.</p>
+                                <div ng-repeat="value in medao.auction.teirs track by $index" layout="row" flex>
+                                    <div class="cursor" ng-click="medao.placeBid.touchingTeir = value">
+                                        {{medao.totalBids[value]}} bids at <b>{{value | fromWei:'ether'}} Ether</b>
+                                    </div>
+                                </div>
+                            </div>
                             <md-input-container class="md-block" md-no-float>
                                 <label>Ether</label>
                                 <input type="number" ng-model="medao.auction.placeBid.ether">
                             </md-input-container>
-                            <div layout="row">
+                            <p flex><span flex></span><small>Anchor Teir: {{medao.placeBid.touchingTeir | fromWei:'ether'}}</small></p>
+                            <div layout="row" flex>
                                 <md-button class="nav-button md-raised md-warn" ng-click="medao.auction.placeBid.ether = currentAccount.ether.balance">max</md-button>
-                                <md-button class="nav-button md-raised" ng-click="medao.auction.placeBid.ether = medao.auction.highestBid">highest</md-button>
+                                    <md-button class="nav-button md-raised" ng-click="medao.auction.placeBid.ether = medao.auction.highestBid">highest</md-button>
                                 <span flex></span>
-                                <md-button class="nav-button md-raised md-primary" ng-disabled="!(medao.auction.placeBid.ether > 0)" ng-click="placeBid('0')">place</md-button>
+                                <md-button class="nav-button md-raised md-primary" ng-disabled="!(medao.auction.placeBid.ether > 0 || medao.placeBid.touchingTeir == 0)" ng-click="placeBid()">place</md-button>
                             </div>
                         </div>
-                        <h4 style="margin-bottom:0px;">Remove Bid</h4>
-                        <div style="margin-top:0px;padding-top:0px;">
+                        
+                        <div style="margin: 12px 0px; padding:0px; border-top: 2px solid rgba(255,255,255,0.87);"></div>
+                        
+                        <h3 style="margin-bottom:0px;">Remove Bid</h3>
+                        <div>
                             <md-input-container class="md-block" md-no-float>
                                 <label>Bid ID</label>
                                 <input type="number" ng-model="medao.auction.removeBid.bidID">
@@ -54,23 +61,35 @@
                                 <span flex></span>
                                 <md-button class="nav-button md-raised md-primary" ng-disabled="!(medao.auction.removeBid.bidID > 0)" ng-click="removeBid()">remove</md-button>
                             </div>
+                            <p>Your Placed Bids:</p>
+                            <div ng-repeat="bid in currentAccount.allBids">
+                                <span class="cursor" style="float:left" ng-click="medao.auction.removeBid.bidID = bid.toNumber()"><bid style="padding:5px;" id="bid.toNumber()" medao="medao.address"></bid></span>
+                            </div>
                         </div>
-                        <h4 style="margin-bottom:0px;">Submit Proof of Work</h4>
-                        <div style="margin-top:0px;padding-top:0px;">
+                        
+                            <div style="margin: 12px 0px; padding:0px; border-top: 3px solid rgba(255,255,255,0.87);"></div>
+                        
+                        <h3 style="margin-bottom:0px;">Submit Proof of Work</h3>
+                        <div>
                             <md-input-container class="md-block" md-no-float>
                                 <label>Hours</label>
                                 <input type="number" ng-model="medao.submitProofOfWork.burnAmount">
                             </md-input-container>
+                            <md-input-container class="md-block" md-no-float>
+                                <label>Comment</label>
+                                <textarea type="text" ng-model="medao.submitProofOfWork.comment" rows="5"></textarea>
+                            </md-input-container>
                             <div layout="row">
                                 <md-button class="nav-button md-raised md-warn">max</md-button>
                                 <span flex></span>
-                                <md-button class="nav-button md-raised md-primary" ng-disabled="!(medao.submitProofOfWork.burnAmount > 0)">submit</md-button>
+                                <md-button class="nav-button md-raised md-primary" ng-disabled="!(medao.submitProofOfWork.burnAmount > 0) && medao.submitProofofWork.comment" ng-click="submitProofOfWork()">submit</md-button>
                             </div>
                         </div>
-                    </div>
-                    <div layout="column" layout-padding>
-                        <h4 style="margin-bottom:0px;">Set Auction Reward (7 day cooldown)</h4>
-                        <div style="margin-top:0px;padding-top:0px;">
+                   
+                            <div style="margin: 12px 0px; padding:0px; border-top: 3px solid rgba(255,255,255,0.87);"></div>
+
+                        <h3 style="margin-bottom:0px;">Set Work Hours (7 day cooldown)</h3>
+                        <div>
                             <md-input-container class="md-block" md-no-float>
                                 <label>Hours per week (0-40)</label>
                                 <input type="number" ng-model="medao.setAuctionReward.hours" min="0" max="40">
@@ -79,7 +98,7 @@
                                 <md-button class="nav-button md-raised md-warn" ng-click="medao.setAuctionReward.hours = 40;" flex>full time</md-button>
                                 <md-button class="nav-button md-raised" ng-click="medao.setAuctionReward.hours = 20;" flex>half time</md-button>
                                 <span hide-xs flex></span>
-                                <md-button class="nav-button md-raised md-primary" ng-disabled="!validAuctionReward()">set</md-button>
+                                <md-button class="nav-button md-raised md-primary" ng-disabled="!validAuctionReward()" ng-click="setAuctionReward()">set</md-button>
                             </div>
                         </div>
                     </div>
@@ -98,8 +117,8 @@
             <div layout="row" flex>
                 <div layout="column" layout-align="top center" flex>
                     <h3 style="margin-bottom:0px;">Proof of Work</h3>
-                    <p style="margin-top:0px;">last week</p>
-                    <h2 style="margin-top:0px; color:rgba(111,222,111,0.87)">- {{medao.pow}} hours</h2>
+                    <p style="margin-top:0px;">all time</p>
+                    <h2 style="margin-top:0px; color:rgba(111,222,111,0.87)">- {{medao.redeemedHours}} hours</h2>
                 </div>
                 <div layout="column" layout-align="top center" flex>
                     <h3 style="margin-bottom:0px;">Work Hours</h3>
@@ -109,19 +128,19 @@
             </div>
             <div layout="row" flex>
                 <div layout="column" layout-align="top center" flex>
-                    <h3 style="">Hours Held</h3>
-                    <h2 style="margin-top:0px;">147 hours</h2>
+                    <h3 style="">Total Held Hours</h3>
+                    <h2 style="margin-top:0px;">{{medao.token.supply}}</h2>
                 </div>
                 <div layout="column" layout-align="top center" flex>
                     <h3 style="">Salary Forecast</h3>
-                    <h2 style="margin-top:0px; color:rgba(111,222,111,0.87)">312 eth</h2>
+                    <h2 style="margin-top:0px; color:rgba(111,222,111,0.87)">{{medao.auction.highestBid*40*52}} eth</h2>
                 </div>
             </div>
             <div layout="row" flex>
                 <div layout="column" layout-align="top center" flex>
                     <h3 style="">Next Auction</h3>
                     <h2 ng-show="!timer.alarm" style="margin-top:0px; ">{{timer.text}}</h2>
-                    <md-button ng-show="timer.alarm" class="md-raised md-warn" ng-click="startAuction()">Start</md-button>
+                    <md-button ng-show="timer.alarm" class="md-raised md-primary" ng-disabled="medao.auction.reward == 0" ng-click="startAuction()">Start</md-button>
                 </div>
                 <div layout="column" layout-align="top center" flex>
                     <h3 style="">Highest Bid</h3>
@@ -134,49 +153,49 @@
                 <h3 hide-gt-sm layout="row" layout-padding layout-margin flex><span flex></span>Shareholder Posts</h3>
                 <div style="overflow:auto">
                     <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Post #1</p>
+                        <p>Comment #1</p>
                     </div>
                     <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Post #2</p>
+                        <p>Comment #2</p>
                     </div>
                     <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Post #3</p>
+                        <p>Comment #3</p>
                     </div>
                     <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Post #4</p>
+                        <p>Comment #4</p>
                     </div>
                     <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Post #5</p>
+                        <p>Comment #5</p>
                     </div>
                     <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Post #6</p>
+                        <p>Comment #6</p>
                     </div>
                     <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Post #7</p>
+                        <p>Comment #7</p>
                     </div>
                     <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Post #8</p>
+                        <p>Comment #8</p>
                     </div>
                     <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Post #9</p>
+                        <p>Comment #9</p>
                     </div>
                     <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Post #10</p>
+                        <p>Comment #10</p>
                     </div>
                     <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Post #11</p>
+                        <p>Comment #11</p>
                     </div>
                     <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Post #12</p>
+                        <p>Comment #12</p>
                     </div>
                     <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Post #13</p>
+                        <p>Comment #13</p>
                     </div>
                     <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Post #14</p>
+                        <p>Comment #14</p>
                     </div>
                     <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Post #15</p>
+                        <p>Comment #15</p>
                     </div>
                     
                 </div>

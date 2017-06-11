@@ -19,7 +19,7 @@
     <title>MeDao - Testnet Only</title>
     
 </head>
-<body ng-app="MeDao" ng-controller="MeDaoController" layout="column">
+<body ng-app="MeDao" layout="column">
     
     <div class="blue-background" ng-view flex></div>
     
@@ -43,19 +43,16 @@
     <script src="services/MeDaoRegistry.js"></script>
     <script src="services/MeDao.js"></script>
     <script src="services/Token.js"></script>
-    <script src="services/Auction.js"></script>
     <script src="services/Web3Service.js"></script>
 
     <!-- Controllers  -->
-    <script src="controllers/MeDaoController.js"></script>
-    
-    <!-- Directives  -->
-    <script src="directives/register-button/registerButtonDirective.js"></script>
-    
-    <!-- View s -->
     <script src="views/home/homeViewController.js"></script>
     <script src="views/medao/medaoViewController.js"></script>
     <script src="views/empty/emptyViewController.js"></script>
+    
+    <!-- Directives  -->
+    <script src="directives/register-button/registerButtonDirective.js"></script>
+    <script src="directives/bid/bidDirective.js"></script>
           
 </body>
 </html>
