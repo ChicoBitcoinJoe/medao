@@ -355,7 +355,7 @@ contract MeDao is Tokenized {
     
     address public Founder;
     
-    OngoingAuction Auction;
+    OngoingAuction public Auction;
     
     uint public weekly_auction_reward;
     uint public scheduled_auction_timestamp;
