@@ -1,4 +1,4 @@
-MeDao.service('Auction', ['$q',
+MeDao.service('AuctionService', ['$q',
 function ($q) {
     console.log('Loading Auction Service');
     
@@ -12,19 +12,15 @@ function ($q) {
         getHighestBid: function(auctionAddress){
             var deferred = $q.defer();
             var AuctionInstance = Auction.contract.at(auctionAddress);
-            console.log('5');
-            service.getAuctionAddress()
-            .then(function(auctionAddress){
-                AuctionInstance = Auction.contract.at(auctionAddress);
-                AuctionInstance.top_teir(
-                function(err, highestBid){
-                    if(!err){
-                        //console.log(highestBid.toNumber());
-                        deferred.resolve(highestBid);
-                    } else {
-                        deferred.reject(err);
-                    }
-                });
+               
+            AuctionInstance.top_teir(
+            function(err, highestBid){
+                if(!err){
+                    //console.log(highestBid.toNumber());
+                    deferred.resolve(highestBid);
+                } else {
+                    deferred.reject(err);
+                }
             });
             
             return deferred.promise;
@@ -32,26 +28,22 @@ function ($q) {
         getTeirInfo: function(auctionAddress,teir){
             var deferred = $q.defer();
             var AuctionInstance = Auction.contract.at(auctionAddress);
-            console.log('6');
-            service.getAuctionAddress()
-            .then(function(auctionAddress){
-                AuctionInstance = Auction.contract.at(auctionAddress);
-                AuctionInstance.teirs(teir,
-                function(err, teirInfo){
-                    if(!err){
-                        deferred.resolve(teirInfo);
-                    } else {
-                        deferred.reject(err);
-                    }
-                });
-            });
             
+            AuctionInstance.teirs(teir,
+            function(err, teirInfo){
+                if(!err){
+                    deferred.resolve(teirInfo);
+                } else {
+                    deferred.reject(err);
+                }
+            });
+
             return deferred.promise;
         },
         getTotalTeirs: function(auctionAddress){
             var deferred = $q.defer();
             var AuctionInstance = Auction.contract.at(auctionAddress);
-            console.log('7');
+            
             AuctionInstance.total_teirs(
             function(err, total){
                 if(!err){
@@ -66,18 +58,14 @@ function ($q) {
         getBid: function(auctionAddress,bid_id){
             var deferred = $q.defer();
             var AuctionInstance = Auction.contract.at(auctionAddress);
-            console.log('8');
-            service.getAuctionAddress()
-            .then(function(auctionAddress){
-                AuctionInstance = Auction.contract.at(auctionAddress);
-                AuctionInstance.bids(bid_id,
-                function(err, bidInfo){
-                    if(!err){
-                        deferred.resolve(bidInfo);
-                    } else {
-                        deferred.reject(err);
-                    }
-                });
+            
+            AuctionInstance.bids(bid_id,
+            function(err, bidInfo){
+                if(!err){
+                    deferred.resolve(bidInfo);
+                } else {
+                    deferred.reject(err);
+                }
             });
             
             return deferred.promise;
@@ -85,31 +73,11 @@ function ($q) {
         getBids: function(auctionAddress,bidderAddress){
             var deferred = $q.defer();
             var AuctionInstance = Auction.contract.at(auctionAddress);
-            console.log('9');
-            service.getAuctionAddress()
-            .then(function(auctionAddress){
-                AuctionInstance = Auction.contract.at(auctionAddress);
-                AuctionInstance.getBids(bidderAddress,
-                function(err, allBids){
-                    if(!err){
-                        deferred.resolve(allBids);
-                    } else {
-                        deferred.reject(err);
-                    }
-                });
-            });
             
-            return deferred.promise;
-        },
-        getAuctionAddress: function(auctionAddress) {
-            var deferred = $q.defer();
-            var AuctionInstance = Auction.contract.at(auctionAddress);
-            console.log('10');
-            AuctionInstance.Auction(
-            function(err,auctionAddress){
+            AuctionInstance.getBids(bidderAddress,
+            function(err, allBids){
                 if(!err){
-                    console.log(auctionAddress)
-                    deferred.resolve(auctionAddress);
+                    deferred.resolve(allBids);
                 } else {
                     deferred.reject(err);
                 }
@@ -121,7 +89,6 @@ function ($q) {
             var deferred = $q.defer();
             var AuctionInstance = Auction.contract.at(auctionAddress);
             
-            AuctionInstance = Auction.contract.at(auctionAddress);
             AuctionInstance.placeBid(touchingTeir, {from:account,value:amountInWei},
             function(err,tx){
                 if(!err){
@@ -137,7 +104,6 @@ function ($q) {
             var deferred = $q.defer();
             var AuctionInstance = Auction.contract.at(auctionAddress);
             
-            AuctionInstance = Auction.contract.at(auctionAddress);
             AuctionInstance.removeBid(bid_id, {from:account},
             function(err,tx){
                 if(!err){

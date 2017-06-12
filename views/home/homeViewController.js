@@ -18,7 +18,7 @@ function($scope,$location,Web3Service,Registry){
         $scope.account = account;
         return Registry.getMeDaoAddress(account);
     }).then(function(medaoAddress){
-        //console.log(medaoAddress);
+        console.log(medaoAddress);
         if(medaoAddress == '0x0000000000000000000000000000000000000000')
             $scope.hasMedao = false;
         else

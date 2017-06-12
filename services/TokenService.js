@@ -1,4 +1,4 @@
-MeDao.service('Token', ['$q','Web3Service',
+MeDao.service('TokenService', ['$q','Web3Service',
 function ($q,Web3Service) {
     console.log('Loading MiniMeToken Manager');
     

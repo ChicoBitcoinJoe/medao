@@ -64,7 +64,6 @@ function($mdDialog,$location,Registry,Web3Service) {
             }
 
             $scope.register = function(){
-
                 Registry.register($scope.medaoName).
                 then(function(txHash){
                     $scope.startThinking();

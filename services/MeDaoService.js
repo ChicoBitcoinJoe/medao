@@ -1,4 +1,4 @@
-MeDao.service('MeDao', ['$q',
+MeDao.service('MeDaoService', ['$q',
 function ($q) {
     console.log('Loading MeDao Service');
     
@@ -22,7 +22,7 @@ function ($q) {
             
             return deferred.promise;
         },
-        getToken: function(medaoAddress){
+        getTokenAddress: function(medaoAddress){
             var deferred = $q.defer();
             var MeDaoInstance = MeDao.contract.at(medaoAddress);
     
@@ -42,12 +42,10 @@ function ($q) {
             
             MeDaoInstance.Auction(
             function(err,auctionAddress){
-                if(!err){
-                    console.log(auctionAddress)
+                if(!err)
                     deferred.resolve(auctionAddress);
-                } else {
+                 else 
                     deferred.reject(err);
-                }
             });
             
             return deferred.promise;
@@ -66,7 +64,7 @@ function ($q) {
             
             return deferred.promise;
         },
-        getAuctionReward: function(medaoAddress){
+        getWeeklyAuctionReward: function(medaoAddress){
             var deferred = $q.defer();
             var MeDaoInstance = MeDao.contract.at(medaoAddress);
             
