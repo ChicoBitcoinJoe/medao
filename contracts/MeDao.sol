@@ -115,7 +115,7 @@ contract Tokenized is Owned {
     event NewWithdrawAddress_event(address withdraw_address);
 }
 
-contract OngoingAuction {
+contract OngoingAuction is Owned {
     
     uint public current_bids_open;
     uint public total_bids_made;
@@ -152,6 +152,14 @@ contract OngoingAuction {
         if (!bids[bid_id].owner.send(bids[bid_id].value)) throw;
     }
     
+    function startAuction () onlyOwner {
+        uint winning_bid_id = acceptHighestBid();
+        address winner = bids[winning_bid_id].owner;
+        uint bidValue = bids[winning_bid_id].value;
+        
+        MeDao(owner).declareAuctionWinner(winner,bidValue);
+    }
+    
     function getBids (address bidder) constant returns (uint[]) {
         uint total_bids = bidders[bidder].total_bids_made;
         uint[] memory all_bids = new uint[](total_bids);
@@ -162,19 +170,26 @@ contract OngoingAuction {
         return all_bids;
     }
     
-    function startAuction();
+    function getTeirs () constant returns (uint[]) {
+        uint[] memory all_teirs = new uint[](total_teirs);
+        uint current_teir = teirs[top_teir].value; 
+        for (uint i = 0; i < total_teirs; i++) {
+            all_teirs[i] = current_teir;
+            current_teir = teirs[top_teir].teir_below;
+        }
+        
+        return all_teirs;
+    }
     
 ////////////////
 // Internal Functions
 ////////////////
 
-    function acceptHighestBid (address depositAddress) internal returns (uint) {
+    function acceptHighestBid () internal returns (uint) {
         if(top_teir == 0) throw;
         
         uint highest_bid_id = teirs[top_teir].front_of_line_id;
         bids[highest_bid_id].accepted = true;
-        depositAddress.transfer(bids[highest_bid_id].value);
-        
         removeBid_internal(highest_bid_id);
         
         return highest_bid_id;
@@ -334,11 +349,13 @@ contract OngoingAuction {
     event NewBid_event(address bidder, uint bid_id, uint value);
 }
 
-contract MeDao is Tokenized, OngoingAuction {
+contract MeDao is Tokenized {
     
     string public version = '0.0.2';
     
     address public Founder;
+    
+    OngoingAuction Auction;
     
     uint public weekly_auction_reward;
     uint public scheduled_auction_timestamp;
@@ -353,20 +370,21 @@ contract MeDao is Tokenized, OngoingAuction {
 // MeDao Functions
 ////////////////
 
-    function MeDao (address founder) {
+    function MeDao (address founder, OngoingAuction auction) {
         Founder = founder;
+        Auction = auction;
     }
     
     function startAuction () isScheduled {
-        
-        uint highest_bid_id = acceptHighestBid(withdraw_address);
-        
-        address winner = bids[highest_bid_id].owner;
-        uint ether_bid = bids[highest_bid_id].value;
-        
+        Auction.startAuction();
+    }
+    
+    function declareAuctionWinner (address winner, uint bidValue) payable 
+    onlyAuction {
+        withdraw_address.transfer(bidValue);
         Token.generateTokens(winner, 1 hours);
         
-        AuctionWinner_event(winner,ether_bid);
+        AuctionWinner_event(winner,bidValue);
     }
     
     function submitProofOfWork (uint burnAmount, string metadataHash) 
@@ -415,6 +433,12 @@ contract MeDao is Tokenized, OngoingAuction {
         _;
     }
     
+    modifier onlyAuction () {
+        if (msg.sender != address(Auction)) throw;
+        
+        _;
+    }
+    
     modifier hasCooldown (uint cooldown) {
         if(now < cooldown_timestamp) throw;
         
@@ -446,9 +470,12 @@ contract MeDaoRegistry {
         uint next_id = total_medaos++;
         founders[next_id] = msg.sender;
         
-        medaos[msg.sender] = new MeDao(msg.sender);
+        OngoingAuction Auction = new OngoingAuction();
+        
+        medaos[msg.sender] = new MeDao(msg.sender,Auction);
         medaos[msg.sender].setupToken(msg.sender,PrimeToken,name,0,'seconds',0,true);
         medaos[msg.sender].transferOwnership(msg.sender);
+        Auction.transferOwnership(medaos[msg.sender]);
         
         NewMeDao_event(msg.sender, medaos[msg.sender]);
     }

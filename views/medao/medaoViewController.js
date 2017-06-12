@@ -66,7 +66,7 @@ function($q,$scope,$location,$mdMedia,Web3Service,Registry,MeDao,Token){
             comment: null
         },
         placeBid:{
-            touchTeir: 0
+            touchingTeir: 0
         },
         totalBids: {
             
