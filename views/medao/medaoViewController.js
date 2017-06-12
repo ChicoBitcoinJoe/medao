@@ -66,7 +66,7 @@ function($q,$scope,$location,$mdMedia,Web3Service,Registry,MeDao,Token){
             comment: null
         },
         placeBid:{
-            touchTeir: 0
+            touchingTeir: 0
         },
         totalBids: {
             
@@ -385,6 +385,7 @@ function($q,$scope,$location,$mdMedia,Web3Service,Registry,MeDao,Token){
     
     $q.all([Registry.getMeDaoAddress(MeDaoAccount),Web3Service.getCurrentAccount()])
     .then(function(array){
+        console.log(array);
         $scope.medao.address =  array[0];
         $scope.currentAccount.address = array[1];
         return $q.all([
@@ -392,11 +393,11 @@ function($q,$scope,$location,$mdMedia,Web3Service,Registry,MeDao,Token){
             Web3Service.getEtherBalance($scope.currentAccount.address)
         ]);
     }).then(function(array){
-        //console.log(array);
         $scope.medao.token.address = array[0];
         var etherBalanceInWei = array[1];
         $scope.currentAccount.ether.balance = web3.fromWei(etherBalanceInWei,'ether').toNumber();
         $scope.currentAccount.ether.inWei = etherBalanceInWei.toString();
+        console.log('adhere');
         return $q.all([
             MeDao.getAuctionReward($scope.medao.address),
             MeDao.getAuctionTimestamp($scope.medao.address),
@@ -406,9 +407,10 @@ function($q,$scope,$location,$mdMedia,Web3Service,Registry,MeDao,Token){
             Token.getCurrentSupply($scope.medao.token.address),
             Token.getBalanceOf($scope.medao.token.address,$scope.currentAccount.address),
             MeDao.getHighestBid($scope.medao.address),
-            MeDao.getAllBids($scope.medao.address,$scope.currentAccount.address)
+            MeDao.getBids($scope.medao.address,$scope.currentAccount.address)
         ]);
     }).then(function(array){
+        console.log('there');
         $scope.medao.auction.reward = array[0].toNumber();
         $scope.medao.auction.timestamp = array[1].toNumber();
         $scope.medao.auction.period = array[2].toNumber();
@@ -418,7 +420,8 @@ function($q,$scope,$location,$mdMedia,Web3Service,Registry,MeDao,Token){
         $scope.currentAccount.token.balance = array[6] / 3600;
         $scope.medao.auction.highestBid = web3.fromWei(array[7],'ether').toNumber();
         $scope.currentAccount.allBids = array[8];
-        console.log($scope.currentAccount.allBids);
+        //console.log($scope.currentAccount.allBids);
+        console.log('where');
         populateTeirInfo($scope.medao.address,array[7].toNumber());
         setWatcher();
         

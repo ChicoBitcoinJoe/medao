@@ -125,7 +125,7 @@ contract OngoingAuction is Owned {
     uint public top_teir;
     uint public bottom_teir;
     uint public total_teirs;
-    mapping (uint => Teir) public teir; //DLL
+    mapping (uint => Teir) public teirs; //DLL
     
 ////////////////
 // Auction Functions
@@ -134,8 +134,8 @@ contract OngoingAuction is Owned {
     function placeBid (uint touchingTeir) payable {
         if(msg.value == 0) throw;
         
-        if(teir[msg.value].line_length == 0) {
-            if(teir[touchingTeir].line_length == 0 && top_teir != 0) throw;
+        if(teirs[msg.value].line_length == 0) {
+            if(teirs[touchingTeir].line_length == 0 && top_teir != 0) throw;
             
             addNewTeir_internal(touchingTeir);
         }
@@ -152,32 +152,15 @@ contract OngoingAuction is Owned {
         if (!bids[bid_id].owner.send(bids[bid_id].value)) throw;
     }
     
-    function acceptHighestBid (address depositAddress) onlyOwner returns (uint) {
-        if(top_teir == 0) throw;
+    function startAuction () onlyOwner {
+        uint winning_bid_id = acceptHighestBid();
+        address winner = bids[winning_bid_id].owner;
+        uint bidValue = bids[winning_bid_id].value;
         
-        uint highest_bid_id = teir[top_teir].front_of_line_id;
-        removeBid_internal(highest_bid_id);
-        bids[highest_bid_id].accepted = true;
-        
-        depositAddress.transfer(bids[highest_bid_id].value);
-        bids[highest_bid_id].accepted = true;
-        
-        return highest_bid_id;
+        MeDao(owner).declareAuctionWinner(winner,bidValue);
     }
     
-////////////////
-// Constant Functions
-////////////////
-    
-    function getBidder (uint bid_id) constant returns (address) {
-        return bids[bid_id].owner;
-    }
-    
-    function getBidValue (uint bid_id) constant returns (uint) {
-        return bids[bid_id].value;
-    }
-    
-    function getAllBids (address bidder) constant returns (uint[]) {
+    function getBids (address bidder) constant returns (uint[]) {
         uint total_bids = bidders[bidder].total_bids_made;
         uint[] memory all_bids = new uint[](total_bids);
         
@@ -187,65 +170,86 @@ contract OngoingAuction is Owned {
         return all_bids;
     }
     
+    function getTeirs () constant returns (uint[]) {
+        uint[] memory all_teirs = new uint[](total_teirs);
+        uint current_teir = teirs[top_teir].value; 
+        for (uint i = 0; i < total_teirs; i++) {
+            all_teirs[i] = current_teir;
+            current_teir = teirs[top_teir].teir_below;
+        }
+        
+        return all_teirs;
+    }
+    
 ////////////////
 // Internal Functions
 ////////////////
+
+    function acceptHighestBid () internal returns (uint) {
+        if(top_teir == 0) throw;
+        
+        uint highest_bid_id = teirs[top_teir].front_of_line_id;
+        bids[highest_bid_id].accepted = true;
+        removeBid_internal(highest_bid_id);
+        
+        return highest_bid_id;
+    }
     
     function addNewTeir_internal (uint touching) internal {
         uint value = msg.value;
         
         if (top_teir == 0) {
-            teir[value] = Teir(0,value,0,0,0,0);
+            teirs[value] = Teir(0,value,0,0,0,0);
             top_teir = value;
             bottom_teir = value;
         } else if (value > top_teir && touching == top_teir) {
-            teir[value] = Teir(0,value,top_teir,0,0,0);
-            teir[top_teir].teir_above = value;
+            teirs[value] = Teir(0,value,top_teir,0,0,0);
+            teirs[top_teir].teir_above = value;
             top_teir = value;
         } else if (value < bottom_teir && touching == bottom_teir) {
-            teir[value] = Teir(bottom_teir,value,0,0,0,0);
-            teir[bottom_teir].teir_below = value;
+            teirs[value] = Teir(bottom_teir,value,0,0,0,0);
+            teirs[bottom_teir].teir_below = value;
             bottom_teir = value;
         } else {
             uint above;
             uint below;
             if(value > touching) {
-                above = teir[touching].teir_above;
+                above = teirs[touching].teir_above;
                 below = touching;
                 if(value > above) throw;
             } else if(value < touching) {
                 above = touching;
-                below = teir[touching].teir_below;
+                below = teirs[touching].teir_below;
                 if(value < below) throw;
             }
             
-            teir[value] = Teir(above,value,below,0,0,0);
-            teir[above].teir_below = value;
-            teir[below].teir_above = value;
+            teirs[value] = Teir(above,value,below,0,0,0);
+            teirs[above].teir_below = value;
+            teirs[below].teir_above = value;
         }
         
         total_teirs++;
     }
     
     function removeTeir_internal (uint value) internal {
-        uint teir_below = teir[value].teir_below;
-        uint teir_above = teir[value].teir_above;
+        uint teir_below = teirs[value].teir_below;
+        uint teir_above = teirs[value].teir_above;
         
         if (value == top_teir && value == bottom_teir) {
             top_teir = 0;
             bottom_teir = 0;
         } else if (value == top_teir) {
-            teir[teir_below].teir_above = 0;
+            teirs[teir_below].teir_above = 0;
             top_teir = teir_below;
         } else if (value == bottom_teir) {
-            teir[teir_above].teir_below = 0;
+            teirs[teir_above].teir_below = 0;
             bottom_teir = teir_above;
         } else {
-            teir[teir_above].teir_below = teir_below;
-            teir[teir_below].teir_above = teir_above;
+            teirs[teir_above].teir_below = teir_below;
+            teirs[teir_below].teir_above = teir_above;
         }
         
-        delete teir[value];
+        delete teirs[value];
         total_teirs--;
     }
     
@@ -254,17 +258,17 @@ contract OngoingAuction is Owned {
         total_bids_made++;
         uint new_bid_id = total_bids_made;
         
-        teir[msg.value].line[new_bid_id] = SpotInLine(back_of_line_id,new_bid_id,0);
+        teirs[msg.value].line[new_bid_id] = SpotInLine(back_of_line_id,new_bid_id,0);
         
-        if (teir[msg.value].line_length == 0)
-            teir[msg.value].front_of_line_id = new_bid_id;
+        if (teirs[msg.value].line_length == 0)
+            teirs[msg.value].front_of_line_id = new_bid_id;
             
-        uint back_of_line_id = teir[msg.value].back_of_line_id;
+        uint back_of_line_id = teirs[msg.value].back_of_line_id;
         if (back_of_line_id != 0)
-            teir[msg.value].line[back_of_line_id].prev = new_bid_id;
+            teirs[msg.value].line[back_of_line_id].prev = new_bid_id;
         
-        teir[msg.value].back_of_line_id = new_bid_id;
-        teir[msg.value].line_length++;
+        teirs[msg.value].back_of_line_id = new_bid_id;
+        teirs[msg.value].line_length++;
         
         bids[new_bid_id] = Bid(new_bid_id,msg.sender,msg.value,false,false);
         bidders[msg.sender].current_bids_open++;
@@ -277,33 +281,33 @@ contract OngoingAuction is Owned {
     
     function removeBid_internal (uint bid_id) internal {
         Bid bid = bids[bid_id];
-        if(teir[bid.value].line_length == 0) throw;
+        if(teirs[bid.value].line_length == 0) throw;
         if(bid.accepted || bid.cancelled) throw;
         
-        uint front_of_line_id = teir[bid.value].front_of_line_id;
-        uint back_of_line_id = teir[bid.value].back_of_line_id;
+        uint front_of_line_id = teirs[bid.value].front_of_line_id;
+        uint back_of_line_id = teirs[bid.value].back_of_line_id;
         if (bid.id == front_of_line_id) {
-            uint prev = teir[bid.value].line[bid.id].prev;
-            teir[bid.value].front_of_line_id = prev;
-            teir[bid.value].line[prev].prev = 0;
+            uint prev = teirs[bid.value].line[bid.id].prev;
+            teirs[bid.value].front_of_line_id = prev;
+            teirs[bid.value].line[prev].prev = 0;
         } else if (bid.id == back_of_line_id) {
-            uint next = teir[bid.value].line[bid.id].next;
-            teir[bid.value].back_of_line_id = next;
-            teir[bid.value].line[next].prev = 0;
+            uint next = teirs[bid.value].line[bid.id].next;
+            teirs[bid.value].back_of_line_id = next;
+            teirs[bid.value].line[next].prev = 0;
         } else {
-            uint front_id = teir[bid.value].line[bid.id].next;
-            uint back_id = teir[bid.value].line[bid.id].prev;
-            teir[bid.value].line[front_id].prev = back_id;
-            teir[bid.value].line[back_id].next = front_id;
+            uint front_id = teirs[bid.value].line[bid.id].next;
+            uint back_id = teirs[bid.value].line[bid.id].prev;
+            teirs[bid.value].line[front_id].prev = back_id;
+            teirs[bid.value].line[back_id].next = front_id;
         }
         
-        delete teir[bid.value].line[bid_id];
-        teir[bid.value].line_length--;
+        delete teirs[bid.value].line[bid_id];
+        teirs[bid.value].line_length--;
         
         bidders[msg.sender].current_bids_open--;
         current_bids_open--;
         
-        if(teir[bid.value].line_length == 0)
+        if(teirs[bid.value].line_length == 0)
             removeTeir_internal(bid.value);
     }
     
@@ -345,36 +349,42 @@ contract OngoingAuction is Owned {
     event NewBid_event(address bidder, uint bid_id, uint value);
 }
 
-contract MeDao is Tokenized, OngoingAuction {
+contract MeDao is Tokenized {
     
-    string public version = '0.0.1';
+    string public version = '0.0.2';
     
     address public Founder;
+    
+    OngoingAuction public Auction;
     
     uint public weekly_auction_reward;
     uint public scheduled_auction_timestamp;
     uint public auction_period;
     
     uint public total_proof_of_work;
-    uint burn_minimum = 1;
+   
     uint public cooldown_timestamp;
-    
+    uint burn_minimum = 1;
+     
 ////////////////
 // MeDao Functions
 ////////////////
 
-    function MeDao (address founder) {
+    function MeDao (address founder, OngoingAuction auction) {
         Founder = founder;
+        Auction = auction;
     }
     
     function startAuction () isScheduled {
-        uint bid_id = acceptHighestBid(withdraw_address);
-        address winner = getBidder(bid_id);
-        uint ether_bid = getBidValue(bid_id);
-        
+        Auction.startAuction();
+    }
+    
+    function declareAuctionWinner (address winner, uint bidValue) payable 
+    onlyAuction {
+        withdraw_address.transfer(bidValue);
         Token.generateTokens(winner, 1 hours);
         
-        AuctionWinner_event(winner,ether_bid);
+        AuctionWinner_event(winner,bidValue);
     }
     
     function submitProofOfWork (uint burnAmount, string metadataHash) 
@@ -423,6 +433,12 @@ contract MeDao is Tokenized, OngoingAuction {
         _;
     }
     
+    modifier onlyAuction () {
+        if (msg.sender != address(Auction)) throw;
+        
+        _;
+    }
+    
     modifier hasCooldown (uint cooldown) {
         if(now < cooldown_timestamp) throw;
         
@@ -454,9 +470,12 @@ contract MeDaoRegistry {
         uint next_id = total_medaos++;
         founders[next_id] = msg.sender;
         
-        medaos[msg.sender] = new MeDao(msg.sender);
+        OngoingAuction Auction = new OngoingAuction();
+        
+        medaos[msg.sender] = new MeDao(msg.sender,Auction);
         medaos[msg.sender].setupToken(msg.sender,PrimeToken,name,0,'seconds',0,true);
         medaos[msg.sender].transferOwnership(msg.sender);
+        Auction.transferOwnership(medaos[msg.sender]);
         
         NewMeDao_event(msg.sender, medaos[msg.sender]);
     }

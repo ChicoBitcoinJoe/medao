@@ -29,7 +29,7 @@
                         <div> </div>
                         <div>
                             <div layout="column" layout-align="center center">
-                                <p>A bid placed on a new teir must have an adjecent teir (or anchor teir) selected. This can be eventually automated away. Click on a teir to set it as the anchor teir.</p>
+                                <p>A bid placed on a new teir must have an adjacent teir (or anchor teir) selected. This can be eventually automated away. Click on a teir to set it as the anchor teir.</p>
                                 <div ng-repeat="value in medao.auction.teirs track by $index" layout="row" flex>
                                     <div class="cursor" ng-click="medao.placeBid.touchingTeir = value">
                                         {{medao.totalBids[value]}} bids at <b>{{value | fromWei:'ether'}} Ether</b>
