@@ -50,6 +50,20 @@ function ($q) {
             
             return deferred.promise;
         },
+        getCooldownTimestamp: function(medaoAddress){
+            var deferred = $q.defer();
+            var MeDaoInstance = MeDao.contract.at(medaoAddress);
+            
+            MeDaoInstance.cooldown_timestamp(
+            function(err, cooldownTimestamp){
+                if(!err)
+                    deferred.resolve(cooldownTimestamp);
+                else 
+                    deferred.reject(err);
+            });
+            
+            return deferred.promise;
+        },
         startAuction: function(medaoAddress, account){
             var deferred = $q.defer();
             var MeDaoInstance = MeDao.contract.at(medaoAddress);

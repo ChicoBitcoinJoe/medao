@@ -77,19 +77,7 @@
                    
                         <div style="margin: 12px 0px; padding:0px; border-top: 3px solid rgba(255,255,255,0.87);"></div>
 
-                        <h3 style="margin-bottom:0px;">Set Work Hours (7 day cooldown)</h3>
-                        <div>
-                            <md-input-container class="md-block" md-no-float>
-                                <label>Hours per week (0-40)</label>
-                                <input type="number" ng-model="medao.setAuctionReward.hours" min="0" max="40">
-                            </md-input-container>
-                            <div layout="row">
-                                <md-button class="nav-button md-raised md-warn" ng-click="medao.setAuctionReward.hours = 40;" flex>full time</md-button>
-                                <md-button class="nav-button md-raised" ng-click="medao.setAuctionReward.hours = 20;" flex>half time</md-button>
-                                <span hide-xs flex></span>
-                                <md-button class="nav-button md-raised md-primary" ng-disabled="!validAuctionReward()" ng-click="setAuctionReward()">set</md-button>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>

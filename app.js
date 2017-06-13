@@ -25,6 +25,6 @@ MeDao.run(function() {
 
 MeDao.filter('fromWei', [function() {
     return function(value, convertTo) {
-        return web3.fromWei(value,convertTo);
+        return web3.fromWei(value,convertTo).toNumber();
     };
 }]);

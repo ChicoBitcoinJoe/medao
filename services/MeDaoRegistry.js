@@ -37,9 +37,9 @@ function ($q,Web3Service) {
             var deferred = $q.defer();
             
             MeDaoRegistryInstance.medaos(account,
-            function(err, account){
+            function(err, medaoAddress){
                 if(!err)
-                    deferred.resolve(account);
+                    deferred.resolve(medaoAddress);
                 else 
                     deferred.reject(err);
             });

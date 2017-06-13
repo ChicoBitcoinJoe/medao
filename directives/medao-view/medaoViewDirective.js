@@ -1,5 +1,5 @@
-MeDao.directive('medaoView', ['$q','$location','Web3Service','MeDaoRegistry','MeDaoService','TokenService','AuctionService',
-function($q,$location,Web3Service,Registry,MeDaoService,TokenService,AuctionService) { return {
+MeDao.directive('medaoView', ['$q','$location','$mdDialog','Web3Service','MeDaoRegistry','MeDaoService','TokenService','AuctionService',
+function($q,$location,$mdDialog,Web3Service,MeDaoRegistry,MeDaoService,TokenService,AuctionService) { return {
     restrict: 'E',
     scope: {
         account: '='
@@ -14,11 +14,14 @@ function($q,$location,Web3Service,Registry,MeDaoService,TokenService,AuctionServ
         $scope.platform = {
             account: {
                 address: null,
+                wei: null,
                 ether: null,
                 hours: null
             },
             medao: {
-                address: $scope.account
+                address: null,
+                owner: $scope.account,
+                cooldown: null
             },
             token: {
                 address: null,
@@ -36,25 +39,32 @@ function($q,$location,Web3Service,Registry,MeDaoService,TokenService,AuctionServ
             now: Math.floor(Date.now() / 1000),
             seconds: null,
             alarm: false,
-            text: null
+            text: '...'
         };
         
     //Setup
         
-        Registry.getMeDaoAddress($scope.account)
+        MeDaoRegistry.getMeDaoAddress($scope.account)
         .then(function(medaoAddress){
             $scope.platform.medao.address = medaoAddress;
             return $q.all([
                 MeDaoService.getTokenAddress($scope.platform.medao.address), 
                 MeDaoService.getAuctionAddress($scope.platform.medao.address),
-                MeDaoService.getAuctionTimestamp()
+                MeDaoService.getAuctionTimestamp($scope.platform.medao.address),
+                MeDaoService.getWeeklyAuctionReward($scope.platform.medao.address),
+                MeDaoService.getCooldownTimestamp($scope.platform.medao.address)
             ]);
         }).then(function(promises){
             $scope.platform.token.address = promises[0];
             $scope.platform.auction.address = promises[1];
             $scope.timer.seconds = promises[2];
+            $scope.platform.auction.reward = promises[3].toNumber();
+            $scope.platform.medao.cooldown = promises[4].toNumber();
             
-            setTimer($scope.timer.seconds);
+            var now = Math.floor(Date.now() / 1000);
+            var auctionTimerInSeconds = $scope.timer.seconds - now;
+            setTimer(auctionTimerInSeconds);
+            $scope.cooldownInSeconds = $scope.platform.medao.cooldown - now;
             
             TokenService.getName($scope.platform.token.address)
             .then(function(tokenName){
@@ -77,20 +87,24 @@ function($q,$location,Web3Service,Registry,MeDaoService,TokenService,AuctionServ
                 console.error(err);
             });
             
-            AuctionService.getHighestBid()
-            .then(function(highestBid){
-                $scope.platform.auction.highestBid = web3.fromWei(highestBid,'ether').toNumber();
-            }).catch(function(err){
-                console.error(err);
-            });
+            setInterval(function(){
+                AuctionService.getHighestBid($scope.platform.auction.address)
+                .then(function(highestBid){
+                    $scope.platform.auction.highestBid = web3.fromWei(highestBid,'ether').toNumber();
+                }).catch(function(err){
+                    console.error(err);
+                });
+                
+                AuctionService.getTeirs($scope.platform.auction.address)
+                .then(function(teirs){
+                    $scope.platform.auction.teirs = teirs;
+                }).catch(function(err){
+                    console.error(err);
+                });
+            },1000);
         
         }).catch(function(err){
             console.error(err);
-        });
-        
-        MeDaoService.getWeeklyAuctionReward($scope.medaoAddress)
-        .then(function(reward){
-            $scope.platform.auction.reward = reward.toNumber() / 3600;
         });
         
         Web3Service.getCurrentAccount()
@@ -100,11 +114,21 @@ function($q,$location,Web3Service,Registry,MeDaoService,TokenService,AuctionServ
             if($scope.platform.account.address == $scope.platform.medao.owner){
                 $scope.isOwner = true;
             }
+            
+            return Web3Service.getEtherBalance(currentAccount);
+        }).then(function(etherBalanceInWei){
+            $scope.platform.account.wei = etherBalanceInWei;
+            $scope.platform.account.ether = web3.fromWei(etherBalanceInWei,'ether');
         }).catch(function(err){
             console.error(err);
         });
-        
-        var setTimer = function(){
+                
+        var setTimer = function(seconds){
+            if(seconds > 0)
+                $scope.timer.seconds = seconds;
+            else
+                $scope.timer.seconds = 1;
+                
             clearInterval($scope.timerInterval);
             $scope.timerInterval = setInterval(function(){
                 $scope.timer.seconds--;
@@ -129,10 +153,11 @@ function($q,$location,Web3Service,Registry,MeDaoService,TokenService,AuctionServ
                     $scope.timer.text += minutes+'m ';
 
                 $scope.$apply(function(){
+                    console.log($scope.timer.seconds);
                     $scope.timer.text += seconds+'s ';
                     if($scope.timer.seconds <= 0){
                         $scope.timer.alarm = true;
-                         clearInterval($scope.interval);
+                        clearInterval($scope.timerInterval);
                     }
                 });
             }, 1000);
@@ -143,36 +168,152 @@ function($q,$location,Web3Service,Registry,MeDaoService,TokenService,AuctionServ
         $scope.goto = function(path){
             $location.path(path);
         };
-
-        /*
-
-        $scope.placeBid = function(){
-            var bidInWei = web3.toWei($scope.auction.placeBid.ether,'ether');
-            MeDao.placeBid($scope.medao.address,bidInWei,$scope.medao.placeBid.touchingTeir)
-            .then(function(txHash){
-                  return Web3Service.getTransactionReceipt(txHash);
-            }).then(function(receipt){
-                //console.log(receipt);
-                populateTeirInfo(medaoAddress);
-            }).catch(function(err){
-                console.error(err);
+        
+        $scope.openAuctionRewardPanel = function(ev) {
+            $mdDialog.show({
+                controller: DialogController,
+                templateUrl: 'directives/medao-view/auction-reward-dialog.template.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose:true,
+                fullscreen: true, // Only for -xs, -sm breakpoints.
+                locals: {timer:{seconds:$scope.cooldownInSeconds}}
+            }).then(function(hours) {
+                $scope.setAuctionReward(hours);
+            }, function() {
+                console.log('You cancelled the dialog.');
             });
+        };
+
+        function DialogController($scope, $mdDialog, timer) {
+            
+            $scope.hours = 0;
+            $scope.onCooldown = true;
+            $scope.seconds = timer.seconds;
+            
+            var updateDialog = function(){
+                if($scope.seconds > 0) {
+                    setTimerText();
+                    $scope.onCooldown = true;
+                } else
+                    $scope.onCooldown = false;
+                
+                return $scope.onCooldown;
+            }
+            
+            var timerInterval = setInterval(function(){
+                if(updateDialog())
+                    $scope.seconds--;
+                else
+                    clearInterval(timerInterval);
+            }, 1000)
+            
+            var setTimerText = function(){
+                var seconds = $scope.seconds;
+                
+                var days = Math.floor(seconds/(24*60*60));
+                seconds = seconds - days*(24*60*60);
+                ////console.log(days + ' days',seconds + ' seconds');
+                var hours = Math.floor(seconds/(60*60));
+                seconds = seconds - hours*(60*60);
+                ////console.log(hours + ' hours',seconds + ' seconds');
+                var minutes = Math.floor(seconds/60);
+                seconds = seconds - minutes*60;
+                ////console.log(minutes + ' minutes',seconds + ' seconds');
+
+                $scope.timerText = '';
+
+                if(days > 0)
+                    $scope.timerText += days+'d ';
+                if(hours > 0 || days > 0)
+                    $scope.timerText += hours+'h ';
+                if(minutes > 0 || hours > 0 || days > 0)
+                    $scope.timerText += minutes+'m ';
+
+                $scope.$apply(function(){
+                    $scope.timerText += seconds+'s ';
+                });
+            }
+            
+            $scope.validAuctionReward = function(){
+                if( $scope.hours > 0 && $scope.hours <= 40)
+                    return true;
+                return false;
+            }
+            
+            $scope.hide = function() {
+                $mdDialog.hide();
+            };
+
+            $scope.cancel = function(hours) {
+                $mdDialog.cancel(hours);
+            };
+
+            $scope.answer = function(answer) {
+                $mdDialog.hide(answer);
+            };
+        };
+        
+        $scope.setAuctionReward = function(hours){
+            console.log($scope.platform.medao.address, hours);
+            
+            if(hours > 0){
+                MeDaoService.setWeeklyAuctionReward(
+                    $scope.platform.medao.address,
+                    $scope.platform.account.address,
+                    hours)
+                .then(function(txHash){
+                    return Web3Service.getTransactionReceipt(txHash);
+                }).then(function(receipt){
+                    return $q.all([
+                        MeDaoService.getAuctionReward($scope.platform.medao.address),
+                        MeDaoService.getAuctionTimestamp($scope.platform.medao.address),
+                        MeDaoService.getCooldownTimestamp($scope.platform.medao.address),
+                    ]);
+                }).then(function(promises){
+                    $scope.platform.auction.reward = promises[0].toNumber();
+                    $scope.timer.seconds = promises[1].toNumber();
+                    $scope.platform.medao.cooldown = promises[2].toNumber();
+            
+                    $scope.cooldownInSeconds = $scope.platform.medao.cooldown - Math.floor(Date.now() / 1000);
+
+                    $scope.timer.now = Math.floor(Date.now() / 1000),
+                    $scope.timer.alarm = false;
+
+                    if($scope.timer.now < $scope.timer.seconds)
+                        setTimer();
+                    else
+                        $scope.timer.alarm = true;
+
+                }).catch(function(err){
+                    console.error(err);
+                });
+            }
+            
         };
 
         $scope.startAuction = function(){
-            var medaoAddress = $scope.medao.address;
-            MeDao.startAuction(medaoAddress)
+            console.log($scope.platform.medao.address);
+            MeDaoService.startAuction($scope.platform.medao.address,$scope.platform.account.address)
             .then(function(txHash){
                   return Web3Service.getTransactionReceipt(txHash);
             }).then(function(receipt){
-                return $q.all([MeDao.getHighestBid($scope.medao.address), MeDao.getAuctionTimestamp($scope.medao.address)]);
+                return $q.all([
+                    MeDaoService.getHighestBid($scope.platform.medao.address),
+                    MeDaoService.getAuctionTimestamp($scope.platform.medao.address)
+                ]);
             }).then(function(promises){
-                $scope.auction.highestBid = web3.fromWei(promises[0],'ether').toNumber();
-                $scope.auction.timestamp = array[1].toNumber();
+                $scope.platform.auction.highestBid = web3.fromWei(promises[0],'ether').toNumber();
+                $scope.timer.seconds = array[1].toNumber();
+                var auctionTimerInSeconds = $scope.timer.seconds - now;
+                setTimer(auctionTimerInSeconds);
             }).catch(function(err){
                 console.error(err);
             });
         };
+        /*
+
+        
 
         $scope.submitProofOfWork = function(){
             MeDao.submitProofOfWork($scope.medao.address,$scope.medao.submitProofOfWork.burnAmount*3600, $scope.medao.submitProofOfWork.comment)
@@ -183,54 +324,12 @@ function($q,$location,Web3Service,Registry,MeDaoService,TokenService,AuctionServ
             });
         };
 
-
-
-        $scope.setAuctionReward = function(){
-            MeDao.setWeeklyAuctionReward($scope.medao.address, $scope.medao.setAuctionReward.hours)
-            .then(function(txHash){
-                return Web3Service.getTransactionReceipt(txHash);
-            }).then(function(receipt){
-                return $q.all([MeDao.getAuctionReward($scope.medao.address),
-                MeDao.getAuctionTimestamp($scope.medao.address),
-                MeDao.getAuctionPeriod($scope.medao.address)]);
-            }).then(function(promises){
-                $scope.auction.reward = promises[0].toNumber();
-                $scope.auction.timestamp = promises[1].toNumber();
-                $scope.auction.period = promises[2].toNumber();
-
-                $scope.timer.alarm = false;
-                var timestamp = $scope.auction.timestamp;
-                $scope.timer.seconds = timestamp - $scope.timer.now;
-                //console.log(timestamp);
-                //console.log($scope.timer.now);
-                //console.log($scope.timer.seconds);
-                if($scope.timer.now < timestamp) {
-                    setTimer();
-                } else {
-                    $scope.timer.alarm = true;
-                }
-            }).catch(function(err){
-                console.error(err);
-            });
-        };
-
-
-
         $scope.maxBid = function(){
             $scope.auction.placeBid.ether = $scope.currentAccount.ether.balance;
         }
 
         $scope.matchBid = function(){
             $scope.auction.placeBid.ether = $scope.auction.highestBid;
-        }
-
-        
-
-        $scope.validAuctionReward = function(){
-            var hours = $scope.medao.setAuctionReward.hours;
-            if( hours > 0 && hours <= 40)
-                return true;
-            return false;
         }
 
         $scope.removeBid = function(){
@@ -252,86 +351,6 @@ function($q,$location,Web3Service,Registry,MeDaoService,TokenService,AuctionServ
             .then(function(highestBid){
                 //console.log(highestBid.toNumber());
                 return MeDao.getTeirInfo(medaoAddress,highestBid.toNumber());
-            }).then(function(teirInfo){
-                if(!teirInfo)
-                    return false;
-                else {
-                    //console.log(teirInfo);
-                    var teir_above = teirInfo[0].toNumber();
-                    var teir_value = teirInfo[1].toNumber();
-                    var teir_below = teirInfo[2].toNumber();
-                    //console.log(teir_above,teir_below);
-                    //console.log(teir_value);
-                    if(teir_value != 0) {
-                        //console.log('Teir Below ' + teir_value + ' is ' + teir_below);
-                        //console.log('Bids on this teir is ' + teirInfo[5].toNumber());
-                        $scope.medao.totalBids[teir_value] = teirInfo[5].toNumber();
-                        $scope.medao.auction.teirs.push(teir_value);
-                        $scope.total_bids += teirInfo[5].toNumber();
-                        return MeDao.getTeirInfo(medaoAddress,teir_below);
-                    } else 
-                        return false;
-                }
-            }).then(function(teirInfo){
-                if(!teirInfo)
-                    return false;
-                else {
-                    //console.log(teirInfo);
-                    var teir_above = teirInfo[0].toNumber();
-                    var teir_value = teirInfo[1].toNumber();
-                    var teir_below = teirInfo[2].toNumber();
-                    //console.log(teir_above,teir_below);
-                    //console.log(teir_value);
-                    if(teir_value != 0) {
-                        //console.log('Teir Below ' + teir_value + ' is ' + teir_below);
-                        //console.log('Bids on this teir is ' + teirInfo[5].toNumber());
-                        $scope.medao.totalBids[teir_value] = teirInfo[5].toNumber();
-                        $scope.medao.auction.teirs.push(teir_value);
-                        $scope.total_bids += teirInfo[5].toNumber();
-                        return MeDao.getTeirInfo(medaoAddress,teir_below);
-                    } else 
-                        return false;
-                }
-            }).then(function(teirInfo){
-                if(!teirInfo)
-                    return false;
-                else {
-                    //console.log(teirInfo);
-                    var teir_above = teirInfo[0].toNumber();
-                    var teir_value = teirInfo[1].toNumber();
-                    var teir_below = teirInfo[2].toNumber();
-                    //console.log(teir_above,teir_below);
-                    //console.log(teir_value);
-                    if(teir_value != 0) {
-                        //console.log('Teir Below ' + teir_value + ' is ' + teir_below);
-                        //console.log('Bids on this teir is ' + teirInfo[5].toNumber());
-                        $scope.medao.totalBids[teir_value] = teirInfo[5].toNumber();
-                        $scope.medao.auction.teirs.push(teir_value);
-                        $scope.total_bids += teirInfo[5].toNumber();
-                        return MeDao.getTeirInfo(medaoAddress,teir_below);
-                    } else 
-                        return false;
-                }
-            }).then(function(teirInfo){
-                if(!teirInfo)
-                    return false;
-                else {
-                    //console.log(teirInfo);
-                    var teir_above = teirInfo[0].toNumber();
-                    var teir_value = teirInfo[1].toNumber();
-                    var teir_below = teirInfo[2].toNumber();
-                    //console.log(teir_above,teir_below);
-                    //console.log(teir_value);
-                    if(teir_value != 0) {
-                        //console.log('Teir Below ' + teir_value + ' is ' + teir_below);
-                        //console.log('Bids on this teir is ' + teirInfo[5].toNumber());
-                        $scope.medao.totalBids[teir_value] = teirInfo[5].toNumber();
-                        $scope.medao.auction.teirs.push(teir_value);
-                        $scope.total_bids += teirInfo[5].toNumber();
-                        return MeDao.getTeirInfo(medaoAddress,teir_below);
-                    } else 
-                        return false;
-                }
             }).then(function(teirInfo){
                 if(!teirInfo)
                     return false;
@@ -410,7 +429,7 @@ function($q,$location,Web3Service,Registry,MeDaoService,TokenService,AuctionServ
             },1000);
         };
 
-        $q.all([Registry.getMeDaoAddress(MeDaoAccount),Web3Service.getCurrentAccount()])
+        $q.all([MeDaoRegistry.getMeDaoAddress(MeDaoAccount),Web3Service.getCurrentAccount()])
         .then(function(array){
             console.log(array);
             $scope.medao.address =  array[0];

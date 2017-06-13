@@ -1,0 +1,32 @@
+<div style="background-color:rgb(22,55,22)" layout="column" layout-fill layout-padding layout-margin flex>
+    <div layout="row">
+        <span flex></span>
+        <md-button class="nav-button" style="color:rgba(255,255,255,0.87)" ng-click="hide()">close</md-button>
+    </div>
+    <div>
+        <h1>Set Weekly Auction Reward</h1>
+        <p>In general, this should match how many hours you work per week. In the event you start to become over-scheduled set to a lower amount until you work back some of your time.</p>
+        <h3>Set Work Hours (7 day cooldown)</h3>
+        <div ng-show=!onCooldown>
+            <md-input-container class="md-block" md-no-float>
+                <label>Hours per week (0-40)</label>
+                <input type="number" ng-model="hours" min="0" max="40">
+            </md-input-container>
+            <div layout="column" layout-gt-sm="row" flex>
+                <div layout="row" flex="50">
+                    <md-button class="nav-button md-raised md-warn" ng-click="hours = 40;" flex>full time</md-button>
+                    <md-button class="nav-button md-raised" style="background-color:rgb(188,111,11); color:rgba(255,255,255,0.87)" ng-click="hours = 20;" flex>half time</md-button>
+                </div>
+                <div layout="row" flex="50">
+                    <md-button class="nav-button md-raised" style="background-color:rgb(144,77,44); color:rgba(255,255,255,0.87)" ng-click="hours = 10;" flex>Quarter time</md-button>
+                    <span flex-gt-sm></span>
+                    <md-button class="nav-button md-raised md-primary" ng-disabled="!validAuctionReward()" ng-click="answer(hours)" flex>set</md-button>
+                </div>
+            </div>
+        </div>
+        <div ng-show="onCooldown" layout="column" layout-fill>
+            <h2 style="text-align:center;">Available in</h2>
+            <h1 style="text-align:center;">{{timerText}} seconds</h1>
+        </div>
+    </div>
+</div>
