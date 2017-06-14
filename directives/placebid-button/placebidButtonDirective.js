@@ -33,8 +33,7 @@ function($mdDialog,$location,AuctionService,Web3Service) {
                         data:{
                             auctionAddress:$scope.auctionAddress,
                             max:$scope.max,
-                            highest:$scope.
-                            highest,
+                            highest:$scope.highest,
                             teirs:$scope.teirs
                         }
                     }

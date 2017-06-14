@@ -2,8 +2,8 @@
 
 ### TO DO
 
-- ReadMe
-
+- On setting Work Hours, Next Auction timer does not set properly (stays at 0s)
+- place bid button should display the ... animation while waiting for tx receipt
 
 
 ### Notes
