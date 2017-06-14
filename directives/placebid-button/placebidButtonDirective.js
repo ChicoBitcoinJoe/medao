@@ -11,6 +11,10 @@ function($mdDialog,$location,AuctionService,Web3Service) {
 		templateUrl: 'directives/placebid-button/placebidButtonDirective.html',
 		controller: function($scope){
             
+            $scope.buttonText = 'place bid';
+            $scope.waiting = false;
+            $scope.thinking = 0;
+            
             setInterval(function(){
                 console.log($scope.auctionAddress);
                 AuctionService.getTeirs($scope.auctionAddress)
@@ -20,6 +24,21 @@ function($mdDialog,$location,AuctionService,Web3Service) {
                     console.error(err);
                 });
             },5000);
+            
+            $scope.startThinking = function() {
+                $scope.thinking++;
+                $scope.buttonText = '.'
+                $scope.interval = setInterval(function(){
+                    $scope.$apply(function(){
+                        $scope.thinking++;
+                        $scope.buttonText = $scope.buttonText + '.';
+                        if($scope.thinking == 6) {
+                            $scope.buttonText = '.'
+                            $scope.thinking = 1;
+                        }
+                    });
+                }, 1000);
+            }
             
             $scope.openBidPanel = function(ev) {
                 $mdDialog.show({
@@ -76,10 +95,6 @@ function($mdDialog,$location,AuctionService,Web3Service) {
                     $scope.amount.inEther = web3.fromWei(value,'ether').toNumber();
                 }
             };
-
-            $scope.goto = function(path){
-                $location.path(path);
-            };
             
             var getTouchingTeir = function(amountInWei) {
                 var total = $scope.teirs.length;
@@ -110,10 +125,13 @@ function($mdDialog,$location,AuctionService,Web3Service) {
                         touchingTeir
                     );
                 }).then(function(txHash){
+                    $scope.startThinking();
                     $scope.waiting = true;
                     return Web3Service.getTransactionReceipt(txHash);
                 }).then(function(receipt){
                     console.log(receipt);
+                    clearInterval($scope.interval);
+                    $scope.buttonText = 'place bid';
                     $scope.waiting = false;
                 }).catch(function(err){
                     console.error(err);
