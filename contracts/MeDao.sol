@@ -175,7 +175,7 @@ contract OngoingAuction is Owned {
         uint current_teir = teirs[top_teir].value; 
         for (uint i = 0; i < total_teirs; i++) {
             all_teirs[i] = current_teir;
-            current_teir = teirs[top_teir].teir_below;
+            current_teir = teirs[current_teir].teir_below;
         }
         
         return all_teirs;
@@ -473,7 +473,7 @@ contract MeDaoRegistry {
         OngoingAuction Auction = new OngoingAuction();
         
         medaos[msg.sender] = new MeDao(msg.sender,Auction);
-        medaos[msg.sender].setupToken(msg.sender,PrimeToken,name,0,'seconds',0,true);
+        medaos[msg.sender].setupToken(msg.sender,Token,name,0,'seconds',0,true);
         medaos[msg.sender].transferOwnership(msg.sender);
         Auction.transferOwnership(medaos[msg.sender]);
         
