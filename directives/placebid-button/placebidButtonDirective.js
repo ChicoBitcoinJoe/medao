@@ -5,15 +5,20 @@ function($mdDialog,$location,AuctionService,Web3Service) {
 		scope: {
             auctionAddress: '=',
             max: '=',
-            highest: '=',
-            teirs: '='
+            highest: '='
 		},
 		replace: true,
 		templateUrl: 'directives/placebid-button/placebidButtonDirective.html',
 		controller: function($scope){
+            
             setInterval(function(){
-                console.log($scope.auctionAddress);
-            },1000);
+                AuctionService.getTeirs($scope.auctionAddress)
+                .then(function(teirs){
+                    $scope.teirs = teirs;
+                }).catch(function(err){
+                    console.error(err);
+                });
+            },5000);
             
             $scope.openBidPanel = function(ev) {
                 $mdDialog.show({
@@ -23,7 +28,15 @@ function($mdDialog,$location,AuctionService,Web3Service) {
                     targetEvent: ev,
                     clickOutsideToClose:true,
                     fullscreen: true, // Only for -xs, -sm breakpoints.
-                    locals: {data:{auctionAddress:$scope.auctionAddress,max:$scope.max,highest:$scope.highest,teirs:$scope.teirs}}
+                    locals: {
+                        data:{
+                            auctionAddress:$scope.auctionAddress,
+                            max:$scope.max,
+                            highest:$scope.
+                            highest,
+                            teirs:$scope.teirs
+                        }
+                    }
                 }).then(function(amountInEther) {
                     $scope.placeBid(amountInEther);
                 }, function() {
@@ -69,20 +82,39 @@ function($mdDialog,$location,AuctionService,Web3Service) {
             };
             
             var getTouchingTeir = function(amountInWei) {
-                return 0;
+                var total = $scope.teirs.length;
+                var currentTeir = 0;
+                
+                for(var i = 0; i < total; i++){
+                    currentTeir = $scope.teirs[i].toNumber();
+                    if(amountInWei >= currentTeir){
+                        console.log('touching teir: ' + currentTeir);
+                        return currentTeir;
+                    }
+                }
+                
+                return currentTeir;
             };
 
             $scope.placeBid = function(amountInEther){
                 var bidInWei = web3.toWei(amountInEther,'ether');
                 var touchingTeir = getTouchingTeir(bidInWei);
+                console.log(bidInWei,touchingTeir);
                 
                 Web3Service.getCurrentAccount()
                 .then(function(account){
-                    return AuctionService.placeBid($scope.auctionAddress,account,bidInWei,touchingTeir);
+                    return AuctionService.placeBid(
+                        $scope.auctionAddress,
+                        account,
+                        bidInWei,
+                        touchingTeir
+                    );
                 }).then(function(txHash){
+                    $scope.waiting = true;
                     return Web3Service.getTransactionReceipt(txHash);
                 }).then(function(receipt){
                     console.log(receipt);
+                    $scope.waiting = false;
                 }).catch(function(err){
                     console.error(err);
                 });

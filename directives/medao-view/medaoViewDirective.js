@@ -94,14 +94,7 @@ function($q,$location,$mdDialog,Web3Service,MeDaoRegistry,MeDaoService,TokenServ
                 }).catch(function(err){
                     console.error(err);
                 });
-                
-                AuctionService.getTeirs($scope.platform.auction.address)
-                .then(function(teirs){
-                    $scope.platform.auction.teirs = teirs;
-                }).catch(function(err){
-                    console.error(err);
-                });
-            },1000);
+            }, 1000);
         
         }).catch(function(err){
             console.error(err);
