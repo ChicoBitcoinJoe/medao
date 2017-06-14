@@ -3,8 +3,10 @@
 ### TO DO
 
 - On setting Work Hours, Next Auction timer does not set properly (stays at 0s)
+- on setting work hours gives no indication it was successful
 - place bid button should display the ... animation while waiting for tx receipt
-
+- Next Auction timer seconds are based on real time seconds but should update on a per block basis with block.timestamp instead of Date.now()
+- On starting an auction there is no indicator that it starts and the button is not disabled and no indicator it completes
 
 ### Notes
 

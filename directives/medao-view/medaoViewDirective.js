@@ -21,12 +21,13 @@ function($q,$location,$mdDialog,Web3Service,MeDaoRegistry,MeDaoService,TokenServ
             medao: {
                 address: null,
                 owner: $scope.account,
-                cooldown: null
+                cooldown: null,
+                burned: null
             },
             token: {
                 address: null,
                 name: null,
-                supply: null
+                supply: null,
             },
             auction: {
                 address: null,
@@ -52,7 +53,8 @@ function($q,$location,$mdDialog,Web3Service,MeDaoRegistry,MeDaoService,TokenServ
                 MeDaoService.getAuctionAddress($scope.platform.medao.address),
                 MeDaoService.getAuctionTimestamp($scope.platform.medao.address),
                 MeDaoService.getWeeklyAuctionReward($scope.platform.medao.address),
-                MeDaoService.getCooldownTimestamp($scope.platform.medao.address)
+                MeDaoService.getCooldownTimestamp($scope.platform.medao.address),
+                MeDaoService.getProofOfWork($scope.platform.medao.address)
             ]);
         }).then(function(promises){
             $scope.platform.token.address = promises[0];
@@ -60,6 +62,7 @@ function($q,$location,$mdDialog,Web3Service,MeDaoRegistry,MeDaoService,TokenServ
             $scope.timer.seconds = promises[2];
             $scope.platform.auction.reward = promises[3].toNumber();
             $scope.platform.medao.cooldown = promises[4].toNumber();
+            $scope.platform.medao.burned = promises[5].toNumber() / 3600;
             
             var now = Math.floor(Date.now() / 1000);
             var auctionTimerInSeconds = $scope.timer.seconds - now;
@@ -261,7 +264,7 @@ function($q,$location,$mdDialog,Web3Service,MeDaoRegistry,MeDaoService,TokenServ
                     return $q.all([
                         MeDaoService.getWeeklyAuctionReward($scope.platform.medao.address),
                         MeDaoService.getAuctionTimestamp($scope.platform.medao.address),
-                        MeDaoService.getCooldownTimestamp($scope.platform.medao.address),
+                        MeDaoService.getCooldownTimestamp($scope.platform.medao.address)
                     ]);
                 }).then(function(promises){
                     $scope.platform.auction.reward = promises[0].toNumber();
