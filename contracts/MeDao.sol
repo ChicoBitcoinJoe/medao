@@ -152,12 +152,13 @@ contract OngoingAuction is Owned {
         if (!bids[bid_id].owner.send(bids[bid_id].value)) throw;
     }
     
-    function startAuction () onlyOwner {
+    function startAuction (address deposit_address) onlyOwner returns (uint) {
         uint winning_bid_id = acceptHighestBid();
-        address winner = bids[winning_bid_id].owner;
         uint bidValue = bids[winning_bid_id].value;
         
-        MeDao(owner).declareAuctionWinner(winner,bidValue);
+        deposit_address.transfer(bidValue);
+        
+        return winning_bid_id;
     }
     
     function getBids (address bidder) constant returns (uint[]) {
@@ -175,10 +176,18 @@ contract OngoingAuction is Owned {
         uint current_teir = teirs[top_teir].value; 
         for (uint i = 0; i < total_teirs; i++) {
             all_teirs[i] = current_teir;
-            current_teir = teirs[top_teir].teir_below;
+            current_teir = teirs[current_teir].teir_below;
         }
         
         return all_teirs;
+    }
+    
+    function getBidOwner (uint bid_id) constant returns (address) {
+        return bids[bid_id].owner;
+    }
+    
+    function getBidValue (uint bid_id) constant returns (uint) {
+        return bids[bid_id].value;
     }
     
 ////////////////
@@ -376,15 +385,13 @@ contract MeDao is Tokenized {
     }
     
     function startAuction () isScheduled {
-        Auction.startAuction();
-    }
-    
-    function declareAuctionWinner (address winner, uint bidValue) payable 
-    onlyAuction {
-        withdraw_address.transfer(bidValue);
+        uint winning_bid_id = Auction.startAuction(withdraw_address);
+        address winner = Auction.getBidOwner(winning_bid_id);
+        uint winning_bid_value = Auction.getBidValue(winning_bid_id);
+        
         Token.generateTokens(winner, 1 hours);
         
-        AuctionWinner_event(winner,bidValue);
+        AuctionWinner_event(winner,winning_bid_value);
     }
     
     function submitProofOfWork (uint burnAmount, string metadataHash) 
