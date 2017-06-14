@@ -2,12 +2,25 @@
 
 ### TO DO
 
-- On setting Work Hours, Next Auction timer does not set properly (stays at 0s)
+Maximum Effort (needs gui and backend)
+
+- comment view
+
+Some Effort (some gui some backend)
+
+- Remove Bid
+- send button
+- receive button
+- pay button
+
+Minimum Effort (no gui some backend)
 
 - Next Auction timer seconds are based on real time seconds but should update on a per block basis with block.timestamp instead of Date.now()
+- Clicking on place bid too soon will cause it to load without teir info loaded
+
+
 
 ### Notes
-
             
 <h3 style="margin-bottom:0px;">Remove Bid</h3>
 <div>

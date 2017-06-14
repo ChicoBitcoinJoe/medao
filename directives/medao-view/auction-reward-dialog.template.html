@@ -7,7 +7,7 @@
         <h1>Set Weekly Auction Reward</h1>
         <p>In general, this should match how many hours you work per week. In the event you start to become over-scheduled set to a lower amount until you work back some of your time.</p>
         <h3>Set Work Hours (7 day cooldown)</h3>
-        <div ng-show=!onCooldown>
+        <div ng-show=!bid.onCooldown>
             <md-input-container class="md-block" md-no-float>
                 <label>Hours per week (0-40)</label>
                 <input type="number" ng-model="hours" min="0" max="40">

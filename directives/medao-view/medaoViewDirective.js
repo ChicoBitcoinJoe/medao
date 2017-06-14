@@ -201,31 +201,32 @@ function($q,$location,$mdDialog,Web3Service,MeDaoRegistry,MeDaoService,TokenServ
 
         function DialogController($scope, $mdDialog, timer) {
             
-            $scope.bid = {
+            $scope.set = {
                 hours: 0,
                 onCooldown: true,
-                seconds: timer.seconds
+                seconds: timer.seconds,
+                timerText: '...'
             };
             
-            var updateDialog = function(){
-                if($scope.bid.seconds > 0) {
-                    setTimerText();
-                    $scope.bid.onCooldown = true;
-                } else
-                    $scope.bid.onCooldown = false;
-                
-                return $scope.bid.onCooldown;
+            var timerInterval = setInterval(function(){
+                if(onCooldown()){
+                    updateCooldownTimer
+                    $scope.set.seconds--;
+                } else {
+                    $scope.set.onCooldown = false;
+                    clearInterval(timerInterval);
+                }
+            }, 1000);
+            
+            var onCooldown = function(){
+                if($scope.set.seconds > 0)
+                    return true;
+                else
+                   return false;
             }
             
-            var timerInterval = setInterval(function(){
-                if(updateDialog())
-                    $scope.bid.seconds--;
-                else
-                    clearInterval(timerInterval);
-            }, 1000)
-            
-            var setTimerText = function(){
-                var seconds = $scope.bid.seconds;
+            var updateCooldownTimer = function(){
+                var seconds = $scope.set.seconds;
                 
                 var days = Math.floor(seconds/(24*60*60));
                 seconds = seconds - days*(24*60*60);
@@ -237,22 +238,23 @@ function($q,$location,$mdDialog,Web3Service,MeDaoRegistry,MeDaoService,TokenServ
                 seconds = seconds - minutes*60;
                 ////console.log(minutes + ' minutes',seconds + ' seconds');
 
-                $scope.bid.timerText = '';
+                $scope.set.timerText = '';
 
                 if(days > 0)
-                    $scope.bid.timerText += days+'d ';
+                    $scope.set.timerText += days+'d ';
                 if(hours > 0 || days > 0)
-                    $scope.bid.timerText += hours+'h ';
+                    $scope.set.timerText += hours+'h ';
                 if(minutes > 0 || hours > 0 || days > 0)
-                    $scope.bid.timerText += minutes+'m ';
+                    $scope.set.timerText += minutes+'m ';
 
                 $scope.$apply(function(){
-                    $scope.bid.timerText += seconds+'s ';
+                    $scope.set.onCooldown = true;
+                    $scope.set.timerText += seconds+'s ';
                 });
             }
             
-            $scope.bid.validAuctionReward = function(){
-                if( $scope.bid.hours > 0 && $scope.bid.hours <= 40)
+            $scope.validAuctionReward = function(){
+                if( $scope.set.hours > 0 && $scope.set.hours <= 40)
                     return true;
                 return false;
             }

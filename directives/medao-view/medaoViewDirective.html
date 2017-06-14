@@ -6,9 +6,9 @@
             </div>
             <div class="" layout="column" layout-align="center center">
                 <h1>{{platform.token.name}}</h1>
-                <p>... owes you <b style="font-size:18px;">{{platform.account.hours}}</b> hours of work</p>
+                <p style="margin-top:0px;">... owes you <b style="font-size:18px;">{{platform.account.hours}}</b> hours of work</p>
             </div>
-            <div class ="" style="padding:16px 0px;" layout="row" layout-align="center center" flex>
+            <div class ="" style="padding:8px 0px;background-color:rgba(255,255,255,0.05)" layout="row" layout-align="center center" flex>
                 <md-button class="nav-button">send</md-button>
                 <span>|</span>
                 <md-button class="nav-button">receive</md-button>
@@ -50,7 +50,7 @@
                 </div>
                 <div class="" style="padding-bottom:16px;" layout="column" layout-align="center center" flex>
                     <h4 style="margin-bottom:0px;">Salary</h4>
-                    <p style="margin:0px;">(estimated)</p>
+                    <p style="margin:0px;">estimated</p>
                     <h2>{{platform.auction.highestBid*40*52 | round:2}} eth</h2>
                 </div>
             </div>
