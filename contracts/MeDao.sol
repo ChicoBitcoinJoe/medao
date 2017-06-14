@@ -156,9 +156,9 @@ contract OngoingAuction is Owned {
         if(top_teir == 0) throw;
         
         uint winning_bid_id = teirs[top_teir].front_of_line_id;
-        bids[winning_bid_id].accepted = true;
         removeBid_internal(winning_bid_id);
-   
+        bids[winning_bid_id].accepted = true;
+        
         uint bidValue = bids[winning_bid_id].value;
         deposit_address.transfer(bidValue);
         
@@ -407,7 +407,7 @@ contract MeDao is Tokenized {
         if(reward > 40 hours || reward == 0) throw;
         
         weekly_auction_reward = reward;
-        auction_period = 5 minutes; //set to 5 minutes for testing normally use:
+        auction_period = 5 minutes; //set to 5 minutes for testing. Normally use
                                     //7 days / auction_reward;
         scheduled_auction_timestamp = now + auction_period;
         
@@ -430,12 +430,6 @@ contract MeDao is Tokenized {
             scheduled_auction_timestamp += auction_period;
         else
             scheduled_auction_timestamp = now + auction_period;
-        
-        _;
-    }
-    
-    modifier onlyAuction () {
-        if (msg.sender != address(Auction)) throw;
         
         _;
     }
