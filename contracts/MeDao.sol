@@ -152,10 +152,14 @@ contract OngoingAuction is Owned {
         if (!bids[bid_id].owner.send(bids[bid_id].value)) throw;
     }
     
-    function startAuction (address deposit_address) onlyOwner returns (uint) {
-        uint winning_bid_id = acceptHighestBid();
-        uint bidValue = bids[winning_bid_id].value;
+    function acceptHighestBid (address deposit_address) onlyOwner returns (uint) {
+        if(top_teir == 0) throw;
         
+        uint winning_bid_id = teirs[top_teir].front_of_line_id;
+        bids[winning_bid_id].accepted = true;
+        removeBid_internal(winning_bid_id);
+   
+        uint bidValue = bids[winning_bid_id].value;
         deposit_address.transfer(bidValue);
         
         return winning_bid_id;
@@ -193,16 +197,6 @@ contract OngoingAuction is Owned {
 ////////////////
 // Internal Functions
 ////////////////
-
-    function acceptHighestBid () internal returns (uint) {
-        if(top_teir == 0) throw;
-        
-        uint highest_bid_id = teirs[top_teir].front_of_line_id;
-        bids[highest_bid_id].accepted = true;
-        removeBid_internal(highest_bid_id);
-        
-        return highest_bid_id;
-    }
     
     function addNewTeir_internal (uint touching) internal {
         uint value = msg.value;
@@ -385,7 +379,7 @@ contract MeDao is Tokenized {
     }
     
     function startAuction () isScheduled {
-        uint winning_bid_id = Auction.startAuction(withdraw_address);
+        uint winning_bid_id = Auction.acceptHighestBid(withdraw_address);
         address winner = Auction.getBidOwner(winning_bid_id);
         uint winning_bid_value = Auction.getBidValue(winning_bid_id);
         
