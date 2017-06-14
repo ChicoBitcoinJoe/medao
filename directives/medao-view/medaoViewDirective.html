@@ -1,57 +1,71 @@
-<div id="MedaoView" layout="column" layout-fill>
-    <div layout="column" layout-align="top left">
-        <h3 class="cursor" style="margin-left:16px;" ng-click="goto('/home')">MeDao</h3>
-    </div>
-   <div layout="column" layout-align="center center">
-        <h1>{{platform.token.name}}</h1>
-        <p>... owes you <b style="font-size:18px;">{{platform.account.hours}}</b> hours of work</p>
-    </div>
-    <div layout="row" flex>
-        <div layout="column" layout-align="center center" flex>
-            <h3>Next Auction</h3>
-            <h2 style="margin:6px 8px;">{{timer.text}}</h2>
-            <md-button class="nav-button md-raised md-primary" ng-disabled="platform.auction.reward == 0 || timer.seconds > 0" ng-click="startAuction()">start</md-button>
-        </div>
-        <div layout="column" layout-align="center center" flex>
-            <h3>Highest Bid</h3>
-            <h2 style="margin:6px 8px;">{{platform.auction.highestBid}} eth</h2>
-            <placebid-button 
-                auction-address="platform.auction.address" 
-                max="platform.account.ether.toNumber()"
-                highest="platform.auction.highestBid"
-                teirs="platform.auction.teirs">
-            </placebid-button>
-        </div>
-    </div>
-    <div layout="row" flex>
-        <div layout="column" layout-align="center center" flex>
-            <h3 style="margin-bottom:0px;">Proof of Work</h3>
-            <p style="margin:0px;">all time</p>
-            <h2>{{platform.medao.burned}} hours</h2>
-        </div>
-        <div layout="column" layout-align="center center" flex>
-            <h3 style="margin-bottom:0px;">Work Hours</h3>
-            <p style="margin:0px;">next week</p>
-            <div layout="row" style="position:relative;" layout-align="center center">
-                <div ng-show="isOwner" style="position:absolute; right: -44px;">
-                    <md-button class="md-icon-button md-primary" ng-click="openAuctionRewardPanel($event)">
-                        <md-icon style="color:rgba(255,255,255,0.87)" aria-label="set work hours" md-svg-src="libs/fonts/ic_mode_edit_white_24px.svg"></md-icon>
-                    </md-button>
-                </div>
-                <h2 layout="row">
-                    {{platform.auction.reward}} hours
-                </h2>
+<div style="overflow:hidden" layout="column" layout-fill>
+    <div style="overflow:auto">
+        <div id="MedaoView" layout="column" layout-fill>
+            <div class ="highlight cursor" ng-click="goto('/home')" layout="column" layout-align="top left">
+                <h3 style="margin-left:16px;">MeDao</h3>
             </div>
-        </div>
-    </div>
-    <div layout="row" flex>
-        <div layout="column" layout-align="center center" flex>
-            <h3>Time Owed</h3>
-            <h2 style="margin:6px 8px;">{{platform.token.supply}} hours</h2>
-        </div>
-        <div layout="column" layout-align="center center" flex>
-            <h3>Salary Est.</h3>
-            <h2 style="margin:6px 8px;">{{platform.auction.highestBid*40*52}} eth</h2>
+            <div class="highlight" layout="column" layout-align="center center">
+                <h1>{{platform.token.name}}</h1>
+                <p>... owes you <b style="font-size:18px;">{{platform.account.hours}}</b> hours of work</p>
+            </div>
+            <div class ="highlight" style="padding-bottom:16px;" layout="row" layout-align="center center" flex>
+                <md-button class="nav-button">send</md-button>
+                <span>|</span>
+                <md-button class="nav-button">receive</md-button>
+                <span>|</span>
+                <md-button class="nav-button">pay</md-button>
+            </div>
+            <div layout="row" flex>
+                <div class="highlight" style="padding-bottom:16px;" layout="column" layout-align="center center" flex>
+                    <h4>Next Auction</h4>
+                    <h2 style="margin:0px;">{{timer.text}}</h2>
+                    <md-button class="nav-button md-raised md-primary" ng-disabled="platform.auction.reward == 0 || timer.seconds > 0 || waiting || platform.auction.highestBid == 0" ng-click="startAuction()">{{buttonText}}</md-button>
+                </div>
+                <div class="highlight" style="padding-bottom:16px;" layout="column" layout-align="center center" flex>
+                    <h4>Highest Bid</h4>
+                    <h2 style="margin:0px;">{{platform.auction.highestBid | round:2}} eth</h2>
+                    <placebid-button 
+                        auction-address="platform.auction.address" 
+                        max="platform.account.ether.toNumber()"
+                        highest="platform.auction.highestBid"
+                        teirs="platform.auction.teirs"
+                        disabled="!platform.auction.bidsLoaded">
+                    </placebid-button>
+                </div>
+            </div>
+            <div layout="row" flex>
+                <div class="highlight" style="padding-bottom:16px;" layout="column" layout-align="center center" flex>
+                    <h4 style="margin-bottom:0px;">Work Hours</h4>
+                    <p style="margin:0px;">next week</p>
+                    <div layout="row" style="position:relative;" layout-align="center center">
+                        <div ng-show="isOwner" style="position:absolute; right: -44px;">
+                            <md-button class="md-icon-button md-primary" ng-click="openAuctionRewardPanel($event)">
+                                <md-icon style="color:rgba(255,255,255,0.87)" aria-label="set work hours" md-svg-src="libs/fonts/ic_mode_edit_white_24px.svg"></md-icon>
+                            </md-button>
+                        </div>
+                        <h2 layout="row">
+                            {{platform.auction.reward}} hours
+                        </h2>
+                    </div>
+                </div>
+                <div class="highlight" style="padding-bottom:16px;" layout="column" layout-align="center center" flex>
+                    <h4 style="margin-bottom:0px;">Salary</h4>
+                    <p style="margin:0px;">(estimated)</p>
+                    <h2>{{platform.auction.highestBid*40*52 | round:2}} eth</h2>
+                </div>
+            </div>
+            <div layout="row" flex>
+                <div class="highlight" style="padding-bottom:16px;" layout="column" layout-align="center center" flex>
+                    <h4 style="margin-bottom:0px;">Proof of Work</h4>
+                    <p style="margin:0px;">all time</p>
+                    <h2>{{platform.medao.burned}} hours</h2>
+                </div>
+                <div class="highlight" style="padding-bottom:16px;" layout="column" layout-align="center center" flex>
+                    <h4 style="margin-bottom:0px;">Time Owed</h4>
+                    <p style="margin:0px;">&nbsp</p>
+                    <h2>{{platform.token.supply}} hours</h2>
+                </div>
+            </div>
         </div>
     </div>
 </div>

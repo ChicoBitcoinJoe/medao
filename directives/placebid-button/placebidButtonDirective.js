@@ -5,7 +5,8 @@ function($mdDialog,$location,AuctionService,Web3Service) {
 		scope: {
             auctionAddress: '=',
             max: '=',
-            highest: '='
+            highest: '=',
+            disabled: '='
 		},
 		replace: true,
 		templateUrl: 'directives/placebid-button/placebidButtonDirective.html',
@@ -16,7 +17,6 @@ function($mdDialog,$location,AuctionService,Web3Service) {
             $scope.thinking = 0;
             
             setInterval(function(){
-                console.log($scope.auctionAddress);
                 AuctionService.getTeirs($scope.auctionAddress)
                 .then(function(teirs){
                     $scope.teirs = teirs;

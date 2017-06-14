@@ -127,10 +127,9 @@ function ($q) {
             
             MeDaoInstance.total_proof_of_work(
             function(err, totalPOW){
-                if(!err) {
-                    console.log(totalPOW);
+                if(!err)
                     deferred.resolve(totalPOW);
-                } else 
+                else 
                     deferred.reject(err);
             });
             

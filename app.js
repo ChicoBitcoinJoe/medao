@@ -28,3 +28,12 @@ MeDao.filter('fromWei', [function() {
         return web3.fromWei(value,convertTo).toNumber();
     };
 }]);
+
+MeDao.filter('round', [function() {
+    return function(val,decimals) {
+        if(val == null)
+            return 0;
+        
+        return val.toFixed(decimals);
+    };
+}]);

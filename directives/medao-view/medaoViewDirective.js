@@ -10,7 +10,10 @@ function($q,$location,$mdDialog,Web3Service,MeDaoRegistry,MeDaoService,TokenServ
         console.log('Loading MeDao belonging to: ' + $scope.account);
 
     //State
-                
+        $scope.buttonText = 'start';
+        $scope.waiting = false;
+        $scope.thinking = 0;
+        
         $scope.platform = {
             account: {
                 address: null,
@@ -32,14 +35,15 @@ function($q,$location,$mdDialog,Web3Service,MeDaoRegistry,MeDaoService,TokenServ
             auction: {
                 address: null,
                 reward: null,
-                highestBid: null
+                timestamp: null,
+                highestBid: null,
+                bidsLoaded: false
             }
         };
         
         $scope.timer = {
             now: Math.floor(Date.now() / 1000),
             seconds: null,
-            alarm: false,
             text: '...'
         };
         
@@ -59,15 +63,13 @@ function($q,$location,$mdDialog,Web3Service,MeDaoRegistry,MeDaoService,TokenServ
         }).then(function(promises){
             $scope.platform.token.address = promises[0];
             $scope.platform.auction.address = promises[1];
-            $scope.timer.seconds = promises[2];
+            $scope.platform.auction.timestamp = promises[2].toNumber();
             $scope.platform.auction.reward = promises[3].toNumber();
             $scope.platform.medao.cooldown = promises[4].toNumber();
             $scope.platform.medao.burned = promises[5].toNumber() / 3600;
             
-            var now = Math.floor(Date.now() / 1000);
-            var auctionTimerInSeconds = $scope.timer.seconds - now;
-            setTimer(auctionTimerInSeconds);
-            $scope.cooldownInSeconds = $scope.platform.medao.cooldown - now;
+            setTimer($scope.platform.auction.timestamp);
+            $scope.cooldownInSeconds = $scope.platform.medao.cooldown - $scope.timer.now;
             
             TokenService.getName($scope.platform.token.address)
             .then(function(tokenName){
@@ -76,24 +78,38 @@ function($q,$location,$mdDialog,Web3Service,MeDaoRegistry,MeDaoService,TokenServ
                 console.error(err);
             });
             
-            TokenService.getCurrentSupply($scope.platform.token.address)
-            .then(function(tokenSupply){
-                $scope.platform.token.supply = tokenSupply.toNumber() / 3600;
-            }).catch(function(err){
-                console.error(err);
-            });
-            
-            TokenService.getBalanceOf($scope.platform.token.address, $scope.account)
-            .then(function(balance){
-                $scope.platform.account.hours = balance.toNumber() / 3600;
-            }).catch(function(err){
-                console.error(err);
-            });
-            
             setInterval(function(){
+                TokenService.getCurrentSupply($scope.platform.token.address)
+                .then(function(tokenSupply){
+                    $scope.platform.token.supply = tokenSupply.toNumber() / 3600;
+                }).catch(function(err){
+                    console.error(err);
+                });
+
                 AuctionService.getHighestBid($scope.platform.auction.address)
                 .then(function(highestBid){
+                    $scope.platform.auction.bidsLoaded = true;
                     $scope.platform.auction.highestBid = web3.fromWei(highestBid,'ether').toNumber();
+                }).catch(function(err){
+                    console.error(err);
+                });
+                
+                Web3Service.getCurrentAccount()
+                .then(function(currentAccount){
+                    $scope.platform.account.address = currentAccount;
+
+                    if($scope.platform.account.address == $scope.platform.medao.owner){
+                        $scope.isOwner = true;
+                    }
+
+                    return $q.all([
+                        Web3Service.getEtherBalance(currentAccount),
+                        TokenService.getBalanceOf($scope.platform.token.address, currentAccount)
+                    ]);
+                }).then(function(promises){
+                    $scope.platform.account.wei = promises[0];
+                    $scope.platform.account.hours = promises[1].toNumber() / 3600;
+                    $scope.platform.account.ether = web3.fromWei($scope.platform.account.wei,'ether');
                 }).catch(function(err){
                     console.error(err);
                 });
@@ -102,32 +118,19 @@ function($q,$location,$mdDialog,Web3Service,MeDaoRegistry,MeDaoService,TokenServ
         }).catch(function(err){
             console.error(err);
         });
-        
-        Web3Service.getCurrentAccount()
-        .then(function(currentAccount){
-            $scope.platform.account.address = currentAccount;
-
-            if($scope.platform.account.address == $scope.platform.medao.owner){
-                $scope.isOwner = true;
-            }
+                
+        var setTimer = function(target){
+            var now = Math.floor(Date.now() / 1000);
+            $scope.timer.seconds = target - now;
+            console.log('New Timer Set for ' + $scope.timer.seconds + ' seconds');
             
-            return Web3Service.getEtherBalance(currentAccount);
-        }).then(function(etherBalanceInWei){
-            $scope.platform.account.wei = etherBalanceInWei;
-            $scope.platform.account.ether = web3.fromWei(etherBalanceInWei,'ether');
-        }).catch(function(err){
-            console.error(err);
-        });
-                
-        var setTimer = function(seconds){
-            if(seconds > 0)
-                $scope.timer.seconds = seconds;
-            else
-                $scope.timer.seconds = 1;
-                
             clearInterval($scope.timerInterval);
             $scope.timerInterval = setInterval(function(){
                 $scope.timer.seconds--;
+                
+                if($scope.timer.seconds < 0)
+                    $scope.timer.seconds = 0;
+                
                 var seconds = $scope.timer.seconds;
                 var days = Math.floor(seconds/(24*60*60));
                 seconds = seconds - days*(24*60*60);
@@ -139,7 +142,7 @@ function($q,$location,$mdDialog,Web3Service,MeDaoRegistry,MeDaoService,TokenServ
                 seconds = seconds - minutes*60;
                 ////console.log(minutes + ' minutes',seconds + ' seconds');
 
-                $scope.timer.text = '';
+                $scope.timer.text = '~ ';
 
                 if(days > 0)
                     $scope.timer.text += days+'d ';
@@ -165,6 +168,21 @@ function($q,$location,$mdDialog,Web3Service,MeDaoRegistry,MeDaoService,TokenServ
             $location.path(path);
         };
         
+        $scope.startThinking = function() {
+            $scope.thinking++;
+            $scope.buttonText = '.'
+            $scope.interval = setInterval(function(){
+                $scope.$apply(function(){
+                    $scope.thinking++;
+                    $scope.buttonText = $scope.buttonText + '.';
+                    if($scope.thinking == 6) {
+                        $scope.buttonText = '.'
+                        $scope.thinking = 1;
+                    }
+                });
+            }, 1000);
+        }
+        
         $scope.openAuctionRewardPanel = function(ev) {
             $mdDialog.show({
                 controller: DialogController,
@@ -183,29 +201,31 @@ function($q,$location,$mdDialog,Web3Service,MeDaoRegistry,MeDaoService,TokenServ
 
         function DialogController($scope, $mdDialog, timer) {
             
-            $scope.hours = 0;
-            $scope.onCooldown = true;
-            $scope.seconds = timer.seconds;
+            $scope.bid = {
+                hours: 0,
+                onCooldown: true,
+                seconds: timer.seconds
+            };
             
             var updateDialog = function(){
-                if($scope.seconds > 0) {
+                if($scope.bid.seconds > 0) {
                     setTimerText();
-                    $scope.onCooldown = true;
+                    $scope.bid.onCooldown = true;
                 } else
-                    $scope.onCooldown = false;
+                    $scope.bid.onCooldown = false;
                 
-                return $scope.onCooldown;
+                return $scope.bid.onCooldown;
             }
             
             var timerInterval = setInterval(function(){
                 if(updateDialog())
-                    $scope.seconds--;
+                    $scope.bid.seconds--;
                 else
                     clearInterval(timerInterval);
             }, 1000)
             
             var setTimerText = function(){
-                var seconds = $scope.seconds;
+                var seconds = $scope.bid.seconds;
                 
                 var days = Math.floor(seconds/(24*60*60));
                 seconds = seconds - days*(24*60*60);
@@ -217,22 +237,22 @@ function($q,$location,$mdDialog,Web3Service,MeDaoRegistry,MeDaoService,TokenServ
                 seconds = seconds - minutes*60;
                 ////console.log(minutes + ' minutes',seconds + ' seconds');
 
-                $scope.timerText = '';
+                $scope.bid.timerText = '';
 
                 if(days > 0)
-                    $scope.timerText += days+'d ';
+                    $scope.bid.timerText += days+'d ';
                 if(hours > 0 || days > 0)
-                    $scope.timerText += hours+'h ';
+                    $scope.bid.timerText += hours+'h ';
                 if(minutes > 0 || hours > 0 || days > 0)
-                    $scope.timerText += minutes+'m ';
+                    $scope.bid.timerText += minutes+'m ';
 
                 $scope.$apply(function(){
-                    $scope.timerText += seconds+'s ';
+                    $scope.bid.timerText += seconds+'s ';
                 });
             }
             
-            $scope.validAuctionReward = function(){
-                if( $scope.hours > 0 && $scope.hours <= 40)
+            $scope.bid.validAuctionReward = function(){
+                if( $scope.bid.hours > 0 && $scope.bid.hours <= 40)
                     return true;
                 return false;
             }
@@ -268,41 +288,39 @@ function($q,$location,$mdDialog,Web3Service,MeDaoRegistry,MeDaoService,TokenServ
                     ]);
                 }).then(function(promises){
                     $scope.platform.auction.reward = promises[0].toNumber();
-                    $scope.timer.seconds = promises[1].toNumber();
+                    $scope.platform.auction.timestamp = array[1].toNumber();
                     $scope.platform.medao.cooldown = promises[2].toNumber();
             
+                    setTimer($scope.platform.auction.timestamp);
                     $scope.cooldownInSeconds = $scope.platform.medao.cooldown - Math.floor(Date.now() / 1000);
-
-                    $scope.timer.now = Math.floor(Date.now() / 1000),
-                    $scope.timer.alarm = false;
-
-                    if($scope.timer.now < $scope.timer.seconds)
-                        setTimer();
-                    else
-                        $scope.timer.alarm = true;
-
                 }).catch(function(err){
                     console.error(err);
                 });
             }
-            
         };
 
         $scope.startAuction = function(){
             console.log($scope.platform.medao.address);
             MeDaoService.startAuction($scope.platform.medao.address,$scope.platform.account.address)
             .then(function(txHash){
-                  return Web3Service.getTransactionReceipt(txHash);
+                $scope.startThinking();
+                $scope.waiting = true;
+                
+                return Web3Service.getTransactionReceipt(txHash);
             }).then(function(receipt){
+                clearInterval($scope.interval);
+                $scope.buttonText = 'place bid';
+                $scope.waiting = false;
+                
                 return $q.all([
-                    MeDaoService.getHighestBid($scope.platform.medao.address),
+                    AuctionService.getHighestBid($scope.platform.medao.address),
                     MeDaoService.getAuctionTimestamp($scope.platform.medao.address)
                 ]);
             }).then(function(promises){
                 $scope.platform.auction.highestBid = web3.fromWei(promises[0],'ether').toNumber();
-                $scope.timer.seconds = array[1].toNumber();
-                var auctionTimerInSeconds = $scope.timer.seconds - now;
-                setTimer(auctionTimerInSeconds);
+                $scope.platform.auction.timestamp = promises[1].toNumber();
+                
+                setTimer($scope.platform.auction.timestamp);
             }).catch(function(err){
                 console.error(err);
             });
