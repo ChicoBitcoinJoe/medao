@@ -2,7 +2,7 @@ MeDao.service('MeDaoRegistry', ['$q','Web3Service',
 function ($q,Web3Service) {
     console.log('Loading MeDao Register');
     
-    var MeDaoRegistryContractAddress = '0x9F82AB08baA7fdc0cB29d0B7C9c6567E7586e5eB'; //TestNet
+    var MeDaoRegistryContractAddress = '0x6d2a3b7a378C55A10014d6E8651C97a788dE4C15'; //TestNet
     var MeDaoRegistryContract = web3.eth.contract(
         [{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"medaos","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"total_medaos","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"founders","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"name","type":"string"}],"name":"register","outputs":[],"payable":false,"type":"function"},{"inputs":[{"name":"Token","type":"address"}],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"founder","type":"address"},{"indexed":false,"name":"medao","type":"address"}],"name":"NewMeDao_event","type":"event"}]
     );

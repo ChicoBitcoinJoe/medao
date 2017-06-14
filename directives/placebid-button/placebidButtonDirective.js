@@ -12,6 +12,7 @@ function($mdDialog,$location,AuctionService,Web3Service) {
 		controller: function($scope){
             
             setInterval(function(){
+                console.log($scope.auctionAddress);
                 AuctionService.getTeirs($scope.auctionAddress)
                 .then(function(teirs){
                     $scope.teirs = teirs;

@@ -10,7 +10,7 @@
         <div layout="column" layout-align="center center" flex>
             <h3>Next Auction</h3>
             <h2 style="margin:6px 8px;">{{timer.text}}</h2>
-            <md-button class="nav-button md-raised md-primary" ng-disabled="platform.auction.reward == 0" ng-click="startAuction()">Start</md-button>
+            <md-button class="nav-button md-raised md-primary" ng-disabled="platform.auction.reward == 0 || timer.seconds > 0" ng-click="startAuction()">start</md-button>
         </div>
         <div layout="column" layout-align="center center" flex>
             <h3>Highest Bid</h3>
