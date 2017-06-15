@@ -6,13 +6,9 @@ MeDao.config(function ($routeProvider) {
         templateUrl: 'views/home/homeView.html',
         controller: 'HomeViewController'
     }).
-    when('/medao/:medaoAddress', {
+    when('/:account/medao', {
         templateUrl: 'views/medao/medaoView.html',
         controller: 'MeDaoViewController'
-    }).
-    when('/empty', {
-        templateUrl: 'views/empty/emptyView.html',
-        controller: 'EmptyViewController'
     }).
 	otherwise({
       redirectTo: '/home'
@@ -25,15 +21,19 @@ MeDao.run(function() {
 
 MeDao.filter('fromWei', [function() {
     return function(value, convertTo) {
+        console.log(value,convertTo);
+        if(value == null)
+            return 0;
+        
         return web3.fromWei(value,convertTo).toNumber();
     };
 }]);
 
 MeDao.filter('round', [function() {
-    return function(val,decimals) {
-        if(val == null)
+    return function(value,decimals) {
+        if(value == null)
             return 0;
         
-        return val.toFixed(decimals);
+        return value.toFixed(decimals);
     };
 }]);

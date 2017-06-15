@@ -1,25 +1,101 @@
-<div style="position:fixed; top:5px; left: 5px;">
-    <md-button class="nav-button black-background" ng-show="current == 'comments' && screenIsSmall" ng-click="showView('medao')">
-        <md-icon style="margin:3px;" aria-label="back" md-svg-src="libs/fonts/ic_keyboard_arrow_left_white_24px.svg"></md-icon>
-        &nbspback&nbsp&nbsp
-    </md-button>
-</div>
-<div style="position:fixed; top:5px; right: 5px;">
-    <md-button hide-gt-lg class="nav-button black-background" ng-show="current == 'medao' && screenIsSmall" ng-click="showView('comments')">
-        &nbspcomments&nbsp
-        <md-icon style="margin:3px;" aria-label="back" md-svg-src="libs/fonts/ic_keyboard_arrow_right_white_24px.svg"></md-icon>
-    </md-button>
-</div>
-<div style="width:100%; height:100vh;">
-    <div layout="row" layout-fill>
-        
-        <div ng-show="current == 'medao' || screenIsBig" layout="column" layout-fill flex flex-gt-sm="50">
-            <medao-view account="account"></medao-view>
+<div class="black-background" style="overflow:auto;" flex>
+    <div class="black-background" style="position:fixed;top:0px; height:140px; width:100%; z-index:100;">
+        <h3 class="cursor" style="margin-left:16px;" ng-click="goto('/home')">MeDao</h3>
+        <div layout="row" layout-align="center center" flex>
+            <h1>{{platform.token.name}}</h1>
         </div>
-        
-        <div ng-show="current == 'comments' || screenIsBig" layout="column" layout-fill flex flex-gt-sm="50">
-            <comment-view medao-address="platform.medao.address"></comment-view>
+    </div>
+    <div id="spacer" style="height:140px"></div>
+    <div class="lighter-background" layout="row" layout-align="center center" flex>
+        <md-button class="nav-button">send</md-button>
+        <span>|</span>
+        <md-button class="nav-button">pay</md-button>
+        <span>|</span>
+        <md-button class="nav-button">receive</md-button>
+    </div>
+    <div>
+        <p layout="row" layout-align="space-around start" flex>
+            <span layout="row" layout-align="center center" layout-padding>
+                <span><md-icon md-svg-src="libs/fonts/ic_attach_money_white_24px.svg"></md-icon></span>
+                <span style="padding:0px;">{{platform.account.weiBalance | fromWei:'ether' | round:2}} <span hide-xs>eth</span></span>
+            </span>
+            <span layout="row" layout-align="center center" layout-padding>
+                <span><md-icon md-svg-src="libs/fonts/ic_access_time_white_24px.svg"></md-icon></span>
+                <span style="padding:0px;">{{platform.account.secondsBalance / 3600 | round:0}} / {{platform.token.supply / 3600 | round:0}}h</span>
+            </span>
+            <span layout="row" layout-align="center center" layout-padding>
+                <span style="padding:0px;">{{platform.auction.reward}}<span hide-xs>h</span></span>
+                <span><md-icon md-svg-src="libs/fonts/ic_iso_white_24px.svg"></md-icon></span>
+                <span style="padding:0px;">0<span hide-xs>h</span></span>
+            </span>
+        </p>
+    </div>
+    <div>
+        <p layout="row" layout-align="space-around center" flex>
+            <span layout="row" layout-align="center center" layout-padding>
+                <span><md-icon md-svg-src="libs/fonts/ic_whatshot_white_24px.svg"></md-icon></span>
+                <span>{{platform.auction.highestBidInWei | fromWei:'ether' | round:2}} <span hide-xs>eth</span></span>
+            </span>
+            <span layout="row" layout-align="center center" layout-padding>
+                <span><md-icon md-svg-src="libs/fonts/ic_alarm_white_24px.svg"></md-icon></span>
+                <span>1h 6m 39s</span>
+            </span>
+            <span layout="row" layout-align="center center" layout-padding>
+                <span><md-icon md-svg-src="libs/fonts/ic_lock_white_24px.svg"></md-icon></span>
+                <span>0.55 <span hide-xs>eth</span> <span hide show-gt-sm> / 11 <span hide-xs>bids</span></span></span>
+            </span>
+        </p>
+    </div>
+    <div class="lighter-background" layout="row" layout-align="center center" flex>
+        <md-button class="nav-button">place bid</md-button>
+        <span>|</span>
+        <md-button class="nav-button" ng-disabled="true">start</md-button>
+        <span>|</span>
+        <md-button class="nav-button">remove bid</md-button>
+    </div>
+    <div ng-show="isOwner">
+        <div class="" layout="column" layout-align="center center">
+            <h3>Admin Options</h3>
         </div>
-        
+        <div class="lighter-background" layout="row" layout-xs="column" layout-align="center center" flex>
+            <div layout="row" flex>
+                <md-button class="nav-button" flex>weekly reward</md-button>
+                <md-button class="nav-button" flex>burn minimum</md-button>
+            </div>
+            <div layout="row" flex>
+                <md-button class="nav-button" flex>deposit address</md-button>
+                <md-button class="nav-button" flex>transfer ownership</md-button>
+            </div>
+        </div>
+    </div>
+    <div layout="column" layout-padding>
+        <table>
+            <tr>
+                <th>Bid</th>
+                <th>&nbsp</th>
+                <th>Total</th>
+            </tr>
+            <tr>
+                <td>0.050 eth</td>
+                <td>x7</td>
+                <td>0.040 eth</td>
+            </tr>
+            <tr>
+                <td>0.025 eth</td>
+                <td>x2</td>
+                <td>0.050 eth</td>
+            </tr>
+            <tr>
+                <td>0.020 eth</td>
+                <td>x4</td>
+                <td>0.080 eth</td>
+            </tr>
+            <tr>
+                <td>0.010 eth</td>
+                <td>x2</td>
+                <td>0.020 eth</td>
+            </tr>
+            
+        </table>
     </div>
 </div>

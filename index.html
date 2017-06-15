@@ -21,9 +21,9 @@
     <title>MeDao - Testnet Only</title>
     
 </head>
-<body ng-app="MeDao" layout="column">
+<body ng-app="MeDao" layout="row" layout-fill ng-cloak>
     
-    <div class="black-background" ng-view flex></div>
+    <div style="overflow:hidden" layout="column" ng-view flex></div>
     
     <!-- Angular + Material Libraries -->
     <script src="libs/angular-includes/angular-1.5.5.min.js"></script>
@@ -51,7 +51,6 @@
     <!-- Controllers  -->
     <script src="views/home/homeViewController.js"></script>
     <script src="views/medao/medaoViewController.js"></script>
-    <script src="views/empty/emptyViewController.js"></script>
     
     <!-- Directives  -->
     <script src="directives/medao-view/medaoViewDirective.js"></script>

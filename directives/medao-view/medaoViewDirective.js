@@ -114,7 +114,6 @@ function($q,$location,$mdDialog,Web3Service,MeDaoRegistry,MeDaoService,TokenServ
                     console.error(err);
                 });
             }, 1000);
-        
         }).catch(function(err){
             console.error(err);
         });
@@ -156,6 +155,7 @@ function($q,$location,$mdDialog,Web3Service,MeDaoRegistry,MeDaoService,TokenServ
                     $scope.timer.text += seconds+'s ';
                     if($scope.timer.seconds <= 0){
                         $scope.timer.alarm = true;
+                        $scope.timer.text = 'start';
                         clearInterval($scope.timerInterval);
                     }
                 });
