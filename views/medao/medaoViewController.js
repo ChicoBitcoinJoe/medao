@@ -25,6 +25,7 @@ function($scope,$q,$location,$mdMedia,Web3Service,MeDaoRegistry,MeDaoService,Tok
             address: null,
             reward: null,
             timestamp: null,
+            timer: null,
             highestBidInWei: null,
             bidsLoaded: false
         }
@@ -50,7 +51,11 @@ function($scope,$q,$location,$mdMedia,Web3Service,MeDaoRegistry,MeDaoService,Tok
         $scope.platform.auction.reward = promises[3].toNumber();
         $scope.platform.medao.cooldown = promises[4].toNumber();
         $scope.platform.medao.burned = promises[5].toNumber() / 3600;
-
+        
+        var now = Math.floor(Date.now() / 1000);
+        $scope.platform.auction.timer = $scope.platform.auction.timestamp - now;
+        console.log($scope.platform.auction.timer);
+        
         TokenService.getName($scope.platform.token.address)
         .then(function(tokenName){
             $scope.platform.token.name = tokenName;
@@ -79,6 +84,8 @@ function($scope,$q,$location,$mdMedia,Web3Service,MeDaoRegistry,MeDaoService,Tok
 
                 if($scope.platform.account.address == $scope.platform.medao.owner)
                     $scope.isOwner = true;
+                else
+                    $scope.isOwner = false;
 
                 return $q.all([
                     Web3Service.getEtherBalance(currentAccount),

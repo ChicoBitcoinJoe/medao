@@ -82,7 +82,7 @@ MeDao.service( 'Web3Service',['$q', function ($q) {
         },
         getBlock: function(blockNumber){
             var deferred = $q.defer();
-            var async_getBlock = web3.eth.getBlock(
+            var async_getBlock = web3.eth.getBlock(blockNumber,
             function(err,blockData){
                 if(!err){
                     deferred.resolve(blockData);
