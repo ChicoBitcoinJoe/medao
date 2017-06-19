@@ -17,7 +17,7 @@
         <div>
             <md-input-container class="md-block" style="border-bottom:1px solid rgba(255,255,255,0.67)">
                 <label>Amount in Ether</label>
-                <input ng-model="send.amountInEther">
+                <input type="number" ng-model="send.amountInEther">
             </md-input-container>
         </div>
         <div layout="row" flex>
@@ -35,7 +35,7 @@
         <div>
             <md-input-container class="md-block" style="border-bottom:1px solid rgba(255,255,255,0.67)">
                 <label>Amount in Seconds</label>
-                <input ng-model="send.amountInSeconds">
+                <input type="number" ng-model="send.amountInSeconds">
             </md-input-container>
             <div ng-show="send.amountInSeconds > 0">
                 <p>~ {{send.amountInSeconds / 3600 | decimals:2}} hours</p>

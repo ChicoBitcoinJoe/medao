@@ -17,11 +17,10 @@ Icons
 
 Functionality
 
-x send
-- pay
 - receive
 - remove bid
 - start
+- comments
 
 Admin
 

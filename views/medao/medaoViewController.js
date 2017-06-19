@@ -42,7 +42,6 @@ function($scope,$q,$location,$mdMedia,Web3Service,MeDaoService){
             MeDaoService.getAuctionTimestamp($scope.platform.medao.address),
             MeDaoService.getWeeklyAuctionReward($scope.platform.medao.address),
             MeDaoService.getCooldownTimestamp($scope.platform.medao.address),
-            MeDaoService.getTotalProofOfWork($scope.platform.medao.address)
         ]);
     }).then(function(promises){
         $scope.platform.token.address = promises[0];
@@ -50,7 +49,6 @@ function($scope,$q,$location,$mdMedia,Web3Service,MeDaoService){
         $scope.platform.auction.timestamp = promises[2].toNumber();
         $scope.platform.auction.reward = promises[3].toNumber();
         $scope.platform.medao.cooldown = promises[4].toNumber();
-        $scope.platform.medao.burned = promises[5].toNumber() / 3600;
         
         var now = Math.floor(Date.now() / 1000);
         $scope.platform.auction.timer = $scope.platform.auction.timestamp - now;
@@ -63,40 +61,8 @@ function($scope,$q,$location,$mdMedia,Web3Service,MeDaoService){
         });
 
         setInterval(function(){
-            MeDaoService.getHighestBid($scope.platform.auction.address)
-            .then(function(highestBid){
-                $scope.platform.auction.highestBidInWei = highestBid;
-            }).catch(function(err){
-                console.error(err);
-            });
-            
-            MeDaoService.getCurrentSupply($scope.platform.token.address)
-            .then(function(tokenSupply){
-                $scope.platform.token.supply = tokenSupply.toNumber();
-            }).catch(function(err){
-                console.error(err);
-            });
-            
-            Web3Service.getCurrentAccount()
-            .then(function(currentAccount){
-                $scope.platform.account.address = currentAccount;
-
-                if($scope.platform.account.address == $scope.platform.medao.owner)
-                    $scope.isOwner = true;
-                else
-                    $scope.isOwner = false;
-
-                return $q.all([
-                    Web3Service.getEtherBalance(currentAccount),
-                    MeDaoService.getBalanceOf($scope.platform.token.address, currentAccount)
-                ]);
-            }).then(function(promises){
-                $scope.platform.account.weiBalance = promises[0];
-                $scope.platform.account.secondsBalance = promises[1].toNumber();
-            }).catch(function(err){
-                console.error(err);
-            });
-        }, 1000);
+            refreshAll();
+        }, 2000);
 
     }).catch(function(err){
         console.error(err);
@@ -110,6 +76,47 @@ function($scope,$q,$location,$mdMedia,Web3Service,MeDaoService){
     
 //Internal
     
-    
+    var refreshAll = function(){
+        MeDaoService.getTotalProofOfWork($scope.platform.medao.address)
+        .then(function(proofOfWork){
+            $scope.platform.medao.burned = proofOfWork.toNumber() / 3600;
+        }).catch(function(err){
+            console.error(err);
+        });
+
+        MeDaoService.getHighestBid($scope.platform.auction.address)
+        .then(function(highestBid){
+            $scope.platform.auction.highestBidInWei = highestBid;
+        }).catch(function(err){
+            console.error(err);
+        });
+
+        MeDaoService.getCurrentSupply($scope.platform.token.address)
+        .then(function(tokenSupply){
+            $scope.platform.token.supply = tokenSupply.toNumber();
+        }).catch(function(err){
+            console.error(err);
+        });
+
+        Web3Service.getCurrentAccount()
+        .then(function(currentAccount){
+            $scope.platform.account.address = currentAccount;
+
+            if($scope.platform.account.address == $scope.platform.medao.owner)
+                $scope.isOwner = true;
+            else
+                $scope.isOwner = false;
+
+            return $q.all([
+                Web3Service.getEtherBalance(currentAccount),
+                MeDaoService.getBalanceOf($scope.platform.token.address, currentAccount)
+            ]);
+        }).then(function(promises){
+            $scope.platform.account.weiBalance = promises[0];
+            $scope.platform.account.secondsBalance = promises[1].toNumber();
+        }).catch(function(err){
+            console.error(err);
+        });
+    };
     
 }]);
