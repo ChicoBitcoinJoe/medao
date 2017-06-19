@@ -342,9 +342,9 @@ function ($q,Web3Service) {
         //Token
         getName: function(tokenAddress){
             var deferred = $q.defer();
-            var instance = web3.eth.contract(platform.token.abi).at(tokenAddress);
+            var tokenInstance = web3.eth.contract(platform.token.abi).at(tokenAddress);
             
-            instance.name(function(err, name) {
+            tokenInstance.name(function(err, name) {
                 if(err)
                     deferred.reject(err);
                 else
@@ -354,9 +354,9 @@ function ($q,Web3Service) {
         },
         getSymbol: function(tokenAddress){
             var deferred = $q.defer();
-            var instance = web3.eth.contract(platform.token.abi).at(tokenAddress);
+            var tokenInstance = web3.eth.contract(platform.token.abi).at(tokenAddress);
             
-            instance.symbol(function(err, symbol) {
+            tokenInstance.symbol(function(err, symbol) {
                 if(err)
                     deferred.reject(err);
                 else
@@ -366,9 +366,9 @@ function ($q,Web3Service) {
         },
         getCurrentSupply: function(tokenAddress){
             var deferred = $q.defer();
-            var instance = web3.eth.contract(platform.token.abi).at(tokenAddress);
+            var tokenInstance = web3.eth.contract(platform.token.abi).at(tokenAddress);
             
-            instance.totalSupply(function(err, supply) {
+            tokenInstance.totalSupply(function(err, supply) {
                 if(err)
                     deferred.reject(err);
                 else
@@ -378,9 +378,9 @@ function ($q,Web3Service) {
         },
         getBalanceOf: function(tokenAddress,owner){
             var deferred = $q.defer();
-            var instance = web3.eth.contract(platform.token.abi).at(tokenAddress);
+            var tokenInstance = web3.eth.contract(platform.token.abi).at(tokenAddress);
             
-            instance.balanceOf(owner, function(err, balance) {
+            tokenInstance.balanceOf(owner, function(err, balance) {
                 if(err)
                     deferred.reject(err);
                 else
@@ -390,9 +390,9 @@ function ($q,Web3Service) {
         },
         getController: function(tokenAddress) {
             var deferred = $q.defer();
-            var instance = web3.eth.contract(platform.token.abi).at(tokenAddress);
+            var tokenInstance = web3.eth.contract(platform.token.abi).at(tokenAddress);
             
-            instance.changeController(function(err, controller) {
+            tokenInstance.changeController(function(err, controller) {
                 if(err)
                     deferred.reject(err);
                 else
@@ -402,11 +402,11 @@ function ($q,Web3Service) {
         },
         changeController: function(tokenAddress,newController) {
             var deferred = $q.defer();
-            var instance = web3.eth.contract(platform.token.abi).at(tokenAddress);
+            var tokenInstance = web3.eth.contract(platform.token.abi).at(tokenAddress);
             
             Web3Service.getCurrentAccount()
             .then(function(account){
-                instance.changeController(newController, {from:account},
+                tokenInstance.changeController(newController, {from:account},
                 function(err, txHash) {
                     if(err)
                         deferred.reject(err);
@@ -418,16 +418,16 @@ function ($q,Web3Service) {
         },
         transfer: function(tokenAddress,to,amount) {
             var deferred = $q.defer();
-            var instance = web3.eth.contract(platform.token.abi).at(tokenAddress);
+            var tokenInstance = web3.eth.contract(platform.token.abi).at(tokenAddress);
             
             Web3Service.getCurrentAccount()
             .then(function(from){
-                instance.transfer(to, {from:from},
+                tokenInstance.transfer(to, amount, {from:from},
                 function(err, txHash) {
                     if(err)
                         deferred.reject(err);
                     else
-                        deferred.resolve(tx);
+                        deferred.resolve(txHash);
                 });
             });
             return deferred.promise;

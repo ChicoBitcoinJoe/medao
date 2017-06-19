@@ -1,0 +1,51 @@
+<div style="z-index:100 !important; height:100%;" layout="column" layout-padding>
+    <div style="position:absolute;top:-5px; right:-12px;">
+        <md-button class="md-icon-button" aria-label="back" ng-click="back()"><md-icon md-svg-src="libs/fonts/ic_close_white_24px.svg"></md-icon></md-button>
+    </div>
+    <h1>Send</h1>
+    <div layout="row" flex>
+            <md-button class="medao-btn" md-no-ink ng-click="send.type = 'time'" flex="50">time</md-button>
+            <md-button class="medao-btn" md-no-ink ng-click="send.type = 'ether'" flex="50">ether</md-button>
+        </div>
+    <div ng-show="send.type == 'ether'">
+        <div>
+            <md-input-container class="md-block" style="border-bottom:1px solid rgba(255,255,255,0.67)">
+                <label>Testnet Address</label>
+                <input ng-model="send.address">
+            </md-input-container>
+        </div>
+        <div>
+            <md-input-container class="md-block" style="border-bottom:1px solid rgba(255,255,255,0.67)">
+                <label>Amount in Ether</label>
+                <input ng-model="send.amountInEther">
+            </md-input-container>
+        </div>
+        <div layout="row" flex>
+            <md-button class="medao-btn" ng-click="maxEther()" flex="50">max</md-button>
+            <md-button class="medao-btn" ng-click="sendEther()" flex="50" ng-disabled="send.amountInEther == null || send.amountInEther == 0">send ether</md-button>
+        </div>
+    </div>
+    <div ng-show="send.type == 'time'">
+        <div>
+            <md-input-container class="md-block" style="border-bottom:1px solid rgba(255,255,255,0.67)">
+                <label>Testnet Address</label>
+                <input ng-model="send.address">
+            </md-input-container>
+        </div>
+        <div>
+            <md-input-container class="md-block" style="border-bottom:1px solid rgba(255,255,255,0.67)">
+                <label>Amount in Seconds</label>
+                <input ng-model="send.amountInSeconds">
+            </md-input-container>
+            <div ng-show="send.amountInSeconds > 0">
+                <p>~ {{send.amountInSeconds / 3600 | decimals:2}} hours</p>
+                <span> or </span>
+                <p>~ {{send.amountInSeconds / 60 | decimals:2}} minutes</p>
+            </div>
+        </div>
+        <div layout="row" flex>
+            <md-button class="medao-btn" ng-click="maxTime()" flex="50">max</md-button>
+            <md-button class="medao-btn" ng-click="sendTime()" flex="50" ng-disabled="send.amountInSeconds == null || send.amountInEther == 0">send time</md-button>
+        </div>
+    </div>
+</div>

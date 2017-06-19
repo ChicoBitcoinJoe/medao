@@ -2,6 +2,10 @@
 
 ### TO DO
 
+Header
+
+- Notifications
+
 Home View
 
 - yearly salary
@@ -13,7 +17,7 @@ Icons
 
 Functionality
 
-- send
+x send
 - pay
 - receive
 - remove bid

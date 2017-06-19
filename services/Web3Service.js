@@ -123,6 +123,22 @@ MeDao.service( 'Web3Service',['$q', function ($q) {
             });
             
             return deferred.promise;
+        },
+        sendEther: function(to,amountInWei){
+            var deferred = $q.defer();
+            
+            service.getCurrentAccount()
+            .then(function(from){
+                web3.eth.sendTransaction({from:from,to:to,value:amountInWei},
+                function(err,txHash){
+                    if(!err)
+                        deferred.resolve(txHash);
+                    else
+                        deferred.reject(err);
+                });
+            });
+            
+            return deferred.promise;
         }
 	};
 

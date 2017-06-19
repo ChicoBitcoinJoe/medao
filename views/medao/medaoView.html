@@ -10,7 +10,7 @@
     <div style="background-color: rgba(37,37,37,0.50);position:fixed;top:131px; height:3px; width:100%;z-index:10;"></div>
     <div id="spacer" style="height:140px"></div>
     <div class="lighter-background" layout="row" layout-align="center center" flex>
-        <md-button class="medao-btn">send</md-button>
+        <send-btn owner="platform.medao.owner"></send-btn>
         <span>|</span>
         <md-button class="medao-btn">pay</md-button>
         <span>|</span>
@@ -24,7 +24,7 @@
             </span>
             <span layout="row" layout-align="center center" layout-padding flex="33">
                 <span><md-icon md-svg-src="libs/fonts/ic_access_time_white_24px.svg"></md-icon></span>
-                <span style="padding:0px;">{{platform.account.secondsBalance / 3600 | decimals:0}}<span hide-xs>h</span></span>
+                <span style="padding:0px;">{{platform.account.secondsBalance / 3600 | decimals:2}}<span hide-xs>h</span></span>
             </span>
             <span layout="row" layout-align="center center" layout-padding flex="33">
                 <span style="padding:0px;">{{platform.token.supply / 3600 | decimals:0}}<span hide-xs>h</span></span>
