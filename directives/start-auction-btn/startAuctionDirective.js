@@ -1,5 +1,5 @@
-MeDao.directive('startAuctionBtn', ['$q','Web3Service','MeDaoRegistry','MeDaoService',
-function($q,Web3Service,MeDaoRegistry,MeDaoService) {
+MeDao.directive('startAuctionBtn', ['$q','Web3Service','MeDaoService',
+function($q,Web3Service,MeDaoService) {
 	return {
 		restrict: 'E',
 		scope: {
@@ -10,35 +10,41 @@ function($q,Web3Service,MeDaoRegistry,MeDaoService) {
 		controller: function($scope){
             console.log($scope.owner);
             
-            $scope.disabled = false;
+            $scope.disabled = true;
             
             $scope.promises = $q.all([
-                MeDaoRegistry.getMeDaoAddress($scope.owner),
+                MeDaoService.getMeDaoAddress($scope.owner),
                 Web3Service.getCurrentBlockNumber()
             ]);
             
             $scope.interval = setInterval(function(){
                 $scope.promises.then(function(promises){
-                $scope.medaoAddress = promises[0];
-                $scope.currentBlock = promises[1];
-                console.log($scope.medaoAddress,$scope.currentBlock);
-                    
-                return $q.all([
-                    Web3Service.getBlock($scope.currentBlock),
-                    MeDaoService.getAuctionTimestamp($scope.medaoAddress)
-                ]); 
-            }).then(function(promises){
-                var blockTimestamp = promises[0].timestamp;
-                var auctionTimestamp = promises[1].toNumber();
-                console.log(blockTimestamp,auctionTimestamp);
+                    $scope.medaoAddress = promises[0];
+                    $scope.currentBlock = promises[1];
+                    //console.log($scope.medaoAddress,$scope.currentBlock);
 
-                if(blockTimestamp > auctionTimestamp)
-                    $scope.disabled = false;
-                else
-                    $scope.disabled = true;
-            }).catch(function(err){
-                console.error(err);
-            });
+                    return $q.all([
+                        Web3Service.getBlock($scope.currentBlock),
+                        MeDaoService.getAuctionTimestamp($scope.medaoAddress),
+                        MeDaoService.getHighestBid($scope.medaoAddress),
+                    ]); 
+                }).then(function(promises){
+                    var blockTimestamp = promises[0].timestamp;
+                    var auctionTimestamp = promises[1].toNumber();
+                    var highestBid = promises[2].toNumber();
+                    //console.log(blockTimestamp,auctionTimestamp);
+
+                    if(blockTimestamp > auctionTimestamp)
+                        $scope.disabled = false;
+                    else
+                        $scope.disabled = true;
+                    
+                    if(highestBid == 0)
+                        $scope.disabled = true;
+                    
+                }).catch(function(err){
+                    console.error(err);
+                });
             }, 2500);
             
             $scope.startAuction = function(){

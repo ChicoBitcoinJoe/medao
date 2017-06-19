@@ -1,0 +1,29 @@
+<div layout="column" layout-padding layout-margin>
+    <div style="position:absolute;top:-5px; right:-12px;">
+        <md-button class="md-icon-button" aria-label="back" ng-click="cancel()"><md-icon md-svg-src="libs/fonts/ic_close_white_24px.svg"></md-icon></md-button>
+    </div>
+    <div>
+        <h3>The MeDao project is still in Alpha!</h3>
+        <p>We make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, suitability or availability with respect to the website or the information, products, services, or related graphics contained on the website for any purpose. Any reliance you place on such information is therefore strictly at your own risk.</p>
+
+        <p>In no event will we be liable for any loss or damage including without limitation, indirect or consequential loss or damage, or any loss or damage whatsoever arising from loss of data or profits arising out of, or in connection with, the use of this website.</p>
+
+        <p>Every effort is made to keep the website up and running smoothly. However, we take no responsibility for, and will not be liable for, the website being temporarily unavailable due to technical issues beyond our control.</p>
+
+        <div layout="row" layout-padding flex>
+            <span flex></span>
+            <div>
+                <md-input-container>
+                    <md-checkbox name="tos" ng-model="agreesToTerms" required>
+                        I accept the risk
+                    </md-checkbox>
+                </md-input-container>
+            </div>
+        </div>
+        <div layout="column" layout-gt-xs="row" flex>
+            <span flex></span>
+            <md-button href="https://github.com/ChicoBitcoinJoe/MeDao" class="md-raised md-warn">View Code</md-button>
+            <md-button class="md-raised md-primary" ng-disabled="!agreesToTerms" ng-click="answer(true);">Deploy</md-button>
+        </div>
+    </div>
+</div>

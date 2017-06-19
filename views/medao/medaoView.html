@@ -1,10 +1,13 @@
 <div class="black-background" style="overflow:auto;" flex>
-    <div class="black-background" style="position:fixed;top:0px; height:140px; width:100%; z-index:100;">
+    <div class="black-background" style="position:fixed;top:0px; height:125px; width:100%;z-index:10;">
         <h3 class="cursor" style="margin-left:16px;" ng-click="goto('/home')">MeDao</h3>
         <div layout="row" layout-align="center center" flex>
             <h1>{{platform.token.name}}</h1>
         </div>
     </div>
+    <div style="background-color: rgba(37,37,37,0.92);position:fixed;top:125px; height:3px; width:100%;z-index:10;"></div>
+    <div style="background-color: rgba(37,37,37,0.78);position:fixed;top:128px; height:3px; width:100%;z-index:10;"></div>
+    <div style="background-color: rgba(37,37,37,0.50);position:fixed;top:131px; height:3px; width:100%;z-index:10;"></div>
     <div id="spacer" style="height:140px"></div>
     <div class="lighter-background" layout="row" layout-align="center center" flex>
         <md-button class="medao-btn">send</md-button>
@@ -30,29 +33,15 @@
             </span>
         </p>
     </div>
-    <div ng-show="isOwner">
-        <div class="lighter-background" layout="row" layout-xs="column" layout-align="center center" flex>
-            <div layout="row" layout-align="center center" layout-fill>
-                <md-button class="medao-btn" flex>set weekly reward</md-button>
-                <span>|</span>
-                <md-button class="medao-btn" flex>set burn minimum</md-button>
-            </div>
-            <div layout="row" layout-align="center center" layout-fill>
-                <md-button class="medao-btn" flex>set deposit address</md-button>
-                <span>|</span>
-                <md-button class="medao-btn" flex>transfer ownership</md-button>
-            </div>
-        </div>
-    </div>
     <div>
         <p layout="row" layout-align="space-around center" flex>
-            <span layout="row" layout-align="center center" layout-padding flex="33">
-                <span><md-icon md-svg-src="libs/fonts/ic_whatshot_white_24px.svg"></md-icon></span>
-                <span>{{platform.auction.reward}} <span hide-xs>h/wk</span></span>
+            <span layout="row" layout-align="center center" flex="33">
+                <span><md-icon md-svg-src="libs/fonts/ic_add_white_24px.svg"></md-icon></span>
+                <span>&nbsp{{platform.auction.reward}} <span hide-xs>h/wk</span></span>
             </span>
             <span layout="row" layout-align="center center" layout-padding flex="33">
-                <span><md-icon md-svg-src="libs/fonts/ic_alarm_white_24px.svg"></md-icon></span>
-                <span><timer seconds="platform.auction.timer"></timer></span>
+                <span><md-icon md-svg-src="libs/fonts/ic_arrow_upward_white_24px.svg"></md-icon></span>
+                <span>{{platform.auction.highestBidInWei | fromWei:'ether'}} <span hide-xs>eth</span></span>
             </span>
             <span layout="row" layout-align="center center" layout-padding flex="33">
                 <span><md-icon md-svg-src="libs/fonts/ic_lock_white_24px.svg"></md-icon></span>
@@ -61,40 +50,55 @@
         </p>
     </div>
     <div class="lighter-background" layout="row" layout-align="center center" flex>
-        <md-button class="medao-btn">place bid</md-button>
+        <place-bid-btn owner="platform.medao.owner"></place-bid-btn>
         <span>|</span>
-        <start-auction-btn owner="platform.medao.owner"></start-auction-btn>
+        <span ng-show="platform.auction.timer > 0"><timer seconds="platform.auction.timer"></timer></span>
+        <start-auction-btn ng-show="platform.auction.timer <= 0" owner="platform.medao.owner"></start-auction-btn>
         <span>|</span>
         <md-button class="medao-btn">remove bid</md-button>
     </div>
-    <div layout="column" layout-padding>
-        <table>
-            <tr>
-                <th>Bid</th>
-                <th>(15)</th>
-                <th>Total</th>
-            </tr>
-            <tr>
-                <td>0.050 eth</td>
-                <td>x7</td>
-                <td>0.040 eth</td>
-            </tr>
-            <tr>
-                <td>0.025 eth</td>
-                <td>x2</td>
-                <td>0.050 eth</td>
-            </tr>
-            <tr>
-                <td>0.020 eth</td>
-                <td>x4</td>
-                <td>0.080 eth</td>
-            </tr>
-            <tr>
-                <td>0.010 eth</td>
-                <td>x2</td>
-                <td>0.020 eth</td>
-            </tr>
-            
-        </table>
+    <div ng-show="isOwner">
+        <div layout="row" layout-align="center center" flex>
+            <h3>admin</h3>
+        </div>
+        <div class="lighter-background" layout="row" layout-xs="column" layout-align="center center" flex>
+            <div layout="row" layout-align="center center" layout-fill>
+                <md-button class="medao-btn" flex>set weekly reward</md-button>
+                <span>|</span>
+                <md-button class="medao-btn" flex>set burn minimum</md-button>
+            </div>
+            <span hide show-gt-xs>|</span>
+            <div layout="row" layout-align="center center" layout-fill>
+                <md-button class="medao-btn" flex>set deposit address</md-button>
+                <span>|</span>
+                <md-button class="medao-btn" flex>transfer ownership</md-button>
+            </div>
+        </div>
+    </div>
+    <div layout="row" layout-align="center center" flex>
+        <h3>recent payments</h3>
+    </div>
+    <div layout="column">
+        <div layout="row" class="light-border" layout-align="left center" layout-padding layout-margin flex>
+            <span style="min-width:70px;" layout="row" layout-align="center center">
+                <span><md-icon md-svg-src="libs/fonts/ic_whatshot_white_24px.svg"></md-icon></span>
+                <span>&nbsp100<span hide-xs>h</span></span>
+            </span>
+            <p>(no comment)</p>
+        </div>
+        <div layout="row" class="light-border" layout-align="left center" layout-padding layout-margin flex>
+            <span style="min-width:70px;" layout="row" layout-align="center center">
+                <span><md-icon md-svg-src="libs/fonts/ic_whatshot_white_24px.svg"></md-icon></span>
+                <span>&nbsp3.3<span hide-xs>h</span></span>
+            </span>
+            <p>Joe provided an excellent service. Would hire again.</p>
+        </div>
+        <div layout="row" class="light-border" layout-align="left center" layout-padding layout-margin flex>
+            <span style="min-width:60px;" layout="row" layout-align="center center">
+                <span><md-icon md-svg-src="libs/fonts/ic_whatshot_white_24px.svg"></md-icon></span>
+                <span>&nbsp30<span hide-xs>h</span></span>
+            </span>
+            <p>I was quoted 2 weeks but had to wait 2 months until he delivered an mvp. As compensation he gave me a 30% refund.</p>
+        </div>
     </div>
 </div>

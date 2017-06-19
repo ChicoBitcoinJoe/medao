@@ -1,3 +1,7 @@
+::-webkit-scrollbar {
+   display: none;
+}
+
 html.md-default-theme, html, body.md-default-theme, body {
     color:rgba(255,255,255,0.87);
 }

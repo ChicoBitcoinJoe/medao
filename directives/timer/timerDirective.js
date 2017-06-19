@@ -7,7 +7,6 @@ MeDao.directive('timer', [function() {
 		replace: true,
 		templateUrl: 'directives/timer/timerDirective.html',
 		controller: function($scope){
-            
             $scope.timer = {
                 seconds: $scope.seconds,
                 text: {
@@ -17,7 +16,6 @@ MeDao.directive('timer', [function() {
             };
             
             $scope.timerInterval = setInterval(function(){
-                console.log($scope.timer.seconds);
                 $scope.timer.seconds--;
 
                 if($scope.timer.seconds < 0)

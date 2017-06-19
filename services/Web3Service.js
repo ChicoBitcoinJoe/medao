@@ -67,6 +67,20 @@ MeDao.service( 'Web3Service',['$q', function ($q) {
             
             return deferred.promise;
         },
+		getTransaction: function(txHash){
+            var deferred = $q.defer();
+            
+            web3.eth.getTransaction(txHash, 
+            function(err,receipt){
+                if(!err){
+                    deferred.resolve(receipt);
+                } else {
+                    deferred.reject(err);
+                } 
+            });
+            
+            return deferred.promise;
+        },
         getCurrentBlockNumber: function(){
             var deferred = $q.defer();
             var async_getCurrentBlock = web3.eth.getBlockNumber(

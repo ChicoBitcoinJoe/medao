@@ -21,7 +21,6 @@ MeDao.run(function() {
 
 MeDao.filter('fromWei', [function() {
     return function(value, convertTo) {
-        console.log(value,convertTo);
         if(value == null)
             return 0;
         
