@@ -16,14 +16,12 @@
     <link rel="stylesheet" href="views/home/homeView.css">
     <link rel="stylesheet" href="views/medao/medaoView.css">
     
-    <link rel="stylesheet" href="directives/medao-view/medaoViewDirective.css">
-    
     <title>MeDao - Testnet Only</title>
     
 </head>
-<body ng-app="MeDao" layout="column">
+<body ng-app="MeDao" layout="row" layout-fill ng-cloak>
     
-    <div class="black-background" ng-view flex></div>
+    <div style="overflow:hidden" layout="column" ng-view flex></div>
     
     <!-- Angular + Material Libraries -->
     <script src="libs/angular-includes/angular-1.5.5.min.js"></script>
@@ -43,23 +41,20 @@
     
     <!-- Services  -->
     <script src="services/Web3Service.js"></script>
-    <script src="services/MeDaoRegistry.js"></script>
     <script src="services/MeDaoService.js"></script>
-    <script src="services/TokenService.js"></script>
-    <script src="services/AuctionService.js"></script>
+    <script src="services/Notifier.js"></script>
 
     <!-- Controllers  -->
     <script src="views/home/homeViewController.js"></script>
     <script src="views/medao/medaoViewController.js"></script>
-    <script src="views/empty/emptyViewController.js"></script>
     
     <!-- Directives  -->
-    <script src="directives/medao-view/medaoViewDirective.js"></script>
-    <script src="directives/comment-view/commentViewDirective.js"></script>
-    <script src="directives/bid/bidDirective.js"></script>
-    <script src="directives/register-button/registerButtonDirective.js"></script>
-    <script src="directives/placebid-button/placebidButtonDirective.js"></script>
-    <script src="directives/auction-teir/auctionteirDirective.js"></script>
+    <script src="directives/timer/timerDirective.js"></script>
+    <script src="directives/start-auction-btn/startAuctionDirective.js"></script>
+    <script src="directives/place-bid-btn/placeBidDirective.js"></script>
+    <script src="directives/register-btn/registerDirective.js"></script>
+    <script src="directives/send-btn/sendDirective.js"></script>
+    <script src="directives/payment-btn/paymentDirective.js"></script>
           
 </body>
 </html>

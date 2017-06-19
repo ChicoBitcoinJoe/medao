@@ -67,6 +67,20 @@ MeDao.service( 'Web3Service',['$q', function ($q) {
             
             return deferred.promise;
         },
+		getTransaction: function(txHash){
+            var deferred = $q.defer();
+            
+            web3.eth.getTransaction(txHash, 
+            function(err,receipt){
+                if(!err){
+                    deferred.resolve(receipt);
+                } else {
+                    deferred.reject(err);
+                } 
+            });
+            
+            return deferred.promise;
+        },
         getCurrentBlockNumber: function(){
             var deferred = $q.defer();
             var async_getCurrentBlock = web3.eth.getBlockNumber(
@@ -82,7 +96,7 @@ MeDao.service( 'Web3Service',['$q', function ($q) {
         },
         getBlock: function(blockNumber){
             var deferred = $q.defer();
-            var async_getBlock = web3.eth.getBlock(
+            var async_getBlock = web3.eth.getBlock(blockNumber,
             function(err,blockData){
                 if(!err){
                     deferred.resolve(blockData);
@@ -106,6 +120,22 @@ MeDao.service( 'Web3Service',['$q', function ($q) {
                 }
                 else
                     deferred.reject(err);
+            });
+            
+            return deferred.promise;
+        },
+        sendEther: function(to,amountInWei){
+            var deferred = $q.defer();
+            
+            service.getCurrentAccount()
+            .then(function(from){
+                web3.eth.sendTransaction({from:from,to:to,value:amountInWei},
+                function(err,txHash){
+                    if(!err)
+                        deferred.resolve(txHash);
+                    else
+                        deferred.reject(err);
+                });
             });
             
             return deferred.promise;

@@ -1,5 +1,5 @@
-body {
-    background-color: black;
+::-webkit-scrollbar {
+   display: none;
 }
 
 html.md-default-theme, html, body.md-default-theme, body {
@@ -11,7 +11,11 @@ html.md-default-theme, html, body.md-default-theme, body {
 }
 
 .darker-background {
-    background-color: rgba(0,0,0,0.13);
+    background-color: rgba(0,0,0,0.05);
+}
+
+.lighter-background {
+    background-color: rgba(255,255,255,0.05);
 }
 
 input {
