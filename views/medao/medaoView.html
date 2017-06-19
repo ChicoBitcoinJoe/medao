@@ -20,14 +20,14 @@
         <p layout="row" layout-align="space-around start" flex>
             <span layout="row" layout-align="center center" layout-padding flex="33">
                 <span><md-icon md-svg-src="libs/fonts/ic_attach_money_white_24px.svg"></md-icon></span>
-                <span style="padding:0px;">{{platform.account.weiBalance | fromWei:'ether' | round:2}} <span hide-xs>eth</span></span>
+                <span style="padding:0px;">{{platform.account.weiBalance | fromWei:'ether' | decimals:2}} <span hide-xs>eth</span></span>
             </span>
             <span layout="row" layout-align="center center" layout-padding flex="33">
                 <span><md-icon md-svg-src="libs/fonts/ic_access_time_white_24px.svg"></md-icon></span>
-                <span style="padding:0px;">{{platform.account.secondsBalance / 3600 | round:0}}<span hide-xs>h</span></span>
+                <span style="padding:0px;">{{platform.account.secondsBalance / 3600 | decimals:0}}<span hide-xs>h</span></span>
             </span>
             <span layout="row" layout-align="center center" layout-padding flex="33">
-                <span style="padding:0px;">{{platform.token.supply / 3600 | round:0}}<span hide-xs>h</span></span>
+                <span style="padding:0px;">{{platform.token.supply / 3600 | decimals:0}}<span hide-xs>h</span></span>
                 <span><md-icon md-svg-src="libs/fonts/ic_iso_white_24px.svg"></md-icon></span>
                 <span style="padding:0px;">{{platform.medao.burned}}<span hide-xs>h</span></span>
             </span>

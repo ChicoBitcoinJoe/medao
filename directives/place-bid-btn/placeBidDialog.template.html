@@ -19,12 +19,12 @@
             <tr>
                 <th>Bid</th>
                 <th>x{{totalBids}}</th>
-                <th style="text-align:right;">{{totalEtherBid | round:2}} eth</th>
+                <th style="text-align:right;">{{totalEtherBid | decimals:2}} eth</th>
             </tr>
             <tr ng-repeat="teir in teir">
-                <td class="cursor" ng-click="setBidAmount(teir.value)">{{teir.value | fromWei:'ether' | round:3}} eth</td>
+                <td class="cursor" ng-click="setBidAmount(teir.value)">{{teir.value | fromWei:'ether' | decimals:3}} eth</td>
                 <td>x{{teir.bids}}</td>
-                <td style="text-align:right;">{{teir.total | round:2}} eth</td>
+                <td style="text-align:right;">{{teir.total | decimals:2}} eth</td>
             </tr>
         </table>
     </div>

@@ -28,7 +28,7 @@ MeDao.filter('fromWei', [function() {
     };
 }]);
 
-MeDao.filter('round', [function() {
+MeDao.filter('decimals', [function() {
     return function(value,decimals) {
         if(value == null)
             return 0;
