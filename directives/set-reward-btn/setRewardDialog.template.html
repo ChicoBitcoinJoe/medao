@@ -2,14 +2,14 @@
     <div style="position:absolute;top:-5px; right:-12px;">
         <md-button class="md-icon-button" aria-label="back" ng-click="back()"><md-icon md-svg-src="libs/fonts/ic_close_white_24px.svg"></md-icon></md-button>
     </div>
-    <h1>Set Weekly Reward</h1>
+    <h3>Set Weekly Hours</h3>
     <div>
         <md-input-container class="md-block" style="border-bottom:1px solid rgba(255,255,255,0.67)">
-            <label>Reward in Hours (0-40)</label>
-            <input type="number" ng-model="reward.amountInHours">
+            <label>Hours (0-40)</label>
+            <input type="number" ng-model="reward.amountInHours" min="0" max="40">
         </md-input-container>
     </div>
     <div layout="row" flex>
-        <md-button class="medao-btn" ng-click="setReward()" flex="50" ng-disabled="reward.amountInHours == 0">set</md-button>
+        <md-button class="medao-btn md-raised md-primary" ng-click="setReward()" ng-disabled="reward.amountInHours == 0 || reward.amountInHours > 40 || reward.amountInHours == null" flex>set reward</md-button>
     </div>
 </div>

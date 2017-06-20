@@ -204,7 +204,7 @@ function ($q,Web3Service) {
         setWeeklyAuctionReward: function(medaoAddress, account, hours) {
             var deferred = $q.defer();
             var MeDaoInstance = web3.eth.contract(platform.medao.abi).at(medaoAddress);
-            
+            console.log(medaoAddress, account, hours);
             MeDaoInstance.setWeeklyAuctionReward(hours, {from:account},
             function(err,tx){
                 if(!err){

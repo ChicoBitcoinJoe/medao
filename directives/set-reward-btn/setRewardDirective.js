@@ -28,13 +28,13 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
                         var currentAccount = promises[0];
                         var medaoAddress = promises[1];
                         
-                        return MeDao.submitProofOfWork(
+                        return MeDao.setWeeklyAuctionReward(
                             medaoAddress,
                             currentAccount,
-                            $scope.payment.amountInHours
+                            $scope.reward.amountInHours
                         );
                     }).then(function(txHash){
-                        var action = 'Submit payment of ' + $scope.payment.amountInSeconds / 3600 + ' hours.';
+                        var action = 'Set weekly hours to ' + $scope.reward.amountInHours;
                 
                         var message = {
                             txHash: txHash,
@@ -46,9 +46,9 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
                         $scope.back();
                     });
                 };
-            }
+            };
             
-            $scope.openPaymentDialog = function(ev) {
+            $scope.openRewardDialog = function(ev) {
                 $mdDialog.show({
                     controller: DialogController,
                     templateUrl: 'directives/set-reward-btn/setRewardDialog.template.html',

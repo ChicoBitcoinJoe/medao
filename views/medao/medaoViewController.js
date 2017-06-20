@@ -43,14 +43,12 @@ function($scope,$q,$location,Web3Service,MeDao){
         return $q.all([
             MeDao.getTokenAddress($scope.platform.medao.address), 
             MeDao.getAuctionAddress($scope.platform.medao.address),
-            MeDao.getWeeklyAuctionReward($scope.platform.medao.address),
             MeDao.getCooldownTimestamp($scope.platform.medao.address),
         ]);
     }).then(function(promises){
         $scope.platform.token.address = promises[0];
         $scope.platform.auction.address = promises[1];
-        $scope.platform.auction.reward = promises[2].toNumber();
-        $scope.platform.medao.cooldown = promises[3].toNumber();
+        $scope.platform.medao.cooldown = promises[2].toNumber();
         
         MeDao.getName($scope.platform.token.address)
         .then(function(tokenName){
@@ -108,6 +106,13 @@ function($scope,$q,$location,Web3Service,MeDao){
             $scope.platform.auction.bids = bids;
             $scope.platform.auction.locked = ether;
 
+        }).catch(function(err){
+            console.error(err);
+        });
+        
+        MeDao.getWeeklyAuctionReward($scope.platform.medao.address)
+        .then(function(reward){
+            $scope.platform.auction.reward = reward.toNumber();
         }).catch(function(err){
             console.error(err);
         });

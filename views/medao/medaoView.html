@@ -49,7 +49,7 @@
                 <span><md-icon md-svg-src="libs/fonts/ic_lock_white_24px.svg"></md-icon></span>
                 <span>{{platform.auction.locked | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> eth</span></span>
             </span>
-            <span layout="row" layout-align="center center" flex="50">
+            <span layout="row" layout-align="center center" layout-padding flex="50">
                 <span><md-icon md-svg-src="libs/fonts/ic_trending_up_white_24px.svg"></md-icon></span>
                 <span>{{platform.auction.bids}}<span style="color:rgba(255,255,255,0.5)"> bids</span></span>
             </span>
@@ -59,9 +59,9 @@
                 <span><md-icon md-svg-src="libs/fonts/ic_arrow_upward_white_24px.svg"></md-icon></span>
                 <span>{{platform.auction.highestBidInWei | fromWei:'ether'}} <span style="color:rgba(255,255,255,0.5)">eth</span></span>
             </span>
-            <span layout="row" layout-align="center center" flex="50">
+            <span layout="row" layout-align="center center" layout-padding flex="50">
                 <span><md-icon md-svg-src="libs/fonts/ic_add_white_24px.svg"></md-icon></span>
-                <span>&nbsp&nbsp{{platform.auction.reward}} <span style="color:rgba(255,255,255,0.5)"> h/wk</span></span>
+                <span>{{platform.auction.reward}} <span style="color:rgba(255,255,255,0.5)"> h/wk</span></span>
             </span>
         </div>
     </div>
@@ -78,7 +78,7 @@
         </div>
         <div class="lighter-background" layout="row" flex>
             <div layout="column" layout-align="top center" flex="50">
-                <set-reward-btn></set-reward-btn>
+                <set-reward-btn owner="platform.medao.owner"></set-reward-btn>
                 <md-button class="medao-btn" flex="50">set vault address</md-button>
             </div>
             <div layout="column" layout-align="top center" flex="50">
