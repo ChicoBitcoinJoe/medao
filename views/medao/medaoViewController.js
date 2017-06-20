@@ -37,6 +37,9 @@ function($scope,$q,$location,Web3Service,MeDao){
     MeDao.getMeDaoAddress($scope.platform.medao.owner)
     .then(function(medaoAddress){
         $scope.platform.medao.address = medaoAddress;
+        if(medaoAddress == '0x0000000000000000000000000000000000000000'
+        || medaoAddress == '0x0')
+            $scope.goto('/home')
         return $q.all([
             MeDao.getTokenAddress($scope.platform.medao.address), 
             MeDao.getAuctionAddress($scope.platform.medao.address),

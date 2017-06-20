@@ -1,6 +1,6 @@
 <div class="black-background">
     <div  style="height:100vh;" layout="column" layout-align="center center" flex>
-        <h1>MeDao</h1>
+        <h1 layout="row"><div class="rotate90" style="font-size:60px;margin: 7px 2px 0px 0px">&Xi;</div>&nbsp&nbsp&nbsp&nbspeDao</h1>
         <p style="font-size:20px;">What is <b>your</b> time worth?</p>
         <div ng-show="loaded && !hasMedao" layout="column" layout-align="center center">
             <md-input-container ng-class="{'dotted': dotted}" md-no-float>
@@ -13,7 +13,7 @@
         </div>
         <div ng-show="hasMedao" layout="column" layout-align="center center">
             <p> 0 ETH / year</p>
-            <md-button class="md-raised md-primary" ng-disabled="!loaded" ng-click="goto(account+'/medao')">Go to MeDao</md-button>
+            <md-button class="medao-btn md-raised md-primary" ng-disabled="!loaded" ng-click="goto(account+'/medao')">Go to MeDao</md-button>
         </div>
     </div>
 </div>

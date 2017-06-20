@@ -289,18 +289,17 @@ contract MeDao is Owned{
     string public version = '0.0.2';
     
     address public Founder;
+    address public Vault;
+    
     string public url;
     
     MiniMeToken public Token;
     OngoingAuction public Auction;
-    address public Vault;
     
     uint public weekly_auction_reward;
     uint public scheduled_auction_timestamp;
     uint public auction_period;
-    
     uint public total_proof_of_work;
-   
     uint public cooldown_timestamp;
     uint burn_minimum = 1;
      
@@ -308,29 +307,11 @@ contract MeDao is Owned{
 // MeDao Setup
 ////////////////
 
-    function MeDao (address founder, OngoingAuction auction, address vault) {
+    function MeDao (address founder, MiniMeToken token, OngoingAuction auction) {
         Founder = founder;
+        Vault = founder;
+        Token = token;
         Auction = auction;
-        Vault = vault;
-    }
-    
-    function setupToken (
-        MiniMeToken CloneableToken,
-        string _tokenName,
-        uint8 _decimals,
-        string _symbol,
-        uint _snapshotBlock,
-        bool _transfersEnabled
-    ) onlyOwner {
-        address token = CloneableToken.createCloneToken(
-            _tokenName,
-            _decimals,
-            _symbol,
-            _snapshotBlock,
-            _transfersEnabled
-        );
-        
-        Token = MiniMeToken(token);
     }
     
 ////////////////
@@ -348,7 +329,7 @@ contract MeDao is Owned{
     }
     
     function burn (uint burnAmount, string metadataHash) 
-    onlyTokenHolders(burn_minimum) {
+    onlyTokenHolders (burn_minimum) {
         if(Token.balanceOf(msg.sender) < burnAmount) throw;
         
         Token.destroyTokens(msg.sender,burnAmount);
@@ -363,6 +344,10 @@ contract MeDao is Owned{
     
     function setUrl (string newUrl) onlyOwner {
         url = newUrl;
+    }
+    
+    function setVault (address newVault) onlyOwner {
+        Vault = newVault;
     }
     
     function setBurnMinimum (uint burnMinimum) onlyOwner {
@@ -380,21 +365,21 @@ contract MeDao is Owned{
         
         NewWeeklyAuctionReward_event(weekly_auction_reward);
     }
-
-////////////////
-// Lost Token Retrieval
-////////////////
     
-    function transferToVault (ERC20Token Token) {
+////////////////
+// Lost Token Retreival
+////////////////  
+
+    function transferToVault (ERC20Token Token) onlyOwner {
         if(Token != address(0x0)) {
             uint balance = Token.balanceOf(this);
             if(balance == 0) throw;
             
             Token.transfer(Vault,balance);
-        } else if(this.balance > 0){
-            Vault.transfer(this.balance);
         } else {
-            throw;
+            if(this.balance == 0) throw;
+            
+            Vault.transfer(this.balance);
         }
     }
 
@@ -436,14 +421,14 @@ contract MeDaoDeployer {
     
     string version = "0.0.1";
     
-    MiniMeToken PrimeToken;
+    MiniMeToken Prime;
     
     uint public total_medaos;
     mapping (uint => address) public founders;
     mapping (address => MeDao ) public medaos;
     
     function MeDaoDeployer (MiniMeToken Token) {
-        PrimeToken = Token;
+        Prime = Token;
     }
     
     function deploy (string name) {
@@ -452,9 +437,9 @@ contract MeDaoDeployer {
         uint next_id = total_medaos++;
         founders[next_id] = msg.sender;
         
+        address token = Prime.createCloneToken(name,0,'meether',0,true);
         OngoingAuction Auction = new OngoingAuction();
-        medaos[msg.sender] = new MeDao(msg.sender,Auction,msg.sender);
-        medaos[msg.sender].setupToken(PrimeToken,name,0,'meether',0,true);
+        medaos[msg.sender] = new MeDao(msg.sender,MiniMeToken(token),Auction);
         medaos[msg.sender].transferOwnership(msg.sender);
         Auction.transferOwnership(medaos[msg.sender]);
         
