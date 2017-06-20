@@ -1,5 +1,5 @@
-MeDao.controller('MeDaoViewController', ['$scope','$q','$location','$mdMedia','Web3Service','MeDaoService',
-function($scope,$q,$location,$mdMedia,Web3Service,MeDaoService){
+MeDao.controller('MeDaoViewController', ['$scope','$q','$location','Web3Service','MeDaoService',
+function($scope,$q,$location,Web3Service,MeDaoService){
     console.log('Loading MeDao View');
     
 //State
@@ -27,7 +27,8 @@ function($scope,$q,$location,$mdMedia,Web3Service,MeDaoService){
             timestamp: null,
             timer: null,
             highestBidInWei: null,
-            bidsLoaded: false
+            locked: null,
+            bids: null
         }
     };
     
@@ -39,19 +40,14 @@ function($scope,$q,$location,$mdMedia,Web3Service,MeDaoService){
         return $q.all([
             MeDaoService.getTokenAddress($scope.platform.medao.address), 
             MeDaoService.getAuctionAddress($scope.platform.medao.address),
-            MeDaoService.getAuctionTimestamp($scope.platform.medao.address),
             MeDaoService.getWeeklyAuctionReward($scope.platform.medao.address),
             MeDaoService.getCooldownTimestamp($scope.platform.medao.address),
         ]);
     }).then(function(promises){
         $scope.platform.token.address = promises[0];
         $scope.platform.auction.address = promises[1];
-        $scope.platform.auction.timestamp = promises[2].toNumber();
-        $scope.platform.auction.reward = promises[3].toNumber();
-        $scope.platform.medao.cooldown = promises[4].toNumber();
-        
-        var now = Math.floor(Date.now() / 1000);
-        $scope.platform.auction.timer = $scope.platform.auction.timestamp - now;
+        $scope.platform.auction.reward = promises[2].toNumber();
+        $scope.platform.medao.cooldown = promises[3].toNumber();
         
         MeDaoService.getName($scope.platform.token.address)
         .then(function(tokenName){
@@ -59,7 +55,9 @@ function($scope,$q,$location,$mdMedia,Web3Service,MeDaoService){
         }).catch(function(err){
             console.error(err);
         });
-
+        
+        refreshAll();
+        
         setInterval(function(){
             refreshAll();
         }, 2000);
@@ -77,6 +75,49 @@ function($scope,$q,$location,$mdMedia,Web3Service,MeDaoService){
 //Internal
     
     var refreshAll = function(){
+        
+        MeDaoService.getTeirs($scope.platform.auction.address)
+        .then(function(teirs){
+            //console.log(teirs);
+            $scope.teirs = teirs;
+
+            var promises = [];
+            for(var i = 0; i < teirs.length; i++)
+                promises[i] = MeDaoService.getTeirInfo($scope.platform.auction.address,teirs[i]);
+
+            return $q.all(promises);
+        }).then(function(promises){
+            var bids = 0;
+            var ether = 0;
+
+            for(var i = 0; i < promises.length; i++){
+                var teirInfo = promises[i];
+                //console.log(teirInfo);
+                var value = teirInfo[1];
+                var length = teirInfo[5].toNumber();
+                var total = web3.fromWei(value,'ether') * length;
+                //console.log(total);
+
+                bids += length;
+                ether += (web3.fromWei(value,'ether').toNumber() * length);
+            }
+
+            $scope.platform.auction.bids = bids;
+            $scope.platform.auction.locked = ether;
+
+        }).catch(function(err){
+            console.error(err);
+        });
+        
+        MeDaoService.getAuctionTimestamp($scope.platform.medao.address)
+        .then(function(timestamp){
+            $scope.platform.auction.timestamp = timestamp.toNumber();
+            var now = Math.floor(Date.now() / 1000);
+            $scope.platform.auction.timer = $scope.platform.auction.timestamp - now;
+        }).catch(function(err){
+            console.error(err);
+        });
+        
         MeDaoService.getTotalProofOfWork($scope.platform.medao.address)
         .then(function(proofOfWork){
             $scope.platform.medao.burned = proofOfWork.toNumber() / 3600;

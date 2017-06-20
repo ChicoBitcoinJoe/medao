@@ -6,21 +6,20 @@ Header
 
 - Notifications
 
-Home View
+Home
 
-- yearly salary
+- yearly salary still set to zero 
 
 Icons
 
-- ether
-- proof of stake (lock)
+- replace dollar icon with ether icon
+- show icon tooltip on hover
 
-Functionality
+MeDao
 
 - receive
 - remove bid
 - start
-- comments
 
 Admin
 

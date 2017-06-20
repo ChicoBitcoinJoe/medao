@@ -8,7 +8,11 @@ function($q,Web3Service,MeDaoService) {
 		replace: true,
 		templateUrl: 'directives/start-auction-btn/startAuctionDirective.html',
 		controller: function($scope){
-            console.log($scope.owner);
+            
+            $scope.timer = {
+                seconds: $scope.seconds,
+                alarm: false
+            };
             
             $scope.disabled = true;
             
@@ -23,17 +27,21 @@ function($q,Web3Service,MeDaoService) {
                     $scope.currentBlock = promises[1];
                     //console.log($scope.medaoAddress,$scope.currentBlock);
 
+                    return MeDaoService.getAuctionAddress($scope.medaoAddress);
+                }).then(function(auctionAddress){
                     return $q.all([
                         Web3Service.getBlock($scope.currentBlock),
                         MeDaoService.getAuctionTimestamp($scope.medaoAddress),
-                        MeDaoService.getHighestBid($scope.medaoAddress),
-                    ]); 
+                        MeDaoService.getHighestBid(auctionAddress)
+                    ]);
                 }).then(function(promises){
                     var blockTimestamp = promises[0].timestamp;
                     var auctionTimestamp = promises[1].toNumber();
                     var highestBid = promises[2].toNumber();
-                    //console.log(blockTimestamp,auctionTimestamp);
-
+                    
+                    var now = Math.floor(Date.now() / 1000);
+                    $scope.timer.seconds = auctionTimestamp - now;
+                    
                     if(blockTimestamp > auctionTimestamp)
                         $scope.disabled = false;
                     else
@@ -58,6 +66,7 @@ function($q,Web3Service,MeDaoService) {
                     return Web3Service.getTransactionReceipt(txHash);
                 }).then(function(receipt){
                     $scope.waiting = false;
+                    $scope.disabled = true;
                 }).catch(function(err){
                     console.error(err);
                 });

@@ -8,7 +8,6 @@ function($q,$mdDialog,Web3Service,MeDaoService,Notifier) {
 		replace: true,
 		templateUrl: 'directives/place-bid-btn/placeBidDirective.html',
 		controller: function($scope){
-            console.log($scope.owner);
             
             function DialogController($scope, $mdDialog, data) {
                 $scope.owner = data.owner;
@@ -26,7 +25,11 @@ function($q,$mdDialog,Web3Service,MeDaoService,Notifier) {
                 };
 
                 $scope.place = function() {
-                    $mdDialog.hide($scope.bid.amountInEther);
+                    var touchingTeir = getTouchingTeir(web3.toWei($scope.bid.amountInEther,'ether'));
+                    $mdDialog.hide({
+                        ether:$scope.bid.amountInEther,
+                        touchingTeir:touchingTeir
+                    });
                 };
                 
                 $scope.max = function() {
@@ -71,7 +74,7 @@ function($q,$mdDialog,Web3Service,MeDaoService,Notifier) {
                             console.log(total);
                             
                             bids += length;
-                            ether += web3.fromWei(value,'ether').toNumber();
+                            ether += (web3.fromWei(value,'ether').toNumber() * length);
                             
                             $scope.teir[i] = {
                                 value: value,
@@ -79,8 +82,10 @@ function($q,$mdDialog,Web3Service,MeDaoService,Notifier) {
                                 total: total
                             }
                         }
+                        
                         $scope.totalBids = bids;
                         $scope.totalEtherBid = ether;
+                        
                     }).catch(function(err){
                         console.error(err);
                     });
@@ -90,6 +95,21 @@ function($q,$mdDialog,Web3Service,MeDaoService,Notifier) {
                     console.log(valueInWei);
                     $scope.bid.amountInEther = web3.fromWei(valueInWei,'ether').toNumber();
                     console.log($scope.bid.amountInEther);
+                };
+                
+                var getTouchingTeir = function(amountInWei) {
+                    var total = $scope.teirs.length;
+                    var currentTeir = 0;
+
+                    for(var i = 0; i < total; i++){
+                        currentTeir = $scope.teirs[i].toNumber();
+                        if(amountInWei >= currentTeir){
+                            console.log('touching teir: ' + currentTeir);
+                            return currentTeir;
+                        }
+                    }
+
+                    return currentTeir;
                 };
                 
                 $scope.getTeirData();
@@ -108,35 +128,17 @@ function($q,$mdDialog,Web3Service,MeDaoService,Notifier) {
                             owner:$scope.owner
                         }
                     }
-                }).then(function(bidInEther) {
-                    console.log(bidInEther);
-                    if(bidInEther > 0)
-                        $scope.placeBid(bidInEther);
+                }).then(function(bidData) {
+                    console.log(bidData.ether);
+                    if(bidData.ether > 0)
+                        $scope.placeBid(bidData.ether,bidData.touchingTeir);
                 }).catch(function() {
                     console.log('You cancelled the dialog.');
                 });
             };
             
-            
-            
-            var getTouchingTeir = function(amountInWei) {
-                var total = $scope.teirs.length;
-                var currentTeir = 0;
-                
-                for(var i = 0; i < total; i++){
-                    currentTeir = $scope.teirs[i].toNumber();
-                    if(amountInWei >= currentTeir){
-                        console.log('touching teir: ' + currentTeir);
-                        return currentTeir;
-                    }
-                }
-                
-                return currentTeir;
-            };
-            
-            $scope.placeBid = function(amountInEther){
+            $scope.placeBid = function(amountInEther,touchingTeir){
                 var bidInWei = web3.toWei(amountInEther,'ether');
-                var touchingTeir = getTouchingTeir(bidInWei);
                 console.log(bidInWei,touchingTeir);
                 
                 MeDaoService.getMeDaoAddress($scope.owner)

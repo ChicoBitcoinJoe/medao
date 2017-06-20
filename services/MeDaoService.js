@@ -217,6 +217,21 @@ function ($q,Web3Service) {
             
             return deferred.promise;
         },
+        getProofOfWorkEvents: function(medaoAddress,numOfBlocks){
+            var deferred = $q.defer();
+            var MeDaoInstance = web3.eth.contract(platform.medao.abi).at(medaoAddress);
+               
+            Web3Service.getCurrentBlockNumber()
+            .then(function(currentBlock){
+                var fromBlock = currentBlock - numOfBlocks;
+                console.log(numOfBlocks,currentBlock);
+                console.log(fromBlock)
+                var events = MeDaoInstance.ProofOfWork_event(null,{fromBlock:fromBlock});
+                deferred.resolve(events);
+            });
+            
+            return deferred.promise;
+        },
         //Auction
         getHighestBid: function(auctionAddress){
             var deferred = $q.defer();

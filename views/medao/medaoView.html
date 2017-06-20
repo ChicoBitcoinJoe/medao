@@ -45,15 +45,14 @@
             </span>
             <span layout="row" layout-align="center center" layout-padding flex="33">
                 <span><md-icon md-svg-src="libs/fonts/ic_lock_white_24px.svg"></md-icon></span>
-                <span>0.55 <span hide-xs>eth</span></span>
+                <span>{{platform.auction.locked | decimals:2}} <span hide-xs>eth</span></span>
             </span>
         </p>
     </div>
     <div class="lighter-background" layout="row" layout-align="center center" flex>
         <place-bid-btn owner="platform.medao.owner"></place-bid-btn>
         <span>|</span>
-        <span ng-show="platform.auction.timer > 0"><timer seconds="platform.auction.timer"></timer></span>
-        <start-auction-btn ng-show="platform.auction.timer <= 0" owner="platform.medao.owner"></start-auction-btn>
+        <start-auction-btn owner="platform.medao.owner"></start-auction-btn>
         <span>|</span>
         <md-button class="medao-btn">remove bid</md-button>
     </div>
@@ -78,27 +77,5 @@
     <div layout="row" layout-align="center center" flex>
         <h3>recent payments</h3>
     </div>
-    <div layout="column">
-        <div layout="row" class="light-border" layout-align="left center" layout-padding layout-margin flex>
-            <span style="min-width:70px;" layout="row" layout-align="center center">
-                <span><md-icon md-svg-src="libs/fonts/ic_whatshot_white_24px.svg"></md-icon></span>
-                <span>&nbsp100<span hide-xs>h</span></span>
-            </span>
-            <p>(no comment)</p>
-        </div>
-        <div layout="row" class="light-border" layout-align="left center" layout-padding layout-margin flex>
-            <span style="min-width:70px;" layout="row" layout-align="center center">
-                <span><md-icon md-svg-src="libs/fonts/ic_whatshot_white_24px.svg"></md-icon></span>
-                <span>&nbsp3.3<span hide-xs>h</span></span>
-            </span>
-            <p>Joe provided an excellent service. Would hire again.</p>
-        </div>
-        <div layout="row" class="light-border" layout-align="left center" layout-padding layout-margin flex>
-            <span style="min-width:60px;" layout="row" layout-align="center center">
-                <span><md-icon md-svg-src="libs/fonts/ic_whatshot_white_24px.svg"></md-icon></span>
-                <span>&nbsp30<span hide-xs>h</span></span>
-            </span>
-            <p>I was quoted 2 weeks but had to wait 2 months until he delivered an mvp. As compensation he gave me a 30% refund.</p>
-        </div>
-    </div>
+    <comments owner="platform.medao.owner"></comments>
 </div>

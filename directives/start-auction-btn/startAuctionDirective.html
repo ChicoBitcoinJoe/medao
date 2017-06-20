@@ -1,3 +1,4 @@
 <span>
-    <md-button class="medao-btn" ng-click="startAuction()" ng-disabled="disabled || waiting">start</md-button>
+    <md-button ng-show="!disabled" class="medao-btn" ng-click="startAuction()" ng-disabled="disabled || waiting">start</md-button>
+    <md-button ng-show="disabled" class="medao-btn" ng-disabled="true"><timer seconds="timer.seconds" alarm="timer.alarm"></timer></md-button>
 </span>

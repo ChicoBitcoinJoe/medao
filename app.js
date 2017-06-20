@@ -36,3 +36,9 @@ MeDao.filter('decimals', [function() {
         return value.toFixed(decimals);
     };
 }]);
+
+MeDao.filter('reverse', function() {
+  return function(items) {
+    return items.slice().reverse();
+  };
+});

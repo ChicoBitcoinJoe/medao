@@ -8,7 +8,6 @@ function($q,$mdDialog,Web3Service,MeDaoService,Notifier) {
 		replace: true,
 		templateUrl: 'directives/payment-btn/paymentDirective.html',
 		controller: function($scope){
-            console.log($scope.owner);
             
             function DialogController($scope, $mdDialog, data) {
                 $scope.owner = data.owner;
