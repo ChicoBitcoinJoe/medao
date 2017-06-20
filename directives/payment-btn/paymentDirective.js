@@ -1,5 +1,5 @@
-MeDao.directive('paymentBtn', ['$q','$mdDialog','Web3Service','MeDaoService','Notifier',
-function($q,$mdDialog,Web3Service,MeDaoService,Notifier) {
+app.directive('paymentBtn', ['$q','$mdDialog','Web3Service','MeDao','Notifier',
+function($q,$mdDialog,Web3Service,MeDao,Notifier) {
 	return {
 		restrict: 'E',
 		scope: {
@@ -26,17 +26,17 @@ function($q,$mdDialog,Web3Service,MeDaoService,Notifier) {
                 };
                 
                 $scope.maxTime = function() {
-                    MeDaoService.getMeDaoAddress($scope.owner)
+                    MeDao.getMeDaoAddress($scope.owner)
                     .then(function(medaoAddress){
                         return $q.all([
                             Web3Service.getCurrentAccount(),
-                            MeDaoService.getTokenAddress(medaoAddress)
+                            MeDao.getTokenAddress(medaoAddress)
                         ]);
                     }).then(function(promises){
                         var currentAccount = promises[0];
                         var tokenAddress = promises[1];
                         
-                        return MeDaoService.getBalanceOf(tokenAddress,currentAccount);
+                        return MeDao.getBalanceOf(tokenAddress,currentAccount);
                     }).then(function(timeBalanceInSeconds){
                         $scope.payment.amountInSeconds = timeBalanceInSeconds.toNumber();
                     });
@@ -45,7 +45,7 @@ function($q,$mdDialog,Web3Service,MeDaoService,Notifier) {
                 $scope.makePayment = function(){
                     $q.all([
                         Web3Service.getCurrentAccount(),
-                        MeDaoService.getMeDaoAddress($scope.owner)
+                        MeDao.getMeDaoAddress($scope.owner)
                     ]).then(function(promises){
                         var currentAccount = promises[0];
                         var medaoAddress = promises[1];
@@ -53,7 +53,7 @@ function($q,$mdDialog,Web3Service,MeDaoService,Notifier) {
                         if($scope.payment.comment == null)
                             $scope.payment.comment = '(no comment)';
                         
-                        return MeDaoService.submitProofOfWork(
+                        return MeDao.submitProofOfWork(
                             medaoAddress,
                             currentAccount,
                             $scope.payment.amountInSeconds, 

@@ -1,4 +1,4 @@
-MeDao.service('Notifier',['$q', function ($q) {
+app.service('Notifier',['$q', function ($q) {
     console.log('Loading Web3Service');
     
     var service = {

@@ -1,5 +1,5 @@
-MeDao.controller('HomeViewController', ['$scope','$location','Web3Service','MeDaoService',
-function($scope,$location,Web3Service,MeDaoService){
+app.controller('HomeViewController', ['$scope','$location','Web3Service','MeDao',
+function($scope,$location,Web3Service,MeDao){
     console.log('Loading Home View');
     
     $scope.loaded = false;
@@ -16,7 +16,7 @@ function($scope,$location,Web3Service,MeDaoService){
     Web3Service.getCurrentAccount()
     .then(function(account){
         $scope.account = account;
-        return MeDaoService.getMeDaoAddress(account);
+        return MeDao.getMeDaoAddress(account);
     }).then(function(medaoAddress){
         console.log(medaoAddress);
         if(medaoAddress == '0x0000000000000000000000000000000000000000')

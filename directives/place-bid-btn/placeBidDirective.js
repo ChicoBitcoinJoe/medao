@@ -1,5 +1,5 @@
-MeDao.directive('placeBidBtn', ['$q','$mdDialog','Web3Service','MeDaoService','Notifier',
-function($q,$mdDialog,Web3Service,MeDaoService,Notifier) {
+app.directive('placeBidBtn', ['$q','$mdDialog','Web3Service','MeDao','Notifier',
+function($q,$mdDialog,Web3Service,MeDao,Notifier) {
 	return {
 		restrict: 'E',
 		scope: {
@@ -46,19 +46,19 @@ function($q,$mdDialog,Web3Service,MeDaoService,Notifier) {
                 },15000);
 
                 $scope.getTeirData = function(){
-                    MeDaoService.getMeDaoAddress($scope.owner)
+                    MeDao.getMeDaoAddress($scope.owner)
                     .then(function(medaoAddress){
-                        return MeDaoService.getAuctionAddress(medaoAddress);
+                        return MeDao.getAuctionAddress(medaoAddress);
                     }).then(function(auctionAddress){
                         $scope.auctionAddress = auctionAddress;
-                        return MeDaoService.getTeirs(auctionAddress);
+                        return MeDao.getTeirs(auctionAddress);
                     }).then(function(teirs){
                         console.log(teirs);
                         $scope.teirs = teirs;
                         
                         var promises = [];
                         for(var i = 0; i < teirs.length; i++)
-                            promises[i] = MeDaoService.getTeirInfo($scope.auctionAddress,teirs[i]);
+                            promises[i] = MeDao.getTeirInfo($scope.auctionAddress,teirs[i]);
                         
                         return $q.all(promises);
                     }).then(function(promises){
@@ -141,17 +141,17 @@ function($q,$mdDialog,Web3Service,MeDaoService,Notifier) {
                 var bidInWei = web3.toWei(amountInEther,'ether');
                 console.log(bidInWei,touchingTeir);
                 
-                MeDaoService.getMeDaoAddress($scope.owner)
+                MeDao.getMeDaoAddress($scope.owner)
                 .then(function(medaoAddress){
                     return $q.all([
                         Web3Service.getCurrentAccount(),
-                        MeDaoService.getAuctionAddress(medaoAddress)
+                        MeDao.getAuctionAddress(medaoAddress)
                     ]);
                 }).then(function(promises){
                     var account = promises[0];
                     var medaoAddress = promises[1];
                     
-                    return MeDaoService.placeBid(
+                    return MeDao.placeBid(
                         medaoAddress,
                         account,
                         bidInWei,

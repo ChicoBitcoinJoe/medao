@@ -1,6 +1,6 @@
-var MeDao = angular.module('MeDao',['ngRoute','ngMaterial','ngMessages','material.svgAssetsCache','ngSanitize']);
+var app = angular.module('MeDao',['ngRoute','ngMaterial','ngMessages','material.svgAssetsCache','ngSanitize']);
 
-MeDao.config(function ($routeProvider) {
+app.config(function ($routeProvider) {
 	$routeProvider.
     when('/home', {
         templateUrl: 'views/home/homeView.html',
@@ -15,11 +15,11 @@ MeDao.config(function ($routeProvider) {
     });
 });
 
-MeDao.run(function() {
+app.run(function() {
     console.log('MeDao loading...');
 });
 
-MeDao.filter('fromWei', [function() {
+app.filter('fromWei', [function() {
     return function(value, convertTo) {
         if(value == null)
             return 0;
@@ -28,7 +28,7 @@ MeDao.filter('fromWei', [function() {
     };
 }]);
 
-MeDao.filter('decimals', [function() {
+app.filter('decimals', [function() {
     return function(value,decimals) {
         if(value == null)
             return 0;
@@ -37,7 +37,7 @@ MeDao.filter('decimals', [function() {
     };
 }]);
 
-MeDao.filter('reverse', function() {
+app.filter('reverse', function() {
   return function(items) {
     return items.slice().reverse();
   };

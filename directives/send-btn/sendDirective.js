@@ -1,5 +1,5 @@
-MeDao.directive('sendBtn', ['$q','$mdDialog','Web3Service','MeDaoService','Notifier',
-function($q,$mdDialog,Web3Service,MeDaoService,Notifier) {
+app.directive('sendBtn', ['$q','$mdDialog','Web3Service','MeDao','Notifier',
+function($q,$mdDialog,Web3Service,MeDao,Notifier) {
 	return {
 		restrict: 'E',
 		scope: {
@@ -37,17 +37,17 @@ function($q,$mdDialog,Web3Service,MeDaoService,Notifier) {
                 };
                 
                 $scope.maxTime = function() {
-                    MeDaoService.getMeDaoAddress($scope.owner)
+                    MeDao.getMeDaoAddress($scope.owner)
                     .then(function(medaoAddress){
                         return $q.all([
                             Web3Service.getCurrentAccount(),
-                            MeDaoService.getTokenAddress(medaoAddress)
+                            MeDao.getTokenAddress(medaoAddress)
                         ]);
                     }).then(function(promises){
                         var currentAccount = promises[0];
                         var tokenAddress = promises[1];
                         
-                        return MeDaoService.getBalanceOf(tokenAddress,currentAccount);
+                        return MeDao.getBalanceOf(tokenAddress,currentAccount);
                     }).then(function(timeBalanceInSeconds){
                         $scope.send.amountInSeconds = timeBalanceInSeconds.toNumber();
                     });
@@ -71,11 +71,11 @@ function($q,$mdDialog,Web3Service,MeDaoService,Notifier) {
                 };
 
                 $scope.sendTime = function(){
-                    MeDaoService.getMeDaoAddress($scope.owner)
+                    MeDao.getMeDaoAddress($scope.owner)
                     .then(function(medaoAddress){
-                        return MeDaoService.getTokenAddress(medaoAddress);
+                        return MeDao.getTokenAddress(medaoAddress);
                     }).then(function(tokenAddress){
-                        return MeDaoService.transfer(
+                        return MeDao.transfer(
                             tokenAddress,
                             $scope.send.address,
                             $scope.send.amountInSeconds

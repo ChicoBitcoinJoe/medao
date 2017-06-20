@@ -1,4 +1,4 @@
-MeDao.directive('timer', [function() {
+app.directive('timer', [function() {
 	return {
 		restrict: 'E',
 		scope: {

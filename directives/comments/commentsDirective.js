@@ -1,4 +1,4 @@
-MeDao.directive('comments', ['MeDaoService', function(MeDaoService) {
+app.directive('comments', ['MeDao', function(MeDao) {
 	return {
 		restrict: 'E',
 		scope: {
@@ -9,9 +9,9 @@ MeDao.directive('comments', ['MeDaoService', function(MeDaoService) {
 		controller: function($scope){
             $scope.comments = [];
             
-            MeDaoService.getMeDaoAddress($scope.owner)
+            MeDao.getMeDaoAddress($scope.owner)
             .then(function(medaoAddress){
-                return MeDaoService.getProofOfWorkEvents(medaoAddress,4*60*24*7);
+                return MeDao.getProofOfWorkEvents(medaoAddress,4*60*24*7);
             }).then(function(filter){
                 filter.watch(function(err,event){
                     if(!err){

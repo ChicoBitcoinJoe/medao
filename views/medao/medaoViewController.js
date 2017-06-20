@@ -1,5 +1,5 @@
-MeDao.controller('MeDaoViewController', ['$scope','$q','$location','Web3Service','MeDaoService',
-function($scope,$q,$location,Web3Service,MeDaoService){
+app.controller('MeDaoViewController', ['$scope','$q','$location','Web3Service','MeDao',
+function($scope,$q,$location,Web3Service,MeDao){
     console.log('Loading MeDao View');
     
 //State
@@ -34,14 +34,14 @@ function($scope,$q,$location,Web3Service,MeDaoService){
     
 //Setup
     
-    MeDaoService.getMeDaoAddress($scope.platform.medao.owner)
+    MeDao.getMeDaoAddress($scope.platform.medao.owner)
     .then(function(medaoAddress){
         $scope.platform.medao.address = medaoAddress;
         return $q.all([
-            MeDaoService.getTokenAddress($scope.platform.medao.address), 
-            MeDaoService.getAuctionAddress($scope.platform.medao.address),
-            MeDaoService.getWeeklyAuctionReward($scope.platform.medao.address),
-            MeDaoService.getCooldownTimestamp($scope.platform.medao.address),
+            MeDao.getTokenAddress($scope.platform.medao.address), 
+            MeDao.getAuctionAddress($scope.platform.medao.address),
+            MeDao.getWeeklyAuctionReward($scope.platform.medao.address),
+            MeDao.getCooldownTimestamp($scope.platform.medao.address),
         ]);
     }).then(function(promises){
         $scope.platform.token.address = promises[0];
@@ -49,7 +49,7 @@ function($scope,$q,$location,Web3Service,MeDaoService){
         $scope.platform.auction.reward = promises[2].toNumber();
         $scope.platform.medao.cooldown = promises[3].toNumber();
         
-        MeDaoService.getName($scope.platform.token.address)
+        MeDao.getName($scope.platform.token.address)
         .then(function(tokenName){
             $scope.platform.token.name = tokenName;
         }).catch(function(err){
@@ -76,14 +76,14 @@ function($scope,$q,$location,Web3Service,MeDaoService){
     
     var refreshAll = function(){
         
-        MeDaoService.getTeirs($scope.platform.auction.address)
+        MeDao.getTeirs($scope.platform.auction.address)
         .then(function(teirs){
             //console.log(teirs);
             $scope.teirs = teirs;
 
             var promises = [];
             for(var i = 0; i < teirs.length; i++)
-                promises[i] = MeDaoService.getTeirInfo($scope.platform.auction.address,teirs[i]);
+                promises[i] = MeDao.getTeirInfo($scope.platform.auction.address,teirs[i]);
 
             return $q.all(promises);
         }).then(function(promises){
@@ -109,7 +109,7 @@ function($scope,$q,$location,Web3Service,MeDaoService){
             console.error(err);
         });
         
-        MeDaoService.getAuctionTimestamp($scope.platform.medao.address)
+        MeDao.getAuctionTimestamp($scope.platform.medao.address)
         .then(function(timestamp){
             $scope.platform.auction.timestamp = timestamp.toNumber();
             var now = Math.floor(Date.now() / 1000);
@@ -118,21 +118,21 @@ function($scope,$q,$location,Web3Service,MeDaoService){
             console.error(err);
         });
         
-        MeDaoService.getTotalProofOfWork($scope.platform.medao.address)
+        MeDao.getTotalProofOfWork($scope.platform.medao.address)
         .then(function(proofOfWork){
             $scope.platform.medao.burned = proofOfWork.toNumber() / 3600;
         }).catch(function(err){
             console.error(err);
         });
 
-        MeDaoService.getHighestBid($scope.platform.auction.address)
+        MeDao.getHighestBid($scope.platform.auction.address)
         .then(function(highestBid){
             $scope.platform.auction.highestBidInWei = highestBid;
         }).catch(function(err){
             console.error(err);
         });
 
-        MeDaoService.getCurrentSupply($scope.platform.token.address)
+        MeDao.getCurrentSupply($scope.platform.token.address)
         .then(function(tokenSupply){
             $scope.platform.token.supply = tokenSupply.toNumber();
         }).catch(function(err){
@@ -150,7 +150,7 @@ function($scope,$q,$location,Web3Service,MeDaoService){
 
             return $q.all([
                 Web3Service.getEtherBalance(currentAccount),
-                MeDaoService.getBalanceOf($scope.platform.token.address, currentAccount)
+                MeDao.getBalanceOf($scope.platform.token.address, currentAccount)
             ]);
         }).then(function(promises){
             $scope.platform.account.weiBalance = promises[0];

@@ -1,4 +1,4 @@
-MeDao.service( 'Web3Service',['$q', function ($q) {
+app.service( 'Web3Service',['$q', function ($q) {
     console.log('Loading Web3Service');
     
     if (typeof web3 !== 'undefined') {

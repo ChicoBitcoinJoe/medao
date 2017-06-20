@@ -1,5 +1,5 @@
-MeDao.directive('startAuctionBtn', ['$q','Web3Service','MeDaoService',
-function($q,Web3Service,MeDaoService) {
+app.directive('startAuctionBtn', ['$q','Web3Service','MeDao',
+function($q,Web3Service,MeDao) {
 	return {
 		restrict: 'E',
 		scope: {
@@ -17,7 +17,7 @@ function($q,Web3Service,MeDaoService) {
             $scope.disabled = true;
             
             $scope.promises = $q.all([
-                MeDaoService.getMeDaoAddress($scope.owner),
+                MeDao.getMeDaoAddress($scope.owner),
                 Web3Service.getCurrentBlockNumber()
             ]);
             
@@ -27,12 +27,12 @@ function($q,Web3Service,MeDaoService) {
                     $scope.currentBlock = promises[1];
                     //console.log($scope.medaoAddress,$scope.currentBlock);
 
-                    return MeDaoService.getAuctionAddress($scope.medaoAddress);
+                    return MeDao.getAuctionAddress($scope.medaoAddress);
                 }).then(function(auctionAddress){
                     return $q.all([
                         Web3Service.getBlock($scope.currentBlock),
-                        MeDaoService.getAuctionTimestamp($scope.medaoAddress),
-                        MeDaoService.getHighestBid(auctionAddress)
+                        MeDao.getAuctionTimestamp($scope.medaoAddress),
+                        MeDao.getHighestBid(auctionAddress)
                     ]);
                 }).then(function(promises){
                     var blockTimestamp = promises[0].timestamp;
@@ -60,7 +60,7 @@ function($q,Web3Service,MeDaoService) {
                 
                 Web3Service.getCurrentAccount()
                 .then(function(currentAccount){
-                    return MeDaoService.startAuction($scope.medaoAddress, currentAccount);
+                    return MeDao.startAuction($scope.medaoAddress, currentAccount);
                 }).then(function(txHash){
                     $scope.waiting = true;
                     return Web3Service.getTransactionReceipt(txHash);
