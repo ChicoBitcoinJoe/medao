@@ -1,12 +1,16 @@
 <div class="black-background" style="overflow:auto;" flex>
     <div class="black-background" style="position:fixed;top:0px; height:125px; width:100%;z-index:10;">
-        <div layout="row" layout-align="left top">
-            <span class="cursor" layout="row" ng-click="goto('/home')">
-                <div class="rotate90" style="font-size:30px;">&Xi;</div>
-                <div style="margin: 9px 0px 0px 4px">eDao</div>
-            </span>
-            <span flex></span>
-            <md-button class="md-icon-button"><md-icon md-svg-src="libs/fonts/ic_notifications_none_white_24px.svg"></md-icon></md-button>
+        <div layout="row" layout-align="left top"  flex>
+            <div layout="row" layout-padding flex>
+                <span class="cursor" layout="row" ng-click="goto('/home')">
+                    <span style="font-size:16px;">l</span>
+                    <span style="font-size:10px; margin: 2px 1px">l</span>
+                    <span style="font-size:16px;">l</span>
+                    <span style="margin: 0px 1px">eDao</span>
+                </span>
+                <span flex></span>
+                <md-button class="md-icon-button"><md-icon md-svg-src="libs/fonts/ic_notifications_none_white_24px.svg"></md-icon></md-button>
+            </div>
         </div>
         <div layout="row" layout-align="center center" flex>
             <h1>{{platform.token.name}}</h1>
@@ -26,7 +30,11 @@
     <div layout="column" layout-gt-sm="row">
         <div layout="row" layout-gt-sm="column" layout-align="space-around center" layout-padding flex>
             <span layout="row" layout-align="center center" layout-padding flex="50">
-                <span><md-icon md-svg-src="libs/fonts/ic_loyalty_white_24px.svg"></md-icon></span>
+                <span layout="row">
+                    <span style="font-size:22px;">l</span>
+                    <span style="font-size:16px; margin: 4px 2px">l</span>
+                    <span style="font-size:22px;">l</span>
+                </span>
                 <span style="padding:0px;">{{platform.account.secondsBalance / 3600 | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> h</span></span>
             </span>
             <span layout="row" layout-align="center center" layout-padding flex="50">
@@ -37,11 +45,11 @@
         <div layout="row" layout-gt-sm="column" layout-align="space-around center" layout-padding flex>
             <span layout="row" layout-align="center center" layout-padding flex="50">
                 <span><md-icon md-svg-src="libs/fonts/ic_access_time_white_24px.svg"></md-icon></span>
-                <span style="padding:0px;">{{platform.token.supply / 3600 | decimals:1}}<span style="color:rgba(255,255,255,0.5)"> h</span></span>
+                <span style="padding:0px;">{{platform.token.supply / 3600 | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> h</span></span>
             </span>
             <span layout="row" layout-align="center center" layout-padding flex="50">
                 <span><md-icon md-svg-src="libs/fonts/ic_whatshot_white_24px.svg"></md-icon></span>
-                <span style="padding:0px;">{{platform.medao.burned | decimals:1}}<span style="color:rgba(255,255,255,0.5)"> h</span></span>
+                <span style="padding:0px;">{{platform.medao.burned | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> h</span></span>
             </span>
         </div>
         <div layout="row" layout-gt-sm="column" layout-align="space-around center" layout-padding flex>
@@ -76,14 +84,17 @@
         <div layout="row" layout-align="center center" flex>
             <h3>admin</h3>
         </div>
-        <div class="lighter-background" layout="row" flex>
-            <div layout="column" layout-align="top center" flex="50">
+        <div class="lighter-background" layout="column" layout-gt-sm="row" layout-align="center center" flex>
+            <div layout="row" layout-align="center center">
                 <set-reward-btn owner="platform.medao.owner"></set-reward-btn>
-                <md-button class="medao-btn" flex="50">set vault address</md-button>
+                <span>|</span>
+                <md-button class="medao-btn">set vault address</md-button>
             </div>
-            <div layout="column" layout-align="top center" flex="50">
-                <md-button class="medao-btn" flex="50">set burn minimum</md-button>
-                <md-button class="medao-btn" flex="50">transfer ownership</md-button>
+            <span hide show-gt-sm>|</span>
+            <div layout="row" layout-align="center center">
+                <md-button class="medao-btn">set burn minimum</md-button>
+                <span>|</span>
+                <md-button class="medao-btn">transfer ownership</md-button>
             </div>
         </div>
     </div>

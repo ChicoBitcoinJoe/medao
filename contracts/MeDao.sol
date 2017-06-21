@@ -132,6 +132,9 @@ contract OngoingAuction is Owned {
 ////////////////
     
     function addNewTeir_internal (uint new_teir, uint adjacent_teir) internal {
+        if(teirs[adjacent_teir].line_length == 0) throw;
+        if(new_teir == adjacent_teir) throw;
+        
         if (top_teir == 0) {
             teirs[new_teir] = Teir(0,new_teir,0,0,0,0);
             top_teir = new_teir;
@@ -159,7 +162,7 @@ contract OngoingAuction is Owned {
             
             teirs[new_teir] = Teir(teir_above,new_teir,teir_below,0,0,0);
             teirs[teir_above].teir_below = new_teir;
-            teirs[teir_above].teir_above = new_teir;
+            teirs[teir_below].teir_above = new_teir;
         }
         
         total_teirs++;

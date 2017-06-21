@@ -12,7 +12,6 @@ Home
 
 Icons
 
-- replace dollar icon with ether icon
 - show icon tooltip on hover
 
 MeDao
@@ -23,9 +22,8 @@ MeDao
 
 Admin
 
-- set weekly reward
 - set burn minimum
-- set deposit address
+- set vault address
 - set webpage url
 - transfer ownership
 

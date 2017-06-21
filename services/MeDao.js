@@ -6,7 +6,7 @@ function ($q,Web3Service) {
     
     var platform = {
         registry:{
-            address:'0xea60BAEe84D1019bad8ae63f42a4D08d9acE00bD',
+            address:'0x37C8Af7DE40e2c831a908e4ccfDF2B7A52Db3029',
             abi: [{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"medaos","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"total_medaos","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"name","type":"string"}],"name":"deploy","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"founders","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"inputs":[{"name":"Token","type":"address"}],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"founder","type":"address"},{"indexed":false,"name":"medao","type":"address"}],"name":"NewMeDao_event","type":"event"}]
         },
         medao:{
