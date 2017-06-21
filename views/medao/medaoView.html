@@ -15,7 +15,7 @@
         <div layout="row" layout-align="center center" flex>
             <div layout="column" layout-align="top center">
                 <h1 style="margin-bottom:8px;">{{platform.token.name}}</h1>
-                <a class="medao-url" href="http://medao.azurewebsites.net/">medao.azurewebsites.net</a>
+                <a class="medao-url cursor" ng-click="goToUrl('http://medao.azurewebsites.net')">http://medao.azurewebsites.net</a>
             </div>
         </div>
     </div>
@@ -28,7 +28,7 @@
         <span>|</span>
         <payment-btn owner="platform.medao.owner"></payment-btn>
         <span>|</span>
-        <receive-btn owner="platform.medao.owner">receive</receive-btn>
+        <receive-btn owner="platform.medao.owner"></receive-btn>
     </div>
     <div layout="column" layout-gt-sm="row">
         <div layout="row" layout-gt-sm="column" layout-align="space-around center" layout-padding flex>

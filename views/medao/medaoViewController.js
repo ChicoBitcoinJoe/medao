@@ -73,6 +73,10 @@ function($scope,$q,$location,Web3Service,MeDao){
         $location.path(path);
     };
     
+    $scope.goToUrl = function(url){
+        window.location.href = url;
+    };
+    
 //Internal
     
     var refreshAll = function(){
