@@ -27,7 +27,10 @@ function ($q,Web3Service) {
             
             var Registry = web3.eth.contract(platform.registry.abi).at(platform.registry.address);
             
-            $q.all([Web3Service.getCurrentAccount(),Web3Service.getGasPrice()]).then(function(array){
+            $q.all([
+                Web3Service.getCurrentAccount(),
+                Web3Service.getGasPrice()
+            ]).then(function(array){
                 var account = array[0];
                 var gasPrice = array[1];
                 
@@ -251,6 +254,21 @@ function ($q,Web3Service) {
             var MeDaoInstance = web3.eth.contract(platform.medao.abi).at(medaoAddress);
             
             MeDaoInstance.setBurnMinimum(minimum, {from:account},
+            function(err,tx){
+                if(!err){
+                    deferred.resolve(tx);
+                } else {
+                    deferred.reject(err);
+                }
+            });
+            
+            return deferred.promise;
+        },
+        setUrl: function(medaoAddress, account, newUrl) {
+            var deferred = $q.defer();
+            var MeDaoInstance = web3.eth.contract(platform.medao.abi).at(medaoAddress);
+            
+            MeDaoInstance.setUrl(newUrl, {from:account},
             function(err,tx){
                 if(!err){
                     deferred.resolve(tx);

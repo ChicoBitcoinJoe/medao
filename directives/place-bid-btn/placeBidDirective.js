@@ -37,7 +37,7 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
                     .then(function(account){
                         return Web3Service.getEtherBalance(account);
                     }).then(function(etherBalanceInWei){
-                        $scope.bid.amountInEther = web3.fromWei(etherBalanceInWei,'ether');
+                        $scope.bid.amountInEther = web3.fromWei(etherBalanceInWei,'ether').toNumber();
                     });
                 };
                 

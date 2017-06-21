@@ -12,7 +12,6 @@ Icons
 
 MeDao
 
-- receive
 - remove bid
 - start
 

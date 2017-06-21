@@ -1,5 +1,5 @@
 <div class="black-background" style="overflow:auto;" flex>
-    <div class="black-background" style="position:fixed;top:0px; height:125px; width:100%;z-index:10;">
+    <div class="black-background" style="position:fixed;top:0px; height:145px; width:100%;z-index:10;">
         <div layout="row" layout-align="left top"  flex>
             <div layout="row" layout-padding flex>
                 <span class="cursor" layout="row" ng-click="goto('/home')">
@@ -13,19 +13,22 @@
             </div>
         </div>
         <div layout="row" layout-align="center center" flex>
-            <h1>{{platform.token.name}}</h1>
+            <div layout="column" layout-align="top center">
+                <h1 style="margin-bottom:8px;">{{platform.token.name}}</h1>
+                <a class="medao-url" href="http://medao.azurewebsites.net/">medao.azurewebsites.net</a>
+            </div>
         </div>
     </div>
-    <div style="background-color: rgba(37,37,37,0.92);position:fixed;top:125px; height:3px; width:100%;z-index:10;"></div>
-    <div style="background-color: rgba(37,37,37,0.78);position:fixed;top:128px; height:3px; width:100%;z-index:10;"></div>
-    <div style="background-color: rgba(37,37,37,0.50);position:fixed;top:131px; height:3px; width:100%;z-index:10;"></div>
-    <div id="spacer" style="height:140px"></div>
+    <div style="background-color: rgba(37,37,37,0.92);position:fixed;top:145px; height:3px; width:100%;z-index:10;"></div>
+    <div style="background-color: rgba(37,37,37,0.78);position:fixed;top:148px; height:3px; width:100%;z-index:10;"></div>
+    <div style="background-color: rgba(37,37,37,0.50);position:fixed;top:151px; height:3px; width:100%;z-index:10;"></div>
+    <div id="spacer" style="height:160px"></div>
     <div class="lighter-background" layout="row" layout-align="center center" flex>
         <send-btn owner="platform.medao.owner"></send-btn>
         <span>|</span>
         <payment-btn owner="platform.medao.owner"></payment-btn>
         <span>|</span>
-        <md-button class="medao-btn">receive</md-button>
+        <receive-btn owner="platform.medao.owner">receive</receive-btn>
     </div>
     <div layout="column" layout-gt-sm="row">
         <div layout="row" layout-gt-sm="column" layout-align="space-around center" layout-padding flex>
