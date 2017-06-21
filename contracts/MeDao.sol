@@ -331,14 +331,14 @@ contract MeDao is Owned{
         AuctionWinner_event(winner,winning_bid_value);
     }
     
-    function burn (uint burnAmount, string metadataHash) 
+    function burn (uint burnAmount, string hash) 
     onlyTokenHolders (burn_minimum) {
         if(Token.balanceOf(msg.sender) < burnAmount) throw;
         
         Token.destroyTokens(msg.sender,burnAmount);
         total_proof_of_work += burnAmount;
         
-        ProofOfWork_event(msg.sender,burnAmount,metadataHash);
+        ProofOfWork_event(msg.sender,burnAmount,hash);
     }
     
 ////////////////
@@ -367,6 +367,10 @@ contract MeDao is Owned{
         scheduled_auction_timestamp = now + auction_period;
         
         NewWeeklyAuctionReward_event(weekly_auction_reward);
+    }
+    
+    function enableTransfers (bool allowed) onlyOwner {
+        Token.enableTransfers(allowed);
     }
     
 ////////////////
@@ -444,6 +448,7 @@ contract MeDaoDeployer {
         OngoingAuction Auction = new OngoingAuction();
         medaos[msg.sender] = new MeDao(msg.sender,MiniMeToken(token),Auction);
         medaos[msg.sender].transferOwnership(msg.sender);
+        MiniMeToken(token).changeController(medaos[msg.sender]);
         Auction.transferOwnership(medaos[msg.sender]);
         
         NewMeDao_event(msg.sender, medaos[msg.sender]);

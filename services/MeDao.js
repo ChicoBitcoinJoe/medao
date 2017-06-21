@@ -6,11 +6,11 @@ function ($q,Web3Service) {
     
     var platform = {
         registry:{
-            address:'0x37C8Af7DE40e2c831a908e4ccfDF2B7A52Db3029',
+            address:'0xef3dC7E2CB4969552C2fa9Fbc8CD7276309431AF',
             abi: [{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"medaos","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"total_medaos","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"name","type":"string"}],"name":"deploy","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"founders","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"inputs":[{"name":"Token","type":"address"}],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"founder","type":"address"},{"indexed":false,"name":"medao","type":"address"}],"name":"NewMeDao_event","type":"event"}]
         },
         medao:{
-            abi: [{"constant":true,"inputs":[],"name":"auction_period","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"cooldown_timestamp","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"newUrl","type":"string"}],"name":"setUrl","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"Vault","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"Founder","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"reward","type":"uint8"}],"name":"setWeeklyAuctionReward","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"version","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"url","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"Auction","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"newVault","type":"address"}],"name":"setVault","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"burnMinimum","type":"uint256"}],"name":"setBurnMinimum","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"startAuction","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"burnAmount","type":"uint256"},{"name":"metadataHash","type":"string"}],"name":"burn","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"total_proof_of_work","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"Token","type":"address"}],"name":"transferToVault","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"weekly_auction_reward","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"Token","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"scheduled_auction_timestamp","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"type":"function"},{"inputs":[{"name":"founder","type":"address"},{"name":"token","type":"address"},{"name":"auction","type":"address"}],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"winner","type":"address"},{"indexed":false,"name":"ether_bid","type":"uint256"}],"name":"AuctionWinner_event","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"sender","type":"address"},{"indexed":false,"name":"amount","type":"uint256"},{"indexed":false,"name":"metadataHash","type":"string"}],"name":"ProofOfWork_event","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"new_auction_reward","type":"uint256"}],"name":"NewWeeklyAuctionReward_event","type":"event"}]
+            abi: [{"constant":true,"inputs":[],"name":"auction_period","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"cooldown_timestamp","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"newUrl","type":"string"}],"name":"setUrl","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"Vault","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"Founder","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"reward","type":"uint8"}],"name":"setWeeklyAuctionReward","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"version","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"url","outputs":[{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"Auction","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"newVault","type":"address"}],"name":"setVault","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"burnMinimum","type":"uint256"}],"name":"setBurnMinimum","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[],"name":"startAuction","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"burnAmount","type":"uint256"},{"name":"hash","type":"string"}],"name":"burn","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"total_proof_of_work","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"Token","type":"address"}],"name":"transferToVault","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"weekly_auction_reward","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"Token","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"scheduled_auction_timestamp","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"allowed","type":"bool"}],"name":"enableTransfers","outputs":[],"payable":false,"type":"function"},{"inputs":[{"name":"founder","type":"address"},{"name":"token","type":"address"},{"name":"auction","type":"address"}],"payable":false,"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"winner","type":"address"},{"indexed":false,"name":"ether_bid","type":"uint256"}],"name":"AuctionWinner_event","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"sender","type":"address"},{"indexed":false,"name":"amount","type":"uint256"},{"indexed":false,"name":"metadataHash","type":"string"}],"name":"ProofOfWork_event","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"new_auction_reward","type":"uint256"}],"name":"NewWeeklyAuctionReward_event","type":"event"}]
         },
         auction:{
             abi: [{"constant":false,"inputs":[{"name":"deposit_address","type":"address"}],"name":"acceptHighestBid","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"bid_id","type":"uint256"}],"name":"getBidValue","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"total_teirs","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"bottom_teir","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"bids","outputs":[{"name":"id","type":"uint256"},{"name":"owner","type":"address"},{"name":"value","type":"uint256"},{"name":"cancelled","type":"bool"},{"name":"accepted","type":"bool"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"getTeirs","outputs":[{"name":"","type":"uint256[]"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"current_bids_open","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"bid_id","type":"uint256"}],"name":"getBidOwner","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"top_teir","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"adjacentTeir","type":"uint256"}],"name":"placeBid","outputs":[],"payable":true,"type":"function"},{"constant":true,"inputs":[{"name":"bidder","type":"address"}],"name":"getBids","outputs":[{"name":"","type":"uint256[]"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"total_bids_made","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"bid_id","type":"uint256"}],"name":"removeBid","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"teirs","outputs":[{"name":"teir_above","type":"uint256"},{"name":"value","type":"uint256"},{"name":"teir_below","type":"uint256"},{"name":"front_of_line_id","type":"uint256"},{"name":"back_of_line_id","type":"uint256"},{"name":"line_length","type":"uint256"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"bidders","outputs":[{"name":"current_bids_open","type":"uint256"},{"name":"total_bids_made","type":"uint256"}],"payable":false,"type":"function"},{"anonymous":false,"inputs":[{"indexed":false,"name":"bidder","type":"address"},{"indexed":false,"name":"bid_id","type":"uint256"},{"indexed":false,"name":"value","type":"uint256"}],"name":"NewBid_event","type":"event"}]
@@ -204,8 +204,68 @@ function ($q,Web3Service) {
         setWeeklyAuctionReward: function(medaoAddress, account, hours) {
             var deferred = $q.defer();
             var MeDaoInstance = web3.eth.contract(platform.medao.abi).at(medaoAddress);
-            console.log(medaoAddress, account, hours);
+            
             MeDaoInstance.setWeeklyAuctionReward(hours, {from:account},
+            function(err,tx){
+                if(!err){
+                    deferred.resolve(tx);
+                } else {
+                    deferred.reject(err);
+                }
+            });
+            
+            return deferred.promise;
+        },
+        setVault: function(medaoAddress, account, address) {
+            var deferred = $q.defer();
+            var MeDaoInstance = web3.eth.contract(platform.medao.abi).at(medaoAddress);
+            
+            MeDaoInstance.setVault(address, {from:account},
+            function(err,tx){
+                if(!err){
+                    deferred.resolve(tx);
+                } else {
+                    deferred.reject(err);
+                }
+            });
+            
+            return deferred.promise;
+        },
+        transferOwnership: function(medaoAddress, account, newOwner) {
+            var deferred = $q.defer();
+            var MeDaoInstance = web3.eth.contract(platform.medao.abi).at(medaoAddress);
+            
+            MeDaoInstance.transferOwnership(newOwner, {from:account},
+            function(err,tx){
+                if(!err){
+                    deferred.resolve(tx);
+                } else {
+                    deferred.reject(err);
+                }
+            });
+            
+            return deferred.promise;
+        },
+        setBurnMinimum: function(medaoAddress, account, minimum) {
+            var deferred = $q.defer();
+            var MeDaoInstance = web3.eth.contract(platform.medao.abi).at(medaoAddress);
+            
+            MeDaoInstance.setBurnMinimum(minimum, {from:account},
+            function(err,tx){
+                if(!err){
+                    deferred.resolve(tx);
+                } else {
+                    deferred.reject(err);
+                }
+            });
+            
+            return deferred.promise;
+        },
+        enableTransfers: function(medaoAddress, account, allowed) {
+            var deferred = $q.defer();
+            var MeDaoInstance = web3.eth.contract(platform.medao.abi).at(medaoAddress);
+            
+            MeDaoInstance.enableTransfers(allowed, {from:account},
             function(err,tx){
                 if(!err){
                     deferred.resolve(tx);
@@ -431,17 +491,22 @@ function ($q,Web3Service) {
         transfer: function(tokenAddress,to,amount) {
             var deferred = $q.defer();
             var tokenInstance = web3.eth.contract(platform.token.abi).at(tokenAddress);
-            
-            Web3Service.getCurrentAccount()
-            .then(function(from){
-                tokenInstance.transfer(to, amount, {from:from},
-                function(err, txHash) {
-                    if(err)
-                        deferred.reject(err);
-                    else
-                        deferred.resolve(txHash);
+            console.log(to)
+            if(to == '0x0000000000000000000000000000000000000000' || to == '0x0' || to == '0' || to == null)
+                deferred.reject('Sending to 0x0... is not allowed!');
+            else {
+                Web3Service.getCurrentAccount()
+                .then(function(from){
+                    tokenInstance.transfer(to, amount, {from:from},
+                    function(err, txHash) {
+                        if(err)
+                            deferred.reject(err);
+                        else
+                            deferred.resolve(txHash);
+                    });
                 });
-            });
+            }
+            
             return deferred.promise;
         }
     }

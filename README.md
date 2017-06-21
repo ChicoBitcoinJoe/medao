@@ -4,15 +4,11 @@
 
 Header
 
-- Notifications
-
-Home
-
-- yearly salary still set to zero 
+- Notifications (non critical)
 
 Icons
 
-- show icon tooltip on hover
+- show tooltip on hover over icon
 
 MeDao
 
@@ -22,10 +18,9 @@ MeDao
 
 Admin
 
-- set burn minimum
-- set vault address
 - set webpage url
-- transfer ownership
+- transfer to vault (non critical)
+- enable transfers (non critical)
 
 ### Notes
 

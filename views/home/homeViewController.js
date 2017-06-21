@@ -1,5 +1,5 @@
-app.controller('HomeViewController', ['$scope','$location','Web3Service','MeDao',
-function($scope,$location,Web3Service,MeDao){
+app.controller('HomeViewController', ['$scope','$location','$q','Web3Service','MeDao',
+function($scope,$location,$q,Web3Service,MeDao){
     console.log('Loading Home View');
     
     $scope.loaded = false;
@@ -21,8 +21,45 @@ function($scope,$location,Web3Service,MeDao){
         console.log(medaoAddress);
         if(medaoAddress == '0x0000000000000000000000000000000000000000')
             $scope.hasMedao = false;
-        else
+        else {
             $scope.hasMedao = true;
+            MeDao.getTeirs(medaoAddress)
+            .then(function(teirs){
+                console.log(teirs);
+                $scope.teirs = teirs;
+
+                var promises = [];
+                for(var i = 0; i < teirs.length; i++)
+                    promises[i] = MeDao.getTeirInfo(medaoAddress,teirs[i]);
+
+                return $q.all(promises);
+            }).then(function(promises){
+                var bids = 0;
+                var ether = 0;
+
+                for(var i = 0; i < promises.length; i++){
+                    var teirInfo = promises[i];
+                    //console.log(teirInfo);
+                    var value = teirInfo[1];
+                    var length = teirInfo[5].toNumber();
+                    var total = web3.fromWei(value,'ether') * length;
+                    //console.log(total);
+
+                    ether += (web3.fromWei(value,'ether').toNumber() * length);
+                    bids += length;
+                    
+                    if(bids > 40)
+                        i = promises.length;
+                }
+                if(bids == 0)
+                    $scope.salary = 0;
+                else
+                    $scope.salary = ether / bids * 40 * 52;
+
+            }).catch(function(err){
+                console.error(err);
+            });
+        }
         
         $scope.loaded = true;
     }).catch(function(err){

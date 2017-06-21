@@ -16,7 +16,7 @@
             <register-btn medao-name="medao.name" disabled="!medao.valid"></register-btn>  
         </div>
         <div ng-show="hasMedao" layout="column" layout-align="center center">
-            <p> 0 ETH / year</p>
+            <p> {{salary | decimals:1}} ETH / year</p>
             <md-button class="medao-btn md-raised md-primary" ng-disabled="!loaded" ng-click="goto(account+'/medao')">Go to MeDao</md-button>
         </div>
     </div>

@@ -4,7 +4,7 @@
             <div layout="row" layout-padding flex>
                 <span class="cursor" layout="row" ng-click="goto('/home')">
                     <span style="font-size:16px;">l</span>
-                    <span style="font-size:10px; margin: 2px 1px">l</span>
+                    <span style="font-size:10px; margin: 3px 1px">l</span>
                     <span style="font-size:16px;">l</span>
                     <span style="margin: 0px 1px">eDao</span>
                 </span>
@@ -87,15 +87,23 @@
         <div class="lighter-background" layout="column" layout-gt-sm="row" layout-align="center center" flex>
             <div layout="row" layout-align="center center">
                 <set-reward-btn owner="platform.medao.owner"></set-reward-btn>
-                <span>|</span>
-                <md-button class="medao-btn">set vault address</md-button>
+                <span hide show-gt-sm>|</span>
+                <set-vault-btn owner="platform.medao.owner"></set-vault-btn>
             </div>
             <span hide show-gt-sm>|</span>
             <div layout="row" layout-align="center center">
-                <md-button class="medao-btn">set burn minimum</md-button>
-                <span>|</span>
-                <md-button class="medao-btn">transfer ownership</md-button>
+                <set-burn-btn owner="platform.medao.owner"></set-burn-btn>
+                <span hide show-gt-sm>|</span>
+                <set-owner-btn owner="platform.medao.owner"></set-owner-btn>
             </div>
+            <span id="todo" hide>
+                <span hide show-gt-sm>|</span>
+                <div layout="row" layout-align="center center">
+                    <md-button class="medao-btn">enable transfers</md-button>
+                    <span hide show-gt-sm>|</span>
+                    <md-button class="medao-btn">transfer to vault</md-button>
+                </div>
+            </span>
         </div>
     </div>
     <div layout="row" layout-align="center center" flex>
