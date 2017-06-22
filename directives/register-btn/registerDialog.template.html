@@ -1,6 +1,6 @@
 <div layout="column" layout-padding layout-margin>
     <div style="position:absolute;top:-5px; right:-12px;">
-        <md-button class="md-icon-button" aria-label="back" ng-click="cancel()"><md-icon md-svg-src="libs/fonts/ic_close_white_24px.svg"></md-icon></md-button>
+        <md-button aria-label="cancel"  class="md-icon-button" aria-label="back" ng-click="cancel()"><md-icon md-svg-src="libs/fonts/ic_close_white_24px.svg"></md-icon></md-button>
     </div>
     <div>
         <h3>MeDao is in Pre-Alpha!</h3>
@@ -14,7 +14,7 @@
             <span flex></span>
             <div>
                 <md-input-container>
-                    <md-checkbox name="tos" ng-model="agreesToTerms" required>
+                    <md-checkbox aria-label="Agree to terms and conditions" name="tos" ng-model="agreesToTerms" required>
                         I accept the risk
                     </md-checkbox>
                 </md-input-container>
@@ -22,8 +22,8 @@
         </div>
         <div layout="column" layout-gt-xs="row" flex>
             <span flex></span>
-            <md-button href="https://github.com/ChicoBitcoinJoe/MeDao" class="md-raised md-warn">View Code</md-button>
-            <md-button class="md-raised md-primary" ng-disabled="!agreesToTerms" ng-click="answer(true);">Deploy</md-button>
+            <md-button aria-label="View code"  href="https://github.com/ChicoBitcoinJoe/MeDao" class="md-raised md-warn">View Code</md-button>
+            <md-button aria-label="Deploy me dao" class="md-raised md-primary" ng-disabled="!agreesToTerms" ng-click="answer(true);">Deploy</md-button>
         </div>
     </div>
 </div>

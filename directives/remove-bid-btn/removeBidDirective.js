@@ -38,11 +38,11 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
                     }).then(function(promises){
                         var auctionAddress = promises[0];
                         var currentAccount = promises[1];
-                        //console.log(auctionAddress);
+                        ////console.log(auctionAddress);
                         $scope.auctionAddress = auctionAddress;
                         return MeDao.getBids(auctionAddress,currentAccount);
                     }).then(function(bids){
-                        console.log(bids);
+                        //console.log(bids);
                         if(bids.length == 0)
                             $scope.noBids = true;
                         
@@ -57,19 +57,19 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
                             var bidInfo = promises[i];
                             var bidID = bidInfo[0].toNumber();
                             var value = bidInfo[2];
-                            console.log(value);
+                            //console.log(value);
                             var cancelled = bidInfo[3];
                             var accepted = bidInfo[4];
-                            console.log(cancelled,accepted);
+                            //console.log(cancelled,accepted);
                             if(!accepted && !cancelled){
-                                console.log('Setting bids[' + i + '] to ' + value);
+                                //console.log('Setting bids[' + i + '] to ' + value);
                                 $scope.bids.push({
                                     id: bidID,
                                     value: value
                                 });
                             }
                         }
-                        console.log($scope.bids);
+                        //console.log($scope.bids);
                     }).catch(function(err){
                         console.error(err);
                     });
@@ -96,11 +96,11 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
                         }
                     }
                 }).then(function(bidId) {
-                    //console.log(bidData.ether);
+                    ////console.log(bidData.ether);
                     if(bidId > 0)
                         $scope.removeBid(bidId);
                 }).catch(function() {
-                    //console.log('You cancelled the dialog.');
+                    ////console.log('You cancelled the dialog.');
                 });
             };
             

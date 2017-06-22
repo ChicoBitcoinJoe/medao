@@ -418,7 +418,6 @@ function ($q,Web3Service) {
             var deferred = $q.defer();
             var AuctionInstance = web3.eth.contract(platform.auction.abi).at(auctionAddress);
             
-            console.log(auctionAddress, account, bid_id);
             AuctionInstance.removeBid(bid_id, {from:account},
             function(err,tx){
                 if(!err){

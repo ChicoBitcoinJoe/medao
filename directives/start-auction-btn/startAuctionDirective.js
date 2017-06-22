@@ -66,7 +66,7 @@ function($q,Web3Service,MeDao) {
                     else
                         $scope.disabled = false;
                     
-                    console.log($scope.cooldown,$scope.disabled);
+                    //console.log($scope.cooldown,$scope.disabled);
                     
                 }).catch(function(err){
                     console.error(err);

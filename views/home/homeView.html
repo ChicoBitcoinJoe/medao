@@ -8,7 +8,7 @@
         <p style="font-size:20px;">What is <b>your</b> time worth?</p>
         <div ng-show="loaded && !hasMedao" layout="column" layout-align="center center">
             <md-input-container ng-class="{'dotted': dotted}" md-no-float>
-                <input class="medao-input"
+                <input aria-label="Enter your name"  class="medao-input"
                        ng-focus="onFocus()" 
                        ng-blur="onBlur()"
                        ng-model="medao.name">
@@ -17,7 +17,7 @@
         </div>
         <div ng-show="hasMedao" layout="column" layout-align="center center">
             <p> {{medao.salary | decimals:1}} eth / year</p>
-            <md-button class="medao-btn md-raised md-primary" ng-disabled="!loaded" ng-click="goto(account+'/medao')">Go to MeDao</md-button>
+            <md-button aria-label="Go to Me DAO" class="medao-btn md-raised md-primary" ng-disabled="!loaded" ng-click="goto(account+'/medao')">Go to MeDao</md-button>
         </div>
     </div>
 </div>
