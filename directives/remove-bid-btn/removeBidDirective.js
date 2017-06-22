@@ -121,12 +121,14 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
                         bidID
                     );
                 }).then(function(txHash){
-                    $scope.txHash = txHash;
-                    return Web3Service.getTransactionReceipt(txHash);
-                }).then(function(receipt){
-                    return Web3Service.getTransaction($scope.txHash);
-                }).then(function(receipt){
-                    Notifier.notify('Remove bid ' + bidID);
+                    var action = 'Remove bid ' + bidID;
+                
+                    var message = {
+                        txHash: txHash,
+                        action: action
+                    };
+                    
+                    Notifier.notify(message);
                 }).catch(function(err){
                     console.error(err);
                 });

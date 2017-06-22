@@ -159,12 +159,14 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
                         touchingTeir
                     );
                 }).then(function(txHash){
-                    $scope.txHash = txHash;
-                    return Web3Service.getTransactionReceipt(txHash);
-                }).then(function(receipt){
-                    return Web3Service.getTransaction($scope.txHash);
-                }).then(function(receipt){
-                    Notifier.notify('Bid of ' + web3.fromWei(receipt.value,'ether') + ' ether included in block ' + receipt.blockNumber);
+                    var action = 'Place bid of ' + amountInEther + ' ether';
+                    
+                    var message = {
+                        txHash: txHash,
+                        action: action
+                    };
+                    
+                    Notifier.notify(message);
                 }).catch(function(err){
                     console.error(err);
                 });

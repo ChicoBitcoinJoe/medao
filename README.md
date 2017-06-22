@@ -13,7 +13,6 @@ Icons
 Buttons
 
 - find other medaos
-- remove bid
 - set webpage url
 
 - transfer to vault (non critical)

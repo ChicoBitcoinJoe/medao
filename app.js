@@ -1,4 +1,4 @@
-var app = angular.module('MeDao',['ngRoute','ngMaterial','ngMessages','material.svgAssetsCache','ngSanitize','ngClickCopy']);
+var app = angular.module('MeDao',['ngRoute','ngMaterial','ngMessages','material.svgAssetsCache','ngSanitize','ngClickCopy','ui-notification']);
 
 app.config(function ($routeProvider) {
 	$routeProvider.
