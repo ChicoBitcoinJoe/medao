@@ -75,6 +75,8 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
                     .then(function(medaoAddress){
                         return MeDao.getTokenAddress(medaoAddress);
                     }).then(function(tokenAddress){
+                        console.log($scope.send.address,
+                            $scope.send.amountInSeconds);
                         return MeDao.transfer(
                             tokenAddress,
                             $scope.send.address,

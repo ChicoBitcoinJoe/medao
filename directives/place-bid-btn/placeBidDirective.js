@@ -39,12 +39,7 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
                     }).then(function(etherBalanceInWei){
                         $scope.bid.amountInEther = web3.fromWei(etherBalanceInWei,'ether').toNumber();
                     });
-                };
-                
-                web3.eth.filter('latest', function(error, result){
-                  if (!error)
-                    $scope.getTeirData();
-                });
+                };                
 
                 $scope.getTeirData = function(){
                     MeDao.getMeDaoAddress($scope.owner)
@@ -92,6 +87,12 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
                         console.error(err);
                     });
                 };
+                
+                $scope.getTeirData();
+                web3.eth.filter('latest', function(error, result){
+                  if (!error)
+                    $scope.getTeirData();
+                });
                 
                 $scope.setBidAmount = function(valueInWei){
                     //console.log(valueInWei);

@@ -1,6 +1,6 @@
 app.controller('HomeViewController', ['$scope','$location','$q','Web3Service','MeDao',
 function($scope,$location,$q,Web3Service,MeDao){
-    console.log('Loading Home View');
+    //console.log('Loading Home View');
     
     $scope.loaded = false;
     $scope.hasMedao = false;
@@ -29,7 +29,7 @@ function($scope,$location,$q,Web3Service,MeDao){
                 $scope.auctionAddress = auctionAddress;
                 return MeDao.getTeirs($scope.auctionAddress);    
             }).then(function(teirs){
-                console.log(teirs);
+                //console.log(teirs);
                 $scope.teirs = teirs;
 
                 var promises = [];
@@ -43,13 +43,13 @@ function($scope,$location,$q,Web3Service,MeDao){
 
                 for(var i = 0; i < promises.length; i++){
                     var teirInfo = promises[i];
-                    console.log(teirInfo);
+                    //console.log(teirInfo);
                     var value = teirInfo[1];
                     var length = teirInfo[5].toNumber();
                     var total = web3.fromWei(value,'ether') * length;
-                    console.log(value,length,total);
+                    //console.log(value,length,total);
                     var etherInTeir = web3.fromWei(value,'ether').toNumber() * length;
-                    console.log(etherInTeir);
+                    //console.log(etherInTeir);
                     
                     ether += etherInTeir;
                     bids += length;
@@ -58,7 +58,7 @@ function($scope,$location,$q,Web3Service,MeDao){
                         i = promises.length;
                 }
                 
-                console.log(ether,bids);
+                //console.log(ether,bids);
                 
                 if(bids == 0)
                     $scope.medao.salary = 0;
@@ -76,7 +76,7 @@ function($scope,$location,$q,Web3Service,MeDao){
     });
     
     $scope.$watch('medao.name', function(){
-        //console.log($scope.medao.name);
+        ////console.log($scope.medao.name);
         if($scope.medao.name.length > 0 && $scope.medao.name != 'Enter Your Name' && $scope.medao.name != null)
             $scope.medao.valid = true;
         else

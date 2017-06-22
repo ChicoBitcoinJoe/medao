@@ -17,7 +17,7 @@ function($q,Web3Service,MeDao) {
             $scope.cooldown = false;
             $scope.disabled = true;
             
-            $scope.interval = setInterval(function(){
+            $scope.updateAll = function(){
                 $q.all([
                     MeDao.getMeDaoAddress($scope.owner),
                     Web3Service.getCurrentBlockNumber()
@@ -40,16 +40,14 @@ function($q,Web3Service,MeDao) {
                     var highestBid = promises[2].toNumber();
                     var weeklyHours = promises[3].toNumber();
                     
+                    $scope.noBids = false;
                     if(highestBid == 0)
                         $scope.noBids = true;
                     
+                    $scope.noHours = false;
                     if(weeklyHours == 0)
-                        $scope.auctionDisabled = true;
+                        $scope.noHours = true;
                     
-                    if($scope.noBids || $scope.auctionDisabled)    
-                        $scope.disabled = true;
-                    else
-                        $scope.disabled = false;
                     
                     //console.log(blockTimestamp,$scope.blockTimestamp);
                     //console.log(auctionTimestamp, blockTimestamp)
@@ -63,12 +61,25 @@ function($q,Web3Service,MeDao) {
                     else
                         $scope.cooldown = true;
                     
-                    //console.log($scope.cooldown,$scope.disabled);
+                    if($scope.noBids || $scope.noHours)    
+                        $scope.disabled = true;
+                    else
+                        $scope.disabled = false;
+                    
+                    console.log($scope.cooldown,$scope.disabled);
                     
                 }).catch(function(err){
                     console.error(err);
                 });
-            }, 2500);
+            };
+            
+            $scope.updateAll();
+            web3.eth.filter('latest',function(err,result){
+                if(!err)
+                    $scope.updateAll();
+                else
+                    console.error(err);
+            });
             
             $scope.startAuction = function(){
                 //console.log($scope.medaoAddress);
@@ -77,11 +88,10 @@ function($q,Web3Service,MeDao) {
                 .then(function(currentAccount){
                     return MeDao.startAuction($scope.medaoAddress, currentAccount);
                 }).then(function(txHash){
-                    $scope.waiting = true;
+                    $scope.disabled = true;
                     return Web3Service.getTransactionReceipt(txHash);
                 }).then(function(receipt){
-                    $scope.waiting = false;
-                    $scope.disabled = true;
+                    console.log(receipt);
                 }).catch(function(err){
                     console.error(err);
                 });

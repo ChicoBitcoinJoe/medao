@@ -12,6 +12,7 @@ Icons
 
 Buttons
 
+- find other medaos
 - remove bid
 - set webpage url
 

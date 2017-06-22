@@ -81,7 +81,6 @@ function($scope,$q,$location,Web3Service,MeDao){
 //Internal
     
     var refreshAll = function(){
-        
         MeDao.getTeirs($scope.platform.auction.address)
         .then(function(teirs){
             //console.log(teirs);
