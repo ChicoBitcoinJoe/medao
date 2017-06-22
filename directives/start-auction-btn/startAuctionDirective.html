@@ -1,4 +1,5 @@
 <span>
-    <md-button ng-show="!disabled" class="medao-btn" ng-click="startAuction()" ng-disabled="disabled || waiting">start</md-button>
-    <md-button ng-show="disabled" class="medao-btn" ng-disabled="true"><timer seconds="timer.seconds" alarm="timer.alarm"></timer></md-button>
+    <md-button ng-show="!cooldown && !disabled" class="medao-btn" ng-click="startAuction()" ng-disabled="waiting">start</md-button>
+    <md-button ng-show="disabled" class="medao-btn" ng-disabled="true">disabled</md-button>
+    <md-button ng-show="cooldown" class="medao-btn" ng-disabled="true"><timer seconds="timer.seconds" alarm="timer.alarm"></timer></md-button>
 </span>

@@ -59,9 +59,10 @@ function($scope,$q,$location,Web3Service,MeDao){
         
         refreshAll();
         
-        setInterval(function(){
+        web3.eth.filter('latest', function(error, result){
+          if (!error)
             refreshAll();
-        }, 2000);
+        });
 
     }).catch(function(err){
         console.error(err);

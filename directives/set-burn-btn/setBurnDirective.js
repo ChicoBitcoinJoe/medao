@@ -62,9 +62,9 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
                         }
                     }
                 }).then(function(answer) {
-                    console.log(answer);
+                    //console.log(answer);
                 }).catch(function() {
-                    console.log('You cancelled the dialog.');
+                    //console.log('You cancelled the dialog.');
                 });
             };
 		},

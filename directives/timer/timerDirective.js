@@ -12,7 +12,6 @@ app.directive('timer', [function() {
             $scope.timer = null;
             
             $scope.text = {
-                short: null,
                 long: null
             };
             
@@ -38,20 +37,22 @@ app.directive('timer', [function() {
                     var minutes = Math.floor(seconds/60);
                     seconds = seconds - minutes*60;
                     ////console.log(minutes + ' minutes',seconds + ' seconds');
-
-                    $scope.text.short = $scope.timer + 's';
+                    
                     $scope.text.long = '~ ';
 
-                    if(days > 0)
+                    if(days > 0) {
                         $scope.text.long += days+'d ';
+                    }
                     if(hours > 0 || days > 0)
                         $scope.text.long += hours+'h ';
                     if(minutes > 0 || hours > 0 || days > 0)
                         $scope.text.long += minutes+'m ';
 
                     $scope.$apply(function(){
-                        //console.log($scope.timer);
                         $scope.text.long += seconds+'s ';
+                        
+                        //console.log($scope.text.long);
+                        
                         if($scope.timer <= 0){
                             $scope.alarm = true;
                             $scope.timer = null;

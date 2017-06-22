@@ -10,7 +10,8 @@ function($scope,$location,$q,Web3Service,MeDao){
     
     $scope.medao = {
         name: 'Enter Your Name',
-        valid: false
+        valid: false,
+        salary: null
     };
     
     Web3Service.getCurrentAccount()
@@ -18,19 +19,22 @@ function($scope,$location,$q,Web3Service,MeDao){
         $scope.account = account;
         return MeDao.getMeDaoAddress(account);
     }).then(function(medaoAddress){
-        console.log(medaoAddress);
+        $scope.medaoAddress = medaoAddress;
         if(medaoAddress == '0x0000000000000000000000000000000000000000')
             $scope.hasMedao = false;
         else {
             $scope.hasMedao = true;
-            MeDao.getTeirs(medaoAddress)
-            .then(function(teirs){
+            MeDao.getAuctionAddress($scope.medaoAddress)
+            .then(function(auctionAddress){
+                $scope.auctionAddress = auctionAddress;
+                return MeDao.getTeirs($scope.auctionAddress);    
+            }).then(function(teirs){
                 console.log(teirs);
                 $scope.teirs = teirs;
 
                 var promises = [];
                 for(var i = 0; i < teirs.length; i++)
-                    promises[i] = MeDao.getTeirInfo(medaoAddress,teirs[i]);
+                    promises[i] = MeDao.getTeirInfo($scope.auctionAddress,teirs[i]);
 
                 return $q.all(promises);
             }).then(function(promises){
@@ -39,22 +43,27 @@ function($scope,$location,$q,Web3Service,MeDao){
 
                 for(var i = 0; i < promises.length; i++){
                     var teirInfo = promises[i];
-                    //console.log(teirInfo);
+                    console.log(teirInfo);
                     var value = teirInfo[1];
                     var length = teirInfo[5].toNumber();
                     var total = web3.fromWei(value,'ether') * length;
-                    //console.log(total);
-
-                    ether += (web3.fromWei(value,'ether').toNumber() * length);
+                    console.log(value,length,total);
+                    var etherInTeir = web3.fromWei(value,'ether').toNumber() * length;
+                    console.log(etherInTeir);
+                    
+                    ether += etherInTeir;
                     bids += length;
                     
-                    if(bids > 40)
+                    if(bids > (40*52))
                         i = promises.length;
                 }
+                
+                console.log(ether,bids);
+                
                 if(bids == 0)
-                    $scope.salary = 0;
+                    $scope.medao.salary = 0;
                 else
-                    $scope.salary = ether / bids * 40 * 52;
+                    $scope.medao.salary = (ether / bids) * 40 * 52;
 
             }).catch(function(err){
                 console.error(err);
