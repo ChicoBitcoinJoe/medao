@@ -114,8 +114,6 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
 
                     return currentTeir;
                 };
-                
-                $scope.getTeirData();
             }
             
             $scope.openBidDialog = function(ev) {
@@ -164,8 +162,6 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
                     $scope.txHash = txHash;
                     return Web3Service.getTransactionReceipt(txHash);
                 }).then(function(receipt){
-                    //console.log(receipt);
-                    clearInterval($scope.interval);
                     return Web3Service.getTransaction($scope.txHash);
                 }).then(function(receipt){
                     Notifier.notify('Bid of ' + web3.fromWei(receipt.value,'ether') + ' ether included in block ' + receipt.blockNumber);
