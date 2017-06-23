@@ -1,4 +1,32 @@
 <div class="black-background">
+    <div class="black-background" style="position:fixed;top:0px; height:145px; width:100%;z-index:10;">
+        <div layout="row" layout-align="left top"  flex>
+            <div layout="row" layout-padding flex>
+                <span class="cursor" style="margin-right:12px;" layout="row" ng-click="goto('/home')">
+                    <span style="font-size:16px;">l</span>
+                    <span style="font-size:10px; margin: 3px 1px">l</span>
+                    <span style="font-size:16px;">l</span>
+                    <span style="margin: 0px 1px">eDao</span>
+                </span>
+                <span ng-hide="showSearch" flex></span>
+                <span class="search-bar" ng-class="{'lighter-background':showSearch}" style="padding:0px 4px" ng-show="showSearch" layout="row" flex>
+                    <md-input-container style="margin:0px" md-no-float flex>
+                        <label>Enter an address</label>
+                        <input type="text" ng-model="search.text">
+                    </md-input-container>
+                </span>
+                <md-button ng-show="showSearch" class="search-bar-btn search-btn" ng-class="{'lighter-background':showSearch}" ng-click="validateSearch(search.text)">
+                    <md-icon aria-label="search medaos" md-svg-src="libs/fonts/ic_search_white_24px.svg"></md-icon>
+                </md-button>
+                <md-button ng-show="showSearch" class="search-bar-btn" ng-click="showSearch = !showSearch">
+                    <md-icon aria-label="hide search bar" md-svg-src="libs/fonts/ic_close_white_24px.svg"></md-icon>
+                </md-button>
+                <md-button ng-hide="showSearch" class="search-bar-btn" ng-class="{'lighter-background':showSearch}" ng-click="showSearch = !showSearch">
+                    <md-icon aria-label="show search bar" md-svg-src="libs/fonts/ic_search_white_24px.svg"></md-icon>
+                </md-button>
+            </div>
+        </div>
+    </div>
     <div  style="height:100vh;" layout="column" layout-align="center center" flex>
         <h1 layout="row">
             <span>l</span>

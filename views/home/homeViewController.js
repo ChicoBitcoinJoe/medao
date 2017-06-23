@@ -83,9 +83,17 @@ function($scope,$location,$q,Web3Service,MeDao){
             $scope.medao.valid = false;
     });
     
+    $scope.validateSearch = function(address){
+        if(web3.isAddress(address)) {
+            $scope.goto(address + '/medao');
+            $scope.search.isValidAddress = true;
+        } else
+            $scope.search.isValidAddress = false;
+    };
+    
     $scope.goto = function(path){
         $location.path(path);
-    }
+    };
 
     $scope.onFocus = function(){
         $scope.dotted = false;
