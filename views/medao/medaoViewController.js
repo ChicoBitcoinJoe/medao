@@ -89,7 +89,7 @@ function($scope,$q,$location,Web3Service,MeDao){
         MeDao.getUrl($scope.platform.medao.address)
         .then(function(url){
             $scope.platform.medao.url = url;
-            console.log($scope.platform.medao.url);
+            //console.log($scope.platform.medao.url);
         }).catch(function(err){
             console.error(err);
         });

@@ -9,7 +9,6 @@ Icons
 Buttons
 
 - transfer to vault (non critical)
-- enable transfers (non critical)
 
 ### Notes
 

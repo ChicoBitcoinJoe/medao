@@ -507,6 +507,20 @@ function ($q,Web3Service) {
             });
             return deferred.promise;
         },
+        transfersEnabled: function(tokenAddress){
+            var deferred = $q.defer();
+            var TokenInstance = web3.eth.contract(platform.token.abi).at(tokenAddress);
+            
+            TokenInstance.transfersEnabled(
+            function(err, enabled){
+                if(!err)
+                    deferred.resolve(enabled);
+                else 
+                    deferred.reject(err);
+            });
+            
+            return deferred.promise;
+        },
         getController: function(tokenAddress) {
             var deferred = $q.defer();
             var tokenInstance = web3.eth.contract(platform.token.abi).at(tokenAddress);
