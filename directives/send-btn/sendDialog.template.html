@@ -37,7 +37,7 @@
                 <label>Amount in Seconds</label>
                 <input type="number" ng-model="send.amountInSeconds">
             </md-input-container>
-            <div ng-show="send.amountInSeconds > 0">
+            <div ng-show="send.amountInSeconds > 0" layout="column" layout-align="center center">
                 <p>~ {{send.amountInSeconds / 3600 | decimals:2}} hours</p>
                 <span> or </span>
                 <p>~ {{send.amountInSeconds / 60 | decimals:2}} minutes</p>
