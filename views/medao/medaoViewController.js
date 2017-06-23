@@ -18,7 +18,8 @@ function($scope,$q,$location,Web3Service,MeDao){
             address: null,
             owner: $location.path().split('/')[1],
             cooldown: null,
-            burned: null
+            burned: null,
+            url: null
         },
         token: {
             address: null,
@@ -47,7 +48,7 @@ function($scope,$q,$location,Web3Service,MeDao){
         return $q.all([
             MeDao.getTokenAddress($scope.platform.medao.address), 
             MeDao.getAuctionAddress($scope.platform.medao.address),
-            MeDao.getCooldownTimestamp($scope.platform.medao.address),
+            MeDao.getCooldownTimestamp($scope.platform.medao.address)
         ]);
     }).then(function(promises){
         $scope.platform.token.address = promises[0];
@@ -85,6 +86,14 @@ function($scope,$q,$location,Web3Service,MeDao){
 //Internal
     
     var refreshAll = function(){
+        MeDao.getUrl($scope.platform.medao.address)
+        .then(function(url){
+            $scope.platform.medao.url = url;
+            console.log($scope.platform.medao.url);
+        }).catch(function(err){
+            console.error(err);
+        });
+        
         MeDao.getTeirs($scope.platform.auction.address)
         .then(function(teirs){
             //console.log(teirs);

@@ -1,0 +1,15 @@
+<div style="z-index:100 !important; height:100%;" layout="column" layout-padding>
+    <div style="position:absolute;top:-5px; right:-12px;">
+        <md-button class="md-icon-button" aria-label="back" ng-click="back()"><md-icon md-svg-src="libs/fonts/ic_close_white_24px.svg"></md-icon></md-button>
+    </div>
+    <h3>Set Webpage Url</h3>
+    <div>
+        <md-input-container class="md-block" style="border-bottom:1px solid rgba(255,255,255,0.67)">
+            <label>Url</label>
+            <input type="text" ng-model="url.new">
+        </md-input-container>
+    </div>
+    <div layout="row" flex>
+        <md-button class="medao-btn md-raised md-primary" ng-click="setUrl()" ng-disabled="url.new == null" flex>set url</md-button>
+    </div>
+</div>

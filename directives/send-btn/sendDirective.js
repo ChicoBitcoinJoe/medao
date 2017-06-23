@@ -32,7 +32,7 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
                     .then(function(account){
                         return Web3Service.getEtherBalance(account);
                     }).then(function(etherBalanceInWei){
-                        $scope.send.amountInEther = web3.fromWei(etherBalanceInWei,'ether');
+                        $scope.send.amountInEther = web3.fromWei(etherBalanceInWei,'ether').toNumber();
                     });
                 };
                 

@@ -29,7 +29,8 @@
         <div layout="row" layout-align="center center" flex>
             <div layout="column" layout-align="top center">
                 <h1 style="margin-bottom:8px;">{{platform.token.name}}</h1>
-                <a class="medao-url cursor" ng-click="goToUrl('http://medao.azurewebsites.net')">http://medao.azurewebsites.net</a>
+                <a ng-show="platform.medao.url != ''" class="medao-url cursor" ng-click="goToUrl(platform.medao.url)">{{platform.medao.url}}</a>
+                <span ng-show="platform.medao.url == ''" class="medao-url">no webpage set</span>
             </div>
         </div>
     </div>
@@ -113,14 +114,12 @@
                 <span hide show-gt-sm>|</span>
                 <set-owner-btn owner="platform.medao.owner"></set-owner-btn>
             </div>
-            <span id="todo" hide>
+            <span hide show-gt-sm>|</span>
+            <div layout="row" layout-align="center center">
+                <md-button class="medao-btn">{{transferStatus}} transfers</md-button>
                 <span hide show-gt-sm>|</span>
-                <div layout="row" layout-align="center center">
-                    <md-button class="medao-btn">enable transfers</md-button>
-                    <span hide show-gt-sm>|</span>
-                    <md-button class="medao-btn">transfer to vault</md-button>
-                </div>
-            </span>
+                <set-url-btn owner="platform.medao.owner"></set-url-btn>
+            </div>
         </div>
     </div>
     <div layout="row" layout-align="center center" flex>
