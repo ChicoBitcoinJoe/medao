@@ -15,7 +15,7 @@
                         <input type="text" ng-model="search.text">
                     </md-input-container>
                 </span>
-                <md-button ng-show="showSearch" class="search-bar-btn search-btn" ng-class="{'lighter-background':showSearch}" ng-click="goto(search.text+'/medao')">
+                <md-button ng-show="showSearch" class="search-bar-btn search-btn" ng-class="{'lighter-background':showSearch}" ng-click="validateSearch(search.text)">
                     <md-icon aria-label="search medaos" md-svg-src="libs/fonts/ic_search_white_24px.svg"></md-icon>
                 </md-button>
                 <md-button ng-show="showSearch" class="search-bar-btn" ng-click="showSearch = !showSearch">
@@ -47,47 +47,87 @@
     </div>
     <div layout="column" layout-gt-sm="row">
         <div layout="row" layout-gt-sm="column" layout-align="space-around center" layout-padding flex>
-            <span layout="row" layout-align="center center" layout-padding flex="50">
-                <span layout="row">
-                    <span style="font-size:22px;">l</span>
-                    <span style="font-size:16px; margin: 4px 2px">l</span>
-                    <span style="font-size:22px;">l</span>
+            <span layout="row" layout-align="center center" flex="50">
+                <span layout="row" layout-align="center center" layout-padding>
+                    <span layout="row">
+                        <span style="font-size:22px;">l</span>
+                        <span style="font-size:16px; margin: 4px 2px">l</span>
+                        <span style="font-size:22px;">l</span>
+                    </span>
+                    <span style="padding:0px;">{{platform.account.secondsBalance / 3600 | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> h</span></span>
+                    <md-tooltip md-direction="right">
+                        <small>Hours invested in {{platform.token.name}}</small>
+                    </md-tooltip>
                 </span>
-                <span style="padding:0px;">{{platform.account.secondsBalance / 3600 | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> h</span></span>
             </span>
-            <span layout="row" layout-align="center center" layout-padding flex="50">
-                <span style="font-size:24px;">&Xi;</span>
-                <span style="padding:0px;">{{platform.account.weiBalance | fromWei:'ether' | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> eth</span></span>
-            </span>
-        </div>
-        <div layout="row" layout-gt-sm="column" layout-align="space-around center" layout-padding flex>
-            <span layout="row" layout-align="center center" layout-padding flex="50">
-                <span><md-icon md-svg-src="libs/fonts/ic_access_time_white_24px.svg"></md-icon></span>
-                <span style="padding:0px;">{{platform.token.supply / 3600 | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> h</span></span>
-            </span>
-            <span layout="row" layout-align="center center" layout-padding flex="50">
-                <span><md-icon md-svg-src="libs/fonts/ic_whatshot_white_24px.svg"></md-icon></span>
-                <span style="padding:0px;">{{platform.medao.burned | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> h</span></span>
+            <span layout="row" layout-align="center center" flex="50">
+                <span layout="row" layout-align="center center" layout-padding>
+                   <span style="font-size:24px;">&Xi;</span>
+                    <span style="padding:0px;">{{platform.account.weiBalance | fromWei:'ether' | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> eth</span></span>
+                    <md-tooltip md-direction="left">
+                        <small>Current Ether in your wallet</small>
+                    </md-tooltip>
+                </span>
             </span>
         </div>
         <div layout="row" layout-gt-sm="column" layout-align="space-around center" layout-padding flex>
             <span layout="row" layout-align="center center" layout-padding flex="50">
-                <span><md-icon aria-label="total ether bid" md-svg-src="libs/fonts/ic_lock_white_24px.svg"></md-icon></span>
-                <span>{{platform.auction.locked | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> eth</span></span>
+                <span layout="row" layout-align="center center" layout-padding>
+                    <span><md-icon md-svg-src="libs/fonts/ic_access_time_white_24px.svg"></md-icon></span>
+                    <span style="padding:0px;">{{platform.token.supply / 3600 | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> h</span></span>
+                    <md-tooltip md-direction="right">
+                        <small>Total hours owed by {{platform.token.name}}</small>
+                    </md-tooltip>
+                </span>
             </span>
-            <span layout="row" layout-align="center center" layout-padding flex="50">
-                <span><md-icon md-svg-src="libs/fonts/ic_trending_up_white_24px.svg"></md-icon></span>
-                <span>{{platform.auction.bids}}<span style="color:rgba(255,255,255,0.5)"> bids</span></span>
+            <span layout="row" layout-align="center center" flex="50">
+                <span layout="row" layout-align="center center" layout-padding>
+                    <span><md-icon md-svg-src="libs/fonts/ic_whatshot_white_24px.svg"></md-icon></span>
+                    <span style="padding:0px;">{{platform.medao.burned | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> h</span></span>
+                    <md-tooltip md-direction="left">
+                        <small>Proof of total hours worked</small>
+                    </md-tooltip>
+                </span>
             </span>
         </div>
         <div layout="row" layout-gt-sm="column" layout-align="space-around center" layout-padding flex>
             <span layout="row" layout-align="center center" layout-padding flex="50">
-                <span><md-icon md-svg-src="libs/fonts/ic_arrow_upward_white_24px.svg"></md-icon></span>
-                <span>{{platform.auction.highestBidInWei | fromWei:'ether'}} <span style="color:rgba(255,255,255,0.5)">eth</span></span>
+                <span layout="row" layout-align="center center" layout-padding>
+                    <span><md-icon aria-label="total ether bid" md-svg-src="libs/fonts/ic_lock_white_24px.svg"></md-icon></span>
+                    <span>{{platform.auction.locked | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> eth</span></span>
+                    <md-tooltip md-direction="right">
+                        <small>Total ether bid at auction</small>
+                    </md-tooltip>
+                </span>
             </span>
             <span layout="row" layout-align="center center" layout-padding flex="50">
-                <span><md-icon md-svg-src="libs/fonts/ic_add_white_24px.svg"></md-icon></span>
-                <span>{{platform.auction.reward}} <span style="color:rgba(255,255,255,0.5)"> h/wk</span></span>
+                <span layout="row" layout-align="center center" layout-padding>
+                    <span><md-icon md-svg-src="libs/fonts/ic_trending_up_white_24px.svg"></md-icon></span>
+                    <span>{{platform.auction.bids}}<span style="color:rgba(255,255,255,0.5)"> bids</span></span>
+                    <md-tooltip md-direction="left">
+                        <small>Total bids placed at auction</small>
+                    </md-tooltip>
+                </span>
+            </span>
+        </div>
+        <div layout="row" layout-gt-sm="column" layout-align="space-around center" layout-padding flex>
+            <span layout="row" layout-align="center center" layout-padding flex="50">
+                <span layout="row" layout-align="center center" layout-padding>
+                    <span><md-icon md-svg-src="libs/fonts/ic_arrow_upward_white_24px.svg"></md-icon></span>
+                    <span>{{platform.auction.highestBidInWei | fromWei:'ether'}} <span style="color:rgba(255,255,255,0.5)">eth</span></span>
+                    <md-tooltip md-direction="right">
+                        <small>Total ether bid at auction</small>
+                    </md-tooltip>
+                </span>
+            </span>
+            <span layout="row" layout-align="center center" layout-padding flex="50">
+                <span layout="row" layout-align="center center" layout-padding>
+                    <span><md-icon md-svg-src="libs/fonts/ic_add_white_24px.svg"></md-icon></span>
+                    <span>{{platform.auction.reward}} <span style="color:rgba(255,255,255,0.5)"> h/wk</span></span>
+                    <md-tooltip md-direction="left">
+                        <small>Hours awarded at auction each week</small>
+                    </md-tooltip>
+                </span>
             </span>
         </div>
     </div>
