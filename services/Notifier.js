@@ -6,14 +6,10 @@ app.service('Notifier',['$q','Notification','Web3Service', function ($q, Notific
             Web3Service.getTransactionReceipt(message.txHash)
             .then(function(receipt){
                 console.log(receipt.gasUsed,receipt.cumulativeGasUsed,receipt);
-                if(receipt.gasUsed == receipt.cumulativeGasUsed) {
-                    Notification.error('FAILED: ' + message.action);
-                    console.error(receipt);
-                } else
-                    Notification.success('SUCCESS: ' + message.action);
+                Notification.success({title:'SUCCESS',message:message.action, delay: 10000});
             }).catch(function(err){
+                Notification.error({title:'FAILED',message:message.action, delay: 10000});
                 console.error(err);
-                Notification.error('FAILED: ' + message.action);
             });
         }
 	};

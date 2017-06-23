@@ -2,10 +2,6 @@
 
 ### TO DO
 
-Header
-
-- Notifications (non critical)
-
 Icons
 
 - show tooltip on hover over icon

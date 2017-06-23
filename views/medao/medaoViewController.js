@@ -4,6 +4,10 @@ function($scope,$q,$location,Web3Service,MeDao){
     
 //State
     
+    $scope.search = {
+        text: null
+    }
+    
     $scope.platform = {
         account: {
             address: null,
