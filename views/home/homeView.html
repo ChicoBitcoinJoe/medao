@@ -42,6 +42,7 @@
                        ng-model="medao.name">
             </md-input-container>
             <register-btn medao-name="medao.name" disabled="!medao.valid"></register-btn>  
+            <md-button class="medao-btn" aria-label="preview medao" ng-click="goto('0x368c93667090fb02a6159f0d44b145499b6fc7e1/medao')">preview</md-button>
         </div>
         <div ng-show="hasMedao" layout="column" layout-align="center center">
             <p> {{medao.salary | decimals:1}} eth / year</p>

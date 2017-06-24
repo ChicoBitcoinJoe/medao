@@ -88,7 +88,6 @@ function($q,Web3Service,MeDao) {
                 .then(function(currentAccount){
                     return MeDao.startAuction($scope.medaoAddress, currentAccount);
                 }).then(function(txHash){
-                    $scope.disabled = true;
                     return Web3Service.getTransactionReceipt(txHash);
                 }).then(function(receipt){
                     console.log(receipt);

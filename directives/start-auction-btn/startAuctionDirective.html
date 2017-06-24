@@ -1,5 +1,5 @@
 <span>
-    <md-button aria-label="start auction" ng-show="!cooldown && !disabled" class="medao-btn" ng-click="startAuction()">start</md-button>
-    <md-button aria-label="auction disabled" ng-show="disabled && !cooldown" class="medao-btn" ng-disabled="true">auction</md-button>
+    <md-button aria-label="start auction" ng-show="!cooldown && !disabled" class="medao-btn" ng-click="startAuction()">start auction</md-button>
+    <md-button aria-label="auction disabled" ng-show="disabled && !cooldown" class="medao-btn" ng-disabled="true">auction disabled</md-button>
     <md-button aria-label="auction on cooldown" ng-show="cooldown" class="medao-btn" ng-disabled="true"><timer seconds="timer.seconds" alarm="timer.alarm"></timer></md-button>
 </span>
