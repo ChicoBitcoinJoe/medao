@@ -1,205 +1,169 @@
-<div style="position:fixed; top:5px; left: 5px;">
-    <md-button hide-gt-lg class="nav-button blue-background" ng-show="(screenIsSmall && view.panels.medao) || (!view.panels.manage && screenIsBig)" ng-click="showPanel('manage')">
-        <md-icon style="margin:3px;" aria-label="back" md-svg-src="libs/fonts/ic_keyboard_arrow_left_white_24px.svg"></md-icon>
-        actions&nbsp
-    </md-button>
-    <md-button class="nav-button blue-background" ng-show="view.panels.posts && screenIsSmall" ng-click="showPanel('medao')">
-        <md-icon style="margin:3px;" aria-label="back" md-svg-src="libs/fonts/ic_keyboard_arrow_left_white_24px.svg"></md-icon>
-        &nbspback&nbsp&nbsp
-    </md-button>
-</div>
-<div style="position:fixed; top:5px; right: 5px;">
-    <md-button hide-gt-lg class="nav-button blue-background" ng-show="(!view.panels.posts && screenIsBig) || (screenIsSmall && view.panels.medao)" ng-click="showPanel('posts')">
-        comments&nbsp
-        <md-icon style="margin:3px;" aria-label="back" md-svg-src="libs/fonts/ic_keyboard_arrow_right_white_24px.svg"></md-icon>
-    </md-button>
-    <md-button class="nav-button blue-background" ng-show="view.panels.manage && screenIsSmall" ng-click="showPanel('medao')">
-        back&nbsp
-        <md-icon style="margin:3px;" aria-label="back" md-svg-src="libs/fonts/ic_keyboard_arrow_right_white_24px.svg"></md-icon>
-    </md-button>
-</div>
-<div style="width:100%; height:100vh;">
-    <div layout="column" layout-gt-sm="row" layout-fill>
-        <div class="darker-background" ng-show="view.panels.manage || screenIsReallyBig" layout="column" layout-fill flex flex-gt-sm="50">
-            <div style="overflow:hidden" layout="column" layout-fill>
-                <h3 layout="row" layout-padding layout-margin>MeDao Actions</h3>
-                <div style="overflow:auto">
-                    <div layout="column" layout-padding>
-                        <h3 style="margin-bottom:0px;">Place Bid <small>(Top 5 Bidding Teirs)</small></h3>
-                        <div> </div>
-                        <div>
-                            <div layout="column" layout-align="center center">
-                                <p>A bid placed on a new teir must have an adjecent teir (or anchor teir) selected. This can be eventually automated away. Click on a teir to set it as the anchor teir.</p>
-                                <div ng-repeat="value in medao.auction.teirs track by $index" layout="row" flex>
-                                    <div class="cursor" ng-click="medao.placeBid.touchingTeir = value">
-                                        {{medao.totalBids[value]}} bids at <b>{{value | fromWei:'ether'}} Ether</b>
-                                    </div>
-                                </div>
-                            </div>
-                            <md-input-container class="md-block" md-no-float>
-                                <label>Ether</label>
-                                <input type="number" ng-model="medao.auction.placeBid.ether">
-                            </md-input-container>
-                            <p flex><span flex></span><small>Anchor Teir: {{medao.placeBid.touchingTeir | fromWei:'ether'}}</small></p>
-                            <div layout="row" flex>
-                                <md-button class="nav-button md-raised md-warn" ng-click="medao.auction.placeBid.ether = currentAccount.ether.balance">max</md-button>
-                                    <md-button class="nav-button md-raised" ng-click="medao.auction.placeBid.ether = medao.auction.highestBid">highest</md-button>
-                                <span flex></span>
-                                <md-button class="nav-button md-raised md-primary" ng-disabled="!(medao.auction.placeBid.ether > 0 || medao.placeBid.touchingTeir == 0)" ng-click="placeBid()">place</md-button>
-                            </div>
-                        </div>
-                        
-                        <div style="margin: 12px 0px; padding:0px; border-top: 2px solid rgba(255,255,255,0.87);"></div>
-                        
-                        <h3 style="margin-bottom:0px;">Remove Bid</h3>
-                        <div>
-                            <md-input-container class="md-block" md-no-float>
-                                <label>Bid ID</label>
-                                <input type="number" ng-model="medao.auction.removeBid.bidID">
-                            </md-input-container>
-                            <div layout="row">
-                                <span flex></span>
-                                <md-button class="nav-button md-raised md-primary" ng-disabled="!(medao.auction.removeBid.bidID > 0)" ng-click="removeBid()">remove</md-button>
-                            </div>
-                            <p>Your Placed Bids:</p>
-                            <div ng-repeat="bid in currentAccount.allBids">
-                                <span class="cursor" style="float:left" ng-click="medao.auction.removeBid.bidID = bid.toNumber()"><bid style="padding:5px;" id="bid.toNumber()" medao="medao.address"></bid></span>
-                            </div>
-                        </div>
-                        
-                            <div style="margin: 12px 0px; padding:0px; border-top: 3px solid rgba(255,255,255,0.87);"></div>
-                        
-                        <h3 style="margin-bottom:0px;">Submit Proof of Work</h3>
-                        <div>
-                            <md-input-container class="md-block" md-no-float>
-                                <label>Hours</label>
-                                <input type="number" ng-model="medao.submitProofOfWork.burnAmount">
-                            </md-input-container>
-                            <md-input-container class="md-block" md-no-float>
-                                <label>Comment</label>
-                                <textarea type="text" ng-model="medao.submitProofOfWork.comment" rows="5"></textarea>
-                            </md-input-container>
-                            <div layout="row">
-                                <md-button class="nav-button md-raised md-warn">max</md-button>
-                                <span flex></span>
-                                <md-button class="nav-button md-raised md-primary" ng-disabled="!(medao.submitProofOfWork.burnAmount > 0) && medao.submitProofofWork.comment" ng-click="submitProofOfWork()">submit</md-button>
-                            </div>
-                        </div>
-                   
-                            <div style="margin: 12px 0px; padding:0px; border-top: 3px solid rgba(255,255,255,0.87);"></div>
-
-                        <h3 style="margin-bottom:0px;">Set Work Hours (7 day cooldown)</h3>
-                        <div>
-                            <md-input-container class="md-block" md-no-float>
-                                <label>Hours per week (0-40)</label>
-                                <input type="number" ng-model="medao.setAuctionReward.hours" min="0" max="40">
-                            </md-input-container>
-                            <div layout="row">
-                                <md-button class="nav-button md-raised md-warn" ng-click="medao.setAuctionReward.hours = 40;" flex>full time</md-button>
-                                <md-button class="nav-button md-raised" ng-click="medao.setAuctionReward.hours = 20;" flex>half time</md-button>
-                                <span hide-xs flex></span>
-                                <md-button class="nav-button md-raised md-primary" ng-disabled="!validAuctionReward()" ng-click="setAuctionReward()">set</md-button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<div class="black-background" style="overflow:auto;" flex>
+    <div class="black-background" style="position:fixed;top:0px; height:145px; width:100%;z-index:10;">
+        <div layout="row" layout-align="left top"  flex>
+            <div layout="row" layout-padding flex>
+                <span class="cursor" style="margin-right:12px;" layout="row" ng-click="goto('/home')">
+                    <span style="font-size:16px;">l</span>
+                    <span style="font-size:10px; margin: 3px 1px">l</span>
+                    <span style="font-size:16px;">l</span>
+                    <span style="margin: 0px 1px">eDao</span>
+                </span>
+                <span ng-hide="showSearch" flex></span>
+                <span class="search-bar" ng-class="{'lighter-background':showSearch}" style="padding:0px 4px" ng-show="showSearch" layout="row" flex>
+                    <md-input-container style="margin:0px" md-no-float flex>
+                        <label>Enter an address</label>
+                        <input type="text" ng-model="search.text">
+                    </md-input-container>
+                </span>
+                <md-button ng-show="showSearch" class="search-bar-btn search-btn" ng-class="{'lighter-background':showSearch}" ng-click="validateSearch(search.text)">
+                    <md-icon aria-label="search medaos" md-svg-src="libs/fonts/ic_search_white_24px.svg"></md-icon>
+                </md-button>
+                <md-button ng-show="showSearch" class="search-bar-btn" ng-click="showSearch = !showSearch">
+                    <md-icon aria-label="hide search bar" md-svg-src="libs/fonts/ic_close_white_24px.svg"></md-icon>
+                </md-button>
+                <md-button ng-hide="showSearch" class="search-bar-btn" ng-class="{'lighter-background':showSearch}" ng-click="showSearch = !showSearch">
+                    <md-icon aria-label="show search bar" md-svg-src="libs/fonts/ic_search_white_24px.svg"></md-icon>
+                </md-button>
             </div>
         </div>
-        <div ng-show="view.panels.medao || screenIsBig || screenIsReallyBig" layout="column" layout-fill flex flex-gt-sm="50">
+        <div layout="row" layout-align="center center" flex>
             <div layout="column" layout-align="top center">
-                <h3 class="cursor" ng-click="goto('/home')">MeDao</h3>
-            </div>
-            <div layout="column" layout-align="top center">
-                <h1>{{medao.token.name}}</h1>
-                <p>... owes you <b style="font-size:18px;color:rgba(155,55,55,0.87);">{{currentAccount.token.balance}}</b> hours of work</p>
-            </div>
-            <br>
-            <div layout="row" flex>
-                <div layout="column" layout-align="top center" flex>
-                    <h3 style="margin-bottom:0px;">Proof of Work</h3>
-                    <p style="margin-top:0px;">all time</p>
-                    <h2 style="margin-top:0px; color:rgba(111,222,111,0.87)">- {{medao.redeemedHours}} hours</h2>
-                </div>
-                <div layout="column" layout-align="top center" flex>
-                    <h3 style="margin-bottom:0px;">Work Hours</h3>
-                    <p style="margin-top:0px;">next week</p>
-                    <h2 style="margin-top:0px;">+ {{medao.auction.reward}} hours</h2>
-                </div>
-            </div>
-            <div layout="row" flex>
-                <div layout="column" layout-align="top center" flex>
-                    <h3 style="">Total Held Hours</h3>
-                    <h2 style="margin-top:0px;">{{medao.token.supply}}</h2>
-                </div>
-                <div layout="column" layout-align="top center" flex>
-                    <h3 style="">Salary Forecast</h3>
-                    <h2 style="margin-top:0px; color:rgba(111,222,111,0.87)">{{medao.auction.highestBid*40*52}} eth</h2>
-                </div>
-            </div>
-            <div layout="row" flex>
-                <div layout="column" layout-align="top center" flex>
-                    <h3 style="">Next Auction</h3>
-                    <h2 ng-show="!timer.alarm" style="margin-top:0px; ">{{timer.text}}</h2>
-                    <md-button ng-show="timer.alarm" class="md-raised md-primary" ng-disabled="medao.auction.reward == 0" ng-click="startAuction()">Start</md-button>
-                </div>
-                <div layout="column" layout-align="top center" flex>
-                    <h3 style="">Highest Bid</h3>
-                    <h2 style="margin-top:0px; color:rgba(111,222,111,0.87)">{{medao.auction.highestBid}} eth</h2>
-                </div>
-            </div>
-        </div>
-        <div ng-show="view.panels.posts || screenIsReallyBig" layout="column" layout-align="center center" layout-fill flex flex-gt-sm="50">
-            <div style="overflow:hidden" layout="column" layout-fill>
-                <h3 hide-gt-sm layout="row" layout-padding layout-margin flex><span flex></span>Shareholder Posts</h3>
-                <div style="overflow:auto">
-                    <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Comment #1</p>
-                    </div>
-                    <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Comment #2</p>
-                    </div>
-                    <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Comment #3</p>
-                    </div>
-                    <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Comment #4</p>
-                    </div>
-                    <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Comment #5</p>
-                    </div>
-                    <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Comment #6</p>
-                    </div>
-                    <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Comment #7</p>
-                    </div>
-                    <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Comment #8</p>
-                    </div>
-                    <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Comment #9</p>
-                    </div>
-                    <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Comment #10</p>
-                    </div>
-                    <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Comment #11</p>
-                    </div>
-                    <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Comment #12</p>
-                    </div>
-                    <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Comment #13</p>
-                    </div>
-                    <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Comment #14</p>
-                    </div>
-                    <div class="light-border post-item" layout="row" layout-padding layout-margin>
-                        <p>Comment #15</p>
-                    </div>
-                    
-                </div>
+                <h1 style="margin-bottom:8px;">{{platform.token.name}}</h1>
+                <a ng-show="platform.medao.url != ''" class="medao-url cursor" ng-click="goToUrl(platform.medao.url)">{{platform.medao.url}}</a>
+                <span ng-show="platform.medao.url == ''" class="medao-url">no webpage set</span>
             </div>
         </div>
     </div>
+    <div style="background-color: rgba(37,37,37,0.92);position:fixed;top:145px; height:3px; width:100%;z-index:10;"></div>
+    <div style="background-color: rgba(37,37,37,0.78);position:fixed;top:148px; height:3px; width:100%;z-index:10;"></div>
+    <div style="background-color: rgba(37,37,37,0.50);position:fixed;top:151px; height:3px; width:100%;z-index:10;"></div>
+    <div id="spacer" style="height:160px"></div>
+    <div class="lighter-background" layout="row" layout-align="center center" flex>
+        <send-btn owner="platform.medao.owner"></send-btn>
+        <span>|</span>
+        <payment-btn owner="platform.medao.owner"></payment-btn>
+        <span>|</span>
+        <receive-btn owner="platform.medao.owner"></receive-btn>
+    </div>
+    <div layout="column" layout-gt-md="row">
+        <div layout="row" layout-gt-md="column" layout-align="space-around center" layout-padding flex>
+            <span layout="row" layout-align="center center" flex="50">
+                <span layout="row" layout-align="center center" layout-padding>
+                    <span layout="row">
+                        <span style="font-size:22px;">l</span>
+                        <span style="font-size:16px; margin: 4px 2px">l</span>
+                        <span style="font-size:22px;">l</span>
+                    </span>
+                    <span style="padding:0px;">{{platform.account.secondsBalance / 3600 | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> h</span></span>
+                    <md-tooltip md-direction="right">
+                        <small>Hours invested in {{platform.token.name}}</small>
+                    </md-tooltip>
+                </span>
+            </span>
+            <span layout="row" layout-align="center center" flex="50">
+                <span layout="row" layout-align="center center" layout-padding>
+                   <span style="font-size:24px;">&Xi;</span>
+                    <span style="padding:0px;">{{platform.account.weiBalance | fromWei:'ether' | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> eth</span></span>
+                    <md-tooltip md-direction="left">
+                        <small>Current Ether in your wallet</small>
+                    </md-tooltip>
+                </span>
+            </span>
+        </div>
+        <div layout="row" layout-gt-md="column" layout-align="space-around center" layout-padding flex>
+            <span layout="row" layout-align="center center" layout-padding flex="50">
+                <span layout="row" layout-align="center center" layout-padding>
+                    <span><md-icon md-svg-src="libs/fonts/ic_access_time_white_24px.svg"></md-icon></span>
+                    <span style="padding:0px;">{{platform.token.supply / 3600 | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> h</span></span>
+                    <md-tooltip md-direction="right">
+                        <small>Total hours owed by {{platform.token.name}}</small>
+                    </md-tooltip>
+                </span>
+            </span>
+            <span layout="row" layout-align="center center" flex="50">
+                <span layout="row" layout-align="center center" layout-padding>
+                    <span><md-icon md-svg-src="libs/fonts/ic_whatshot_white_24px.svg"></md-icon></span>
+                    <span style="padding:0px;">{{platform.medao.burned | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> h</span></span>
+                    <md-tooltip md-direction="left">
+                        <small>Proof of total hours worked</small>
+                    </md-tooltip>
+                </span>
+            </span>
+        </div>
+        <div layout="row" layout-gt-md="column" layout-align="space-around center" layout-padding flex>
+            <span layout="row" layout-align="center center" layout-padding flex="50">
+                <span layout="row" layout-align="center center" layout-padding>
+                    <span><md-icon aria-label="total ether bid" md-svg-src="libs/fonts/ic_lock_white_24px.svg"></md-icon></span>
+                    <span>{{platform.auction.locked | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> eth</span></span>
+                    <md-tooltip md-direction="right">
+                        <small>Total ether bid at auction</small>
+                    </md-tooltip>
+                </span>
+            </span>
+            <span layout="row" layout-align="center center" layout-padding flex="50">
+                <span layout="row" layout-align="center center" layout-padding>
+                    <span><md-icon md-svg-src="libs/fonts/ic_trending_up_white_24px.svg"></md-icon></span>
+                    <span>{{platform.auction.bids}}<span style="color:rgba(255,255,255,0.5)"> bids</span></span>
+                    <md-tooltip md-direction="left">
+                        <small>Total bids placed at auction</small>
+                    </md-tooltip>
+                </span>
+            </span>
+        </div>
+        <div layout="row" layout-gt-md="column" layout-align="space-around center" layout-padding flex>
+            <span layout="row" layout-align="center center" layout-padding flex="50">
+                <span layout="row" layout-align="center center" layout-padding>
+                    <span><md-icon md-svg-src="libs/fonts/ic_arrow_upward_white_24px.svg"></md-icon></span>
+                    <span>{{platform.auction.highestBidInWei | fromWei:'ether'}} <span style="color:rgba(255,255,255,0.5)">eth</span></span>
+                    <md-tooltip md-direction="right">
+                        <small>Highest bid placed at auction</small>
+                    </md-tooltip>
+                </span>
+            </span>
+            <span layout="row" layout-align="center center" layout-padding flex="50">
+                <span layout="row" layout-align="center center" layout-padding>
+                    <span><md-icon md-svg-src="libs/fonts/ic_add_white_24px.svg"></md-icon></span>
+                    <span>{{platform.auction.reward}} <span style="color:rgba(255,255,255,0.5)"> h/wk</span></span>
+                    <md-tooltip md-direction="left">
+                        <small>Hours awarded at auction each week</small>
+                    </md-tooltip>
+                </span>
+            </span>
+        </div>
+    </div>
+    <div class="lighter-background" layout="row" layout-align="center center" flex>
+        <place-bid-btn owner="platform.medao.owner"></place-bid-btn>
+        <span>|</span>
+        <start-auction-btn owner="platform.medao.owner"></start-auction-btn>
+        <span>|</span>
+        <remove-bid-btn owner="platform.medao.owner"></remove-bid-btn>
+    </div>
+    <div ng-show="isOwner">
+        <div layout="row" layout-align="center center" flex>
+            <h3>admin</h3>
+        </div>
+        <div class="lighter-background" layout="column" layout-gt-sm="row" layout-align="center center" flex>
+            <div layout="row" layout-align="center center">
+                <set-reward-btn owner="platform.medao.owner"></set-reward-btn>
+                <span hide show-gt-sm>|</span>
+                <set-vault-btn owner="platform.medao.owner"></set-vault-btn>
+            </div>
+            <span hide show-gt-sm>|</span>
+            <div layout="row" layout-align="center center">
+                <set-burn-btn owner="platform.medao.owner"></set-burn-btn>
+                <span hide show-gt-sm>|</span>
+                <set-owner-btn owner="platform.medao.owner"></set-owner-btn>
+            </div>
+            <span hide show-gt-sm>|</span>
+            <div layout="row" layout-align="center center">
+                <toggle-transfers-btn owner="platform.medao.owner"></toggle-transfers-btn>
+                <span hide show-gt-sm>|</span>
+                <set-url-btn owner="platform.medao.owner"></set-url-btn>
+            </div>
+        </div>
+    </div>
+    <div layout="row" layout-align="center center" flex>
+        <h3>recent payments</h3>
+    </div>
+    <comments owner="platform.medao.owner"></comments>
 </div>

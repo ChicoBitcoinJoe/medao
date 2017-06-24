@@ -8,6 +8,7 @@
     
     <!-- Angular Material style sheet -->
     <link rel="stylesheet" href="libs/angular-includes/angular-material-1.1.0.min.css">
+    <link rel="stylesheet" href="libs/angular-includes/angular-ui-notification.css">
     <link rel="stylesheet" href="libs/fonts/material-icons.css">
     <link rel="stylesheet" href="libs/fonts/roboto.css">
     <link rel="stylesheet" href="styles.css">
@@ -19,9 +20,9 @@
     <title>MeDao - Testnet Only</title>
     
 </head>
-<body ng-app="MeDao" layout="column">
+<body ng-app="MeDao" layout="row" layout-fill ng-cloak>
     
-    <div class="blue-background" ng-view flex></div>
+    <div style="overflow:hidden" layout="column" ng-view flex></div>
     
     <!-- Angular + Material Libraries -->
     <script src="libs/angular-includes/angular-1.5.5.min.js"></script>
@@ -32,27 +33,41 @@
     <script src="libs/angular-includes/angular-route-1.5.5.min.js"></script>
     <script src="libs/angular-includes/angular-svg-assets-cache.js"></script>
     <script src="libs/angular-includes/angular-sanitize-1.6.2.js"></script>
+    <script src="libs/angular-includes/angular-ui-notification.js"></script>
     
     <!-- Other Libraries -->
     <script src="libs/web3/web3.js"></script>
+    <script src="libs/qrcode.js"></script>
+    <script src="libs/ngClickCopy.js"></script>
             
     <!-- Application Files  -->
     <script src="app.js"></script>
     
     <!-- Services  -->
-    <script src="services/MeDaoRegistry.js"></script>
-    <script src="services/MeDao.js"></script>
-    <script src="services/Token.js"></script>
     <script src="services/Web3Service.js"></script>
+    <script src="services/MeDao.js"></script>
+    <script src="services/Notifier.js"></script>
 
     <!-- Controllers  -->
     <script src="views/home/homeViewController.js"></script>
     <script src="views/medao/medaoViewController.js"></script>
-    <script src="views/empty/emptyViewController.js"></script>
     
     <!-- Directives  -->
-    <script src="directives/register-button/registerButtonDirective.js"></script>
-    <script src="directives/bid/bidDirective.js"></script>
+    <script src="directives/timer/timerDirective.js"></script>
+    <script src="directives/start-auction-btn/startAuctionDirective.js"></script>
+    <script src="directives/place-bid-btn/placeBidDirective.js"></script>
+    <script src="directives/register-btn/registerDirective.js"></script>
+    <script src="directives/send-btn/sendDirective.js"></script>
+    <script src="directives/payment-btn/paymentDirective.js"></script>
+    <script src="directives/comments/commentsDirective.js"></script>
+    <script src="directives/set-reward-btn/setRewardDirective.js"></script>
+    <script src="directives/set-vault-btn/setVaultDirective.js"></script>
+    <script src="directives/set-burn-btn/setBurnDirective.js"></script>
+    <script src="directives/set-owner-btn/setOwnerDirective.js"></script>
+    <script src="directives/receive-btn/receiveDirective.js"></script>
+    <script src="directives/remove-bid-btn/removeBidDirective.js"></script>
+    <script src="directives/set-url-btn/setUrlDirective.js"></script>
+    <script src="directives/toggle-transfers-btn/toggleTransfersDirective.js"></script>
           
 </body>
 </html>

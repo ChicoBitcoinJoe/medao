@@ -1,0 +1,9 @@
+<div layout="column">
+    <div ng-repeat="comment in comments | reverse" layout="row" class="light-border" layout-align="left center" layout-padding layout-margin flex>
+        <span style="min-width:60px;" layout="row" layout-align="center center">
+            <span><md-icon md-svg-src="libs/fonts/ic_whatshot_white_24px.svg"></md-icon></span>
+            <span>&nbsp{{comment.burned / 3600 | decimals:2}}<span hide-xs>h</span></span>
+        </span>
+        <p>{{comment.comment}}</p>
+    </div>
+</div>
