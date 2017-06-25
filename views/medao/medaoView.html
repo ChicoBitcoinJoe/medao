@@ -2,7 +2,7 @@
     <div class="black-background" style="position:fixed;top:0px; height:145px; width:100%;z-index:10;">
         <div layout="row" layout-align="left top"  flex>
             <div layout="row" layout-padding flex>
-                <span class="cursor" style="margin-right:12px;" layout="row" ng-click="goto('/home')">
+                <span class="cursor" style="margin-right:12px;margin-top:2px" layout="row" ng-click="goto('/home')">
                     <span style="font-size:16px;">l</span>
                     <span style="font-size:10px; margin: 3px 1px">l</span>
                     <span style="font-size:16px;">l</span>
@@ -20,6 +20,9 @@
                 </md-button>
                 <md-button ng-show="showSearch" class="search-bar-btn" ng-click="showSearch = !showSearch">
                     <md-icon aria-label="hide search bar" md-svg-src="libs/fonts/ic_close_white_24px.svg"></md-icon>
+                </md-button>
+                <md-button ng-hide="showSearch" class="search-bar-btn" ng-click="showHelpPanel()">
+                    <span style="font-size:20px">?</span>
                 </md-button>
                 <md-button ng-hide="showSearch" class="search-bar-btn" ng-class="{'lighter-background':showSearch}" ng-click="showSearch = !showSearch">
                     <md-icon aria-label="show search bar" md-svg-src="libs/fonts/ic_search_white_24px.svg"></md-icon>
