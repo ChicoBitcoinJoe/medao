@@ -19,8 +19,11 @@ function($scope,$location,$q,Web3Service,MeDao){
         $scope.account = account;
         return MeDao.getMeDaoAddress(account);
     }).then(function(medaoAddress){
+        console.log('medao address: ' + medaoAddress);
         $scope.medaoAddress = medaoAddress;
-        if(medaoAddress == '0x0000000000000000000000000000000000000000')
+        if(medaoAddress == '0x0000000000000000000000000000000000000000'
+        || medaoAddress == '0x0'
+        || medaoAddress == null)
             $scope.hasMedao = false;
         else {
             $scope.hasMedao = true;
