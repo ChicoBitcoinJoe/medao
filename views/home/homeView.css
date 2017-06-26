@@ -35,3 +35,13 @@ md-checkbox.md-default-theme:not(.md-checked) .md-icon, md-checkbox:not(.md-chec
 md-dialog.md-default-theme, md-dialog {
     color: rgba(255,255,255,0.87) !important;
 }
+
+.search-btn {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+.search-bar {
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
