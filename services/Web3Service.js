@@ -1,10 +1,51 @@
 app.service( 'Web3Service',['$q', function ($q) {
     console.log('Loading Web3Service');
     
+    var isConnected = false;
     if (typeof web3 !== 'undefined') {
+        isConnected = true;
         web3 = new Web3(web3.currentProvider);
     } else {
-       web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+        try {
+            web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+            accounts.current = web3.eth.accounts[0];
+        } catch(e) {
+            var wait1Seconds = setInterval(function(){
+                alert('No web3 object detected. Try using the Mist Ethereum Browser or Google Chrome with the MetaMask addon installed to use this site!');
+                clearInterval(wait1Seconds);
+            }, 1000);
+            
+        }
+    }
+    
+    if(isConnected){
+        var getVersion = setInterval(function(){
+            web3.version.getNetwork((err, netId) => {
+                switch (netId) {
+                    case "1":
+                        console.log('Connected to mainnet');
+                        web3 = null;
+                        alert("Not connected to the proper network. Please connect to the ropsten test network and refresh the page to continue using this site!")
+                        break
+                    case "2":
+                        console.log('Connected to the deprecated Morden test network.');
+                        web3 = null;
+                        alert("Not connected to the proper network. Please connect to the ropsten test network and refresh the page to continue using this site!")
+                        break
+                    case "3":
+                        console.log('Connected to the ropsten test network.');
+                        console.log(web3.eth.accounts);
+                        if(web3.eth.accounts.length == 0)
+                            alert("Please log into your Ethereum account to continue!");
+                        break
+                    default:
+                        console.log('Connected to an unknown network.');
+                        web3 = null;
+                        alert("Not connected to the proper network. Please connect to the ropsten test network and refresh the page to continue using this site!")
+                }
+            });
+            clearInterval(getVersion);
+        },1000);
     }
     
     var accounts = {
@@ -22,7 +63,7 @@ app.service( 'Web3Service',['$q', function ($q) {
                     deferred.resolve(accounts.current);
                     clearInterval(interval);
                 }
-            }, 100);
+            }, 500);
             
             return deferred.promise;
         },
