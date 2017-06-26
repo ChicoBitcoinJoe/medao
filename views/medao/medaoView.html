@@ -21,9 +21,7 @@
                 <md-button ng-show="showSearch" class="search-bar-btn" ng-click="showSearch = !showSearch">
                     <md-icon aria-label="hide search bar" md-svg-src="libs/fonts/ic_close_white_24px.svg"></md-icon>
                 </md-button>
-                <md-button ng-hide="showSearch" class="search-bar-btn" ng-click="showHelpPanel()">
-                    <span style="font-size:20px">?</span>
-                </md-button>
+                <medao-tutorial-btn ng-hide="showSearch"></medao-tutorial-btn>
                 <md-button ng-hide="showSearch" class="search-bar-btn" ng-class="{'lighter-background':showSearch}" ng-click="showSearch = !showSearch">
                     <md-icon aria-label="show search bar" md-svg-src="libs/fonts/ic_search_white_24px.svg"></md-icon>
                 </md-button>
@@ -37,9 +35,12 @@
             </div>
         </div>
     </div>
-    <div style="background-color: rgba(37,37,37,0.92);position:fixed;top:145px; height:3px; width:100%;z-index:10;"></div>
-    <div style="background-color: rgba(37,37,37,0.78);position:fixed;top:148px; height:3px; width:100%;z-index:10;"></div>
-    <div style="background-color: rgba(37,37,37,0.50);position:fixed;top:151px; height:3px; width:100%;z-index:10;"></div>
+     <div style="background-color: rgba(37,37,37,0.90);position:fixed;top:145px; height:2px; width:100%;z-index:10;"></div>
+    <div style="background-color: rgba(37,37,37,0.75);position:fixed;top:147px; height:2px; width:100%;z-index:10;"></div>
+    <div style="background-color: rgba(37,37,37,0.60);position:fixed;top:149px; height:1px; width:100%;z-index:10;"></div>
+    <div style="background-color: rgba(37,37,37,0.45);position:fixed;top:150px; height:1px; width:100%;z-index:10;"></div>
+    <div style="background-color: rgba(37,37,37,0.30);position:fixed;top:151px; height:1px; width:100%;z-index:10;"></div>
+    <div style="background-color: rgba(37,37,37,0.15);position:fixed;top:152px; height:1px; width:100%;z-index:10;"></div>
     <div id="spacer" style="height:160px"></div>
     <div class="lighter-background" layout="row" layout-align="center center" flex>
         <send-btn owner="platform.medao.owner"></send-btn>
