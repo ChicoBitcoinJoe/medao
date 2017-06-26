@@ -363,8 +363,12 @@ contract MeDao is Owned, TokenController {
         if(reward > 40 hours || reward == 0) throw;
         
         weekly_auction_reward = reward;
-        auction_period = 5 minutes; //set to 5 minutes for testing. Normally use
-                                    //7 days / weekly_auction_reward;
+        
+        //Mainnet:
+        //auction_period = 7 days / weekly_auction_reward;
+        //Testnet:
+        auction_period = 5 minutes;  
+        
         scheduled_auction_timestamp = now + auction_period;
         
         AuctionRewardChange_event(weekly_auction_reward);
