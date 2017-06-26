@@ -553,6 +553,18 @@ function ($q,Web3Service) {
             });
             return deferred.promise;
         },
+        getCreationBlock: function(tokenAddress){
+            var deferred = $q.defer();
+            var tokenInstance = web3.eth.contract(platform.token.abi).at(tokenAddress);
+            
+            tokenInstance.creationBlock(function(err, creationBlock) {
+                if(err)
+                    deferred.reject(err);
+                else
+                    deferred.resolve(creationBlock);
+            });
+            return deferred.promise;
+        },
         transfer: function(tokenAddress,to,amount) {
             var deferred = $q.defer();
             var tokenInstance = web3.eth.contract(platform.token.abi).at(tokenAddress);

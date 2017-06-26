@@ -4,7 +4,7 @@
 
 - One time popup of getting started/help dialog
 
-### Contracts Improvements
+### Contract Improvements
 
 - ethereum name service (instead of using token name)
 - ethereum alarm clock (auto start auction)

@@ -21,7 +21,7 @@
                 <md-button ng-show="showSearch" class="search-bar-btn" ng-click="showSearch = !showSearch">
                     <md-icon aria-label="hide search bar" md-svg-src="libs/fonts/ic_close_white_24px.svg"></md-icon>
                 </md-button>
-                <medao-tutorial-btn ng-hide="showSearch"></medao-tutorial-btn>
+                <medao-tutorial-btn ng-hide="showSearch" owner="platform.medao.owner"></medao-tutorial-btn>
                 <md-button ng-hide="showSearch" class="search-bar-btn" ng-class="{'lighter-background':showSearch}" ng-click="showSearch = !showSearch">
                     <md-icon aria-label="show search bar" md-svg-src="libs/fonts/ic_search_white_24px.svg"></md-icon>
                 </md-button>
