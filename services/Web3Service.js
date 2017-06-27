@@ -1,67 +1,91 @@
 app.service( 'Web3Service',['$q', function ($q) {
     console.log('Loading Web3Service');
     
-    var isConnected = false;
-    if (typeof web3 !== 'undefined') {
-        isConnected = true;
-        web3 = new Web3(web3.currentProvider);
-    } else {
-        try {
-            web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-            accounts.current = web3.eth.accounts[0];
-        } catch(e) {
-            var wait1Seconds = setInterval(function(){
-                alert('No web3 object detected. Try using the Mist Ethereum Browser or Google Chrome with the MetaMask addon installed to use this site!');
-                clearInterval(wait1Seconds);
-            }, 1000);
-            
-        }
-    }
-    
-    if(isConnected){
-        var getVersion = setInterval(function(){
-            web3.version.getNetwork((err, netId) => {
-                switch (netId) {
-                    case "1":
-                        console.log('Connected to mainnet');
-                        web3 = null;
-                        alert("Not connected to the proper network. Please connect to the ropsten test network and refresh the page to continue using this site!")
-                        break
-                    case "2":
-                        console.log('Connected to the deprecated Morden test network.');
-                        web3 = null;
-                        alert("Not connected to the proper network. Please connect to the ropsten test network and refresh the page to continue using this site!")
-                        break
-                    case "3":
-                        console.log('Connected to the ropsten test network.');
-                        console.log(web3.eth.accounts);
-                        if(web3.eth.accounts.length == 0)
-                            alert("Please log into your Ethereum account to continue!");
-                        break
-                    default:
-                        console.log('Connected to an unknown network.');
-                        web3 = null;
-                        alert("Not connected to the proper network. Please connect to the ropsten test network and refresh the page to continue using this site!")
-                }
-            });
-            clearInterval(getVersion);
-        },1000);
-    }
+    var web3Connected = null;
+    var networkID = 0;
+    var alerted = false;
     
     var accounts = {
         current: null
     };
     
+    var web3Interval = setInterval(function(){
+        if (typeof web3 !== "undefined") {
+            try {
+                web3 = new Web3(web3.currentProvider);
+                web3.version.getNetwork((err, netId) => {
+                    networkID = netId;
+                    switch (netId) {
+                        case "1":
+                            console.log('Connected to mainnet');
+                            web3 = null;
+                            alert("Not connected to the proper network. Please connect to the ropsten test network and refresh the page to continue using this site!")
+                            break
+                        case "2":
+                            console.log('Connected to the deprecated Morden test network.');
+                            web3 = null;
+                            alert("Not connected to the proper network. Please connect to the ropsten test network and refresh the page to continue using this site!")
+                            break
+                        case "3":
+                            break
+                        default:
+                            console.log('Connected to an unknown network.');
+                            web3 = null;
+                            if(!alerted) {
+                                alert("Not connected to the Ropsten network! Please connect to the Ropsten Testnet and then refresh the page to continue using this site.");
+                                alerted = true;
+                            }
+                    }
+                });
+                
+                if(!web3Connected && networkID == 3) {
+                    web3Connected = true;
+                    console.log('Successfully connected to web3 on the Ropsten Testnet!');
+                    var updateAccountInterval = setInterval(function() {
+                        //console.log(accounts.current,web3.eth.accounts[0]);
+                        if(web3.eth.accounts[0] == null)
+                            console.error('Could not fetch current account. Is web3 connected?');
+                        else if(accounts.current != web3.eth.accounts[0] && accounts.current != null){
+                            console.log('Account change detected. Reloading page.');
+                            location.reload();
+                        } else {
+                            accounts.current = web3.eth.accounts[0];
+                            //console.log('Account set to ' + web3.eth.accounts[0]);
+                        }
+                    }, 500);
+                }
+                
+            } catch (err) {
+                console.error('Connected to localhost but cannot access web3!');
+                web3Connected = false;
+            }
+        } else {
+            console.log('No web3 found. Trying to connect to localhost:8545...');
+            try {
+                web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+            } catch(e) {
+                console.log('No local host found. Retrying in 1 second.')
+            }
+        }
+    }, 1000);
+    
+    
     var service = {
 		getCurrentAccount: function(){
             var deferred = $q.defer();
             
+            var ticker = 0;
             var interval = setInterval(function(){
-                accounts.current = web3.eth.accounts[0];
-                
                 if(accounts.current != null && accounts.current != '0x0000000000000000000000000000000000000000'){
+                    console.log(accounts.current);
                     deferred.resolve(accounts.current);
                     clearInterval(interval);
+                } else {
+                    ticker++;
+                    if(ticker >= 10){
+                        deferred.reject('Took to long to retrieve account! Is web3 connected?');
+                        //clearInterval(interval);
+                    }
                 }
             }, 500);
             
