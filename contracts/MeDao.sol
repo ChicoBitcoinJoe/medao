@@ -290,7 +290,7 @@ contract OngoingAuction is Owned {
 
 contract MeDao is Owned, TokenController {
     
-    string public version = '0.0.2';
+    string public version = '0.0.3';
     
     address public Founder;
     address public Vault;
@@ -305,7 +305,7 @@ contract MeDao is Owned, TokenController {
     uint public auction_period;
     uint public total_proof_of_work;
     uint public cooldown_timestamp;
-    uint burn_minimum = 1;
+    uint public burn_minimum = 1;
      
 ////////////////
 // MeDao Setup
@@ -496,11 +496,11 @@ contract MeDaoRegistry is Owned {
 
 contract MeDaoDeployer is Owned {
     
-    string version = "0.0.1";
+    string version = "0.0.2";
     
     MiniMeToken Prime;
     
-   function MeDaoDeployer (MiniMeToken Token) {
+    function MeDaoDeployer (MiniMeToken Token) {
         Prime = Token;
     }
     
@@ -513,5 +513,19 @@ contract MeDaoDeployer is Owned {
         Auction.transferOwnership(Medao);
         
         MeDaoRegistry(owner).register(msg.sender, Medao);
+    }
+    
+    function update (address oldMeDaoAddress, string name) {
+        MiniMeToken OldToken = MeDao(oldMeDaoAddress).Token(); 
+        address Founder =  MeDao(oldMeDaoAddress).Founder();
+        
+        address token = OldToken.createCloneToken(name,0,'meether',0,true);
+        OngoingAuction Auction = new OngoingAuction();
+        MeDao Medao = new MeDao(msg.sender,MiniMeToken(token),Auction);
+        Medao.transferOwnership(msg.sender);
+        MiniMeToken(token).changeController(Medao);
+        Auction.transferOwnership(Medao);
+        
+        MeDaoRegistry(owner).update(msg.sender, Founder, Medao);
     }
 }

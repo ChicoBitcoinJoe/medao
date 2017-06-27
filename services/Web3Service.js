@@ -41,18 +41,6 @@ app.service( 'Web3Service',['$q', function ($q) {
                 if(!web3Connected && networkID == 3) {
                     web3Connected = true;
                     console.log('Successfully connected to web3 on the Ropsten Testnet!');
-                    var updateAccountInterval = setInterval(function() {
-                        //console.log(accounts.current,web3.eth.accounts[0]);
-                        if(web3.eth.accounts[0] == null)
-                            console.error('Could not fetch current account. Is web3 connected?');
-                        else if(accounts.current != web3.eth.accounts[0] && accounts.current != null){
-                            console.log('Account change detected. Reloading page.');
-                            location.reload();
-                        } else {
-                            accounts.current = web3.eth.accounts[0];
-                            //console.log('Account set to ' + web3.eth.accounts[0]);
-                        }
-                    }, 500);
                 }
                 
             } catch (err) {
@@ -69,6 +57,18 @@ app.service( 'Web3Service',['$q', function ($q) {
         }
     }, 1000);
     
+    var updateAccountInterval = setInterval(function() {
+        //console.log(accounts.current,web3.eth.accounts[0]);
+        if(web3.eth.accounts[0] == null)
+            console.error('Could not fetch current account. Is web3 connected?');
+        else if(accounts.current != web3.eth.accounts[0] && accounts.current != null){
+            console.log('Account change detected. Reloading page.');
+            location.reload();
+        } else {
+            accounts.current = web3.eth.accounts[0];
+            //console.log('Account set to ' + web3.eth.accounts[0]);
+        }
+    }, 500);
     
     var service = {
 		getCurrentAccount: function(){
@@ -83,8 +83,9 @@ app.service( 'Web3Service',['$q', function ($q) {
                 } else {
                     ticker++;
                     if(ticker >= 10){
+                        alert("Failed to load account from web3! Make sure you are logged into your account and then refresh the page.");
                         deferred.reject('Took to long to retrieve account! Is web3 connected?');
-                        //clearInterval(interval);
+                        clearInterval(interval);
                     }
                 }
             }, 500);

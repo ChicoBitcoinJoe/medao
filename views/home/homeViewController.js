@@ -76,7 +76,6 @@ function($scope,$location,$q,Web3Service,MeDao){
         $scope.loaded = true;
     }).catch(function(err){
         console.error(err);
-        alert("Failed to load your account from web3! Make sure you are logged into your account and then refresh the page.");
     });
     
     $scope.$watch('medao.name', function(){

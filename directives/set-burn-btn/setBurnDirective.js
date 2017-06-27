@@ -13,12 +13,20 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
                 $scope.owner = data.owner;
                 
                 $scope.burn = {
+                    currentMinimum: null,
                     amountInSeconds: null
                 };
                 
                 $scope.back = function() {
                     $mdDialog.hide(0);
                 };
+                
+                MeDao.getMeDaoAddress($scope.owner)
+                .then(function(medaoAddress){
+                    return MeDao.getBurnMinimum(medaoAddress);
+                }).then(function(currentMinimum){
+                    $scope.burn.currentMinimum = currentMinimum.toNumber();
+                });
                 
                 $scope.setBurnMinimum = function(){
                     $q.all([
