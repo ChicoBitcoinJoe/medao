@@ -10,11 +10,11 @@
 
 ### Buttons/Panels
 
-- Detect and show update button when version is out of date
-- transfer lost tokens to vault (non critical)
 - weekly hours panel should show cooldown
 - vault panel should show vault address
-- Show a warning and disabled all buttons if transfers are disabled
+- send button
+    - qr code scanner
+- show a warning and disabled relevant buttons if transfers are disabled
 - sweep medao
     - backend
     - ui
