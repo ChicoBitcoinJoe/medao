@@ -19,7 +19,9 @@ function($scope,$q,$location,Web3Service,MeDao){
             owner: $location.path().split('/')[1],
             cooldown: null,
             burned: null,
-            url: null
+            url: null,
+            version: null,
+            outdated: false
         },
         token: {
             address: null,
@@ -47,6 +49,16 @@ function($scope,$q,$location,Web3Service,MeDao){
         || medaoAddress == '0x'
         || medaoAddress == null)
             $scope.goto('/home')
+        
+        MeDao.getVersion($scope.platform.medao.address)
+        .then(function(version){
+            $scope.platform.medao.version = version;
+            if(version != "0.0.4")
+                $scope.platform.medao.outdated = true;
+        }).catch(function(err){
+            console.error(err);
+        });
+        
         return $q.all([
             MeDao.getTokenAddress($scope.platform.medao.address), 
             MeDao.getAuctionAddress($scope.platform.medao.address),

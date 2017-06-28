@@ -14,9 +14,14 @@
 - transfer lost tokens to vault (non critical)
 - weekly hours panel should show cooldown
 - vault panel should show vault address
-- burn panel should show current burn minimum
 - Show a warning and disabled all buttons if transfers are disabled
-
+- sweep medao
+    - backend
+    - ui
+    - description
+- update medao
+    - ui
+    - description
 
 ### Notifications
 

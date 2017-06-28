@@ -84,8 +84,8 @@ app.service( 'Web3Service',['$q', function ($q) {
                     ticker++;
                     if(ticker >= 10){
                         alert("Failed to load account from web3! Make sure you are logged into your account and then refresh the page.");
-                        deferred.reject('Took to long to retrieve account! Is web3 connected?');
                         clearInterval(interval);
+                        deferred.reject('Took to long to retrieve account! Is web3 connected?');
                     }
                 }
             }, 500);

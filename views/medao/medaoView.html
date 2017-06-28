@@ -1,15 +1,20 @@
 <div class="black-background" style="overflow:auto;" flex>
     <div class="black-background" style="position:fixed;top:0px; height:145px; width:100%;z-index:10;">
         <div layout="row" layout-align="left top"  flex>
-            <div layout="row" layout-padding flex>
-                <span class="cursor" style="margin-right:12px;margin-top:2px" layout="row" ng-click="goto('/home')">
+            <div layout="row" layout-align="left center" layout-padding flex>
+                <span class="cursor" layout="row" ng-click="goto('/home')">
                     <span style="font-size:16px;">l</span>
                     <span style="font-size:10px; margin: 3px 1px">l</span>
                     <span style="font-size:16px;">l</span>
                     <span style="margin: 0px 1px">eDao</span>
                 </span>
-                <span ng-hide="showSearch" flex></span>
-                <span class="search-bar" ng-class="{'lighter-background':showSearch}" style="padding:0px 4px; max-height:36px;" ng-show="showSearch" layout="row" flex>
+                <span ng-hide="showSearch" layout="row" flex>
+                    <span style="color:rgba(255,255,255,0.67); font-size:small; margin-top:3px; margin-left:-13px;"> v{{platform.medao.version}}</span>
+                    <span layout="row" layout-align="center center" flex>
+                        
+                    </span>
+                </span>
+                <span class="search-bar" ng-class="{'lighter-background':showSearch}" style="padding:0px 4px; max-height:36px;height:36px;min-height:36px;" ng-show="showSearch" layout="row" flex>
                     <md-input-container style="margin:0px" md-no-float flex>
                         <label>Enter an address</label>
                         <input type="text" ng-model="search.text">
@@ -154,23 +159,18 @@
         <div layout="row" layout-align="center center" flex>
             <h3>admin</h3>
         </div>
-        <div class="lighter-background" layout="column" layout-gt-sm="row" layout-align="center center" flex>
-            <div layout="row" layout-align="center center">
+        <div class="lighter-background" layout="row" layout-gt-sm="column" layout-lg="row" layout-align="center center" flex>
+            <div layout="column" layout-gt-sm="row" layout-align="center end"  flex-xs="50" flex-sm="50" flex-gt-sm flex-lg="none">
                 <set-reward-btn owner="platform.medao.owner"></set-reward-btn>
-                <span hide show-gt-sm>|</span>
-                <set-vault-btn owner="platform.medao.owner"></set-vault-btn>
-            </div>
-            <span hide show-gt-sm>|</span>
-            <div layout="row" layout-align="center center">
                 <set-burn-btn owner="platform.medao.owner"></set-burn-btn>
-                <span hide show-gt-sm>|</span>
-                <set-owner-btn owner="platform.medao.owner"></set-owner-btn>
-            </div>
-            <span hide show-gt-sm>|</span>
-            <div layout="row" layout-align="center center">
                 <toggle-transfers-btn owner="platform.medao.owner"></toggle-transfers-btn>
-                <span hide show-gt-sm>|</span>
+                <md-button class="medao-btn" ng-disabled="true">sweep medao</md-button>
+            </div>
+            <div layout="column" layout-gt-sm="row" layout-align="center start" flex-xs="50" flex-sm="50" flex-gt-sm flex-lg="none">
+                <set-vault-btn owner="platform.medao.owner"></set-vault-btn>
+                <set-owner-btn owner="platform.medao.owner"></set-owner-btn>
                 <set-url-btn owner="platform.medao.owner"></set-url-btn>
+                <md-button class="medao-btn" style="color:rgba(255,111,111,0.87)" ng-click="updateMeDao()" ng-disabled="!platform.medao.outdated">update to v0.0.4</md-button>
             </div>
         </div>
     </div>

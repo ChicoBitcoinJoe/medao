@@ -15,6 +15,7 @@ function($q,$mdDialog,Web3Service,MeDao) {
                 };
             };
             
+            console.log($scope.owner);
             MeDao.getMeDaoAddress($scope.owner)
             .then(function(medaoAddress){
                 console.log(medaoAddress);
