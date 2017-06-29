@@ -77,7 +77,7 @@ app.service( 'Web3Service',['$q', function ($q) {
             var ticker = 0;
             var interval = setInterval(function(){
                 if(accounts.current != null && accounts.current != '0x0000000000000000000000000000000000000000'){
-                    console.log(accounts.current);
+                    //console.log(accounts.current);
                     deferred.resolve(accounts.current);
                     clearInterval(interval);
                 } else {

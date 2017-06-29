@@ -97,8 +97,8 @@
                     <span><md-icon md-svg-src="libs/fonts/ic_whatshot_white_24px.svg"></md-icon></span>
                     <span style="padding:0px;">{{platform.medao.burned | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> h</span></span>
                     <md-tooltip md-direction="left">
-                        <small hide-gt-sm>Proof of total hours worked</small>
-                        <big hide show-gt-sm>Proof of total hours worked</big>
+                        <small hide-gt-sm>Proof of total hours worked by {{platform.token.name}}</small>
+                        <big hide show-gt-sm>Proof of total hours worked by {{platform.token.name}}</big>
                     </md-tooltip>
                 </span>
             </span>
@@ -170,7 +170,8 @@
                 <set-vault-btn owner="platform.medao.owner"></set-vault-btn>
                 <set-owner-btn owner="platform.medao.owner"></set-owner-btn>
                 <set-url-btn owner="platform.medao.owner"></set-url-btn>
-                <md-button class="medao-btn" style="color:rgba(255,111,111,0.87)" ng-click="updateMeDao()" ng-disabled="!platform.medao.outdated">update to v0.0.4</md-button>
+                <md-button ng-show="!platform.medao.outdated" class="medao-btn" ng-disabled="true">up to date</md-button>
+                <md-button ng-show="platform.medao.outdated" class="medao-btn" ng-class="{'update-btn':platform.medao.outdated}" ng-click="updateMeDao()" ng-disabled="!platform.medao.outdated">update to v0.0.2</md-button>
             </div>
         </div>
     </div>

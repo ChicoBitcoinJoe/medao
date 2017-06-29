@@ -27,6 +27,7 @@ function($scope,$q,$location,Web3Service,MeDao){
             address: null,
             name: null,
             supply: null,
+            transfersEnabled: false
         },
         auction: {
             address: null,
@@ -53,7 +54,7 @@ function($scope,$q,$location,Web3Service,MeDao){
         MeDao.getVersion($scope.platform.medao.address)
         .then(function(version){
             $scope.platform.medao.version = version;
-            if(version != "0.0.4")
+            if(version != "0.0.2")
                 $scope.platform.medao.outdated = true;
         }).catch(function(err){
             console.error(err);
@@ -115,6 +116,11 @@ function($scope,$q,$location,Web3Service,MeDao){
         }).catch(function(err){
             console.error(err);
         });
+        
+        MeDao.transfersEnabled($scope.platform.token.address)
+        .then(function(enabled){
+            $scope.platform.token.transfersEnabled = enabled;
+        })
         
         MeDao.getTeirs($scope.platform.auction.address)
         .then(function(teirs){
@@ -207,4 +213,14 @@ function($scope,$q,$location,Web3Service,MeDao){
         });
     };
     
+    $scope.updateMeDao = function(){
+        MeDao.update($scope.platform.medao.address,$scope.platform.token.name)
+        .then(function(txHash){
+            return Web3Service.getTransactionReceipt(txHash);
+        }).then(function(receipt){
+            location.reload();
+        }).catch(function(err){
+            console.error(err);
+        });        
+    };
 }]);

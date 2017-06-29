@@ -2,6 +2,7 @@
 
 ### Contract Improvements
 
+- Remove throw conditions in OngoingAuction.addNewTeir_internal (critical)
 - ethereum name service (instead of using token name)
 - ethereum alarm clock (auto start auction)
 - decentralized exchange integration (replace ongoing auction)
@@ -13,6 +14,7 @@
 - vault panel should show vault address
 - send button qr code scanner
 - show a warning and disabled relevant buttons if transfers are disabled
+- show a warning and disabled relevant buttons if contract is unsafe
 - sweep medao
     - backend
     - ui
