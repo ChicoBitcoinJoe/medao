@@ -87,7 +87,9 @@ md-input-container.md-default-theme:not(.md-input-invalid).md-input-focused labe
     border-bottom-left-radius: 3px;
 }
 
-
+.update-btn {
+    color:rgba(111,255,55,0.87);
+}
 
 
 

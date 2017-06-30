@@ -17,14 +17,14 @@
     <div layout="column" layout-padding>
         <table>
             <tr>
-                <th>Bids</th>
+                <th>Bid Value</th>
                 <th>x{{totalBids}}</th>
-                <th style="text-align:right;">{{totalEtherBid | decimals:2}} eth</th>
+                <th style="text-align:right;">{{totalEtherBid | decimals:3}} eth</th>
             </tr>
             <tr ng-repeat="teir in teir">
                 <td class="cursor" ng-click="setBidAmount(teir.value)">{{teir.value | fromWei:'ether' | decimals:3}} eth</td>
                 <td>x{{teir.bids}}</td>
-                <td style="text-align:right;">{{teir.total | decimals:2}} eth</td>
+                <td style="text-align:right;">{{teir.total | decimals:3}} eth</td>
             </tr>
         </table>
     </div>

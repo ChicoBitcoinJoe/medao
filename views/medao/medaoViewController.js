@@ -1,5 +1,5 @@
-app.controller('MeDaoViewController', ['$scope','$q','$location','Web3Service','MeDao',
-function($scope,$q,$location,Web3Service,MeDao){
+app.controller('MeDaoViewController', ['$scope','$q','$location','Web3Service','MeDao','MiniMeToken',
+function($scope,$q,$location,Web3Service,MeDao,Token){
     console.log('Loading MeDao View');
     
 //State
@@ -17,14 +17,16 @@ function($scope,$q,$location,Web3Service,MeDao){
         medao: {
             address: null,
             owner: $location.path().split('/')[1],
-            cooldown: null,
             burned: null,
-            url: null
+            url: null,
+            version: null,
+            outdated: false
         },
         token: {
             address: null,
             name: null,
             supply: null,
+            transfersEnabled: false
         },
         auction: {
             address: null,
@@ -47,17 +49,25 @@ function($scope,$q,$location,Web3Service,MeDao){
         || medaoAddress == '0x'
         || medaoAddress == null)
             $scope.goto('/home')
+        
+        MeDao.getVersion($scope.platform.medao.address)
+        .then(function(version){
+            $scope.platform.medao.version = version;
+            if(version != "0.0.2")
+                $scope.platform.medao.outdated = true;
+        }).catch(function(err){
+            console.error(err);
+        });
+        
         return $q.all([
             MeDao.getTokenAddress($scope.platform.medao.address), 
-            MeDao.getAuctionAddress($scope.platform.medao.address),
-            MeDao.getCooldownTimestamp($scope.platform.medao.address)
+            MeDao.getAuctionAddress($scope.platform.medao.address)
         ]);
     }).then(function(promises){
         $scope.platform.token.address = promises[0];
         $scope.platform.auction.address = promises[1];
-        $scope.platform.medao.cooldown = promises[2].toNumber();
         
-        MeDao.getName($scope.platform.token.address)
+        Token.getName($scope.platform.token.address)
         .then(function(tokenName){
             $scope.platform.token.name = tokenName;
         }).catch(function(err){
@@ -103,6 +113,11 @@ function($scope,$q,$location,Web3Service,MeDao){
         }).catch(function(err){
             console.error(err);
         });
+        
+        Token.transfersEnabled($scope.platform.token.address)
+        .then(function(enabled){
+            $scope.platform.token.transfersEnabled = enabled;
+        })
         
         MeDao.getTeirs($scope.platform.auction.address)
         .then(function(teirs){
@@ -167,7 +182,7 @@ function($scope,$q,$location,Web3Service,MeDao){
             console.error(err);
         });
 
-        MeDao.getCurrentSupply($scope.platform.token.address)
+        Token.getCurrentSupply($scope.platform.token.address)
         .then(function(tokenSupply){
             $scope.platform.token.supply = tokenSupply.toNumber();
         }).catch(function(err){
@@ -185,7 +200,7 @@ function($scope,$q,$location,Web3Service,MeDao){
 
             return $q.all([
                 Web3Service.getEtherBalance(currentAccount),
-                MeDao.getBalanceOf($scope.platform.token.address, currentAccount)
+                Token.getBalanceOf($scope.platform.token.address, currentAccount)
             ]);
         }).then(function(promises){
             $scope.platform.account.weiBalance = promises[0];
@@ -195,4 +210,14 @@ function($scope,$q,$location,Web3Service,MeDao){
         });
     };
     
+    $scope.updateMeDao = function(){
+        MeDao.update($scope.platform.medao.address,$scope.platform.token.name)
+        .then(function(txHash){
+            return Web3Service.getTransactionReceipt(txHash);
+        }).then(function(receipt){
+            location.reload();
+        }).catch(function(err){
+            console.error(err);
+        });        
+    };
 }]);

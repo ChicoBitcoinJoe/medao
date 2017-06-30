@@ -17,7 +17,9 @@ app.directive('comments', ['MeDao', function(MeDao) {
                     if(!err){
                         var burned = event.args.amount.toNumber();
                         var comment = event.args.metadataHash;
-                        
+                        //console.log(comment);
+                        if(comment == '')
+                            comment = '(no comment)';
                         $scope.comments.push({
                             burned:burned,
                             comment:comment

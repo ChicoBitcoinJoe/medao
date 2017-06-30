@@ -24,6 +24,7 @@ contract Owned {
     }
 }
 
+
 /*
     Copyright 2017, Joseph Reed
 
@@ -43,15 +44,108 @@ contract Owned {
 
 /// @title MeDao Contract
 /// @author Joseph Reed
-/// @dev A MeDao aims to let anyone issue time shares for themselves. The issuer
-///      should talk to shareholders for advice on how to maximize value for 
-///      themselves and for shareholders. Up to 40 hours worth of time are 
-///      auctioned off each week. The Owner of the MeDao is expected to burn  
-///      a certain amount of tokens each week negotiated between the Owner
-///      and the Shareholders and thus will be diffrent for every MeDao. For 
-///      more info go to https://github.com/ChicoBitcoinJoe/MeDao.
+/// @dev The MeDao platform enables any person to find a free market value for 
+///     their own time as well as allow anyone in the world to gain exposure to 
+///     the value of that person's time. This is acheived by auctioning up to 40 
+///     hours each week, 1 hour at a time, to the highest bidder. Intrinsically,
+///     1 hours worth of tokens can be used to claim 1 hour of the Founder's 
+///     time or it can be held on to if the holder believes this person's time 
+///     might be more valuable in the future. A burn function is provided for 
+///     people to make payments to the MeDao thus showing proof of work done by
+///     the MeDao Founder.
 
-contract OngoingAuction is Owned {
+
+contract MeDaoFactory is Owned {
+    
+    MiniMeToken public Token;
+    
+    function register (string name);
+    function update (address oldMeDaoAddress, string name);
+    function forwardPermissions (address auction, address newFactory);
+}
+
+contract MeDaoRegistry is Owned {
+    
+    uint public total_factories;
+    mapping (uint => address) public factoryIndex;
+    mapping (address => Factory) public factories;
+    
+    uint public total_medaos;
+    mapping (uint => address) public founders;
+    mapping (address => address) public medaos;
+    
+    function register (address founder, address newMeDao) onlyFactory {
+        if(medaos[founder] == address(0x0)) {
+            total_medaos++;
+            uint next_id = total_medaos;
+            founders[next_id] = founder;
+            medaos[founder] = newMeDao;
+            
+            MeDaoRegistered_event(newMeDao);
+        } else {
+            address oldMeDao = medaos[founder];
+            medaos[founder] = newMeDao;
+            
+            MeDaoUpdated_event(oldMeDao,newMeDao);
+        }
+    }
+    
+    function claimOwnership (
+        address auction, 
+        address oldFactory, 
+        address newFactory
+    ) onlyFactory {
+        if(factories[newFactory].deprecated) throw;
+        
+        MeDaoFactory(oldFactory).forwardPermissions(auction, newFactory);
+    }
+    
+    function addFactory (address newFactory) onlyOwner {
+        if(factories[newFactory].added) throw;
+        
+        total_factories++;
+        uint next_id = total_factories;
+        factoryIndex[next_id] = newFactory;
+        factories[newFactory] = Factory(true,false,false);
+    }
+    
+    function deprecateFactory (address factory, bool unsafe) onlyOwner {
+        factories[factory].deprecated = true;
+        factories[factory].unsafe = unsafe;
+    }
+    
+    struct Factory {
+        bool added;
+        bool deprecated;
+        bool unsafe;
+    }
+    
+    modifier onlyFactory () {
+        if(!factories[msg.sender].added) throw;
+        if(factories[msg.sender].deprecated) throw;
+        if(factories[msg.sender].unsafe) throw;
+        _;
+    }
+    
+    event MeDaoRegistered_event(address medao);
+    event MeDaoUpdated_event(address oldMeDao, address updatedMeDao);
+}
+
+
+contract Curated is Owned {
+    address public curator;
+    
+    function setCurator (address newCurator) onlyOwner {
+        curator = newCurator;
+    }
+    
+    modifier onlyCurator () {
+        if(msg.sender != curator) throw;
+        _;
+    }
+}
+
+contract OngoingAuction is Curated {
     
     uint public current_bids_open;
     uint public total_bids_made;
@@ -85,7 +179,8 @@ contract OngoingAuction is Owned {
         bids[bid_id].owner.transfer(bids[bid_id].value);
     }
     
-    function acceptHighestBid (address deposit_address) onlyOwner returns (uint) {
+    function acceptHighestBid (address deposit_address) onlyCurator 
+    returns (uint) {
         if(top_teir == 0) throw;
         
         uint winning_bid_id = teirs[top_teir].front_of_line_id;
@@ -154,11 +249,19 @@ contract OngoingAuction is Owned {
             if(new_teir > adjacent_teir) {
                 teir_above = teirs[adjacent_teir].teir_above;
                 teir_below = adjacent_teir;
-                if(new_teir > teir_above) throw;
+                if(new_teir > teir_above) {
+                    //To Do: create search function to find nearest teir on a 
+                    //       best effort basis
+                    throw;
+                }
             } else if(new_teir < adjacent_teir) {
                 teir_above = adjacent_teir;
                 teir_below = teirs[adjacent_teir].teir_below;
-                if(new_teir < teir_below) throw;
+                if(new_teir < teir_below) {
+                    //To Do: create search function to find nearest teir on a 
+                    //       best effort basis
+                    throw;
+                }
             }
             
             teirs[new_teir] = Teir(teir_above,new_teir,teir_below,0,0,0);
@@ -251,7 +354,7 @@ contract OngoingAuction is Owned {
     }
     
 ////////////////
-// Structs and Events
+// Structs, Modifiers, and Events
 ////////////////
     
     struct SpotInLine {
@@ -285,37 +388,44 @@ contract OngoingAuction is Owned {
         mapping (uint => SpotInLine) line; //FIFO DLL
     }
     
+    
+    
     event NewBid_event(address bidder, uint bid_id, uint value);
 }
 
 contract MeDao is Owned, TokenController {
     
-    string public version = '0.0.2';
+    address public Factory;
     
     address public Founder;
-    address public Vault;
-    
-    string public url;
-    
     MiniMeToken public Token;
     OngoingAuction public Auction;
     
+    address public Vault;
+    string public url;
+    
     uint public weekly_auction_reward;
-    uint public scheduled_auction_timestamp;
+    uint public auction_timestamp;
     uint public auction_period;
     uint public total_proof_of_work;
-    uint public cooldown_timestamp;
-    uint burn_minimum = 1;
      
 ////////////////
 // MeDao Setup
 ////////////////
 
-    function MeDao (address founder, MiniMeToken token, OngoingAuction auction) {
+    function MeDao (
+        address factory, 
+        address founder, 
+        MiniMeToken token, 
+        address auction,
+        uint previousProofOfWork
+    ) {
+        Factory = factory;
         Founder = founder;
         Vault = founder;
         Token = token;
-        Auction = auction;
+        Auction = OngoingAuction(auction);
+        total_proof_of_work = previousProofOfWork;
     }
     
 ////////////////
@@ -332,14 +442,11 @@ contract MeDao is Owned, TokenController {
         AuctionWinner_event(winner,winning_bid_value);
     }
     
-    function burn (uint burnAmount, string hash) 
-    onlyTokenHolders (burn_minimum) {
-        if(Token.balanceOf(msg.sender) < burnAmount) throw;
+    function burn (uint amount, string comment) {
+        Token.destroyTokens(msg.sender,amount);
+        total_proof_of_work += amount;
         
-        Token.destroyTokens(msg.sender,burnAmount);
-        total_proof_of_work += burnAmount;
-        
-        ProofOfWork_event(msg.sender,burnAmount,hash);
+        ProofOfWork_event(msg.sender,amount,comment);
     }
     
 ////////////////
@@ -354,12 +461,7 @@ contract MeDao is Owned, TokenController {
         Vault = newVault;
     }
     
-    function setBurnMinimum (uint burnMinimum) onlyOwner {
-        burn_minimum = burnMinimum;
-    }
-    
-    function setWeeklyAuctionReward (uint8 reward) onlyOwner 
-    hasCooldown(7 days) {
+    function setWeeklyAuctionReward (uint8 reward) onlyOwner {
         if(reward > 40 hours || reward == 0) throw;
         
         weekly_auction_reward = reward;
@@ -369,7 +471,7 @@ contract MeDao is Owned, TokenController {
         //Testnet:
         auction_period = 5 minutes;  
         
-        scheduled_auction_timestamp = now + auction_period;
+        auction_timestamp = now + auction_period;
         
         AuctionRewardChange_event(weekly_auction_reward);
     }
@@ -382,17 +484,11 @@ contract MeDao is Owned, TokenController {
 // Lost Token Retreival
 ////////////////
 
-    function transferToVault (ERC20Token Token) onlyOwner {
-        if(Token != address(0x0)) {
-            uint balance = Token.balanceOf(this);
-            if(balance == 0) throw;
-            
-            Token.transfer(Vault,balance);
-        } else {
-            if(this.balance == 0) throw;
-            
+    function sweepToVault (ERC20Token Token) onlyOwner {
+        if(Token == address(0x0))
             Vault.transfer(this.balance);
-        }
+        else
+            Token.transfer(Vault,Token.balanceOf(this));
     }
 
 ////////////////
@@ -408,7 +504,8 @@ contract MeDao is Owned, TokenController {
         _from = _from; //Mist refuses to compile with unused variables...
         _to = _to; //Mist refuses to compile with unused variables...
         _amount = _amount; //Mist refuses to compile with unused variables...
-        return true;
+        
+        return (Auction.curator() == address(this));
     }
 
     function onApprove(address _owner, address _spender, uint _amount)
@@ -416,35 +513,23 @@ contract MeDao is Owned, TokenController {
         _owner = _owner; //Mist refuses to compile with unused variables...
         _spender = _spender; //Mist refuses to compile with unused variables...
         _amount = _amount; //Mist refuses to compile with unused variables...
-        return true;    
+        
+        return (Auction.curator() == address(this));   
     }
         
 ////////////////
 // Events and Modifiers
 ////////////////
     
-    modifier onlyTokenHolders (uint _minimum_needed) {
-        uint tokens = Token.balanceOf(msg.sender);
-        if(tokens < _minimum_needed) throw;
-        _;
-    }
-    
     modifier isScheduled () {
-        if (scheduled_auction_timestamp == 0) throw;
-        if (now < scheduled_auction_timestamp) throw;
+        if (auction_timestamp == 0) throw;
+        if (now < auction_timestamp) throw;
         
-        if(now < scheduled_auction_timestamp + auction_period)
-            scheduled_auction_timestamp += auction_period;
+        if(now < auction_timestamp + auction_period)
+            auction_timestamp += auction_period;
         else
-            scheduled_auction_timestamp = now + auction_period;
+            auction_timestamp = now + auction_period;
         
-        _;
-    }
-    
-    modifier hasCooldown (uint cooldown) {
-        if(now < cooldown_timestamp) throw;
-        
-        cooldown_timestamp = now + cooldown;
         _;
     }
     
@@ -453,65 +538,68 @@ contract MeDao is Owned, TokenController {
     event AuctionRewardChange_event(uint new_auction_reward);
 }
 
-contract MeDaoRegistry is Owned {
-    
-    uint public total_medaos;
-    mapping (uint => address) public founders;
-    mapping (address => address) public medaos;
-    
-    mapping (address => bool) public deployers;
-    
-    function register (address founder, address medao) onlyDeployers {
-        uint next_id = total_medaos++;
-        founders[next_id] = founder;
-        medaos[founder] = medao;
-        
-        MeDaoRegistered_event(medao);
-    }
-    
-    function update (address caller, address founder, address updatedMeDao)
-    onlyDeployers callerIsOwner (caller,founder) {
-        MeDaoUpdated_event(medaos[founder],updatedMeDao);
-        medaos[founder] = updatedMeDao;
-    }
-    
-    function toggleDeployer (address deployer, bool allowed) onlyOwner {
-        deployers[deployer] = allowed;
-    }
-    
-    modifier onlyDeployers () {
-        if(!deployers[msg.sender]) throw;
-        _;
-    }
-    
-    modifier callerIsOwner (address caller, address founder) {
-        address medao = medaos[founder];
-        if(caller != Owned(medao).owner()) throw;
-        _;
-    }
-    
-    event MeDaoRegistered_event(address medao);
-    event MeDaoUpdated_event(address oldMeDao, address newMeDao);
+
+contract MeDaoBase {
+    address Factory;
+    address public Founder;
+    MiniMeToken public Token;
+    address public Auction;
+    uint public total_proof_of_work;
 }
 
-contract MeDaoDeployer is Owned {
+contract Factory is MeDaoFactory {
     
-    string version = "0.0.1";
+    string public version =  "0.0.1";
     
-    MiniMeToken Prime;
-    
-   function MeDaoDeployer (MiniMeToken Token) {
-        Prime = Token;
+    function Factory (MiniMeToken token) {
+        Token = token;
     }
     
-    function deploy (string name) {
-        address token = Prime.createCloneToken(name,0,'meether',0,true);
+    function register (string name) {
+        address medao = MeDaoRegistry(owner).medaos(msg.sender);
+        if(medao != address(0x0)) throw;
+        
+        address token = Token.createCloneToken(name,0,'meether',block.number,true);
         OngoingAuction Auction = new OngoingAuction();
-        MeDao Medao = new MeDao(msg.sender,MiniMeToken(token),Auction);
+        MeDao Medao = new MeDao(this,msg.sender,MiniMeToken(token),Auction,0);
         Medao.transferOwnership(msg.sender);
         MiniMeToken(token).changeController(Medao);
-        Auction.transferOwnership(Medao);
+        Auction.setCurator(Medao);
         
         MeDaoRegistry(owner).register(msg.sender, Medao);
     }
+    
+    function update (address oldMeDaoAddress, string name) {
+        if(msg.sender != Owned(oldMeDaoAddress).owner()) throw;
+        
+        address oldFactory = MeDao(oldMeDaoAddress).Factory();
+        address Founder =  MeDao(oldMeDaoAddress).Founder();
+        MiniMeToken OldToken = MeDaoBase(oldMeDaoAddress).Token();
+        uint proofOfWork = MeDaoBase(oldMeDaoAddress).total_proof_of_work();
+        address Auction = MeDaoBase(oldMeDaoAddress).Auction();
+        
+        MiniMeToken NewToken = MiniMeToken(
+        OldToken.createCloneToken(
+            name,
+            0,
+            'seconds',
+            block.number,
+            true
+        ));
+        
+        MeDao Medao = new MeDao(this,Founder,NewToken,Auction,proofOfWork);
+        
+        Medao.transferOwnership(msg.sender);
+        NewToken.changeController(Medao);
+        
+        MeDaoRegistry(owner).claimOwnership(Auction,oldFactory,this);
+        Curated(Auction).setCurator(Medao);
+        
+        MeDaoRegistry(owner).register(msg.sender, Medao);
+    }
+    
+    function forwardPermissions (address auction, address newFactory) onlyOwner {
+        Owned(auction).transferOwnership(newFactory);
+    }
 }
+
