@@ -1,5 +1,5 @@
-app.directive('medaoTutorialBtn', ['$q','$mdDialog','Web3Service','MeDao',
-function($q,$mdDialog,Web3Service,MeDao) {
+app.directive('medaoTutorialBtn', ['$q','$mdDialog','Web3Service','MeDao','MiniMeToken',
+function($q,$mdDialog,Web3Service,MeDao,Token) {
 	return {
 		restrict: 'E',
 		scope: {
@@ -24,7 +24,7 @@ function($q,$mdDialog,Web3Service,MeDao) {
                 console.log(tokenAddress);
                 return $q.all([
                     Web3Service.getCurrentBlockNumber(),
-                    MeDao.getCreationBlock(tokenAddress)
+                    Token.getCreationBlock(tokenAddress)
                 ]);
             }).then(function(promises){
                 var currentBlock = promises[0];

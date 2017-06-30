@@ -1,5 +1,5 @@
-app.directive('toggleTransfersBtn', ['$q','$mdDialog','Web3Service','MeDao','Notifier',
-function($q,$mdDialog,Web3Service,MeDao,Notifier) {
+app.directive('toggleTransfersBtn', ['$q','$mdDialog','Web3Service','MeDao','MiniMeToken','Notifier',
+function($q,$mdDialog,Web3Service,MeDao,Token,Notifier) {
 	return {
 		restrict: 'E',
 		scope: {
@@ -17,7 +17,7 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
                         $scope.medaoAddress = medaoAddress
                         return MeDao.getTokenAddress(medaoAddress);
                     }).then(function(tokenAddress){
-                        return MeDao.transfersEnabled(tokenAddress);
+                        return Token.transfersEnabled(tokenAddress);
                 }).then(function(enabled){
                     if(enabled)
                         $scope.toggleStatus = 'disable'
@@ -34,7 +34,7 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
                 }).then(function(tokenAddress){
                     return $q.all([
                         Web3Service.getCurrentAccount(),
-                        MeDao.transfersEnabled(tokenAddress)
+                        Token.transfersEnabled(tokenAddress)
                     ]);
                 }).then(function(promises){
                     var currentAccount = promises[0];

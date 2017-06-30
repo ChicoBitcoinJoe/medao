@@ -395,7 +395,6 @@ contract OngoingAuction is Curated {
 
 contract MeDao is Owned, TokenController {
     
-    string public version = '0.0.1';
     address public Factory;
     
     address public Founder;
@@ -406,10 +405,9 @@ contract MeDao is Owned, TokenController {
     string public url;
     
     uint public weekly_auction_reward;
-    uint public scheduled_auction_timestamp;
+    uint public auction_timestamp;
     uint public auction_period;
-    uint public cooldown_timestamp;
-    uint public burn_minimum = 1;
+    uint public total_proof_of_work;
      
 ////////////////
 // MeDao Setup
@@ -419,13 +417,15 @@ contract MeDao is Owned, TokenController {
         address factory, 
         address founder, 
         MiniMeToken token, 
-        address auction
+        address auction,
+        uint previousProofOfWork
     ) {
         Factory = factory;
         Founder = founder;
         Vault = founder;
         Token = token;
         Auction = OngoingAuction(auction);
+        total_proof_of_work = previousProofOfWork;
     }
     
 ////////////////
@@ -442,11 +442,11 @@ contract MeDao is Owned, TokenController {
         AuctionWinner_event(winner,winning_bid_value);
     }
     
-    function burn (uint burnAmount, string comment) 
-    onlyTokenHolders (burn_minimum) {
-        Token.destroyTokens(msg.sender,burnAmount);
+    function burn (uint amount, string comment) {
+        Token.destroyTokens(msg.sender,amount);
+        total_proof_of_work += amount;
         
-        ProofOfWork_event(msg.sender,burnAmount,comment);
+        ProofOfWork_event(msg.sender,amount,comment);
     }
     
 ////////////////
@@ -461,12 +461,7 @@ contract MeDao is Owned, TokenController {
         Vault = newVault;
     }
     
-    function setBurnMinimum (uint burnMinimum) onlyOwner {
-        burn_minimum = burnMinimum;
-    }
-    
-    function setWeeklyAuctionReward (uint8 reward) onlyOwner 
-    hasCooldown(7 days) {
+    function setWeeklyAuctionReward (uint8 reward) onlyOwner {
         if(reward > 40 hours || reward == 0) throw;
         
         weekly_auction_reward = reward;
@@ -476,7 +471,7 @@ contract MeDao is Owned, TokenController {
         //Testnet:
         auction_period = 5 minutes;  
         
-        scheduled_auction_timestamp = now + auction_period;
+        auction_timestamp = now + auction_period;
         
         AuctionRewardChange_event(weekly_auction_reward);
     }
@@ -490,16 +485,10 @@ contract MeDao is Owned, TokenController {
 ////////////////
 
     function sweepToVault (ERC20Token Token) onlyOwner {
-        if(Token != address(0x0)) {
-            uint balance = Token.balanceOf(this);
-            if(balance == 0) throw;
-            
-            Token.transfer(Vault,balance);
-        } else {
-            if(this.balance == 0) throw;
-            
+        if(Token == address(0x0))
             Vault.transfer(this.balance);
-        }
+        else
+            Token.transfer(Vault,Token.balanceOf(this));
     }
 
 ////////////////
@@ -532,28 +521,15 @@ contract MeDao is Owned, TokenController {
 // Events and Modifiers
 ////////////////
     
-    modifier onlyTokenHolders (uint _minimum_needed) {
-        uint tokens = Token.balanceOf(msg.sender);
-        if(tokens < _minimum_needed) throw;
-        _;
-    }
-    
     modifier isScheduled () {
-        if (scheduled_auction_timestamp == 0) throw;
-        if (now < scheduled_auction_timestamp) throw;
+        if (auction_timestamp == 0) throw;
+        if (now < auction_timestamp) throw;
         
-        if(now < scheduled_auction_timestamp + auction_period)
-            scheduled_auction_timestamp += auction_period;
+        if(now < auction_timestamp + auction_period)
+            auction_timestamp += auction_period;
         else
-            scheduled_auction_timestamp = now + auction_period;
+            auction_timestamp = now + auction_period;
         
-        _;
-    }
-    
-    modifier hasCooldown (uint cooldown) {
-        if(now < cooldown_timestamp) throw;
-        
-        cooldown_timestamp = now + cooldown;
         _;
     }
     
@@ -568,6 +544,7 @@ contract MeDaoBase {
     address public Founder;
     MiniMeToken public Token;
     address public Auction;
+    uint public total_proof_of_work;
 }
 
 contract Factory is MeDaoFactory {
@@ -582,9 +559,9 @@ contract Factory is MeDaoFactory {
         address medao = MeDaoRegistry(owner).medaos(msg.sender);
         if(medao != address(0x0)) throw;
         
-        address token = Token.createCloneToken(name,0,'meether',0,true);
+        address token = Token.createCloneToken(name,0,'meether',block.number,true);
         OngoingAuction Auction = new OngoingAuction();
-        MeDao Medao = new MeDao(this,msg.sender,MiniMeToken(token),Auction);
+        MeDao Medao = new MeDao(this,msg.sender,MiniMeToken(token),Auction,0);
         Medao.transferOwnership(msg.sender);
         MiniMeToken(token).changeController(Medao);
         Auction.setCurator(Medao);
@@ -598,13 +575,22 @@ contract Factory is MeDaoFactory {
         address oldFactory = MeDao(oldMeDaoAddress).Factory();
         address Founder =  MeDao(oldMeDaoAddress).Founder();
         MiniMeToken OldToken = MeDaoBase(oldMeDaoAddress).Token();
-        
-        address token = OldToken.createCloneToken(name,0,'seconds',0,true);
+        uint proofOfWork = MeDaoBase(oldMeDaoAddress).total_proof_of_work();
         address Auction = MeDaoBase(oldMeDaoAddress).Auction();
-        MeDao Medao = new MeDao(this,Founder,MiniMeToken(token),Auction);
+        
+        MiniMeToken NewToken = MiniMeToken(
+        OldToken.createCloneToken(
+            name,
+            0,
+            'seconds',
+            block.number,
+            true
+        ));
+        
+        MeDao Medao = new MeDao(this,Founder,NewToken,Auction,proofOfWork);
         
         Medao.transferOwnership(msg.sender);
-        MiniMeToken(token).changeController(Medao);
+        NewToken.changeController(Medao);
         
         MeDaoRegistry(owner).claimOwnership(Auction,oldFactory,this);
         Curated(Auction).setCurator(Medao);

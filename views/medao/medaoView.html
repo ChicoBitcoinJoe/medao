@@ -159,19 +159,20 @@
         <div layout="row" layout-align="center center" flex>
             <h3>admin</h3>
         </div>
-        <div class="lighter-background" layout="row" layout-gt-sm="column" layout-lg="row" layout-align="center center" flex>
-            <div layout="column" layout-gt-sm="row" layout-align="center end"  flex-xs="50" flex-sm="50" flex-gt-sm flex-lg="none">
-                <set-reward-btn owner="platform.medao.owner"></set-reward-btn>
-                <set-burn-btn owner="platform.medao.owner"></set-burn-btn>
-                <toggle-transfers-btn owner="platform.medao.owner"></toggle-transfers-btn>
-                <md-button class="medao-btn" ng-disabled="true">sweep medao</md-button>
-            </div>
-            <div layout="column" layout-gt-sm="row" layout-align="center start" flex-xs="50" flex-sm="50" flex-gt-sm flex-lg="none">
-                <set-vault-btn owner="platform.medao.owner"></set-vault-btn>
-                <set-owner-btn owner="platform.medao.owner"></set-owner-btn>
-                <set-url-btn owner="platform.medao.owner"></set-url-btn>
-                <md-button ng-show="!platform.medao.outdated" class="medao-btn" ng-disabled="true">up to date</md-button>
-                <md-button ng-show="platform.medao.outdated" class="medao-btn" ng-class="{'update-btn':platform.medao.outdated}" ng-click="updateMeDao()" ng-disabled="!platform.medao.outdated">update to v0.0.2</md-button>
+        <div class="lighter-background">
+            <div layout="row" layout-md="column" layout-align="center center" flex>
+                <div layout="column" layout-gt-sm="row" layout-align="center end"  flex-xs="50" flex-sm="50" flex-gt-sm flex-gt-md="none">
+                    <md-button ng-show="platform.medao.outdated" class="medao-btn" ng-class="{'update-btn':platform.medao.outdated}" ng-click="updateMeDao()" ng-disabled="!platform.medao.outdated">update to v0.0.2</md-button>
+                    <md-button ng-show="!platform.medao.outdated" class="medao-btn" ng-disabled="true">up to date</md-button>
+                    <toggle-transfers-btn owner="platform.medao.owner"></toggle-transfers-btn>
+                    <md-button hide class="medao-btn" ng-disabled="true">sweep medao</md-button>
+                    <set-owner-btn owner="platform.medao.owner"></set-owner-btn>
+                </div>
+                <div layout="column" layout-gt-sm="row" layout-align="center start" flex-xs="50" flex-sm="50" flex-gt-sm flex-gt-md="none">
+                    <set-reward-btn owner="platform.medao.owner"></set-reward-btn>
+                    <set-url-btn owner="platform.medao.owner"></set-url-btn>
+                    <set-vault-btn owner="platform.medao.owner"></set-vault-btn>
+                </div>
             </div>
         </div>
     </div>

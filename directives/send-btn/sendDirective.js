@@ -1,5 +1,5 @@
-app.directive('sendBtn', ['$q','$mdDialog','Web3Service','MeDao','Notifier',
-function($q,$mdDialog,Web3Service,MeDao,Notifier) {
+app.directive('sendBtn', ['$q','$mdDialog','Web3Service','MeDao','MiniMeToken','Notifier',
+function($q,$mdDialog,Web3Service,MeDao,Token,Notifier) {
 	return {
 		restrict: 'E',
 		scope: {
@@ -47,7 +47,7 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
                         var currentAccount = promises[0];
                         var tokenAddress = promises[1];
                         
-                        return MeDao.getBalanceOf(tokenAddress,currentAccount);
+                        return Token.getBalanceOf(tokenAddress,currentAccount);
                     }).then(function(timeBalanceInSeconds){
                         $scope.send.amountInSeconds = timeBalanceInSeconds.toNumber();
                     });
@@ -77,7 +77,7 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
                     }).then(function(tokenAddress){
                         console.log($scope.send.address,
                             $scope.send.amountInSeconds);
-                        return MeDao.transfer(
+                        return Token.transfer(
                             tokenAddress,
                             $scope.send.address,
                             $scope.send.amountInSeconds
