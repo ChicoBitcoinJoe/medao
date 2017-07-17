@@ -101,7 +101,7 @@ function($scope,$q,$location,Web3Service,Platform,Token,Notifier){
                 $scope.account.balanceInWei = balance;
             });
             
-            $scope.isController = ($scope.account.address == $scope.medao.founder);
+            $scope.isController = ($scope.account.address == $scope.medao.controller);
         });
     };
     
