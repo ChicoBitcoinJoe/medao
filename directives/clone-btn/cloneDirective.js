@@ -58,9 +58,12 @@ function($window,$q,$mdDialog,Web3Service,Notifier,Platform,Token) {
                         console.error(err);
                     });
                     
-                    Web3Service.getCurrentAccount()
-                    .then(function(currentAccount){
-                        $scope.isController = (currentAccount == $scope.founder);
+                    $q.all([Web3Service.getCurrentAccount(),Platform.getMeDaoInfo($scope.founder)])
+                    .then(function(promiseArray){
+                        var currentAccount = promiseArray[0];
+                        var medaoInfo = promiseArray[1];
+                        var controller = medaoInfo[1];
+                        $scope.isController = (currentAccount == controller);
                     });
                 };
                 
