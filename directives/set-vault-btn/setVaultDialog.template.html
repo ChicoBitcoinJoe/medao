@@ -3,9 +3,11 @@
         <md-button class="md-icon-button" aria-label="back" ng-click="back()"><md-icon md-svg-src="libs/fonts/ic_close_white_24px.svg"></md-icon></md-button>
     </div>
     <h3>Set Vault Address</h3>
+    <p style="word-wrap: break-word;">current: {{vault.current}}</p>
+    <p>Ideally this should be set to a secure account. I suggest either a <a href="">MultiSig Wallet</a> or a hardware wallet such as <a href="">Ledger Nano S</a>.</p>
     <div>
         <md-input-container class="md-block" style="border-bottom:1px solid rgba(255,255,255,0.67)">
-            <label>Address</label>
+            <label>Vault Account</label>
             <input type="text" ng-model="vault.address">
         </md-input-container>
     </div>

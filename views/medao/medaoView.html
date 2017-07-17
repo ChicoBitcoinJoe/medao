@@ -1,5 +1,5 @@
 <div class="black-background" style="overflow:auto;" flex>
-    <div class="black-background" style="position:fixed;top:0px; height:145px; width:100%;z-index:10;">
+    <div class="black-background" style="position:fixed;top:0px; height:145px; width:100%; z-index:10;">
         <div layout="row" layout-align="left top"  flex>
             <div layout="row" layout-align="left center" layout-padding flex>
                 <span class="cursor" layout="row" ng-click="goto('/home')">
@@ -9,10 +9,7 @@
                     <span style="margin: 0px 1px">eDao</span>
                 </span>
                 <span ng-hide="showSearch" layout="row" flex>
-                    <span style="color:rgba(255,255,255,0.67); font-size:small; margin-top:3px; margin-left:-13px;"> v{{platform.medao.version}}</span>
-                    <span layout="row" layout-align="center center" flex>
-                        
-                    </span>
+                    <span style="color:rgba(255,255,255,0.67); font-size:small; margin-top:3px; margin-left:-13px;"> v{{platform.major_version}}.{{platform.minor_version}}</span>
                 </span>
                 <span class="search-bar" ng-class="{'lighter-background':showSearch}" style="padding:0px 4px; max-height:36px;height:36px;min-height:36px;" ng-show="showSearch" layout="row" flex>
                     <md-input-container style="margin:0px" md-no-float flex>
@@ -26,7 +23,10 @@
                 <md-button ng-show="showSearch" class="search-bar-btn" ng-click="showSearch = !showSearch">
                     <md-icon aria-label="hide search bar" md-svg-src="libs/fonts/ic_close_white_24px.svg"></md-icon>
                 </md-button>
-                <medao-tutorial-btn ng-hide="showSearch" owner="platform.medao.owner"></medao-tutorial-btn>
+                <md-button ng-hide="showSearch" class="search-bar-btn">
+                    <md-icon aria-label="show search bar" md-svg-src="libs/fonts/ic_account_balance_wallet_white_24px.svg"></md-icon>
+                </md-button>
+                <medao-tutorial-btn ng-hide="showSearch" founder="medao.founder"></medao-tutorial-btn>
                 <md-button ng-hide="showSearch" class="search-bar-btn" ng-class="{'lighter-background':showSearch}" ng-click="showSearch = !showSearch">
                     <md-icon aria-label="show search bar" md-svg-src="libs/fonts/ic_search_white_24px.svg"></md-icon>
                 </md-button>
@@ -34,13 +34,13 @@
         </div>
         <div layout="row" layout-align="center center" flex>
             <div layout="column" layout-align="top center">
-                <h1 style="margin-bottom:8px;">{{platform.token.name}}</h1>
-                <a ng-show="platform.medao.url != ''" class="medao-url cursor" ng-click="goToUrl(platform.medao.url)">{{platform.medao.url}}</a>
-                <span ng-show="platform.medao.url == ''" class="medao-url">no webpage set</span>
+                <h1 style="margin-bottom:8px;">{{medao.token.name}}</h1>
+                <a ng-show="platform.medao.url != ''" class="medao-url cursor" ng-click="goToUrl(medao.url)">{{medao.url}}</a>
+                <span ng-show="medao.url == ''" class="medao-url">no webpage set</span>
             </div>
         </div>
     </div>
-     <div style="background-color: rgba(37,37,37,0.90);position:fixed;top:145px; height:2px; width:100%;z-index:10;"></div>
+    <div style="background-color: rgba(37,37,37,0.90);position:fixed;top:145px; height:2px; width:100%;z-index:10;"></div>
     <div style="background-color: rgba(37,37,37,0.75);position:fixed;top:147px; height:2px; width:100%;z-index:10;"></div>
     <div style="background-color: rgba(37,37,37,0.60);position:fixed;top:149px; height:1px; width:100%;z-index:10;"></div>
     <div style="background-color: rgba(37,37,37,0.45);position:fixed;top:150px; height:1px; width:100%;z-index:10;"></div>
@@ -48,11 +48,11 @@
     <div style="background-color: rgba(37,37,37,0.15);position:fixed;top:152px; height:1px; width:100%;z-index:10;"></div>
     <div id="spacer" style="height:160px"></div>
     <div class="lighter-background" layout="row" layout-align="center center" flex>
-        <send-btn owner="platform.medao.owner"></send-btn>
+        <send-btn founder="medao.founder"></send-btn>
         <span>|</span>
-        <payment-btn owner="platform.medao.owner"></payment-btn>
+        <payment-btn founder="medao.founder"></payment-btn>
         <span>|</span>
-        <receive-btn owner="platform.medao.owner"></receive-btn>
+        <receive-btn founder="medao.founder"></receive-btn>
     </div>
     <div layout="column" layout-gt-md="row">
         <div layout="row" layout-gt-md="column" layout-align="space-around center" layout-padding flex>
@@ -63,17 +63,17 @@
                         <span style="font-size:16px; margin: 4px 2px">l</span>
                         <span style="font-size:22px;">l</span>
                     </span>
-                    <span style="padding:0px;">{{platform.account.secondsBalance / 3600 | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> h</span></span>
+                    <span style="padding:0px;">{{account.balanceInMeeWei | fromWei:'ether' | toHours | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> h</span></span>
                     <md-tooltip md-direction="right">
-                        <small hide-gt-sm>Hours invested in {{platform.token.name}}</small>
-                        <big hide show-gt-sm>Hours invested in {{platform.token.name}}</big>
+                        <small hide-gt-sm>Hours invested in {{medao.token.name}}</small>
+                        <big hide show-gt-sm>Hours invested in {{medao.token.name}}</big>
                     </md-tooltip>
                 </span>
             </span>
             <span layout="row" layout-align="center center" flex="50">
                 <span layout="row" layout-align="center center" layout-padding>
                    <span style="font-size:24px;">&Xi;</span>
-                    <span style="padding:0px;">{{platform.account.weiBalance | fromWei:'ether' | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> eth</span></span>
+                    <span style="padding:0px;">{{account.balanceInWei | fromWei:'ether' | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> eth</span></span>
                     <md-tooltip md-direction="left">
                         <small hide-gt-sm>Current Ether in your wallet</small>
                         <big hide show-gt-sm>Current Ether in your wallet</big>
@@ -85,93 +85,43 @@
             <span layout="row" layout-align="center center" layout-padding flex="50">
                 <span layout="row" layout-align="center center" layout-padding>
                     <span><md-icon md-svg-src="libs/fonts/ic_access_time_white_24px.svg"></md-icon></span>
-                    <span style="padding:0px;">{{platform.token.supply / 3600 | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> h</span></span>
+                    <span style="padding:0px;">{{medao.token.totalSupplyInWei | fromWei:'ether' | toHours | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> h</span></span>
                     <md-tooltip md-direction="right">
-                        <small hide-gt-sm>Total hours owed by {{platform.token.name}}</small>
-                        <big hide show-gt-sm>Total hours owed by {{platform.token.name}}</big>
+                        <small hide-gt-sm>Total hours owed by {{medao.token.name}}</small>
+                        <big hide show-gt-sm>Total hours owed by {{medao.token.name}}</big>
                     </md-tooltip>
                 </span>
             </span>
             <span layout="row" layout-align="center center" flex="50">
                 <span layout="row" layout-align="center center" layout-padding>
                     <span><md-icon md-svg-src="libs/fonts/ic_whatshot_white_24px.svg"></md-icon></span>
-                    <span style="padding:0px;">{{platform.medao.burned | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> h</span></span>
+                    <span style="padding:0px;">{{medao.proof_of_work | fromWei:'ether' | toHours | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> h</span></span>
                     <md-tooltip md-direction="left">
-                        <small hide-gt-sm>Proof of total hours worked by {{platform.token.name}}</small>
-                        <big hide show-gt-sm>Proof of total hours worked by {{platform.token.name}}</big>
-                    </md-tooltip>
-                </span>
-            </span>
-        </div>
-        <div layout="row" layout-gt-md="column" layout-align="space-around center" layout-padding flex>
-            <span layout="row" layout-align="center center" layout-padding flex="50">
-                <span layout="row" layout-align="center center" layout-padding>
-                    <span><md-icon aria-label="total ether bid" md-svg-src="libs/fonts/ic_lock_white_24px.svg"></md-icon></span>
-                    <span>{{platform.auction.locked | decimals:2}}<span style="color:rgba(255,255,255,0.5)"> eth</span></span>
-                    <md-tooltip md-direction="right">
-                        <small hide-gt-sm>Total ether bid at auction</small>
-                        <big hide show-gt-sm>Total ether bid at auction</big>
-                    </md-tooltip>
-                </span>
-            </span>
-            <span layout="row" layout-align="center center" layout-padding flex="50">
-                <span layout="row" layout-align="center center" layout-padding>
-                    <span><md-icon md-svg-src="libs/fonts/ic_trending_up_white_24px.svg"></md-icon></span>
-                    <span>{{platform.auction.bids}}<span style="color:rgba(255,255,255,0.5)"> bids</span></span>
-                    <md-tooltip md-direction="left">
-                        <small hide-gt-sm>Total bids placed at auction</small>
-                        <big hide show-gt-sm>Total bids placed at auction</big>
-                    </md-tooltip>
-                </span>
-            </span>
-        </div>
-        <div layout="row" layout-gt-md="column" layout-align="space-around center" layout-padding flex>
-            <span layout="row" layout-align="center center" layout-padding flex="50">
-                <span layout="row" layout-align="center center" layout-padding>
-                    <span><md-icon md-svg-src="libs/fonts/ic_arrow_upward_white_24px.svg"></md-icon></span>
-                    <span>{{platform.auction.highestBidInWei | fromWei:'ether'}} <span style="color:rgba(255,255,255,0.5)">eth</span></span>
-                    <md-tooltip md-direction="right">
-                        <small hide-gt-sm>Highest bid placed at auction</small>
-                        <big hide show-gt-sm>Highest bid placed at auction</big>
-                    </md-tooltip>
-                </span>
-            </span>
-            <span layout="row" layout-align="center center" layout-padding flex="50">
-                <span layout="row" layout-align="center center" layout-padding>
-                    <span><md-icon md-svg-src="libs/fonts/ic_add_white_24px.svg"></md-icon></span>
-                    <span>{{platform.auction.reward}} <span style="color:rgba(255,255,255,0.5)"> h/wk</span></span>
-                    <md-tooltip md-direction="left">
-                        <small hide-gt-sm>Hours awarded at auction each week</small>
-                        <big hide show-gt-sm>Hours awarded at auction each week</big>
+                        <small hide-gt-sm>Proof of total hours worked by {{medao.token.name}}</small>
+                        <big hide show-gt-sm>Proof of total hours worked by {{medao.token.name}}</big>
                     </md-tooltip>
                 </span>
             </span>
         </div>
     </div>
     <div class="lighter-background" layout="row" layout-align="center center" flex>
-        <place-bid-btn owner="platform.medao.owner"></place-bid-btn>
-        <span>|</span>
-        <start-auction-btn owner="platform.medao.owner"></start-auction-btn>
-        <span>|</span>
-        <remove-bid-btn owner="platform.medao.owner"></remove-bid-btn>
+        <clone-btn founder="medao.founder"></clone-btn>
+        <span>|&nbsp</span>
+        <exchange-btn founder="medao.founder"></exchange-btn>
     </div>
-    <div ng-show="isOwner">
+    <div ng-show="isController">
         <div layout="row" layout-align="center center" flex>
             <h3>admin</h3>
         </div>
         <div class="lighter-background">
-            <div layout="row" layout-md="column" layout-align="center center" flex>
-                <div layout="column" layout-gt-sm="row" layout-align="center end"  flex-xs="50" flex-sm="50" flex-gt-sm flex-gt-md="none">
-                    <md-button ng-show="platform.medao.outdated" class="medao-btn" ng-class="{'update-btn':platform.medao.outdated}" ng-click="updateMeDao()" ng-disabled="!platform.medao.outdated">update to v0.0.2</md-button>
-                    <md-button ng-show="!platform.medao.outdated" class="medao-btn" ng-disabled="true">up to date</md-button>
-                    <toggle-transfers-btn owner="platform.medao.owner"></toggle-transfers-btn>
-                    <md-button hide class="medao-btn" ng-disabled="true">sweep medao</md-button>
-                    <set-owner-btn owner="platform.medao.owner"></set-owner-btn>
+            <div layout="row" layout-align="center center" flex>
+                <div layout-xs="column" layout-gt-xs="row" layout-align="center end">
+                    <start-week-btn founder="medao.founder"></start-week-btn>
+                    <set-url-btn founder="medao.founder"></set-url-btn>
                 </div>
-                <div layout="column" layout-gt-sm="row" layout-align="center start" flex-xs="50" flex-sm="50" flex-gt-sm flex-gt-md="none">
-                    <set-reward-btn owner="platform.medao.owner"></set-reward-btn>
-                    <set-url-btn owner="platform.medao.owner"></set-url-btn>
-                    <set-vault-btn owner="platform.medao.owner"></set-vault-btn>
+                <div layout-xs="column" layout-gt-xs="row" layout-align="center start">
+                    <set-vault-btn founder="medao.founder"></set-vault-btn>
+                    <set-controller-btn founder="medao.founder"></set-controller-btn>
                 </div>
             </div>
         </div>
@@ -179,5 +129,5 @@
     <div layout="row" layout-align="center center" flex>
         <h3>recent payments</h3>
     </div>
-    <comments owner="platform.medao.owner"></comments>
+    <comments founder="medao.founder"></comments>
 </div>

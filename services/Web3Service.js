@@ -68,7 +68,7 @@ app.service( 'Web3Service',['$q', function ($q) {
             accounts.current = web3.eth.accounts[0];
             //console.log('Account set to ' + web3.eth.accounts[0]);
         }
-    }, 500);
+    }, 100);
     
     var service = {
 		getCurrentAccount: function(){
@@ -76,7 +76,7 @@ app.service( 'Web3Service',['$q', function ($q) {
             
             var ticker = 0;
             var interval = setInterval(function(){
-                if(accounts.current != null && accounts.current != '0x0000000000000000000000000000000000000000'){
+                if(accounts.current != null && accounts.current != '0x0000000000000000000000000000000000000000' && accounts.current != '0x' && accounts.current != '0x0'){
                     //console.log(accounts.current);
                     deferred.resolve(accounts.current);
                     clearInterval(interval);
@@ -84,8 +84,8 @@ app.service( 'Web3Service',['$q', function ($q) {
                     ticker++;
                     if(ticker >= 10){
                         alert("Failed to load account from web3! Make sure you are logged into your account and then refresh the page.");
-                        clearInterval(interval);
                         deferred.reject('Took to long to retrieve account! Is web3 connected?');
+                        clearInterval(interval);
                     }
                 }
             }, 500);

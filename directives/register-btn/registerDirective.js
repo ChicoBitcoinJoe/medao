@@ -1,5 +1,5 @@
-app.directive('registerBtn', ['$mdDialog','$location','Web3Service','MeDao',
-function($mdDialog,$location,Web3Service,MeDao) {
+app.directive('registerBtn', ['$mdDialog','$location','Web3Service','MeDaoPlatform',
+function($mdDialog,$location,Web3Service,Platform) {
 	return {
 		restrict: 'E',
 		scope: {
@@ -64,7 +64,7 @@ function($mdDialog,$location,Web3Service,MeDao) {
             }
 
             $scope.register = function(){
-                MeDao.register($scope.medaoName).
+                Platform.deployMeDao($scope.medaoName).
                 then(function(txHash){
                     $scope.startThinking();
                     return Web3Service.getTransactionReceipt(txHash);
@@ -72,11 +72,7 @@ function($mdDialog,$location,Web3Service,MeDao) {
                     $scope.thinking = 0;
                     return Web3Service.getCurrentAccount();
                 }).then(function(account){
-                    $scope.account = account;
-                    return MeDao.getMeDaoAddress(account);
-                }).then(function(medaoAddress){
-                    clearInterval($scope.interval);
-                    $scope.goto($scope.account + '/medao');
+                    $scope.goto(account + '/medao');
                 }).catch(function(err){
                     clearInterval($scope.interval);
                     $scope.waiting = false;

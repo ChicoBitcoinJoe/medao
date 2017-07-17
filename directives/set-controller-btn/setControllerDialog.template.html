@@ -2,7 +2,9 @@
     <div style="position:absolute;top:-5px; right:-12px;">
         <md-button class="md-icon-button" aria-label="back" ng-click="back()"><md-icon md-svg-src="libs/fonts/ic_close_white_24px.svg"></md-icon></md-button>
     </div>
-    <h3>Transfer Ownership</h3>
+    <h3>Set Controller</h3>
+    <p style="word-wrap: break-word;">current: {{controller.current}}</p>
+    <p>Ideally this should be set to a secure account. I suggest either a <a href="">MultiSig Wallet</a> or a hardware wallet such as <a href="">Ledger Nano S</a>.</p>
     <div>
         <md-input-container class="md-block" style="border-bottom:1px solid rgba(255,255,255,0.67)">
             <label>Address</label>
@@ -10,6 +12,6 @@
         </md-input-container>
     </div>
     <div layout="row" flex>
-        <md-button class="medao-btn md-raised md-primary" ng-click="transferOwnership()" ng-disabled="newOwner.address == null" flex>transfer</md-button>
+        <md-button class="medao-btn md-raised md-primary" ng-click="transferOwnership()" ng-disabled="newOwner.address == null" flex>set controller</md-button>
     </div>
 </div>

@@ -1,18 +1,19 @@
-app.directive('setOwnerBtn', ['$q','$mdDialog','Web3Service','MeDao','Notifier',
-function($q,$mdDialog,Web3Service,MeDao,Notifier) {
+app.directive('setControllerBtn', ['$q','$mdDialog','Web3Service','MeDaoPlatform','Notifier',
+function($q,$mdDialog,Web3Service,Platform,Notifier) {
 	return {
 		restrict: 'E',
 		scope: {
-            owner: '='
+            founder: '='
 		},
 		replace: true,
-		templateUrl: 'directives/set-owner-btn/setOwnerDirective.html',
+		templateUrl: 'directives/set-controller-btn/setControllerDirective.html',
 		controller: function($scope){
             
             function DialogController($scope, $mdDialog, data) {
-                $scope.owner = data.owner;
+                $scope.founder = data.founder;
                 
-                $scope.newOwner = {
+                $scope.controller = {
+                    curernt: null,
                     address: null
                 };
                 
@@ -20,23 +21,20 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
                     $mdDialog.hide(0);
                 };
                 
-                $scope.transferOwnership = function(){
-                    $q.all([
-                        Web3Service.getCurrentAccount(),
-                        MeDao.getMeDaoAddress($scope.owner)
-                    ]).then(function(promises){
-                        console.log(promises);
-                        var currentAccount = promises[0];
-                        var medaoAddress = promises[1];
-                        console.log(currentAccount, $scope.newOwner.address);
-                        
-                        return MeDao.transferOwnership(
-                            medaoAddress,
+                Platform.getMeDaoInfo($scope.founder)
+                .then(function(medaoInfo){
+                    $scope.controller.current = medaoInfo[1];
+                });
+                
+                $scope.setController = function(){
+                    Web3Service.getCurrentAccount().then(function(currentAccount){
+                        return Platform.setController(
+                            $scope.founder,
                             currentAccount,
-                            $scope.newOwner.address
+                            $scope.newController.address
                         );
                     }).then(function(txHash){
-                        var action = 'Transferred ownership to ' + $scope.newOwner.address;
+                        var action = 'Set controller to ' + $scope.newController.address;
                 
                         var message = {
                             txHash: txHash,
@@ -52,17 +50,17 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
                 };
             };
             
-            $scope.openOwnerDialog = function(ev) {
+            $scope.openControllerDialog = function(ev) {
                 $mdDialog.show({
                     controller: DialogController,
-                    templateUrl: 'directives/set-owner-btn/setOwnerDialog.template.html',
+                    templateUrl: 'directives/set-controller-btn/setControllerDialog.template.html',
                     parent: angular.element(document.body),
                     targetEvent: ev,
                     clickOutsideToClose:true,
                     fullscreen: false, // Only for -xs, -sm breakpoints.
                     locals: {
                         data:{
-                            owner:$scope.owner
+                            founder:$scope.founder
                         }
                     }
                 }).then(function(answer) {

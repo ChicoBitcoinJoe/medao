@@ -37,8 +37,26 @@ app.filter('decimals', [function() {
     };
 }]);
 
+app.filter('toHours', [function() {
+    return function(value) {
+        if(value == null)
+            return 0;
+        
+        return parseFloat(value / 3600);
+    };
+}]);
+
 app.filter('reverse', function() {
-  return function(items) {
-    return items.slice().reverse();
-  };
+    return function(items) {
+        if(items == null)
+            return [];
+        
+        return items.slice().reverse();
+    };
+});
+
+app.filter('capitalize', function() {
+    return function(input) {
+      return (!!input) ? input.charAt(0).toUpperCase() + input.substr(1).toLowerCase() : '';
+    }
 });

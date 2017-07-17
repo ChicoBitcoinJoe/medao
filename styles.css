@@ -18,6 +18,10 @@ html.md-default-theme, html, body.md-default-theme, body {
     background-color: rgba(255,255,255,0.05);
 }
 
+.light-grey-text {
+    color: rgba(255,255,255,0.67) !important;
+}
+
 input {
     background-color: rgba(33,33,55,1);
     border: 0px solid black;
@@ -39,4 +43,8 @@ p {
 
 a {
     color: rgba(222,222,255,0.87);
+}
+
+label {
+    color: rgba(255,255,255,0.5) !important;
 }

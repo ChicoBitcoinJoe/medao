@@ -1,39 +1,19 @@
 # TO DO
 
-### Contract Improvements
+### Micro
 
-- Remove throw conditions in OngoingAuction.addNewTeir_internal (critical)
+- qr code scanner not properly showing
+- update help panels
+- All instances of `isController` still compare to founder not controller
+
+
+### Macro
+
+- wallet
+- exchange
+- forum
+- bounties
+- scheduling
+
 - ethereum name service (instead of using token name)
-- ethereum alarm clock (auto start auction)
-- decentralized exchange integration (replace ongoing auction)
-
-
-### Buttons/Panels
-
-- weekly hours panel should show cooldown
-- vault panel should show vault address
-- send button qr code scanner
-- show a warning and disabled relevant buttons if transfers are disabled
-- show a warning and disabled relevant buttons if contract is unsafe
-- sweep medao
-    - backend
-    - ui
-    - description
-- update medao
-    - ui
-    - description
-
-### Icons
-
-- burn icon loses burn amount after updating
-    - Collect burn amounts from parent tokens
-
-### Notifications
-
-- auction events
-- receive time/ether
-
-
-### Comments
-
-- add timestamps to comments
+- ethereum alarm clock (auto start week)

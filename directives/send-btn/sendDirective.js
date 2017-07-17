@@ -1,16 +1,16 @@
-app.directive('sendBtn', ['$q','$mdDialog','Web3Service','MeDao','MiniMeToken','Notifier',
-function($q,$mdDialog,Web3Service,MeDao,Token,Notifier) {
+app.directive('sendBtn', ['$q','$mdDialog','Web3Service','MeDaoPlatform','MiniMeToken','Notifier',
+function($q,$mdDialog,Web3Service,Platform,Token,Notifier) {
 	return {
 		restrict: 'E',
 		scope: {
-            owner: '='
+            founder: '='
 		},
 		replace: true,
 		templateUrl: 'directives/send-btn/sendDirective.html',
 		controller: function($scope){
             
             function DialogController($scope, $mdDialog, data) {
-                $scope.owner = data.owner;
+                $scope.founder = data.founder;
                 
                 $scope.send = {
                     type: null,
@@ -37,19 +37,16 @@ function($q,$mdDialog,Web3Service,MeDao,Token,Notifier) {
                 };
                 
                 $scope.maxTime = function() {
-                    MeDao.getMeDaoAddress($scope.owner)
-                    .then(function(medaoAddress){
-                        return $q.all([
-                            Web3Service.getCurrentAccount(),
-                            MeDao.getTokenAddress(medaoAddress)
-                        ]);
-                    }).then(function(promises){
+                    $q.all([
+                        Web3Service.getCurrentAccount(),
+                        Platform.getMeDaoInfo($scope.founder)
+                    ]).then(function(promises){
                         var currentAccount = promises[0];
-                        var tokenAddress = promises[1];
+                        var tokenAddress = promises[1][3];
                         
                         return Token.getBalanceOf(tokenAddress,currentAccount);
                     }).then(function(timeBalanceInSeconds){
-                        $scope.send.amountInSeconds = timeBalanceInSeconds.toNumber();
+                        $scope.send.amountInSeconds = web3.fromWei(timeBalanceInSeconds,'ether').toNumber();
                     });
                 };
                 
@@ -71,16 +68,14 @@ function($q,$mdDialog,Web3Service,MeDao,Token,Notifier) {
                 };
 
                 $scope.sendTime = function(){
-                    MeDao.getMeDaoAddress($scope.owner)
-                    .then(function(medaoAddress){
-                        return MeDao.getTokenAddress(medaoAddress);
-                    }).then(function(tokenAddress){
-                        console.log($scope.send.address,
-                            $scope.send.amountInSeconds);
+                    Platform.getMeDaoInfo($scope.founder)
+                    .then(function(medaoInfo){
+                        var tokenAddress = medaoInfo[3];
+                        console.log($scope.send.address, $scope.send.amountInSeconds);
                         return Token.transfer(
                             tokenAddress,
                             $scope.send.address,
-                            $scope.send.amountInSeconds
+                            web3.toWei($scope.send.amountInSeconds,'ether')
                         );
                     }).then(function(txHash){
                         var action = 'Send ' + $scope.send.amountInSeconds + ' ether to ' + $scope.send.address;
@@ -107,7 +102,7 @@ function($q,$mdDialog,Web3Service,MeDao,Token,Notifier) {
                     fullscreen: false, // Only for -xs, -sm breakpoints.
                     locals: {
                         data:{
-                            owner:$scope.owner
+                            founder:$scope.founder
                         }
                     }
                 }).then(function(answer) {
@@ -118,7 +113,21 @@ function($q,$mdDialog,Web3Service,MeDao,Token,Notifier) {
             };
 		},
 		link : function($scope, $element, $attrs) {
-            
+            /* Not working :(
+            var scanner = angular.element(document.querySelector('#reader'));
+            scanner.html5_qrcode(function(data){
+                console.log(data);
+                $scope.send.address = data;
+                $scope.showScanner = false;
+                scanner.html5_qrcode_stop();
+            }, function(err){
+                //show read errors 
+                console.error(err)
+            }, function(videoError){
+                //the video stream could be opened
+                console.error(videoError);
+            });
+            */
 		}
 	}
 }]);

@@ -3,14 +3,18 @@ app.service('Notifier',['$q','Notification','Web3Service', function ($q, Notific
     
     var service = {
 		notify: function(message){
-            Web3Service.getTransactionReceipt(message.txHash)
-            .then(function(receipt){
-                //console.log(receipt.gasUsed,receipt.cumulativeGasUsed,receipt);
-                Notification.success({title:'SUCCESS',message:message.action, delay: 10000});
-            }).catch(function(err){
-                Notification.error({title:'FAILED',message:message.action, delay: 10000});
-                console.error(err);
-            });
+            if(message.txHash){
+                Web3Service.getTransactionReceipt(message.txHash)
+                .then(function(receipt){
+                    //console.log(receipt.gasUsed,receipt.cumulativeGasUsed,receipt);
+                    Notification.success({title:'SUCCESS',message:message.action, delay: 10000});
+                }).catch(function(err){
+                    Notification.error({title:'FAILED',message:message.action, delay: 10000});
+                    console.error(err);
+                });
+            } else {
+                Notification.success({message:message.action, delay: 10000});
+            }
         }
 	};
 

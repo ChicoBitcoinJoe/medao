@@ -3,7 +3,7 @@
         <md-button class="md-icon-button" aria-label="back" ng-click="back()"><md-icon md-svg-src="libs/fonts/ic_close_white_24px.svg"></md-icon></md-button>
     </div>
     <h3>Submit Payment</h3>
-     <div>
+    <div>
         <md-input-container class="md-block" style="border-bottom:1px solid rgba(255,255,255,0.67)">
             <label>Amount in Seconds</label>
             <input type="number" ng-model="payment.amountInSeconds">
@@ -22,6 +22,6 @@
     </div>
     <div layout="row" flex>
         <md-button class="medao-btn" ng-click="maxTime()" flex="50">max</md-button>
-        <md-button class="medao-btn" ng-click="makePayment()" flex="50" ng-disabled="payment.amountInSeconds == null || send.amountInEther == 0">submit</md-button>
+        <md-button class="medao-btn md-raised md-primary" ng-click="makePayment()" flex="50" ng-disabled="payment.amountInSeconds == null && payment.amountInSeconds != 0">submit</md-button>
     </div>
 </div>

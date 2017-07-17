@@ -1,16 +1,16 @@
-app.directive('receiveBtn', ['$q','$mdDialog','Web3Service','MeDao','Notifier',
-function($q,$mdDialog,Web3Service,MeDao,Notifier) {
+app.directive('receiveBtn', ['$q','$mdDialog','Web3Service','Notifier',
+function($q,$mdDialog,Web3Service,Notifier) {
 	return {
 		restrict: 'E',
 		scope: {
-            owner: '='
+            founder: '='
 		},
 		replace: true,
 		templateUrl: 'directives/receive-btn/receiveDirective.html',
 		controller: function($scope){
             
             function DialogController($scope, $mdDialog, data) {
-                $scope.owner = data.owner;
+                $scope.founder = data.founder;
                 
                 $scope.back = function() {
                     $mdDialog.hide(0);
@@ -39,7 +39,7 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
                     fullscreen: false, // Only for -xs, -sm breakpoints.
                     locals: {
                         data:{
-                            owner:$scope.owner
+                            founder:$scope.founder
                         }
                     }
                 }).then(function(answer) {

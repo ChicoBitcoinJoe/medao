@@ -1,5 +1,5 @@
-app.controller('HomeViewController', ['$scope','$location','$q','Web3Service','MeDao',
-function($scope,$location,$q,Web3Service,MeDao){
+app.controller('HomeViewController', ['$scope','$location','$q','Web3Service','MeDaoPlatform',
+function($scope,$location,$q,Web3Service,Platform){
     //console.log('Loading Home View');
     
     $scope.loaded = false;
@@ -7,6 +7,11 @@ function($scope,$location,$q,Web3Service,MeDao){
     $scope.dotted = true;
     $scope.customFullscreen = false;
     $scope.showInput = false;
+    
+    $scope.platform = {
+        major_version: null,
+        major_version: null
+    };
     
     $scope.medao = {
         name: 'Enter Your Name',
@@ -17,65 +22,28 @@ function($scope,$location,$q,Web3Service,MeDao){
     Web3Service.getCurrentAccount()
     .then(function(account){
         $scope.account = account;
-        return MeDao.getMeDaoAddress(account);
-    }).then(function(medaoAddress){
-        console.log('medao address: ' + medaoAddress);
-        $scope.medaoAddress = medaoAddress;
-        if(medaoAddress == '0x0000000000000000000000000000000000000000'
-        || medaoAddress == '0x'
-        || medaoAddress == null)
+        return Platform.getMeDaoInfo(account);
+    }).then(function(medaoInfo){
+        var tokenAddress = medaoInfo[3];
+        if(tokenAddress == '0x0000000000000000000000000000000000000000'
+        || tokenAddress == '0x'
+        || tokenAddress == null)
             $scope.hasMedao = false;
         else {
             $scope.hasMedao = true;
-            MeDao.getAuctionAddress($scope.medaoAddress)
-            .then(function(auctionAddress){
-                $scope.auctionAddress = auctionAddress;
-                return MeDao.getTeirs($scope.auctionAddress);    
-            }).then(function(teirs){
-                //console.log(teirs);
-                $scope.teirs = teirs;
-
-                var promises = [];
-                for(var i = 0; i < teirs.length; i++)
-                    promises[i] = MeDao.getTeirInfo($scope.auctionAddress,teirs[i]);
-
-                return $q.all(promises);
-            }).then(function(promises){
-                var bids = 0;
-                var ether = 0;
-
-                for(var i = 0; i < promises.length; i++){
-                    var teirInfo = promises[i];
-                    //console.log(teirInfo);
-                    var value = teirInfo[1];
-                    var length = teirInfo[5].toNumber();
-                    var total = web3.fromWei(value,'ether') * length;
-                    //console.log(value,length,total);
-                    var etherInTeir = web3.fromWei(value,'ether').toNumber() * length;
-                    //console.log(etherInTeir);
-                    
-                    ether += etherInTeir;
-                    bids += length;
-                    
-                    if(bids > (40*52))
-                        i = promises.length;
-                }
-                
-                //console.log(ether,bids);
-                
-                if(bids == 0)
-                    $scope.medao.salary = 0;
-                else
-                    $scope.medao.salary = (ether / bids) * 40 * 52;
-
-            }).catch(function(err){
-                console.error(err);
-            });
+            
+            //To do: // get salary
+            $scope.medao.salary = 0;
         }
         
         $scope.loaded = true;
     }).catch(function(err){
         console.error(err);
+    });
+    
+    Platform.getVersion().then(function(versionInfo){
+        $scope.platform.major_version = versionInfo[0].toNumber();
+        $scope.platform.minor_version = versionInfo[1].toNumber();
     });
     
     $scope.$watch('medao.name', function(){

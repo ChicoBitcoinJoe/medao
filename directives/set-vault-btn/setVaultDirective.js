@@ -1,35 +1,35 @@
-app.directive('setVaultBtn', ['$q','$mdDialog','Web3Service','MeDao','Notifier',
-function($q,$mdDialog,Web3Service,MeDao,Notifier) {
+app.directive('setVaultBtn', ['$q','$mdDialog','Web3Service','MeDaoPlatform','Notifier',
+function($q,$mdDialog,Web3Service,Platform,Notifier) {
 	return {
 		restrict: 'E',
 		scope: {
-            owner: '='
+            founder: '='
 		},
 		replace: true,
 		templateUrl: 'directives/set-vault-btn/setVaultDirective.html',
 		controller: function($scope){
             
             function DialogController($scope, $mdDialog, data) {
-                $scope.owner = data.owner;
+                $scope.founder = data.founder;
                 
                 $scope.vault = {
-                    address: null
+                    address: null,
+                    current: null
                 };
                 
                 $scope.back = function() {
                     $mdDialog.hide(0);
                 };
                 
+                Platform.getMeDaoInfo($scope.founder)
+                .then(function(medaoInfo){
+                    $scope.vault.current = medaoInfo[2];
+                });
+                
                 $scope.setVault = function(){
-                    $q.all([
-                        Web3Service.getCurrentAccount(),
-                        MeDao.getMeDaoAddress($scope.owner)
-                    ]).then(function(promises){
-                        var currentAccount = promises[0];
-                        var medaoAddress = promises[1];
-                        
-                        return MeDao.setVault(
-                            medaoAddress,
+                    Web3Service.getCurrentAccount().then(function(currentAccount){
+                        return Platform.setVault(
+                            $scope.founder,
                             currentAccount,
                             $scope.vault.address
                         );
@@ -58,7 +58,7 @@ function($q,$mdDialog,Web3Service,MeDao,Notifier) {
                     fullscreen: false, // Only for -xs, -sm breakpoints.
                     locals: {
                         data:{
-                            owner:$scope.owner
+                            founder:$scope.founder
                         }
                     }
                 }).then(function(answer) {

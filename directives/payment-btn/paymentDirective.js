@@ -1,19 +1,20 @@
-app.directive('paymentBtn', ['$q','$mdDialog','Web3Service','MeDao','MiniMeToken','Notifier',
-function($q,$mdDialog,Web3Service,MeDao,Token,Notifier) {
+app.directive('paymentBtn', ['$q','$mdDialog','Web3Service','MeDaoPlatform','MiniMeToken','Notifier',
+function($q,$mdDialog,Web3Service,Platform,Token,Notifier) {
 	return {
 		restrict: 'E',
 		scope: {
-            owner: '='
+            founder: '='
 		},
 		replace: true,
 		templateUrl: 'directives/payment-btn/paymentDirective.html',
 		controller: function($scope){
             
             function DialogController($scope, $mdDialog, data) {
-                $scope.owner = data.owner;
+                $scope.founder = data.founder;
                 
                 $scope.payment = {
                     amountInSeconds: null,
+                    amountInMeeWei: null,
                     comment: null
                 };
                 
@@ -26,37 +27,27 @@ function($q,$mdDialog,Web3Service,MeDao,Token,Notifier) {
                 };
                 
                 $scope.maxTime = function() {
-                    MeDao.getMeDaoAddress($scope.owner)
-                    .then(function(medaoAddress){
-                        return $q.all([
-                            Web3Service.getCurrentAccount(),
-                            MeDao.getTokenAddress(medaoAddress)
-                        ]);
-                    }).then(function(promises){
+                    $q.all([
+                        Web3Service.getCurrentAccount(),
+                        Platform.getMeDaoInfo($scope.founder)
+                    ]).then(function(promises){
                         var currentAccount = promises[0];
-                        var tokenAddress = promises[1];
+                        var tokenAddress = promises[1][3];
                         
                         return Token.getBalanceOf(tokenAddress,currentAccount);
-                    }).then(function(timeBalanceInSeconds){
-                        $scope.payment.amountInSeconds = timeBalanceInSeconds.toNumber();
+                    }).then(function(timeBalanceInMeeWei){
+                        $scope.payment.amountInSeconds = web3.fromWei(timeBalanceInMeeWei,'ether').toNumber();
                     });
                 };
                 
                 $scope.makePayment = function(){
-                    $q.all([
-                        Web3Service.getCurrentAccount(),
-                        MeDao.getMeDaoAddress($scope.owner)
-                    ]).then(function(promises){
-                        var currentAccount = promises[0];
-                        var medaoAddress = promises[1];
-                        
+                    Web3Service.getCurrentAccount().then(function(currentAccount){
                         if($scope.payment.comment == null)
-                            $scope.payment.comment = '(no comment)';
+                            $scope.payment.comment = '';
                         
-                        return MeDao.submitProofOfWork(
-                            medaoAddress,
-                            currentAccount,
-                            $scope.payment.amountInSeconds, 
+                        return Platform.makePayment(
+                            $scope.founder,
+                            web3.toWei($scope.payment.amountInSeconds,'ether'), 
                             $scope.payment.comment
                         );
                     }).then(function(txHash){
@@ -84,7 +75,7 @@ function($q,$mdDialog,Web3Service,MeDao,Token,Notifier) {
                     fullscreen: false, // Only for -xs, -sm breakpoints.
                     locals: {
                         data:{
-                            owner:$scope.owner
+                            founder:$scope.founder
                         }
                     }
                 }).then(function(answer) {

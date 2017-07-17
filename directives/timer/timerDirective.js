@@ -27,29 +27,23 @@ app.directive('timer', [function() {
                     if($scope.timer < 0)
                         $scope.timer = 0;
 
-                    var seconds = $scope.timer;
-                    var days = Math.floor(seconds/(24*60*60));
-                    seconds = seconds - days*(24*60*60);
-                    ////console.log(days + ' days',seconds + ' seconds');
-                    var hours = Math.floor(seconds/(60*60));
-                    seconds = seconds - hours*(60*60);
-                    ////console.log(hours + ' hours',seconds + ' seconds');
-                    var minutes = Math.floor(seconds/60);
-                    seconds = seconds - minutes*60;
-                    ////console.log(minutes + ' minutes',seconds + ' seconds');
+                    var timeLeft = $scope.timer;
+                    var days = Math.floor(timeLeft/(24*60*60));
+                    timeLeft -= days*(24*60*60);
+                    var hours = Math.floor(timeLeft/(60*60));
+                    timeLeft -= hours*(60*60);
+                    var minutes = Math.floor(timeLeft/60);
+                    var seconds = timeLeft - minutes*60;
                     
-                    $scope.text.long = '~ ';
-
-                    if(days > 0) {
-                        $scope.text.long += days+'d ';
-                    }
-                    if(hours > 0 || days > 0)
-                        $scope.text.long += hours+'h ';
-                    if(minutes > 0 || hours > 0 || days > 0)
-                        $scope.text.long += minutes+'m ';
-
+                    
                     $scope.$apply(function(){
-                        $scope.text.long += seconds+'s ';
+                        $scope.text.long = '~' + hours + 'h ' + minutes + 'm ' + seconds+'s ';
+                        $scope.text.short = '~' + days + 'd ' + hours + 'h ' + minutes + 'm';
+                        
+                        if(days > 1)
+                            $scope.short = true;
+                        else
+                            $scope.short = false;
                         
                         //console.log($scope.text.long);
                         

@@ -1,9 +1,9 @@
-app.directive('medaoTutorialBtn', ['$q','$mdDialog','Web3Service','MeDao','MiniMeToken',
-function($q,$mdDialog,Web3Service,MeDao,Token) {
+app.directive('medaoTutorialBtn', ['$q','$mdDialog','Web3Service','MeDaoPlatform','MiniMeToken',
+function($q,$mdDialog,Web3Service,Platform,Token) {
 	return {
 		restrict: 'E',
 		scope: {
-            owner: '='
+            founder: '='
 		},
 		replace: true,
 		templateUrl: 'directives/medao-tutorial-btn/medaoTutorialDirective.html',
@@ -15,13 +15,10 @@ function($q,$mdDialog,Web3Service,MeDao,Token) {
                 };
             };
             
-            console.log($scope.owner);
-            MeDao.getMeDaoAddress($scope.owner)
-            .then(function(medaoAddress){
-                console.log(medaoAddress);
-                return MeDao.getTokenAddress(medaoAddress);
-            }).then(function(tokenAddress){
-                console.log(tokenAddress);
+            console.log($scope.founder);
+            Platform.getMeDaoInfo($scope.founder)
+            .then(function(medaoInfo){
+                var tokenAddress = medaoInfo[3];
                 return $q.all([
                     Web3Service.getCurrentBlockNumber(),
                     Token.getCreationBlock(tokenAddress)

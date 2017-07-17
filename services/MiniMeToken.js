@@ -31,7 +31,7 @@ function ($q,Web3Service) {
             });
             return deferred.promise;
         },
-        getCurrentSupply: function(tokenAddress){
+        getTotalSupply: function(tokenAddress){
             var deferred = $q.defer();
             var tokenInstance = web3.eth.contract(token.abi).at(tokenAddress);
             
@@ -73,7 +73,7 @@ function ($q,Web3Service) {
             var deferred = $q.defer();
             var tokenInstance = web3.eth.contract(token.abi).at(tokenAddress);
             
-            tokenInstance.changeController(function(err, controller) {
+            tokenInstance.controller(function(err, controller) {
                 if(err)
                     deferred.reject(err);
                 else

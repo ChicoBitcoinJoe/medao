@@ -1,0 +1,4 @@
+<span>
+    <md-button ng-show="cooldown.alarm" class="medao-btn" ng-click="openSendDialog($event)">start week</md-button>
+    <md-button ng-show="!cooldown.alarm" class="medao-btn" ng-disabled="true"><timer seconds="cooldown.secondsLeft" alarm="cooldown.alarm"></timer></md-button>
+</span>

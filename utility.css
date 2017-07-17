@@ -23,3 +23,7 @@ button:focus {
 .dark-text {
     color:rgba(0,0,0,0.87);
 }
+
+.highlight > :hover {
+    background-color: rgba(255,255,255,0.13);
+}

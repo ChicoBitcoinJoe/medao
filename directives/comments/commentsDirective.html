@@ -1,9 +1,25 @@
-<div layout="column">
-    <div ng-repeat="comment in comments | reverse" layout="row" class="light-border" layout-align="left center" layout-padding layout-margin flex>
-        <span style="min-width:60px;" layout="row" layout-align="center center">
-            <span><md-icon md-svg-src="libs/fonts/ic_whatshot_white_24px.svg"></md-icon></span>
-            <span>&nbsp{{comment.burned / 3600 | decimals:2}}<span hide-xs>h</span></span>
+<div layout="column" layout-padding layout-margin>
+    <div ng-repeat="comment in comments | reverse" layout="column" class="light-border" layout-padding>
+        <span layout="row" flex>
+            <span layout="row" layout="start center">
+                <span layout="row">
+                    <span style="font-size:16px;">l</span>
+                    <span style="font-size:10px; margin: 3px 1px">l</span>
+                    <span style="font-size:16px;">l</span>
+                </span>
+                &nbsp
+                <span layout="row">{{comment.burned | fromWei:'ether' | toHours | decimals:2}}<span style="color:rgba(255,255,255,0.5);">&nbsph</span></span>
+            </span>
+            <span flex></span>
+            <div show-sm style="color:rgba(255,255,255,0.67);">{{comment.timestamp | date:'hh:mm a' | lowercase}}</div>
+            &nbsp
+            <div style="color:rgba(255,255,255,0.67);">{{comment.timestamp | date:'MMM dd yyyy'}}</div>
         </span>
-        <p>{{comment.comment}}</p>
+        <span layout="row">
+            <small style="white-space: nowrap; width: 100%; overflow: hidden; text-overflow: ellipsis;">{{comment.sender}}</small>
+        </span>
+        <span layout="column">
+            <p style="padding-top:0px;margin:0px;">{{comment.text}}</p>
+        </span>
     </div>
 </div>
