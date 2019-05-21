@@ -6,17 +6,17 @@ import "./MeDao.sol";
 contract MeDaoFactory is CloneFactory {
 
     address public blueprint;
-    ERC20 public reserve;
 
     constructor (
-        address _blueprint,
-        ERC20 _reserve
+        address _blueprint
     ) public {
         blueprint = _blueprint;
-        reserve = _reserve;
     }
 
+    mapping (address => bool) public created;
+
     function create (
+        ERC20 reserveToken,
         string memory name,
         uint birthTimestamp,
         uint tokenClaim,
@@ -24,7 +24,8 @@ contract MeDaoFactory is CloneFactory {
     ) public returns (MeDao medao) {
         address payable clone = address(uint160(createClone(blueprint)));
         medao = MeDao(clone);
-        MiniMeToken token = new MiniMeToken(
+
+        MiniMeToken timeToken = new MiniMeToken(
             address(this),
             address(0x0),
             0,
@@ -34,16 +35,13 @@ contract MeDaoFactory is CloneFactory {
             true
         );
 
-        uint maxTokenSupply = (now - birthTimestamp) / 3;
-        reserve.transferFrom(msg.sender, address(medao), reserveAmount);
-        token.generateTokens(msg.sender, tokenClaim);
-        token.changeController(clone);
+        require(reserveToken.transferFrom(msg.sender, address(medao), reserveAmount), '');
+        require(timeToken.generateTokens(msg.sender, tokenClaim), '');
 
-        medao.initialize(
-            token,
-            reserve,
-            maxTokenSupply
-        );
+        timeToken.changeController(address(clone));
+        medao.initialize(timeToken, reserveToken, birthTimestamp);
+        medao.transferOwnership(msg.sender);
+        created[address(medao)] = true;
     }
 
 }

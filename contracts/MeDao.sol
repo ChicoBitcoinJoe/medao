@@ -8,8 +8,9 @@ contract MeDao is Owned {
 
     uint public blockInitialized;
 
-    MiniMeToken public token;
-    ERC20 public reserve;
+    MiniMeToken public timeToken;
+    ERC20 public reserveToken;
+    uint public birthTimestamp;
     uint public maxTokenSupply;
     uint public lastPaycheck;
 
@@ -18,15 +19,16 @@ contract MeDao is Owned {
     }
 
     function initialize (
-        MiniMeToken _token,
-        ERC20 _reserve,
-        uint _maxTokenSupply
+        MiniMeToken _timeToken,
+        ERC20 _reserveToken,
+        uint _birthTimestamp
     ) public {
         blockInitialized = block.number;
 
-        token = _token;
-        reserve = _reserve;
-        maxTokenSupply = _maxTokenSupply;
+        timeToken = _timeToken;
+        reserveToken = _reserveToken;
+        birthTimestamp = _birthTimestamp;
+        maxTokenSupply = (now - birthTimestamp) / 3;
         lastPaycheck = now;
     }
 
@@ -34,29 +36,29 @@ contract MeDao is Owned {
         uint elapsedSeconds = (now - lastPaycheck) / 3;
         maxTokenSupply += elapsedSeconds;
         lastPaycheck = now;
-        require(token.generateTokens(owner, elapsedSeconds));
+        require(timeToken.generateTokens(owner, elapsedSeconds));
     }
 
     function calculateTokenClaim (uint reserveAmount) public view returns (uint) {
-        return token.totalSupply() * reserveAmount / reserve.balanceOf(address(this));
+        return timeToken.totalSupply() * reserveAmount / reserveToken.balanceOf(address(this));
     }
 
     function calculateReserveClaim (uint tokenAmount) public view returns (uint) {
-        return reserve.balanceOf(address(this)) * tokenAmount / token.totalSupply();
+        return reserveToken.balanceOf(address(this)) * tokenAmount / timeToken.totalSupply();
     }
 
     function invest (uint reserveAmount) public {
-        uint availableSeconds = maxTokenSupply - token.totalSupply();
+        uint availableSeconds = maxTokenSupply - timeToken.totalSupply();
         uint claimedSeconds = calculateTokenClaim(reserveAmount);
         require(availableSeconds >= claimedSeconds);
-        require(reserve.transferFrom(msg.sender, address(this), reserveAmount));
-        require(token.generateTokens(msg.sender, claimedSeconds));
+        require(reserveToken.transferFrom(msg.sender, address(this), reserveAmount));
+        require(timeToken.generateTokens(msg.sender, claimedSeconds));
     }
 
     function divest (uint tokenAmount) public {
         uint reserveClaim = calculateReserveClaim(tokenAmount);
-        require(token.destroyTokens(msg.sender, tokenAmount));
-        require(reserve.transfer(msg.sender, reserveClaim));
+        require(timeToken.destroyTokens(msg.sender, tokenAmount));
+        require(reserveToken.transfer(msg.sender, reserveClaim));
     }
 
 }
