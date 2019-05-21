@@ -8,10 +8,10 @@ contract MeDao is Owned {
 
     uint public blockInitialized;
 
-    uint public lastPaycheck;
-    uint public maxTokenSupply;
     MiniMeToken public token;
     ERC20 public reserve;
+    uint public maxTokenSupply;
+    uint public lastPaycheck;
 
     constructor () public {
         blockInitialized = block.number;
@@ -20,17 +20,14 @@ contract MeDao is Owned {
     function initialize (
         MiniMeToken _token,
         ERC20 _reserve,
-        uint _maxTokenSupply,
-        uint _tokenClaim
+        uint _maxTokenSupply
     ) public {
         blockInitialized = block.number;
 
-        lastPaycheck = now;
-        maxTokenSupply = _maxTokenSupply;
         token = _token;
         reserve = _reserve;
-
-        token.generateTokens(owner, _tokenClaim);
+        maxTokenSupply = _maxTokenSupply;
+        lastPaycheck = now;
     }
 
     function collectPaycheck () public {
