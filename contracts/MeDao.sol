@@ -24,6 +24,8 @@ contract MeDao is Owned {
         ERC20 _reserveToken,
         uint _birthTimestamp
     ) public {
+        require(blockInitialized == 0, 'contract already initialized');
+
         blockInitialized = block.number;
         factory = msg.sender;
 

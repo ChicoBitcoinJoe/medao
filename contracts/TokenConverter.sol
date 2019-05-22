@@ -5,26 +5,22 @@ import "./Interfaces.sol";
 
 contract EthToDai is TokenConverter {
 
-    DEX exchange;
+    DEX public eth2dai;
     WETH public payToken;
     ERC20 public buyToken;
 
     constructor (
-        DEX _exchange,
-        ERC20 _buyToken,
-        WETH _payToken
+        DEX _eth2dai,
+        WETH _payToken,
+        ERC20 _buyToken
     ) public {
-        exchange = _exchange;
+        eth2dai = _eth2dai;
         payToken = _payToken;
         buyToken = _buyToken;
     }
 
-    function convert (uint tokenAmount) public returns (uint fillAmount) {
-        fillAmount = exchange.sellAllAmount(payToken, tokenAmount, buyToken, 0);
-    }
-
-    function predictFillAmount (uint tokenAmount) public view returns (uint) {
-        return exchange.getBuyAmount(buyToken, payToken, tokenAmount);
+    function convert (uint tokenAmount, uint minFillAmount) public returns (uint fillAmount) {
+        fillAmount = eth2dai.sellAllAmount(payToken, tokenAmount, buyToken, minFillAmount);
     }
 
 }

@@ -1,0 +1,6 @@
+| Kovan | Contract Address |
+| --- | --- |
+| EthToDai Token Converter | 0x92e5bb0147FA2Bc45E0a5be145eD7601f85c0E14 |
+| MeDao Blueprint | 0xF560e2A4e4312C9D0d9eB3b8823B9D388C92D4e5 |
+| MeDao Factory | 0x6665114162d60DDA59224D263E6850e077f9B331 |
+| MeDao Registry | 0x8C3b00AABDfBb0914795644Eef1B0c43C73D438d |

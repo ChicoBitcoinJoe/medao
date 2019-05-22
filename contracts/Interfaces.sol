@@ -12,5 +12,5 @@ contract DEX {
 contract TokenConverter {
     ERC20 public payToken;
     ERC20 public buyToken;
-    function convert (uint tokenAmount) public returns (uint fillAmount);
+    function convert (uint tokenAmount, uint minFillAmount) public returns (uint fillAmount);
 }
