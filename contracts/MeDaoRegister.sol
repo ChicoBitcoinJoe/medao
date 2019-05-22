@@ -1,35 +1,26 @@
 pragma solidity ^0.5.0;
 
+import "./Interfaces.sol";
 import "./MeDaoFactory.sol";
-
-contract TokenConverter {
-    function convert (address token, uint amount, address returnToken, uint minReturnAmount) public payable returns (uint returnAmount);
-}
-
-contract EthToDai is TokenConverter {
-
-    // function convert (address token, uint amount, address returnToken, uint minReturnAmount) public payable returns (uint returnAmount) {
-    //
-    // }
-
-}
 
 contract MeDaoRegistry {
 
-    address constant ETHER = address(0x0);
     address constant NULL = address(0x0);
     MeDaoFactory public factory;
-    ERC20 public reserveToken;
+    ERC20 public dai;
+    WETH public weth;
 
     mapping (address => MeDao) public registry;
     mapping (address => address) public transferRegistry;
 
     constructor (
         MeDaoFactory _factory,
-        ERC20 _reserveToken
+        ERC20 _dai,
+        WETH _weth
     ) public {
         factory = _factory;
-        reserveToken = _reserveToken;
+        dai = _dai;
+        weth = _weth;
     }
 
     function create (
@@ -41,13 +32,37 @@ contract MeDaoRegistry {
         require(address(registry[msg.sender]) == NULL);
 
         medao = factory.create(
-            reserveToken,
+            dai,
             name,
             birthTimestamp,
             tokenClaim
         );
 
-        require(reserveToken.transfer(address(medao), seedFunds));
+        require(dai.transfer(address(medao), seedFunds));
+        medao.transferOwnership(msg.sender);
+        registry[msg.sender] = medao;
+    }
+
+    function create (
+        string memory name,
+        uint birthTimestamp,
+        uint tokenClaim,
+        TokenConverter converter
+    ) public payable returns (MeDao medao) {
+        require(address(registry[msg.sender]) == NULL);
+
+        medao = factory.create(
+            dai,
+            name,
+            birthTimestamp,
+            tokenClaim
+        );
+
+        weth.deposit.value(msg.value)();
+        require(weth.approve(address(converter), msg.value));
+
+        uint seedFunds = converter.convert(msg.value);
+        require(dai.transfer(address(medao), seedFunds));
         medao.transferOwnership(msg.sender);
         registry[msg.sender] = medao;
     }
@@ -57,30 +72,22 @@ contract MeDaoRegistry {
         uint birthTimestamp,
         uint tokenClaim,
         TokenConverter converter,
-        ERC20 convertToken,
-        uint convertAmount,
-        uint minReturnAmount
-    ) public payable returns (MeDao medao) {
+        uint convertAmount
+    ) public returns (MeDao medao) {
         require(address(registry[msg.sender]) == NULL);
 
-        uint seedFunds = 0;
-        if(msg.value > 0) {
-            seedFunds = converter.convert.value(msg.value)(ETHER, msg.value, address(reserveToken), minReturnAmount);
-        }
-        else {
-            require(convertToken.transferFrom(msg.sender, address(this), convertAmount));
-            require(convertToken.approve(address(converter), convertAmount));
-            seedFunds = converter.convert(address(convertToken), convertAmount, address(reserveToken), minReturnAmount);
-        }
-
         medao = factory.create(
-            reserveToken,
+            dai,
             name,
             birthTimestamp,
             tokenClaim
         );
 
-        require(reserveToken.transfer(address(medao), seedFunds));
+        require(converter.payToken().transferFrom(msg.sender, address(this), convertAmount));
+        require(converter.payToken().approve(address(converter), convertAmount));
+
+        uint seedFunds = converter.convert(convertAmount);
+        require(dai.transfer(address(medao), seedFunds));
         medao.transferOwnership(msg.sender);
         registry[msg.sender] = medao;
     }
