@@ -19,8 +19,7 @@ contract MeDaoFactory is CloneFactory {
         ERC20 reserveToken,
         string memory name,
         uint birthTimestamp,
-        uint tokenClaim,
-        uint reserveAmount
+        uint tokenClaim
     ) public returns (MeDao medao) {
         address payable clone = address(uint160(createClone(blueprint)));
         medao = MeDao(clone);
@@ -35,8 +34,7 @@ contract MeDaoFactory is CloneFactory {
             true
         );
 
-        require(reserveToken.transferFrom(msg.sender, address(medao), reserveAmount), '');
-        require(timeToken.generateTokens(msg.sender, tokenClaim), '');
+        require(timeToken.generateTokens(msg.sender, tokenClaim));
 
         timeToken.changeController(address(clone));
         medao.initialize(timeToken, reserveToken, birthTimestamp);

@@ -7,6 +7,7 @@ import "./external/Owned.sol";
 contract MeDao is Owned {
 
     uint public blockInitialized;
+    address public factory;
 
     MiniMeToken public timeToken;
     ERC20 public reserveToken;
@@ -24,6 +25,7 @@ contract MeDao is Owned {
         uint _birthTimestamp
     ) public {
         blockInitialized = block.number;
+        factory = msg.sender;
 
         timeToken = _timeToken;
         reserveToken = _reserveToken;
