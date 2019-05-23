@@ -1,4 +1,4 @@
-<div fxHide.gt-xs fxLayout="column" fxFlexFill>
+<div fxHide.gt-xs class="white-text" fxLayout="column" fxFlexFill>
     <mat-toolbar color="primary" class="primary-bg" fxFlex="56px">
         <button mat-icon-button>
             <mat-icon>menu</mat-icon>
@@ -8,47 +8,42 @@
             <mat-icon svgIcon="qrcode"></mat-icon>
         </button>
     </mat-toolbar>
-    <h1 style="margin: 16px 8px; text-align: center" fxLayout="column" fxLayoutAlign="center center" fxFlex="88px">
-        Joseph B. Reed
-        <div style="font-size: 16px; color: rgba(255,255,255,0.5)">
-            age 29
-        </div>
-    </h1>
     <div style="overflow: auto;" fxLayout="column">
-        <div style="height: 50vh; width: 100%; margin: 16px 0px;">
-            <div style="overflow: hidden; width: 100%; height: 100%;">
-                <img style="width: 100%" src="./assets/profile-picture.jpeg">
+        <h1 style="margin: 16px 8px; text-align: center" fxLayout="column" fxLayoutAlign="center center" fxFlex="88px">
+            MeDao
+            <div style="padding: 4px 16px; font-size: 16px; color: rgba(255,255,255,0.5)">
+                Unlock your financial identity
             </div>
+        </h1>
+        <div class="secondary-bg" style="padding: 16px;" fxLayout="column">
+            <mat-form-field>
+                <mat-label style="color: white">Name</mat-label>
+                <input matInput type="text" value="Joseph Reed">
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label style="color: white">Birth Date</mat-label>
+                <input matInput type="date" value="1977-07-07">
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label style="color: white">Hourly Wage</mat-label>
+                <input matInput type="number" step="0.01" value="10.00">
+                <span matSuffix>&nbsp;$</span>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label style="color: white">Seed funds</mat-label>
+                <input matInput type="number" step="0.01" value="100.00">
+                <span matSuffix>&nbsp;$</span>
+            </mat-form-field>
+            <small class="padding centered">
+                Starting Balance: 10 hours
+            </small>
+            <button mat-button (click)="continue()">submit</button>
         </div>
-        <div style="padding: 16px" fxLayout="row" fxLayoutAlign="space-around center">
-            <span fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
-                <span>$12.37</span>
-                <small style="color: rgba(255,255,255,0.5);">hourly</small>
-            </span>
-            <span fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
-                <span>$100,000</span>
-                <small style="color: rgba(255,255,255,0.5);">value</small>
-            </span>
-            <span fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
-                <span>112h</span>
-                <small style="color: rgba(255,255,255,0.5);">balance</small>
-            </span>
-        </div>
-        <div style="padding: 16px 8px;" fxLayout="row" fxLayoutAlign="space-around center">
-            <button mat-button style="border-left: 1px solid white;" fxFlex="33">buy</button>
-            <button mat-button style="border-left: 1px solid white; border-right: 1px solid white;" fxFlex="33">send</button>
-            <button mat-button style="border-right: 1px solid white;" fxFlex="33">sell</button>
-        </div>
-        <div style="padding: 16px" fxLayout="column" fxLayoutGap="16px">
-            <h3>Details</h3>
-            <div fxLayout="row">Funded <span fxFlex></span> 100%</div>
-            <div fxLayout="row">Market Cap <span fxFlex></span> $900,000</div>
-            <div fxLayout="row">Token Supply <span fxFlex></span> 78,000</div>
-            <div fxLayout="row">Max Annual Inflation <span fxFlex></span> 4.7%</div>
-        </div>
-        <div style="padding: 16px" fxLayout="column" fxLayoutGap="16px">
-            <h3>Contract</h3>
-            <div fxLayout="row">No contract set.</div>
+        <div class="padding">
+            <h3>How does it work?</h3>
+            <p>
+                Having a MeDao makes you an employee of the world. Investors pool money together from which you (the employee) withdraws a salary. You then use the time to produce value that is eventually returned to the investors.
+            </p>
         </div>
     </div>
 </div>

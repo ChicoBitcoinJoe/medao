@@ -35,11 +35,31 @@ body {
     background-color: #222d31;
 }
 
-div, span, h1, h2, h3, h4, h5, h6 {
+.padding {
+    padding: 16px;
+}
+
+.centered {
+    text-align: center;
+}
+
+p {
+    line-height: 24px;
+}
+
+h1, h2, h3, h4, h5, h6 {
     color: white;
     font-family: "Courier New";
 }
 
+.white-text * {
+    color: white;
+}
+
 .primary-bg {
     background-color: #222d31 !important;
+}
+
+.secondary-bg {
+    background-color: #29383e !important;
 }

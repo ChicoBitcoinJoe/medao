@@ -28,11 +28,13 @@ import {
 } from '@angular/material';
 
 import { HomeComponent } from './views/home/home.component';
+import { MedaoComponent } from './views/medao/medao.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+    MedaoComponent
   ],
   imports: [
     BrowserModule,
@@ -42,6 +44,7 @@ import { HomeComponent } from './views/home/home.component';
     HttpClientModule,
     MatButtonModule,
     MatIconModule,
+    MatInputModule,
     MatToolbarModule,
   ],
   providers: [],
