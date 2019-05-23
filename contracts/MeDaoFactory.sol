@@ -35,7 +35,6 @@ contract MeDaoFactory is CloneFactory {
         );
 
         require(timeToken.generateTokens(msg.sender, tokenClaim));
-
         timeToken.changeController(address(clone));
         medao.initialize(timeToken, reserveToken, birthTimestamp);
         medao.transferOwnership(msg.sender);

@@ -36,11 +36,12 @@ contract MeDao is Owned {
         lastPaycheck = now;
     }
 
-    function collectPaycheck () public {
+    function collectPaycheck () public onlyOwner {
         uint elapsedSeconds = (now - lastPaycheck) / 3;
+        uint fundedTime = elapsedSeconds * timeToken.totalSupply() / maxTokenSupply;
         maxTokenSupply += elapsedSeconds;
         lastPaycheck = now;
-        require(timeToken.generateTokens(owner, elapsedSeconds));
+        require(timeToken.generateTokens(owner, fundedTime));
     }
 
     function calculateTokenClaim (uint reserveAmount) public view returns (uint) {
