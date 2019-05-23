@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+import { Web3Service } from '../../services/web3/web3.service';
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -7,7 +9,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-    constructor() { }
+    tokens =  ['eth', 'dai'];
+    selectedToken = 'eth';
+
+    constructor(
+        public Web3: Web3Service,
+    ) { }
 
     ngOnInit() {
     }
@@ -15,6 +22,13 @@ export class HomeComponent implements OnInit {
     continue () {
         console.log("form submitted");
 
+    }
+
+    signIn () {
+        this.Web3.signIn()
+        .then(() => {
+
+        })
     }
 
 }
