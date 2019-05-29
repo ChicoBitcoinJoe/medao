@@ -6,26 +6,28 @@ import "./MeDao.sol";
 contract MeDaoFactory is CloneFactory {
 
     address public blueprint;
-
-    constructor (
-        address _blueprint
-    ) public {
-        blueprint = _blueprint;
-    }
-
+    MiniMeTokenFactory factory;
     mapping (address => bool) public created;
 
+    constructor (
+        address _blueprint,
+        MiniMeTokenFactory _factory
+    ) public {
+        blueprint = _blueprint;
+        factory = _factory;
+    }
+
     function create (
+        address owner,
         ERC20 reserveToken,
         string memory name,
-        uint birthTimestamp,
-        uint tokenClaim
-    ) public returns (MeDao medao) {
-        address payable clone = address(uint160(createClone(blueprint)));
-        medao = MeDao(clone);
+        int birthTimestamp,
+        uint tokenClaim,
+        uint initialReserve
+    ) public returns (address medao) {
+        medao = createClone(blueprint);
 
-        MiniMeToken timeToken = new MiniMeToken(
-            address(this),
+        MiniMeToken timeToken = factory.createCloneToken(
             address(0x0),
             0,
             name,
@@ -34,11 +36,12 @@ contract MeDaoFactory is CloneFactory {
             true
         );
 
-        require(timeToken.generateTokens(msg.sender, tokenClaim));
-        timeToken.changeController(address(clone));
-        medao.initialize(timeToken, reserveToken, birthTimestamp);
-        medao.transferOwnership(msg.sender);
-        created[address(medao)] = true;
+        timeToken.changeController(medao);
+        require(reserveToken.transferFrom(msg.sender, medao, initialReserve));
+        MeDao(medao).initialize(owner, timeToken, reserveToken, birthTimestamp, tokenClaim);
+        created[medao] = true;
+        emit Create_event(medao, owner, timeToken, reserveToken, birthTimestamp);
     }
 
+    event Create_event (address medao, address owner, MiniMeToken timeToken, ERC20 reserveToken, int birthTimestamp);
 }

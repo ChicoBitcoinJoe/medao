@@ -11,37 +11,35 @@ contract MeDao is Owned {
 
     MiniMeToken public timeToken;
     ERC20 public reserveToken;
-    uint public birthTimestamp;
+    int public birthTimestamp;
     uint public maxTokenSupply;
-    uint public lastPaycheck;
+    uint public lastPayTimestamp;
 
     constructor () public {
         blockInitialized = block.number;
     }
 
     function initialize (
+        address _owner,
         MiniMeToken _timeToken,
         ERC20 _reserveToken,
-        uint _birthTimestamp
+        int _birthTimestamp,
+        uint _tokenClaim
     ) public {
         require(blockInitialized == 0, 'contract already initialized');
+        require(_birthTimestamp < int(now), 'invalid birth timestamp');
 
         blockInitialized = block.number;
         factory = msg.sender;
 
+        owner = _owner;
         timeToken = _timeToken;
         reserveToken = _reserveToken;
         birthTimestamp = _birthTimestamp;
-        maxTokenSupply = (now - birthTimestamp) / 3;
-        lastPaycheck = now;
-    }
+        maxTokenSupply = uint(int(now) - birthTimestamp) / 3;
+        lastPayTimestamp = now;
 
-    function collectPaycheck () public onlyOwner {
-        uint elapsedSeconds = (now - lastPaycheck) / 3;
-        uint fundedTime = elapsedSeconds * timeToken.totalSupply() / maxTokenSupply;
-        maxTokenSupply += elapsedSeconds;
-        lastPaycheck = now;
-        require(timeToken.generateTokens(owner, fundedTime));
+        require(timeToken.generateTokens(owner, _tokenClaim), "failed to generate tokens");
     }
 
     function calculateTokenClaim (uint reserveAmount) public view returns (uint) {
@@ -52,18 +50,32 @@ contract MeDao is Owned {
         return reserveToken.balanceOf(address(this)) * tokenAmount / timeToken.totalSupply();
     }
 
+    function collectPay () public onlyOwner {
+        uint elapsedSeconds = (now - lastPayTimestamp) / 3;
+        uint fundedTime = elapsedSeconds * timeToken.totalSupply() / maxTokenSupply;
+        maxTokenSupply += elapsedSeconds;
+        lastPayTimestamp = now;
+        require(timeToken.generateTokens(owner, fundedTime), "failed to generate tokens");
+        emit Pay_eventAAAA(owner, fundedTime);
+    }
+
     function invest (uint reserveAmount) public {
         uint availableSeconds = maxTokenSupply - timeToken.totalSupply();
-        uint claimedSeconds = calculateTokenClaim(reserveAmount);
-        require(availableSeconds >= claimedSeconds);
-        require(reserveToken.transferFrom(msg.sender, address(this), reserveAmount));
-        require(timeToken.generateTokens(msg.sender, claimedSeconds));
+        uint claimedTokens = calculateTokenClaim(reserveAmount);
+        require(availableSeconds >= claimedTokens, "invalid reserve amount");
+        require(reserveToken.transferFrom(msg.sender, address(this), reserveAmount), "failed to transfer");
+        require(timeToken.generateTokens(msg.sender, claimedTokens), "failed to generate tokens");
+        emit Invest_event(msg.sender, reserveAmount, claimedTokens);
     }
 
     function divest (uint tokenAmount) public {
         uint reserveClaim = calculateReserveClaim(tokenAmount);
-        require(timeToken.destroyTokens(msg.sender, tokenAmount));
-        require(reserveToken.transfer(msg.sender, reserveClaim));
+        require(timeToken.destroyTokens(msg.sender, tokenAmount), "failed to destroy tokens");
+        require(reserveToken.transfer(msg.sender, reserveClaim), "failed to transfer");
+        emit Divest_event(msg.sender, tokenAmount, reserveClaim);
     }
 
+    event Pay_eventAAAA (address owner, uint tokenAmount);
+    event Invest_event (address msgSender, uint reserveAmount, uint tokenAmount);
+    event Divest_event (address msgSender, uint tokenAmount, uint reserveAmount);
 }

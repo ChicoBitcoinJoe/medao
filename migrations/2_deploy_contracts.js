@@ -1,6 +1,7 @@
 const MeDao = artifacts.require("MeDao");
 const MeDaoFactory = artifacts.require("MeDaoFactory");
 const MeDaoRegistry = artifacts.require("MeDaoRegistry");
+const MiniMeTokenFactory = artifacts.require("MiniMeTokenFactory");
 const EthToDai = artifacts.require("EthToDai");
 
 var Dex = {
@@ -24,15 +25,13 @@ module.exports = function(deployer, network, accounts) {
         console.log("Live network not supported yet")
     }
     else if(network == "kovan"){
-        /*deployer.deploy(
+        deployer.deploy(
             EthToDai,
             Dex[network],
             Weth[network],
             Dai[network]
         )
-        */
-        //.then(() => deployer.deploy(MeDao))
-        deployer.deploy(MeDao)
+        .then(() => deployer.deploy(MeDao))
         .then(() => deployer.deploy(MeDaoFactory, MeDao.address))
         .then(() => deployer.deploy(
             MeDaoRegistry,
@@ -40,6 +39,27 @@ module.exports = function(deployer, network, accounts) {
             Dai[network],
             Weth[network]
         ));
+    }
+    else if(network == "test"){
+        /*
+        deployer.deploy(
+            EthToDai,
+            Dex[network],
+            Weth[network],
+            Dai[network]
+        )
+        */
+        deployer.deploy(MiniMeTokenFactory)
+        .then(() => deployer.deploy(MeDao))
+        .then(() => deployer.deploy(MeDaoFactory, MeDao.address, MiniMeTokenFactory.address))
+        /*
+        .then(() => deployer.deploy(
+            MeDaoRegistry,
+            MeDaoFactory.address,
+            Dai[network],
+            Weth[network]
+        ));
+        */
     }
 
 };

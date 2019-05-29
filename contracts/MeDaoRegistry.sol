@@ -26,52 +26,58 @@ contract MeDaoRegistry {
 
     function create (
         string memory name,
-        uint birthTimestamp,
+        int birthTimestamp,
         uint tokenClaim,
-        uint seedFunds
+        uint initialReserve
     ) public returns (MeDao medao) {
         require(address(registry[msg.sender]) == NULL);
 
-        medao = factory.create(
+        require(dai.transferFrom(msg.sender, address(this), initialReserve));
+        require(dai.approve(address(factory), initialReserve));
+
+        medao = MeDao(factory.create(
+            msg.sender,
             dai,
             name,
             birthTimestamp,
-            tokenClaim
-        );
+            tokenClaim,
+            initialReserve
+        ));
 
-        require(dai.transfer(address(medao), seedFunds));
         medao.transferOwnership(msg.sender);
         registry[msg.sender] = medao;
     }
 
     function create (
         string memory name,
-        uint birthTimestamp,
+        int birthTimestamp,
         uint tokenClaim,
         TokenConverter converter,
         uint minFillAmount
     ) public payable returns (MeDao medao) {
         require(address(registry[msg.sender]) == NULL);
 
-        medao = factory.create(
+        weth.deposit.value(msg.value)();
+        require(weth.approve(address(converter), msg.value));
+        uint initialReserve = converter.convert(msg.value, minFillAmount);
+        require(dai.approve(address(factory), initialReserve));
+
+        medao = MeDao(factory.create(
+            msg.sender,
             dai,
             name,
             birthTimestamp,
-            tokenClaim
-        );
+            tokenClaim,
+            initialReserve
+        ));
 
-        weth.deposit.value(msg.value)();
-        require(weth.approve(address(converter), msg.value));
-
-        uint seedFunds = converter.convert(msg.value, minFillAmount);
-        require(dai.transfer(address(medao), seedFunds));
         medao.transferOwnership(msg.sender);
         registry[msg.sender] = medao;
     }
 
     function create (
         string memory name,
-        uint birthTimestamp,
+        int birthTimestamp,
         uint tokenClaim,
         TokenConverter converter,
         uint convertAmount,
@@ -79,18 +85,21 @@ contract MeDaoRegistry {
     ) public returns (MeDao medao) {
         require(address(registry[msg.sender]) == NULL);
 
-        medao = factory.create(
-            dai,
-            name,
-            birthTimestamp,
-            tokenClaim
-        );
-
         require(converter.payToken().transferFrom(msg.sender, address(this), convertAmount));
         require(converter.payToken().approve(address(converter), convertAmount));
 
-        uint seedFunds = converter.convert(convertAmount, minFillAmount);
-        require(dai.transfer(address(medao), seedFunds));
+        uint initialReserve = converter.convert(convertAmount, minFillAmount);
+        require(dai.approve(address(factory), initialReserve));
+
+        medao = MeDao(factory.create(
+            msg.sender,
+            dai,
+            name,
+            birthTimestamp,
+            tokenClaim,
+            initialReserve
+        ));
+
         medao.transferOwnership(msg.sender);
         registry[msg.sender] = medao;
     }
