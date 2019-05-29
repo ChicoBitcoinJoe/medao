@@ -34,6 +34,8 @@ import { OrderByPipe } from './pipes/order-by/order-by.pipe';
 
 import { HomeComponent } from './views/home/home.component';
 import { MedaoComponent } from './views/medao/medao.component';
+import { ToolbarComponent } from './components/toolbar/toolbar.component';
+import { SigninButtonComponent } from './components/signin-button/signin-button.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +44,9 @@ import { MedaoComponent } from './views/medao/medao.component';
     ToDaiPipe,
     OrderByPipe,
     HomeComponent,
-    MedaoComponent
+    MedaoComponent,
+    ToolbarComponent,
+    SigninButtonComponent
   ],
   imports: [
     BrowserModule,

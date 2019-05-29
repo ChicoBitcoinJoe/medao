@@ -48,28 +48,32 @@ export class Web3Service {
     }
 
     ready () {
-        if(!this.readyPromise){
-            this.readyPromise = new Promise((resolve, reject) => {
-                if(this.instance){
-                    Promise.all([
-                        this.instance.eth.net.getNetworkType(),
-                        this.instance.eth.net.getId(),
-                        this.getCurrentAccount()
-                    ])
-                    .then(promises => {
-                        var networkName = promises[0];
-                        var networkId = promises[1];
-                        var currentAccount = promises[2];
+        if(this.readyPromise)
+            return this.readyPromise;
 
-                        this.network.name = networkName;
-                        this.network.id = networkId;
-                        this.network.valid = this.network.allowed.includes(networkName);
-                        this.account.signedIn = currentAccount != null;
-                        this.account.address = currentAccount;
+        this.readyPromise = new Promise((resolve, reject) => {
+            if(this.instance){
+                Promise.all([
+                    this.instance.eth.net.getNetworkType(),
+                    this.instance.eth.net.getId(),
+                    this.watchForAccountChanges()
+                ])
+                .then(async promises => {
+                    var networkName = promises[0];
+                    var networkId = promises[1];
+                    var currentAccount = promises[2];
 
-                        this.watchForAccountChanges();
+                    this.network.name = networkName.charAt(0).toUpperCase() + networkName.slice(1);
+                    this.network.id = networkId;
+                    this.network.valid = this.network.allowed.includes(networkName);
+                    this.account.signedIn = currentAccount != null;
+                    this.account.address = currentAccount;
+
+                    if(!this.network.valid)
+                        reject();
+                    else {
                         if(this.DAI_PRICE_FEED[this.network.id])
-                            this.DaiPriceFeed = new this.instance.eth.Contract(DaiPriceFeedArtifact.abi, this.DAI_PRICE_FEED[this.network.id]);
+                            this.DaiPriceFeed = await new this.instance.eth.Contract(DaiPriceFeedArtifact.abi, this.DAI_PRICE_FEED[this.network.id]);
 
                         if(!currentAccount){
                             if(this.DaiPriceFeed){
@@ -98,18 +102,16 @@ export class Web3Service {
                                 resolve(this.account.address);
                             })
                         }
-
-
-                    })
-                    .catch(err => {
-                        reject(err);
-                    })
-                }
-                else {
-                    reject(new Error('No web3 detected.'));
-                }
-            });
-        }
+                    }
+                })
+                .catch(err => {
+                    reject(err);
+                })
+            }
+            else {
+                reject(new Error('No web3 detected.'));
+            }
+        });
 
         return this.readyPromise;
     }

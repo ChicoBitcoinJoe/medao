@@ -1,24 +1,10 @@
 <div fxHide.gt-xs fxLayout="column" fxFlexFill>
-    <mat-toolbar color="primary" class="primary-bg" fxFlex="56px">
-        <button mat-icon-button>
-            <mat-icon>menu</mat-icon>
-        </button>
-        <span fxFlex></span>
-        <a *ngIf="!Web3.network.connected" mat-button style="border: 1px solid rgba(255,255,255,0.33); color: white;" href="https://metamask.io" target="_blank">
-            try metamask
-        </a>
-        <button *ngIf="Web3.network.connected && !Web3.account.signedIn" mat-button style="border: 1px solid white;" (click)="signIn()">
-            sign in
-        </button>
-        <button *ngIf="Web3.account.signedIn" mat-icon-button>
-            <mat-icon svgIcon="qrcode"></mat-icon>
-        </button>
-    </mat-toolbar>
+    <app-toolbar></app-toolbar>
     <div style="overflow: auto;" fxLayout="column">
-        <h1 style="margin: 16px 8px; text-align: center" fxLayout="column" fxLayoutAlign="center center" fxFlex="88px">
+        <h1 style="margin: 16px 8px; text-align: center" fxLayout="column" fxLayoutAlign="center center" fxFlex="96px">
             MeDao
-            <div style="padding: 4px 16px; font-size: 16px; color: rgba(255,255,255,0.5)">
-                Invest in People
+            <div style="padding: 8px 16px; font-size: 16px; color: rgba(255,255,255,0.5)">
+                Invest in people.
             </div>
         </h1>
         <div class="secondary-bg" style="margin-top: 16px; position: relative" fxFlex="363px">
@@ -69,8 +55,9 @@
                         </a>
                     </div>
                     <div *ngIf="Web3.network.connected && !Web3.account.signedIn" fxLayout="column" fxLayoutAlign="center center" fxFlex>
-                        <p>Sign in to web3 to continue</p>
-                        <button mat-button style="border: 1px solid white; color: white;" (click)="signIn()">sign in</button>
+                        <p *ngIf="Web3.network.valid">Sign in to web3 to continue</p>
+                        <p *ngIf="!Web3.network.valid" class="centered">{{Web3.network.name}} not supported. <br> Try Kovan instead.</p>
+                        <app-signin-button *ngIf="Web3.network.valid" [disabled]="!Web3.network.valid"></app-signin-button>
                     </div>
                 </div>
             </div>

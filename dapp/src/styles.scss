@@ -39,6 +39,14 @@ input {
     caret-color: white !important;
 }
 
+.white .mat-button-wrapper {
+    color: white !important;
+}
+
+.grey .mat-button-wrapper {
+    color: grey !important;
+}
+
 .padding {
     padding: 16px;
 }

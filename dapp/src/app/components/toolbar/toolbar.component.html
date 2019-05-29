@@ -1,0 +1,18 @@
+<div fxLayout="column" fxFlex>
+    <mat-toolbar color="primary" class="primary-bg" fxFlex="56px">
+        <button mat-icon-button>
+            <mat-icon>menu</mat-icon>
+        </button>
+        <span fxFlex></span>
+        <a *ngIf="!Web3.network.connected" mat-button style="border: 1px solid rgba(255,255,255,0.33); color: white;" href="https://metamask.io" target="_blank">
+            try metamask
+        </a>
+        <app-signin-button *ngIf="Web3.network.valid && !Web3.account.signedIn"></app-signin-button>
+        <button *ngIf="!Web3.network.valid" style="border: 1px solid rgba(255,255,255,0.33); color: white;" mat-button disabled>
+            {{Web3.network.name}}
+        </button>
+        <button *ngIf="Web3.account.signedIn" mat-icon-button>
+            <mat-icon svgIcon="qrcode"></mat-icon>
+        </button>
+    </mat-toolbar>
+</div>
