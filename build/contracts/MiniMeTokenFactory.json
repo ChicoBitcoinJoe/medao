@@ -29936,9 +29936,16 @@
     "name": "solc",
     "version": "0.5.0+commit.1d4f565a.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "42": {
+      "events": {},
+      "links": {},
+      "address": "0xC947B708249d0012efC3BC09aF14F462084292dB",
+      "transactionHash": "0xef70d975cc74fa834c432567b4c66e2a51005ff9cb922eb17276fdf838741854"
+    }
+  },
   "schemaVersion": "3.0.9",
-  "updatedAt": "2019-05-28T22:06:21.166Z",
+  "updatedAt": "2019-05-29T20:14:20.859Z",
   "devdoc": {
     "details": "This contract is used to generate clone contracts from a contract.  In solidity this is the way to create a contract from a contract of the  same class",
     "methods": {

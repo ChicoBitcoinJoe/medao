@@ -1,4 +1,4 @@
-<div fxHide.gt-xs class="white-text" fxLayout="column" fxFlexFill>
+<div fxHide.gt-xs fxLayout="column" fxFlexFill>
     <mat-toolbar color="primary" class="primary-bg" fxFlex="56px">
         <button mat-icon-button>
             <mat-icon>menu</mat-icon>
@@ -18,37 +18,37 @@
         <h1 style="margin: 16px 8px; text-align: center" fxLayout="column" fxLayoutAlign="center center" fxFlex="88px">
             MeDao
             <div style="padding: 4px 16px; font-size: 16px; color: rgba(255,255,255,0.5)">
-                Unlock your financial identity
+                Invest in People
             </div>
         </h1>
         <div class="secondary-bg" style="margin-top: 16px; position: relative" fxFlex="363px">
             <div class="padding" fxLayout="column">
                 <mat-form-field>
                     <mat-label>Name</mat-label>
-                    <input matInput type="text" value="Joseph Reed">
+                    <input matInput type="text" [(ngModel)]="medao.name">
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label>Birth Date</mat-label>
-                    <input matInput type="date" value="1977-07-07">
+                    <input matInput type="date" [(ngModel)]="medao.date" max="{{maxDate}}">
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label>Hourly Wage</mat-label>
-                    <input matInput type="number" step="0.01" value="10.00">
+                    <input matInput type="number" step="0.01" min="0.01" [(ngModel)]="medao.wage">
                     <span matSuffix>&nbsp;$</span>
                 </mat-form-field>
-                <div fxLayout="row" style="min-width: 0px; !important" >
+                <div fxLayout="row">
                     <div style="overflow: hidden; min-width: 0px;" fxFlex>
                         <mat-form-field style="min-width: 0px; !important; width: 100%">
                             <mat-label>Seed funds</mat-label>
-                            <input matInput type="number" step="0.01" value="100.00">
+                            <input matInput type="number" step="0.01" min="0.01" max="{{Web3.account.balance | toDai | number:'1.2-2'}}" [(ngModel)]="medao.seed">
                             <span matSuffix>&nbsp;$</span>
                             <mat-hint><span class="white-text">available: ${{Web3.account.balance | toDai | number:'1.2-2'}}</span></mat-hint>
                         </mat-form-field>
                     </div>
-                    <div fxLayout="row" fxFlex="118px">
+                    <div class="white-text" fxLayout="row" fxFlex="118px">
                         <span style="padding: 0px 4px; margin-top: 19px;">payed in</span>
                         <mat-form-field fxFlex="50px">
-                            <mat-select name="selectedToken" [(ngModel)]="selectedToken">
+                            <mat-select [(ngModel)]="medao.paymentToken">
                                 <mat-option *ngFor="let token of tokens" [value]="token">
                                   {{token}}
                                 </mat-option>
@@ -57,7 +57,8 @@
                     </div>
                 </div>
                 <span fxFlex="32px"></span>
-                <button mat-button (click)="continue()">submit</button>
+                <button mat-button *ngIf="!valid()" style="color: grey;" disabled="true">submit</button>
+                <button mat-button *ngIf="valid()" style="color: white;" (click)="submit()">submit</button>
             </div>
             <div *ngIf="!Web3.account.signedIn" style="background-color: rgba(0,0,0,0.87); z-index: 2; position: absolute; top: 0px; width: 100%; height: 100%;">
                 <div fxLayout="column" fxLayoutAlign="center center" fxFlex>
@@ -69,7 +70,7 @@
                     </div>
                     <div *ngIf="Web3.network.connected && !Web3.account.signedIn" fxLayout="column" fxLayoutAlign="center center" fxFlex>
                         <p>Sign in to web3 to continue</p>
-                        <button mat-button style="border: 1px solid white;" (click)="signIn()">sign in</button>
+                        <button mat-button style="border: 1px solid white; color: white;" (click)="signIn()">sign in</button>
                     </div>
                 </div>
             </div>
@@ -77,11 +78,11 @@
         <div class="padding">
             <h3>How does it work?</h3>
             <p>
-                Having a MeDao makes you an employee of the world. Investors pool money together from which you (the employee) withdraw a salary. You then use the time to produce value that is eventually returned to the investors.
+                Having a MeDao makes you an employee of the world. Investors pool money together from which you (the employee) withdraw a salary for time worked. As value is returned to investors, the value of your time will go up.
             </p>
             <h3>Is it safe?</h3>
             <p>
-                A MeDao has built in properties to protect the funds of each investor. Downside potential is something that can be calculated down to the penny. For example, an investor who invests $100 into a 33 year old employee can know that in exactly one year, their investment will still be worth $97 even if no value is created by the employee.
+                A MeDao has built in properties to protect the funds of each investor. Downside potential is something that can be calculated down to the penny. For example, if you invest $100 into a 33 year old employee, in exactly one year your investment will still be worth $97 even if no value is created by the employee.
             </p>
         </div>
     </div>

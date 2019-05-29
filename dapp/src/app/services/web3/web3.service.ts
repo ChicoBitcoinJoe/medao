@@ -68,14 +68,20 @@ export class Web3Service {
                         this.account.address = currentAccount;
 
                         this.watchForAccountChanges();
-                        this.DaiPriceFeed = new this.instance.eth.Contract(DaiPriceFeedArtifact.abi, this.DAI_PRICE_FEED[this.network.id]);
+                        if(this.DAI_PRICE_FEED[this.network.id])
+                            this.DaiPriceFeed = new this.instance.eth.Contract(DaiPriceFeedArtifact.abi, this.DAI_PRICE_FEED[this.network.id]);
 
                         if(!currentAccount){
-                            this.DaiPriceFeed.methods.read().call()
-                            .then(daiPriceInWei => {
-                                this.ethPriceInDai = Number(this.instance.utils.fromWei(daiPriceInWei, 'ether'));
+                            if(this.DaiPriceFeed){
+                                this.DaiPriceFeed.methods.read().call()
+                                .then(daiPriceInWei => {
+                                    this.ethPriceInDai = Number(this.instance.utils.fromWei(daiPriceInWei, 'ether'));
+                                    resolve(null)
+                                });
+                            }
+                            else {
                                 resolve(null)
-                            });
+                            }
                         }
                         else {
                             Promise.all([
