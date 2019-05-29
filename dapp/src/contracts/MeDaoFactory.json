@@ -50,27 +50,27 @@
       "type": "constructor"
     },
     {
-      "constant": false,
+      "anonymous": false,
       "inputs": [
         {
+          "indexed": false,
           "name": "medao",
-          "type": "address",
-          "indexed": false
+          "type": "address"
         },
         {
+          "indexed": false,
           "name": "owner",
-          "type": "address",
-          "indexed": false
+          "type": "address"
         },
         {
+          "indexed": false,
           "name": "timeToken",
-          "type": "address",
-          "indexed": false
+          "type": "address"
         },
         {
+          "indexed": false,
           "name": "reserveToken",
-          "type": "address",
-          "indexed": false
+          "type": "address"
         },
         {
           "indexed": false,
@@ -79,16 +79,7 @@
         }
       ],
       "name": "Create_event",
-      "outputs": [
-        {
-          "name": "medao",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "event",
-      "anonymous": false
+      "type": "event"
     },
     {
       "constant": false,
@@ -164,7 +155,7 @@
         "id": 387,
         "nodeType": "ImportDirective",
         "scope": 507,
-        "sourceUnit": 1046,
+        "sourceUnit": 1105,
         "src": "25:37:2",
         "symbolAliases": [],
         "unitAlias": ""
@@ -189,10 +180,10 @@
               "id": 389,
               "name": "CloneFactory",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 1045,
+              "referencedDeclaration": 1104,
               "src": "111:12:2",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_CloneFactory_$1045",
+                "typeIdentifier": "t_contract$_CloneFactory_$1104",
                 "typeString": "contract CloneFactory"
               }
             },
@@ -202,8 +193,7 @@
           }
         ],
         "contractDependencies": [
-          1045,
-          2074
+          1104
         ],
         "contractKind": "contract",
         "documentation": null,
@@ -211,7 +201,7 @@
         "id": 506,
         "linearizedBaseContracts": [
           506,
-          1045
+          1104
         ],
         "name": "MeDaoFactory",
         "nodeType": "ContractDefinition",
@@ -244,151 +234,32 @@
             "visibility": "public"
           },
           {
-            "body": {
-              "id": 325,
-              "nodeType": "Block",
-              "src": "216:39:2",
-              "statements": [
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "id": 323,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "leftHandSide": {
-                      "argumentTypes": null,
-                      "id": 321,
-                      "name": "blueprint",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 316,
-                      "src": "226:9:2",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_address",
-                        "typeString": "address"
-                      }
-                    },
-                    "nodeType": "Assignment",
-                    "operator": "=",
-                    "rightHandSide": {
-                      "argumentTypes": null,
-                      "id": 322,
-                      "name": "_blueprint",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 318,
-                      "src": "238:10:2",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_address",
-                        "typeString": "address"
-                      }
-                    },
-                    "src": "226:22:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "id": 324,
-                  "nodeType": "ExpressionStatement",
-                  "src": "226:22:2"
-                }
-              ]
-            },
-            "documentation": null,
+            "constant": false,
             "id": 394,
-            "implemented": true,
-            "kind": "constructor",
-            "modifiers": [],
             "name": "factory",
             "nodeType": "VariableDeclaration",
-            "parameters": {
-              "id": 319,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 318,
-                  "name": "_blueprint",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 326,
-                  "src": "184:18:2",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
-                  },
-                  "typeName": {
-                    "id": 317,
-                    "name": "address",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "184:7:2",
-                    "stateMutability": "nonpayable",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                }
-              ],
-              "src": "174:34:2"
-            },
-            "returnParameters": {
-              "id": 320,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "216:0:2"
-            },
             "scope": 506,
             "src": "161:26:2",
-            "stateMutability": "nonpayable",
-            "superFunction": null,
-            "visibility": "internal",
-            "constant": false,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2236",
+              "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2295",
               "typeString": "contract MiniMeTokenFactory"
             },
             "typeName": {
+              "contractScope": null,
               "id": 393,
-              "keyType": {
-                "id": 317,
-                "name": "address",
-                "nodeType": "ElementaryTypeName",
-                "src": "170:7:2",
-                "typeDescriptions": {
-                  "typeIdentifier": "t_address",
-                  "typeString": "address"
-                }
-              },
+              "name": "MiniMeTokenFactory",
               "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 2295,
               "src": "161:18:2",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2236",
+                "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2295",
                 "typeString": "contract MiniMeTokenFactory"
-              },
-              "valueType": {
-                "id": 318,
-                "name": "bool",
-                "nodeType": "ElementaryTypeName",
-                "src": "181:4:2",
-                "typeDescriptions": {
-                  "typeIdentifier": "t_bool",
-                  "typeString": "bool"
-                }
-              },
-              "contractScope": null,
-              "name": "MiniMeTokenFactory",
-              "referencedDeclaration": 2236
+              }
             },
-            "value": null
+            "value": null,
+            "visibility": "internal"
           },
           {
             "constant": false,
@@ -433,106 +304,7 @@
               }
             },
             "value": null,
-            "visibility": "public",
-            "body": {
-              "id": 329,
-              "nodeType": "Block",
-              "src": "262:39:2",
-              "statements": [
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "id": 327,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "leftHandSide": {
-                      "argumentTypes": null,
-                      "id": 325,
-                      "name": "blueprint",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 316,
-                      "src": "272:9:2",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_address",
-                        "typeString": "address"
-                      }
-                    },
-                    "nodeType": "Assignment",
-                    "operator": "=",
-                    "rightHandSide": {
-                      "argumentTypes": null,
-                      "id": 326,
-                      "name": "_blueprint",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 322,
-                      "src": "284:10:2",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_address",
-                        "typeString": "address"
-                      }
-                    },
-                    "src": "272:22:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "id": 328,
-                  "nodeType": "ExpressionStatement",
-                  "src": "272:22:2"
-                }
-              ]
-            },
-            "documentation": null,
-            "implemented": true,
-            "kind": "constructor",
-            "modifiers": [],
-            "parameters": {
-              "id": 323,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 322,
-                  "name": "_blueprint",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 330,
-                  "src": "230:18:2",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
-                  },
-                  "typeName": {
-                    "id": 321,
-                    "name": "address",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "230:7:2",
-                    "stateMutability": "nonpayable",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                }
-              ],
-              "src": "220:34:2"
-            },
-            "returnParameters": {
-              "id": 324,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "262:0:2"
-            },
-            "stateMutability": "nonpayable",
-            "superFunction": null
+            "visibility": "public"
           },
           {
             "body": {
@@ -541,172 +313,6 @@
               "src": "331:67:2",
               "statements": [
                 {
-                  "assignments": [
-                    344
-                  ],
-                  "declarations": [
-                    {
-                      "constant": false,
-                      "id": 344,
-                      "name": "clone",
-                      "nodeType": "VariableDeclaration",
-                      "scope": 412,
-                      "src": "479:13:2",
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_address",
-                        "typeString": "address"
-                      },
-                      "typeName": {
-                        "id": 343,
-                        "name": "address",
-                        "nodeType": "ElementaryTypeName",
-                        "src": "479:7:2",
-                        "stateMutability": "nonpayable",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_address",
-                          "typeString": "address"
-                        }
-                      },
-                      "value": null,
-                      "visibility": "internal"
-                    }
-                  ],
-                  "id": 408,
-                  "initialValue": {
-                    "argumentTypes": null,
-                    "arguments": [
-                      {
-                        "argumentTypes": null,
-                        "arguments": [
-                          {
-                            "argumentTypes": null,
-                            "arguments": [
-                              {
-                                "argumentTypes": null,
-                                "id": 348,
-                                "name": "blueprint",
-                                "nodeType": "Identifier",
-                                "overloadedDeclarations": [],
-                                "referencedDeclaration": 316,
-                                "src": "532:9:2",
-                                "typeDescriptions": {
-                                  "typeIdentifier": "t_address",
-                                  "typeString": "address"
-                                }
-                              }
-                            ],
-                            "expression": {
-                              "argumentTypes": [
-                                {
-                                  "typeIdentifier": "t_address",
-                                  "typeString": "address"
-                                }
-                              ],
-                              "id": 347,
-                              "name": "createClone",
-                              "nodeType": "Identifier",
-                              "overloadedDeclarations": [],
-                              "referencedDeclaration": 912,
-                              "src": "520:11:2",
-                              "typeDescriptions": {
-                                "typeIdentifier": "t_function_internal_nonpayable$_t_address_$returns$_t_address_$",
-                                "typeString": "function (address) returns (address)"
-                              }
-                            },
-                            "id": 349,
-                            "isConstant": false,
-                            "isLValue": false,
-                            "isPure": false,
-                            "kind": "functionCall",
-                            "lValueRequested": false,
-                            "names": [],
-                            "nodeType": "FunctionCall",
-                            "src": "520:22:2",
-                            "typeDescriptions": {
-                              "typeIdentifier": "t_address",
-                              "typeString": "address"
-                            }
-                          }
-                        ],
-                        "expression": {
-                          "argumentTypes": [
-                            {
-                              "typeIdentifier": "t_address",
-                              "typeString": "address"
-                            }
-                          ],
-                          "id": 346,
-                          "isConstant": false,
-                          "isLValue": false,
-                          "isPure": true,
-                          "lValueRequested": false,
-                          "nodeType": "ElementaryTypeNameExpression",
-                          "src": "512:7:2",
-                          "typeDescriptions": {
-                            "typeIdentifier": "t_type$_t_uint160_$",
-                            "typeString": "type(uint160)"
-                          },
-                          "typeName": "uint160"
-                        },
-                        "id": 346,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": false,
-                        "kind": "typeConversion",
-                        "lValueRequested": false,
-                        "names": [],
-                        "nodeType": "Identifier",
-                        "src": "507:9:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_address",
-                          "typeString": "address"
-                        },
-                        "name": "blueprint",
-                        "overloadedDeclarations": [],
-                        "referencedDeclaration": 316
-                      }
-                    ],
-                    "expression": {
-                      "argumentTypes": [
-                        {
-                          "typeIdentifier": "t_address",
-                          "typeString": "address"
-                        }
-                      ],
-                      "id": 345,
-                      "isConstant": false,
-                      "isLValue": false,
-                      "isPure": true,
-                      "lValueRequested": false,
-                      "nodeType": "Identifier",
-                      "src": "495:11:2",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_function_internal_nonpayable$_t_address_$returns$_t_address_$",
-                        "typeString": "function (address) returns (address)"
-                      },
-                      "typeName": "address",
-                      "name": "createClone",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 908
-                    },
-                    "id": 347,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "kind": "functionCall",
-                    "lValueRequested": false,
-                    "names": [],
-                    "nodeType": "FunctionCall",
-                    "src": "495:22:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "nodeType": "ExpressionStatement",
-                  "src": "341:22:2",
                   "expression": {
                     "argumentTypes": null,
                     "id": 407,
@@ -747,7 +353,10 @@
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
-                  }
+                  },
+                  "id": 408,
+                  "nodeType": "ExpressionStatement",
+                  "src": "341:22:2"
                 },
                 {
                   "expression": {
@@ -766,7 +375,7 @@
                       "referencedDeclaration": 394,
                       "src": "373:7:2",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2236",
+                        "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2295",
                         "typeString": "contract MiniMeTokenFactory"
                       }
                     },
@@ -774,924 +383,26 @@
                     "operator": "=",
                     "rightHandSide": {
                       "argumentTypes": null,
-                      "arguments": [
-                        {
-                          "argumentTypes": null,
-                          "id": 351,
-                          "name": "clone",
-                          "nodeType": "Identifier",
-                          "overloadedDeclarations": [],
-                          "referencedDeclaration": 344,
-                          "src": "541:5:2",
-                          "typeDescriptions": {
-                            "typeIdentifier": "t_address",
-                            "typeString": "address"
-                          }
-                        }
-                      ],
-                      "expression": {
-                        "argumentTypes": [
-                          {
-                            "typeIdentifier": "t_address",
-                            "typeString": "address"
-                          }
-                        ],
-                        "id": 350,
-                        "name": "MeDao",
-                        "nodeType": "Identifier",
-                        "overloadedDeclarations": [],
-                        "referencedDeclaration": 308,
-                        "src": "535:5:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_contract$_MeDao_$308_$",
-                          "typeString": "type(contract MeDao)"
-                        }
-                      },
                       "id": 410,
-                      "isConstant": false,
-                      "isLValue": false,
-                      "isPure": false,
-                      "kind": "typeConversion",
-                      "lValueRequested": false,
-                      "names": [],
+                      "name": "_factory",
                       "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 402,
                       "src": "383:8:2",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2236",
+                        "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2295",
                         "typeString": "contract MiniMeTokenFactory"
-                      },
-                      "name": "_factory",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 402
+                      }
                     },
                     "src": "373:18:2",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2236",
+                      "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2295",
                       "typeString": "contract MiniMeTokenFactory"
                     }
                   },
                   "id": 412,
                   "nodeType": "ExpressionStatement",
                   "src": "373:18:2"
-                },
-                {
-                  "assignments": [
-                    356
-                  ],
-                  "declarations": [
-                    {
-                      "constant": false,
-                      "id": 356,
-                      "name": "timeToken",
-                      "nodeType": "VariableDeclaration",
-                      "scope": 412,
-                      "src": "558:21:2",
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_MiniMeToken_$2074",
-                        "typeString": "contract MiniMeToken"
-                      },
-                      "typeName": {
-                        "contractScope": null,
-                        "id": 355,
-                        "name": "MiniMeToken",
-                        "nodeType": "UserDefinedTypeName",
-                        "referencedDeclaration": 2074,
-                        "src": "558:11:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_MiniMeToken_$2074",
-                          "typeString": "contract MiniMeToken"
-                        }
-                      },
-                      "value": null,
-                      "visibility": "internal"
-                    }
-                  ],
-                  "id": 371,
-                  "initialValue": {
-                    "argumentTypes": null,
-                    "arguments": [
-                      {
-                        "argumentTypes": null,
-                        "arguments": [
-                          {
-                            "argumentTypes": null,
-                            "id": 360,
-                            "name": "this",
-                            "nodeType": "Identifier",
-                            "overloadedDeclarations": [],
-                            "referencedDeclaration": 2207,
-                            "src": "619:4:2",
-                            "typeDescriptions": {
-                              "typeIdentifier": "t_contract$_MeDaoFactory_$414",
-                              "typeString": "contract MeDaoFactory"
-                            }
-                          }
-                        ],
-                        "expression": {
-                          "argumentTypes": [
-                            {
-                              "typeIdentifier": "t_contract$_MeDaoFactory_$414",
-                              "typeString": "contract MeDaoFactory"
-                            }
-                          ],
-                          "id": 359,
-                          "isConstant": false,
-                          "isLValue": false,
-                          "isPure": true,
-                          "lValueRequested": false,
-                          "nodeType": "ElementaryTypeNameExpression",
-                          "src": "611:7:2",
-                          "typeDescriptions": {
-                            "typeIdentifier": "t_type$_t_address_$",
-                            "typeString": "type(address)"
-                          },
-                          "typeName": "address"
-                        },
-                        "id": 361,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": false,
-                        "kind": "typeConversion",
-                        "lValueRequested": false,
-                        "names": [],
-                        "nodeType": "FunctionCall",
-                        "src": "611:13:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_address",
-                          "typeString": "address"
-                        }
-                      },
-                      {
-                        "argumentTypes": null,
-                        "arguments": [
-                          {
-                            "argumentTypes": null,
-                            "hexValue": "307830",
-                            "id": 363,
-                            "isConstant": false,
-                            "isLValue": false,
-                            "isPure": true,
-                            "kind": "number",
-                            "lValueRequested": false,
-                            "nodeType": "Literal",
-                            "src": "646:3:2",
-                            "subdenomination": null,
-                            "typeDescriptions": {
-                              "typeIdentifier": "t_rational_0_by_1",
-                              "typeString": "int_const 0"
-                            },
-                            "value": "0x0"
-                          }
-                        ],
-                        "expression": {
-                          "argumentTypes": [
-                            {
-                              "typeIdentifier": "t_rational_0_by_1",
-                              "typeString": "int_const 0"
-                            }
-                          ],
-                          "id": 362,
-                          "isConstant": false,
-                          "isLValue": false,
-                          "isPure": true,
-                          "lValueRequested": false,
-                          "nodeType": "ElementaryTypeNameExpression",
-                          "src": "638:7:2",
-                          "typeDescriptions": {
-                            "typeIdentifier": "t_type$_t_address_$",
-                            "typeString": "type(address)"
-                          },
-                          "typeName": "address"
-                        },
-                        "id": 364,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": true,
-                        "kind": "typeConversion",
-                        "lValueRequested": false,
-                        "names": [],
-                        "nodeType": "FunctionCall",
-                        "src": "638:12:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_address_payable",
-                          "typeString": "address payable"
-                        }
-                      },
-                      {
-                        "argumentTypes": null,
-                        "hexValue": "30",
-                        "id": 365,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": true,
-                        "kind": "number",
-                        "lValueRequested": false,
-                        "nodeType": "Literal",
-                        "src": "664:1:2",
-                        "subdenomination": null,
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_rational_0_by_1",
-                          "typeString": "int_const 0"
-                        },
-                        "value": "0"
-                      },
-                      {
-                        "argumentTypes": null,
-                        "id": 366,
-                        "name": "name",
-                        "nodeType": "Identifier",
-                        "overloadedDeclarations": [],
-                        "referencedDeclaration": 334,
-                        "src": "679:4:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_string_memory_ptr",
-                          "typeString": "string memory"
-                        }
-                      },
-                      {
-                        "argumentTypes": null,
-                        "hexValue": "3138",
-                        "id": 367,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": true,
-                        "kind": "number",
-                        "lValueRequested": false,
-                        "nodeType": "Literal",
-                        "src": "697:2:2",
-                        "subdenomination": null,
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_rational_18_by_1",
-                          "typeString": "int_const 18"
-                        },
-                        "value": "18"
-                      },
-                      {
-                        "argumentTypes": null,
-                        "hexValue": "7365636f6e6473",
-                        "id": 368,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": true,
-                        "kind": "string",
-                        "lValueRequested": false,
-                        "nodeType": "Literal",
-                        "src": "713:9:2",
-                        "subdenomination": null,
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_stringliteral_e1130af6d7c17bab477e8229ba4562e6c6de1a24d5f06f81ba647253be54326f",
-                          "typeString": "literal_string \"seconds\""
-                        },
-                        "value": "seconds"
-                      },
-                      {
-                        "argumentTypes": null,
-                        "hexValue": "74727565",
-                        "id": 369,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": true,
-                        "kind": "bool",
-                        "lValueRequested": false,
-                        "nodeType": "Literal",
-                        "src": "736:4:2",
-                        "subdenomination": null,
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_bool",
-                          "typeString": "bool"
-                        },
-                        "value": "true"
-                      }
-                    ],
-                    "expression": {
-                      "argumentTypes": [
-                        {
-                          "typeIdentifier": "t_address",
-                          "typeString": "address"
-                        },
-                        {
-                          "typeIdentifier": "t_address_payable",
-                          "typeString": "address payable"
-                        },
-                        {
-                          "typeIdentifier": "t_rational_0_by_1",
-                          "typeString": "int_const 0"
-                        },
-                        {
-                          "typeIdentifier": "t_string_memory_ptr",
-                          "typeString": "string memory"
-                        },
-                        {
-                          "typeIdentifier": "t_rational_18_by_1",
-                          "typeString": "int_const 18"
-                        },
-                        {
-                          "typeIdentifier": "t_stringliteral_e1130af6d7c17bab477e8229ba4562e6c6de1a24d5f06f81ba647253be54326f",
-                          "typeString": "literal_string \"seconds\""
-                        },
-                        {
-                          "typeIdentifier": "t_bool",
-                          "typeString": "bool"
-                        }
-                      ],
-                      "id": 358,
-                      "isConstant": false,
-                      "isLValue": false,
-                      "isPure": false,
-                      "lValueRequested": false,
-                      "nodeType": "NewExpression",
-                      "src": "582:15:2",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_function_creation_nonpayable$_t_address_$_t_address_payable_$_t_uint256_$_t_string_memory_ptr_$_t_uint8_$_t_string_memory_ptr_$_t_bool_$returns$_t_contract$_MiniMeToken_$2074_$",
-                        "typeString": "function (address,address payable,uint256,string memory,uint8,string memory,bool) returns (contract MiniMeToken)"
-                      },
-                      "typeName": {
-                        "contractScope": null,
-                        "id": 357,
-                        "name": "MiniMeToken",
-                        "nodeType": "UserDefinedTypeName",
-                        "referencedDeclaration": 2074,
-                        "src": "586:11:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_MiniMeToken_$2074",
-                          "typeString": "contract MiniMeToken"
-                        }
-                      }
-                    },
-                    "id": 370,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "kind": "functionCall",
-                    "lValueRequested": false,
-                    "names": [],
-                    "nodeType": "FunctionCall",
-                    "src": "582:168:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_MiniMeToken_$2074",
-                      "typeString": "contract MiniMeToken"
-                    }
-                  },
-                  "nodeType": "VariableDeclarationStatement",
-                  "src": "558:192:2"
-                },
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "arguments": [
-                      {
-                        "argumentTypes": null,
-                        "arguments": [
-                          {
-                            "argumentTypes": null,
-                            "expression": {
-                              "argumentTypes": null,
-                              "id": 375,
-                              "name": "msg",
-                              "nodeType": "Identifier",
-                              "overloadedDeclarations": [],
-                              "referencedDeclaration": 2170,
-                              "src": "794:3:2",
-                              "typeDescriptions": {
-                                "typeIdentifier": "t_magic_message",
-                                "typeString": "msg"
-                              }
-                            },
-                            "id": 376,
-                            "isConstant": false,
-                            "isLValue": false,
-                            "isPure": false,
-                            "lValueRequested": false,
-                            "memberName": "sender",
-                            "nodeType": "MemberAccess",
-                            "referencedDeclaration": null,
-                            "src": "794:10:2",
-                            "typeDescriptions": {
-                              "typeIdentifier": "t_address_payable",
-                              "typeString": "address payable"
-                            }
-                          },
-                          {
-                            "argumentTypes": null,
-                            "id": 377,
-                            "name": "tokenClaim",
-                            "nodeType": "Identifier",
-                            "overloadedDeclarations": [],
-                            "referencedDeclaration": 338,
-                            "src": "806:10:2",
-                            "typeDescriptions": {
-                              "typeIdentifier": "t_uint256",
-                              "typeString": "uint256"
-                            }
-                          }
-                        ],
-                        "expression": {
-                          "argumentTypes": [
-                            {
-                              "typeIdentifier": "t_address_payable",
-                              "typeString": "address payable"
-                            },
-                            {
-                              "typeIdentifier": "t_uint256",
-                              "typeString": "uint256"
-                            }
-                          ],
-                          "expression": {
-                            "argumentTypes": null,
-                            "id": 373,
-                            "name": "timeToken",
-                            "nodeType": "Identifier",
-                            "overloadedDeclarations": [],
-                            "referencedDeclaration": 356,
-                            "src": "769:9:2",
-                            "typeDescriptions": {
-                              "typeIdentifier": "t_contract$_MiniMeToken_$2074",
-                              "typeString": "contract MiniMeToken"
-                            }
-                          },
-                          "id": 374,
-                          "isConstant": false,
-                          "isLValue": false,
-                          "isPure": false,
-                          "lValueRequested": false,
-                          "memberName": "generateTokens",
-                          "nodeType": "MemberAccess",
-                          "referencedDeclaration": 1738,
-                          "src": "769:24:2",
-                          "typeDescriptions": {
-                            "typeIdentifier": "t_function_external_nonpayable$_t_address_$_t_uint256_$returns$_t_bool_$",
-                            "typeString": "function (address,uint256) external returns (bool)"
-                          }
-                        },
-                        "id": 378,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": false,
-                        "kind": "functionCall",
-                        "lValueRequested": false,
-                        "names": [],
-                        "nodeType": "FunctionCall",
-                        "src": "769:48:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_bool",
-                          "typeString": "bool"
-                        }
-                      }
-                    ],
-                    "expression": {
-                      "argumentTypes": [
-                        {
-                          "typeIdentifier": "t_bool",
-                          "typeString": "bool"
-                        }
-                      ],
-                      "id": 372,
-                      "name": "require",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [
-                        2173,
-                        2174
-                      ],
-                      "referencedDeclaration": 2173,
-                      "src": "761:7:2",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
-                        "typeString": "function (bool) pure"
-                      }
-                    },
-                    "id": 379,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "kind": "functionCall",
-                    "lValueRequested": false,
-                    "names": [],
-                    "nodeType": "FunctionCall",
-                    "src": "761:57:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_tuple$__$",
-                      "typeString": "tuple()"
-                    }
-                  },
-                  "id": 380,
-                  "nodeType": "ExpressionStatement",
-                  "src": "761:57:2"
-                },
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "arguments": [
-                      {
-                        "argumentTypes": null,
-                        "arguments": [
-                          {
-                            "argumentTypes": null,
-                            "id": 385,
-                            "name": "clone",
-                            "nodeType": "Identifier",
-                            "overloadedDeclarations": [],
-                            "referencedDeclaration": 344,
-                            "src": "863:5:2",
-                            "typeDescriptions": {
-                              "typeIdentifier": "t_address",
-                              "typeString": "address"
-                            }
-                          }
-                        ],
-                        "expression": {
-                          "argumentTypes": [
-                            {
-                              "typeIdentifier": "t_address",
-                              "typeString": "address"
-                            }
-                          ],
-                          "id": 384,
-                          "isConstant": false,
-                          "isLValue": false,
-                          "isPure": true,
-                          "lValueRequested": false,
-                          "nodeType": "ElementaryTypeNameExpression",
-                          "src": "855:7:2",
-                          "typeDescriptions": {
-                            "typeIdentifier": "t_type$_t_address_$",
-                            "typeString": "type(address)"
-                          },
-                          "typeName": "address"
-                        },
-                        "id": 386,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": false,
-                        "kind": "typeConversion",
-                        "lValueRequested": false,
-                        "names": [],
-                        "nodeType": "FunctionCall",
-                        "src": "855:14:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_address",
-                          "typeString": "address"
-                        }
-                      }
-                    ],
-                    "expression": {
-                      "argumentTypes": [
-                        {
-                          "typeIdentifier": "t_address",
-                          "typeString": "address"
-                        }
-                      ],
-                      "expression": {
-                        "argumentTypes": null,
-                        "id": 381,
-                        "name": "timeToken",
-                        "nodeType": "Identifier",
-                        "overloadedDeclarations": [],
-                        "referencedDeclaration": 356,
-                        "src": "828:9:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_MiniMeToken_$2074",
-                          "typeString": "contract MiniMeToken"
-                        }
-                      },
-                      "id": 383,
-                      "isConstant": false,
-                      "isLValue": false,
-                      "isPure": false,
-                      "lValueRequested": false,
-                      "memberName": "changeController",
-                      "nodeType": "MemberAccess",
-                      "referencedDeclaration": 1042,
-                      "src": "828:26:2",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_function_external_nonpayable$_t_address_$returns$__$",
-                        "typeString": "function (address) external"
-                      }
-                    },
-                    "id": 387,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "kind": "functionCall",
-                    "lValueRequested": false,
-                    "names": [],
-                    "nodeType": "FunctionCall",
-                    "src": "828:42:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_tuple$__$",
-                      "typeString": "tuple()"
-                    }
-                  },
-                  "id": 388,
-                  "nodeType": "ExpressionStatement",
-                  "src": "828:42:2"
-                },
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "arguments": [
-                      {
-                        "argumentTypes": null,
-                        "id": 392,
-                        "name": "timeToken",
-                        "nodeType": "Identifier",
-                        "overloadedDeclarations": [],
-                        "referencedDeclaration": 356,
-                        "src": "897:9:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_MiniMeToken_$2074",
-                          "typeString": "contract MiniMeToken"
-                        }
-                      },
-                      {
-                        "argumentTypes": null,
-                        "id": 393,
-                        "name": "reserveToken",
-                        "nodeType": "Identifier",
-                        "overloadedDeclarations": [],
-                        "referencedDeclaration": 332,
-                        "src": "908:12:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_ERC20_$995",
-                          "typeString": "contract ERC20"
-                        }
-                      },
-                      {
-                        "argumentTypes": null,
-                        "id": 394,
-                        "name": "birthTimestamp",
-                        "nodeType": "Identifier",
-                        "overloadedDeclarations": [],
-                        "referencedDeclaration": 336,
-                        "src": "922:14:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_uint256",
-                          "typeString": "uint256"
-                        }
-                      }
-                    ],
-                    "expression": {
-                      "argumentTypes": [
-                        {
-                          "typeIdentifier": "t_contract$_MiniMeToken_$2074",
-                          "typeString": "contract MiniMeToken"
-                        },
-                        {
-                          "typeIdentifier": "t_contract$_ERC20_$995",
-                          "typeString": "contract ERC20"
-                        },
-                        {
-                          "typeIdentifier": "t_uint256",
-                          "typeString": "uint256"
-                        }
-                      ],
-                      "expression": {
-                        "argumentTypes": null,
-                        "id": 389,
-                        "name": "medao",
-                        "nodeType": "Identifier",
-                        "overloadedDeclarations": [],
-                        "referencedDeclaration": 341,
-                        "src": "880:5:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_MeDao_$308",
-                          "typeString": "contract MeDao"
-                        }
-                      },
-                      "id": 391,
-                      "isConstant": false,
-                      "isLValue": false,
-                      "isPure": false,
-                      "lValueRequested": false,
-                      "memberName": "initialize",
-                      "nodeType": "MemberAccess",
-                      "referencedDeclaration": 147,
-                      "src": "880:16:2",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_function_external_nonpayable$_t_contract$_MiniMeToken_$2074_$_t_contract$_ERC20_$995_$_t_uint256_$returns$__$",
-                        "typeString": "function (contract MiniMeToken,contract ERC20,uint256) external"
-                      }
-                    },
-                    "id": 395,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "kind": "functionCall",
-                    "lValueRequested": false,
-                    "names": [],
-                    "nodeType": "FunctionCall",
-                    "src": "880:57:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_tuple$__$",
-                      "typeString": "tuple()"
-                    }
-                  },
-                  "id": 396,
-                  "nodeType": "ExpressionStatement",
-                  "src": "880:57:2"
-                },
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "arguments": [
-                      {
-                        "argumentTypes": null,
-                        "expression": {
-                          "argumentTypes": null,
-                          "id": 400,
-                          "name": "msg",
-                          "nodeType": "Identifier",
-                          "overloadedDeclarations": [],
-                          "referencedDeclaration": 2170,
-                          "src": "971:3:2",
-                          "typeDescriptions": {
-                            "typeIdentifier": "t_magic_message",
-                            "typeString": "msg"
-                          }
-                        },
-                        "id": 401,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": false,
-                        "lValueRequested": false,
-                        "memberName": "sender",
-                        "nodeType": "MemberAccess",
-                        "referencedDeclaration": null,
-                        "src": "971:10:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_address_payable",
-                          "typeString": "address payable"
-                        }
-                      }
-                    ],
-                    "expression": {
-                      "argumentTypes": [
-                        {
-                          "typeIdentifier": "t_address_payable",
-                          "typeString": "address payable"
-                        }
-                      ],
-                      "expression": {
-                        "argumentTypes": null,
-                        "id": 397,
-                        "name": "medao",
-                        "nodeType": "Identifier",
-                        "overloadedDeclarations": [],
-                        "referencedDeclaration": 341,
-                        "src": "947:5:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_MeDao_$308",
-                          "typeString": "contract MeDao"
-                        }
-                      },
-                      "id": 399,
-                      "isConstant": false,
-                      "isLValue": false,
-                      "isPure": false,
-                      "lValueRequested": false,
-                      "memberName": "transferOwnership",
-                      "nodeType": "MemberAccess",
-                      "referencedDeclaration": 2154,
-                      "src": "947:23:2",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_function_external_nonpayable$_t_address_$returns$__$",
-                        "typeString": "function (address) external"
-                      }
-                    },
-                    "id": 402,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "kind": "functionCall",
-                    "lValueRequested": false,
-                    "names": [],
-                    "nodeType": "FunctionCall",
-                    "src": "947:35:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_tuple$__$",
-                      "typeString": "tuple()"
-                    }
-                  },
-                  "id": 403,
-                  "nodeType": "ExpressionStatement",
-                  "src": "947:35:2"
-                },
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "id": 410,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "leftHandSide": {
-                      "argumentTypes": null,
-                      "baseExpression": {
-                        "argumentTypes": null,
-                        "id": 404,
-                        "name": "created",
-                        "nodeType": "Identifier",
-                        "overloadedDeclarations": [],
-                        "referencedDeclaration": 320,
-                        "src": "992:7:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
-                          "typeString": "mapping(address => bool)"
-                        }
-                      },
-                      "id": 408,
-                      "indexExpression": {
-                        "argumentTypes": null,
-                        "arguments": [
-                          {
-                            "argumentTypes": null,
-                            "id": 406,
-                            "name": "medao",
-                            "nodeType": "Identifier",
-                            "overloadedDeclarations": [],
-                            "referencedDeclaration": 341,
-                            "src": "1008:5:2",
-                            "typeDescriptions": {
-                              "typeIdentifier": "t_contract$_MeDao_$308",
-                              "typeString": "contract MeDao"
-                            }
-                          }
-                        ],
-                        "expression": {
-                          "argumentTypes": [
-                            {
-                              "typeIdentifier": "t_contract$_MeDao_$308",
-                              "typeString": "contract MeDao"
-                            }
-                          ],
-                          "id": 405,
-                          "isConstant": false,
-                          "isLValue": false,
-                          "isPure": true,
-                          "lValueRequested": false,
-                          "nodeType": "ElementaryTypeNameExpression",
-                          "src": "1000:7:2",
-                          "typeDescriptions": {
-                            "typeIdentifier": "t_type$_t_address_$",
-                            "typeString": "type(address)"
-                          },
-                          "typeName": "address"
-                        },
-                        "id": 407,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": false,
-                        "kind": "typeConversion",
-                        "lValueRequested": false,
-                        "names": [],
-                        "nodeType": "FunctionCall",
-                        "src": "1000:14:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_address",
-                          "typeString": "address"
-                        }
-                      },
-                      "isConstant": false,
-                      "isLValue": true,
-                      "isPure": false,
-                      "lValueRequested": true,
-                      "nodeType": "IndexAccess",
-                      "src": "992:23:2",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_bool",
-                        "typeString": "bool"
-                      }
-                    },
-                    "nodeType": "Assignment",
-                    "operator": "=",
-                    "rightHandSide": {
-                      "argumentTypes": null,
-                      "hexValue": "74727565",
-                      "id": 409,
-                      "isConstant": false,
-                      "isLValue": false,
-                      "isPure": true,
-                      "kind": "bool",
-                      "lValueRequested": false,
-                      "nodeType": "Literal",
-                      "src": "1018:4:2",
-                      "subdenomination": null,
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_bool",
-                        "typeString": "bool"
-                      },
-                      "value": "true"
-                    },
-                    "src": "992:30:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_bool",
-                      "typeString": "bool"
-                    }
-                  },
-                  "id": 411,
-                  "nodeType": "ExpressionStatement",
-                  "src": "992:30:2"
                 }
               ]
             },
@@ -1720,17 +431,15 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "contractScope": null,
                     "id": 399,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "referencedDeclaration": 995,
                     "src": "262:7:2",
+                    "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
-                    },
-                    "stateMutability": "nonpayable"
+                    }
                   },
                   "value": null,
                   "visibility": "internal"
@@ -1745,71 +454,19 @@
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2236",
+                    "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2295",
                     "typeString": "contract MiniMeTokenFactory"
                   },
                   "typeName": {
+                    "contractScope": null,
                     "id": 401,
                     "name": "MiniMeTokenFactory",
                     "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 2295,
                     "src": "290:18:2",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2236",
+                      "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2295",
                       "typeString": "contract MiniMeTokenFactory"
-                    },
-                    "contractScope": null,
-                    "referencedDeclaration": 2236
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 336,
-                  "name": "birthTimestamp",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 413,
-                  "src": "389:19:2",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 335,
-                    "name": "uint",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "389:4:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 338,
-                  "name": "tokenClaim",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 413,
-                  "src": "418:15:2",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 337,
-                    "name": "uint",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "418:4:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
                     }
                   },
                   "value": null,
@@ -1821,36 +478,7 @@
             "returnParameters": {
               "id": 404,
               "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 341,
-                  "name": "medao",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 413,
-                  "src": "456:11:2",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_MeDao_$308",
-                    "typeString": "contract MeDao"
-                  },
-                  "typeName": {
-                    "contractScope": null,
-                    "id": 340,
-                    "name": "MeDao",
-                    "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 308,
-                    "src": "456:5:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_MeDao_$308",
-                      "typeString": "contract MeDao"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                }
-              ],
+              "parameters": [],
               "src": "331:0:2"
             },
             "scope": 506,
@@ -1916,7 +544,7 @@
                         "name": "createClone",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1027,
+                        "referencedDeclaration": 1086,
                         "src": "637:11:2",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_nonpayable$_t_address_$returns$_t_address_$",
@@ -1962,7 +590,7 @@
                       "stateVariable": false,
                       "storageLocation": "default",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_MiniMeToken_$2193",
+                        "typeIdentifier": "t_contract$_MiniMeToken_$2252",
                         "typeString": "contract MiniMeToken"
                       },
                       "typeName": {
@@ -1970,10 +598,10 @@
                         "id": 437,
                         "name": "MiniMeToken",
                         "nodeType": "UserDefinedTypeName",
-                        "referencedDeclaration": 2193,
+                        "referencedDeclaration": 2252,
                         "src": "670:11:2",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_MiniMeToken_$2193",
+                          "typeIdentifier": "t_contract$_MiniMeToken_$2252",
                           "typeString": "contract MiniMeToken"
                         }
                       },
@@ -2163,7 +791,7 @@
                         "referencedDeclaration": 394,
                         "src": "694:7:2",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2236",
+                          "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2295",
                           "typeString": "contract MiniMeTokenFactory"
                         }
                       },
@@ -2174,10 +802,10 @@
                       "lValueRequested": false,
                       "memberName": "createCloneToken",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 2235,
+                      "referencedDeclaration": 2294,
                       "src": "694:24:2",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_external_nonpayable$_t_address_payable_$_t_uint256_$_t_string_memory_ptr_$_t_uint8_$_t_string_memory_ptr_$_t_bool_$returns$_t_contract$_MiniMeToken_$2193_$",
+                        "typeIdentifier": "t_function_external_nonpayable$_t_address_payable_$_t_uint256_$_t_string_memory_ptr_$_t_uint8_$_t_string_memory_ptr_$_t_bool_$returns$_t_contract$_MiniMeToken_$2252_$",
                         "typeString": "function (address payable,uint256,string memory,uint8,string memory,bool) external returns (contract MiniMeToken)"
                       }
                     },
@@ -2191,7 +819,7 @@
                     "nodeType": "FunctionCall",
                     "src": "694:150:2",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_MiniMeToken_$2193",
+                      "typeIdentifier": "t_contract$_MiniMeToken_$2252",
                       "typeString": "contract MiniMeToken"
                     }
                   },
@@ -2232,7 +860,7 @@
                         "referencedDeclaration": 438,
                         "src": "855:9:2",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_MiniMeToken_$2193",
+                          "typeIdentifier": "t_contract$_MiniMeToken_$2252",
                           "typeString": "contract MiniMeToken"
                         }
                       },
@@ -2243,7 +871,7 @@
                       "lValueRequested": false,
                       "memberName": "changeController",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 1161,
+                      "referencedDeclaration": 1220,
                       "src": "855:26:2",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_external_nonpayable$_t_address_$returns$__$",
@@ -2283,7 +911,7 @@
                               "name": "msg",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2289,
+                              "referencedDeclaration": 2348,
                               "src": "932:3:2",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_magic_message",
@@ -2355,7 +983,7 @@
                             "referencedDeclaration": 418,
                             "src": "906:12:2",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_contract$_ERC20_$1114",
+                              "typeIdentifier": "t_contract$_ERC20_$1173",
                               "typeString": "contract ERC20"
                             }
                           },
@@ -2366,7 +994,7 @@
                           "lValueRequested": false,
                           "memberName": "transferFrom",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 1097,
+                          "referencedDeclaration": 1156,
                           "src": "906:25:2",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_external_nonpayable$_t_address_$_t_address_$_t_uint256_$returns$_t_bool_$",
@@ -2399,10 +1027,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        2292,
-                        2293
+                        2351,
+                        2352
                       ],
-                      "referencedDeclaration": 2292,
+                      "referencedDeclaration": 2351,
                       "src": "898:7:2",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -2453,7 +1081,7 @@
                         "referencedDeclaration": 438,
                         "src": "1008:9:2",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_MiniMeToken_$2193",
+                          "typeIdentifier": "t_contract$_MiniMeToken_$2252",
                           "typeString": "contract MiniMeToken"
                         }
                       },
@@ -2466,7 +1094,7 @@
                         "referencedDeclaration": 418,
                         "src": "1019:12:2",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_ERC20_$1114",
+                          "typeIdentifier": "t_contract$_ERC20_$1173",
                           "typeString": "contract ERC20"
                         }
                       },
@@ -2504,11 +1132,11 @@
                           "typeString": "address"
                         },
                         {
-                          "typeIdentifier": "t_contract$_MiniMeToken_$2193",
+                          "typeIdentifier": "t_contract$_MiniMeToken_$2252",
                           "typeString": "contract MiniMeToken"
                         },
                         {
-                          "typeIdentifier": "t_contract$_ERC20_$1114",
+                          "typeIdentifier": "t_contract$_ERC20_$1173",
                           "typeString": "contract ERC20"
                         },
                         {
@@ -2579,7 +1207,7 @@
                       "referencedDeclaration": 176,
                       "src": "977:23:2",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_external_nonpayable$_t_address_$_t_contract$_MiniMeToken_$2193_$_t_contract$_ERC20_$1114_$_t_int256_$_t_uint256_$returns$__$",
+                        "typeIdentifier": "t_function_external_nonpayable$_t_address_$_t_contract$_MiniMeToken_$2252_$_t_contract$_ERC20_$1173_$_t_int256_$_t_uint256_$returns$__$",
                         "typeString": "function (address,contract MiniMeToken,contract ERC20,int256,uint256) external"
                       }
                     },
@@ -2718,7 +1346,7 @@
                         "referencedDeclaration": 438,
                         "src": "1133:9:2",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_MiniMeToken_$2193",
+                          "typeIdentifier": "t_contract$_MiniMeToken_$2252",
                           "typeString": "contract MiniMeToken"
                         }
                       },
@@ -2731,7 +1359,7 @@
                         "referencedDeclaration": 418,
                         "src": "1144:12:2",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_ERC20_$1114",
+                          "typeIdentifier": "t_contract$_ERC20_$1173",
                           "typeString": "contract ERC20"
                         }
                       },
@@ -2760,11 +1388,11 @@
                           "typeString": "address"
                         },
                         {
-                          "typeIdentifier": "t_contract$_MiniMeToken_$2193",
+                          "typeIdentifier": "t_contract$_MiniMeToken_$2252",
                           "typeString": "contract MiniMeToken"
                         },
                         {
-                          "typeIdentifier": "t_contract$_ERC20_$1114",
+                          "typeIdentifier": "t_contract$_ERC20_$1173",
                           "typeString": "contract ERC20"
                         },
                         {
@@ -2779,7 +1407,7 @@
                       "referencedDeclaration": 505,
                       "src": "1106:12:2",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_event_nonpayable$_t_address_$_t_address_$_t_contract$_MiniMeToken_$2193_$_t_contract$_ERC20_$1114_$_t_int256_$returns$__$",
+                        "typeIdentifier": "t_function_event_nonpayable$_t_address_$_t_address_$_t_contract$_MiniMeToken_$2252_$_t_contract$_ERC20_$1173_$_t_int256_$returns$__$",
                         "typeString": "function (address,address,contract MiniMeToken,contract ERC20,int256)"
                       }
                     },
@@ -2851,7 +1479,7 @@
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_ERC20_$1114",
+                    "typeIdentifier": "t_contract$_ERC20_$1173",
                     "typeString": "contract ERC20"
                   },
                   "typeName": {
@@ -2859,10 +1487,10 @@
                     "id": 417,
                     "name": "ERC20",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 1114,
+                    "referencedDeclaration": 1173,
                     "src": "453:5:2",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_ERC20_$1114",
+                      "typeIdentifier": "t_contract$_ERC20_$1173",
                       "typeString": "contract ERC20"
                     }
                   },
@@ -3093,7 +1721,7 @@
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_MiniMeToken_$2193",
+                    "typeIdentifier": "t_contract$_MiniMeToken_$2252",
                     "typeString": "contract MiniMeToken"
                   },
                   "typeName": {
@@ -3101,10 +1729,10 @@
                     "id": 498,
                     "name": "MiniMeToken",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 2193,
+                    "referencedDeclaration": 2252,
                     "src": "1236:11:2",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_MiniMeToken_$2193",
+                      "typeIdentifier": "t_contract$_MiniMeToken_$2252",
                       "typeString": "contract MiniMeToken"
                     }
                   },
@@ -3122,7 +1750,7 @@
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_ERC20_$1114",
+                    "typeIdentifier": "t_contract$_ERC20_$1173",
                     "typeString": "contract ERC20"
                   },
                   "typeName": {
@@ -3130,10 +1758,10 @@
                     "id": 500,
                     "name": "ERC20",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 1114,
+                    "referencedDeclaration": 1173,
                     "src": "1259:5:2",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_ERC20_$1114",
+                      "typeIdentifier": "t_contract$_ERC20_$1173",
                       "typeString": "contract ERC20"
                     }
                   },
@@ -3206,7 +1834,7 @@
         "id": 387,
         "nodeType": "ImportDirective",
         "scope": 507,
-        "sourceUnit": 1046,
+        "sourceUnit": 1105,
         "src": "25:37:2",
         "symbolAliases": [],
         "unitAlias": ""
@@ -3231,10 +1859,10 @@
               "id": 389,
               "name": "CloneFactory",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 1045,
+              "referencedDeclaration": 1104,
               "src": "111:12:2",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_CloneFactory_$1045",
+                "typeIdentifier": "t_contract$_CloneFactory_$1104",
                 "typeString": "contract CloneFactory"
               }
             },
@@ -3244,8 +1872,7 @@
           }
         ],
         "contractDependencies": [
-          1045,
-          2074
+          1104
         ],
         "contractKind": "contract",
         "documentation": null,
@@ -3253,7 +1880,7 @@
         "id": 506,
         "linearizedBaseContracts": [
           506,
-          1045
+          1104
         ],
         "name": "MeDaoFactory",
         "nodeType": "ContractDefinition",
@@ -3286,151 +1913,32 @@
             "visibility": "public"
           },
           {
-            "body": {
-              "id": 325,
-              "nodeType": "Block",
-              "src": "216:39:2",
-              "statements": [
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "id": 323,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "leftHandSide": {
-                      "argumentTypes": null,
-                      "id": 321,
-                      "name": "blueprint",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 316,
-                      "src": "226:9:2",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_address",
-                        "typeString": "address"
-                      }
-                    },
-                    "nodeType": "Assignment",
-                    "operator": "=",
-                    "rightHandSide": {
-                      "argumentTypes": null,
-                      "id": 322,
-                      "name": "_blueprint",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 318,
-                      "src": "238:10:2",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_address",
-                        "typeString": "address"
-                      }
-                    },
-                    "src": "226:22:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "id": 324,
-                  "nodeType": "ExpressionStatement",
-                  "src": "226:22:2"
-                }
-              ]
-            },
-            "documentation": null,
+            "constant": false,
             "id": 394,
-            "implemented": true,
-            "kind": "constructor",
-            "modifiers": [],
             "name": "factory",
             "nodeType": "VariableDeclaration",
-            "parameters": {
-              "id": 319,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 318,
-                  "name": "_blueprint",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 326,
-                  "src": "184:18:2",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
-                  },
-                  "typeName": {
-                    "id": 317,
-                    "name": "address",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "184:7:2",
-                    "stateMutability": "nonpayable",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                }
-              ],
-              "src": "174:34:2"
-            },
-            "returnParameters": {
-              "id": 320,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "216:0:2"
-            },
             "scope": 506,
             "src": "161:26:2",
-            "stateMutability": "nonpayable",
-            "superFunction": null,
-            "visibility": "internal",
-            "constant": false,
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2236",
+              "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2295",
               "typeString": "contract MiniMeTokenFactory"
             },
             "typeName": {
+              "contractScope": null,
               "id": 393,
-              "keyType": {
-                "id": 317,
-                "name": "address",
-                "nodeType": "ElementaryTypeName",
-                "src": "170:7:2",
-                "typeDescriptions": {
-                  "typeIdentifier": "t_address",
-                  "typeString": "address"
-                }
-              },
+              "name": "MiniMeTokenFactory",
               "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 2295,
               "src": "161:18:2",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2236",
+                "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2295",
                 "typeString": "contract MiniMeTokenFactory"
-              },
-              "valueType": {
-                "id": 318,
-                "name": "bool",
-                "nodeType": "ElementaryTypeName",
-                "src": "181:4:2",
-                "typeDescriptions": {
-                  "typeIdentifier": "t_bool",
-                  "typeString": "bool"
-                }
-              },
-              "contractScope": null,
-              "name": "MiniMeTokenFactory",
-              "referencedDeclaration": 2236
+              }
             },
-            "value": null
+            "value": null,
+            "visibility": "internal"
           },
           {
             "constant": false,
@@ -3475,106 +1983,7 @@
               }
             },
             "value": null,
-            "visibility": "public",
-            "body": {
-              "id": 329,
-              "nodeType": "Block",
-              "src": "262:39:2",
-              "statements": [
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "id": 327,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "leftHandSide": {
-                      "argumentTypes": null,
-                      "id": 325,
-                      "name": "blueprint",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 316,
-                      "src": "272:9:2",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_address",
-                        "typeString": "address"
-                      }
-                    },
-                    "nodeType": "Assignment",
-                    "operator": "=",
-                    "rightHandSide": {
-                      "argumentTypes": null,
-                      "id": 326,
-                      "name": "_blueprint",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 322,
-                      "src": "284:10:2",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_address",
-                        "typeString": "address"
-                      }
-                    },
-                    "src": "272:22:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "id": 328,
-                  "nodeType": "ExpressionStatement",
-                  "src": "272:22:2"
-                }
-              ]
-            },
-            "documentation": null,
-            "implemented": true,
-            "kind": "constructor",
-            "modifiers": [],
-            "parameters": {
-              "id": 323,
-              "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 322,
-                  "name": "_blueprint",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 330,
-                  "src": "230:18:2",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
-                  },
-                  "typeName": {
-                    "id": 321,
-                    "name": "address",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "230:7:2",
-                    "stateMutability": "nonpayable",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                }
-              ],
-              "src": "220:34:2"
-            },
-            "returnParameters": {
-              "id": 324,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "262:0:2"
-            },
-            "stateMutability": "nonpayable",
-            "superFunction": null
+            "visibility": "public"
           },
           {
             "body": {
@@ -3583,172 +1992,6 @@
               "src": "331:67:2",
               "statements": [
                 {
-                  "assignments": [
-                    344
-                  ],
-                  "declarations": [
-                    {
-                      "constant": false,
-                      "id": 344,
-                      "name": "clone",
-                      "nodeType": "VariableDeclaration",
-                      "scope": 412,
-                      "src": "479:13:2",
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_address",
-                        "typeString": "address"
-                      },
-                      "typeName": {
-                        "id": 343,
-                        "name": "address",
-                        "nodeType": "ElementaryTypeName",
-                        "src": "479:7:2",
-                        "stateMutability": "nonpayable",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_address",
-                          "typeString": "address"
-                        }
-                      },
-                      "value": null,
-                      "visibility": "internal"
-                    }
-                  ],
-                  "id": 408,
-                  "initialValue": {
-                    "argumentTypes": null,
-                    "arguments": [
-                      {
-                        "argumentTypes": null,
-                        "arguments": [
-                          {
-                            "argumentTypes": null,
-                            "arguments": [
-                              {
-                                "argumentTypes": null,
-                                "id": 348,
-                                "name": "blueprint",
-                                "nodeType": "Identifier",
-                                "overloadedDeclarations": [],
-                                "referencedDeclaration": 316,
-                                "src": "532:9:2",
-                                "typeDescriptions": {
-                                  "typeIdentifier": "t_address",
-                                  "typeString": "address"
-                                }
-                              }
-                            ],
-                            "expression": {
-                              "argumentTypes": [
-                                {
-                                  "typeIdentifier": "t_address",
-                                  "typeString": "address"
-                                }
-                              ],
-                              "id": 347,
-                              "name": "createClone",
-                              "nodeType": "Identifier",
-                              "overloadedDeclarations": [],
-                              "referencedDeclaration": 912,
-                              "src": "520:11:2",
-                              "typeDescriptions": {
-                                "typeIdentifier": "t_function_internal_nonpayable$_t_address_$returns$_t_address_$",
-                                "typeString": "function (address) returns (address)"
-                              }
-                            },
-                            "id": 349,
-                            "isConstant": false,
-                            "isLValue": false,
-                            "isPure": false,
-                            "kind": "functionCall",
-                            "lValueRequested": false,
-                            "names": [],
-                            "nodeType": "FunctionCall",
-                            "src": "520:22:2",
-                            "typeDescriptions": {
-                              "typeIdentifier": "t_address",
-                              "typeString": "address"
-                            }
-                          }
-                        ],
-                        "expression": {
-                          "argumentTypes": [
-                            {
-                              "typeIdentifier": "t_address",
-                              "typeString": "address"
-                            }
-                          ],
-                          "id": 346,
-                          "isConstant": false,
-                          "isLValue": false,
-                          "isPure": true,
-                          "lValueRequested": false,
-                          "nodeType": "ElementaryTypeNameExpression",
-                          "src": "512:7:2",
-                          "typeDescriptions": {
-                            "typeIdentifier": "t_type$_t_uint160_$",
-                            "typeString": "type(uint160)"
-                          },
-                          "typeName": "uint160"
-                        },
-                        "id": 346,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": false,
-                        "kind": "typeConversion",
-                        "lValueRequested": false,
-                        "names": [],
-                        "nodeType": "Identifier",
-                        "src": "507:9:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_address",
-                          "typeString": "address"
-                        },
-                        "name": "blueprint",
-                        "overloadedDeclarations": [],
-                        "referencedDeclaration": 316
-                      }
-                    ],
-                    "expression": {
-                      "argumentTypes": [
-                        {
-                          "typeIdentifier": "t_address",
-                          "typeString": "address"
-                        }
-                      ],
-                      "id": 345,
-                      "isConstant": false,
-                      "isLValue": false,
-                      "isPure": true,
-                      "lValueRequested": false,
-                      "nodeType": "Identifier",
-                      "src": "495:11:2",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_function_internal_nonpayable$_t_address_$returns$_t_address_$",
-                        "typeString": "function (address) returns (address)"
-                      },
-                      "typeName": "address",
-                      "name": "createClone",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 908
-                    },
-                    "id": 347,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "kind": "functionCall",
-                    "lValueRequested": false,
-                    "names": [],
-                    "nodeType": "FunctionCall",
-                    "src": "495:22:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
-                    }
-                  },
-                  "nodeType": "ExpressionStatement",
-                  "src": "341:22:2",
                   "expression": {
                     "argumentTypes": null,
                     "id": 407,
@@ -3789,7 +2032,10 @@
                       "typeIdentifier": "t_address",
                       "typeString": "address"
                     }
-                  }
+                  },
+                  "id": 408,
+                  "nodeType": "ExpressionStatement",
+                  "src": "341:22:2"
                 },
                 {
                   "expression": {
@@ -3808,7 +2054,7 @@
                       "referencedDeclaration": 394,
                       "src": "373:7:2",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2236",
+                        "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2295",
                         "typeString": "contract MiniMeTokenFactory"
                       }
                     },
@@ -3816,924 +2062,26 @@
                     "operator": "=",
                     "rightHandSide": {
                       "argumentTypes": null,
-                      "arguments": [
-                        {
-                          "argumentTypes": null,
-                          "id": 351,
-                          "name": "clone",
-                          "nodeType": "Identifier",
-                          "overloadedDeclarations": [],
-                          "referencedDeclaration": 344,
-                          "src": "541:5:2",
-                          "typeDescriptions": {
-                            "typeIdentifier": "t_address",
-                            "typeString": "address"
-                          }
-                        }
-                      ],
-                      "expression": {
-                        "argumentTypes": [
-                          {
-                            "typeIdentifier": "t_address",
-                            "typeString": "address"
-                          }
-                        ],
-                        "id": 350,
-                        "name": "MeDao",
-                        "nodeType": "Identifier",
-                        "overloadedDeclarations": [],
-                        "referencedDeclaration": 308,
-                        "src": "535:5:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_contract$_MeDao_$308_$",
-                          "typeString": "type(contract MeDao)"
-                        }
-                      },
                       "id": 410,
-                      "isConstant": false,
-                      "isLValue": false,
-                      "isPure": false,
-                      "kind": "typeConversion",
-                      "lValueRequested": false,
-                      "names": [],
+                      "name": "_factory",
                       "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 402,
                       "src": "383:8:2",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2236",
+                        "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2295",
                         "typeString": "contract MiniMeTokenFactory"
-                      },
-                      "name": "_factory",
-                      "overloadedDeclarations": [],
-                      "referencedDeclaration": 402
+                      }
                     },
                     "src": "373:18:2",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2236",
+                      "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2295",
                       "typeString": "contract MiniMeTokenFactory"
                     }
                   },
                   "id": 412,
                   "nodeType": "ExpressionStatement",
                   "src": "373:18:2"
-                },
-                {
-                  "assignments": [
-                    356
-                  ],
-                  "declarations": [
-                    {
-                      "constant": false,
-                      "id": 356,
-                      "name": "timeToken",
-                      "nodeType": "VariableDeclaration",
-                      "scope": 412,
-                      "src": "558:21:2",
-                      "stateVariable": false,
-                      "storageLocation": "default",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_MiniMeToken_$2074",
-                        "typeString": "contract MiniMeToken"
-                      },
-                      "typeName": {
-                        "contractScope": null,
-                        "id": 355,
-                        "name": "MiniMeToken",
-                        "nodeType": "UserDefinedTypeName",
-                        "referencedDeclaration": 2074,
-                        "src": "558:11:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_MiniMeToken_$2074",
-                          "typeString": "contract MiniMeToken"
-                        }
-                      },
-                      "value": null,
-                      "visibility": "internal"
-                    }
-                  ],
-                  "id": 371,
-                  "initialValue": {
-                    "argumentTypes": null,
-                    "arguments": [
-                      {
-                        "argumentTypes": null,
-                        "arguments": [
-                          {
-                            "argumentTypes": null,
-                            "id": 360,
-                            "name": "this",
-                            "nodeType": "Identifier",
-                            "overloadedDeclarations": [],
-                            "referencedDeclaration": 2207,
-                            "src": "619:4:2",
-                            "typeDescriptions": {
-                              "typeIdentifier": "t_contract$_MeDaoFactory_$414",
-                              "typeString": "contract MeDaoFactory"
-                            }
-                          }
-                        ],
-                        "expression": {
-                          "argumentTypes": [
-                            {
-                              "typeIdentifier": "t_contract$_MeDaoFactory_$414",
-                              "typeString": "contract MeDaoFactory"
-                            }
-                          ],
-                          "id": 359,
-                          "isConstant": false,
-                          "isLValue": false,
-                          "isPure": true,
-                          "lValueRequested": false,
-                          "nodeType": "ElementaryTypeNameExpression",
-                          "src": "611:7:2",
-                          "typeDescriptions": {
-                            "typeIdentifier": "t_type$_t_address_$",
-                            "typeString": "type(address)"
-                          },
-                          "typeName": "address"
-                        },
-                        "id": 361,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": false,
-                        "kind": "typeConversion",
-                        "lValueRequested": false,
-                        "names": [],
-                        "nodeType": "FunctionCall",
-                        "src": "611:13:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_address",
-                          "typeString": "address"
-                        }
-                      },
-                      {
-                        "argumentTypes": null,
-                        "arguments": [
-                          {
-                            "argumentTypes": null,
-                            "hexValue": "307830",
-                            "id": 363,
-                            "isConstant": false,
-                            "isLValue": false,
-                            "isPure": true,
-                            "kind": "number",
-                            "lValueRequested": false,
-                            "nodeType": "Literal",
-                            "src": "646:3:2",
-                            "subdenomination": null,
-                            "typeDescriptions": {
-                              "typeIdentifier": "t_rational_0_by_1",
-                              "typeString": "int_const 0"
-                            },
-                            "value": "0x0"
-                          }
-                        ],
-                        "expression": {
-                          "argumentTypes": [
-                            {
-                              "typeIdentifier": "t_rational_0_by_1",
-                              "typeString": "int_const 0"
-                            }
-                          ],
-                          "id": 362,
-                          "isConstant": false,
-                          "isLValue": false,
-                          "isPure": true,
-                          "lValueRequested": false,
-                          "nodeType": "ElementaryTypeNameExpression",
-                          "src": "638:7:2",
-                          "typeDescriptions": {
-                            "typeIdentifier": "t_type$_t_address_$",
-                            "typeString": "type(address)"
-                          },
-                          "typeName": "address"
-                        },
-                        "id": 364,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": true,
-                        "kind": "typeConversion",
-                        "lValueRequested": false,
-                        "names": [],
-                        "nodeType": "FunctionCall",
-                        "src": "638:12:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_address_payable",
-                          "typeString": "address payable"
-                        }
-                      },
-                      {
-                        "argumentTypes": null,
-                        "hexValue": "30",
-                        "id": 365,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": true,
-                        "kind": "number",
-                        "lValueRequested": false,
-                        "nodeType": "Literal",
-                        "src": "664:1:2",
-                        "subdenomination": null,
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_rational_0_by_1",
-                          "typeString": "int_const 0"
-                        },
-                        "value": "0"
-                      },
-                      {
-                        "argumentTypes": null,
-                        "id": 366,
-                        "name": "name",
-                        "nodeType": "Identifier",
-                        "overloadedDeclarations": [],
-                        "referencedDeclaration": 334,
-                        "src": "679:4:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_string_memory_ptr",
-                          "typeString": "string memory"
-                        }
-                      },
-                      {
-                        "argumentTypes": null,
-                        "hexValue": "3138",
-                        "id": 367,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": true,
-                        "kind": "number",
-                        "lValueRequested": false,
-                        "nodeType": "Literal",
-                        "src": "697:2:2",
-                        "subdenomination": null,
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_rational_18_by_1",
-                          "typeString": "int_const 18"
-                        },
-                        "value": "18"
-                      },
-                      {
-                        "argumentTypes": null,
-                        "hexValue": "7365636f6e6473",
-                        "id": 368,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": true,
-                        "kind": "string",
-                        "lValueRequested": false,
-                        "nodeType": "Literal",
-                        "src": "713:9:2",
-                        "subdenomination": null,
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_stringliteral_e1130af6d7c17bab477e8229ba4562e6c6de1a24d5f06f81ba647253be54326f",
-                          "typeString": "literal_string \"seconds\""
-                        },
-                        "value": "seconds"
-                      },
-                      {
-                        "argumentTypes": null,
-                        "hexValue": "74727565",
-                        "id": 369,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": true,
-                        "kind": "bool",
-                        "lValueRequested": false,
-                        "nodeType": "Literal",
-                        "src": "736:4:2",
-                        "subdenomination": null,
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_bool",
-                          "typeString": "bool"
-                        },
-                        "value": "true"
-                      }
-                    ],
-                    "expression": {
-                      "argumentTypes": [
-                        {
-                          "typeIdentifier": "t_address",
-                          "typeString": "address"
-                        },
-                        {
-                          "typeIdentifier": "t_address_payable",
-                          "typeString": "address payable"
-                        },
-                        {
-                          "typeIdentifier": "t_rational_0_by_1",
-                          "typeString": "int_const 0"
-                        },
-                        {
-                          "typeIdentifier": "t_string_memory_ptr",
-                          "typeString": "string memory"
-                        },
-                        {
-                          "typeIdentifier": "t_rational_18_by_1",
-                          "typeString": "int_const 18"
-                        },
-                        {
-                          "typeIdentifier": "t_stringliteral_e1130af6d7c17bab477e8229ba4562e6c6de1a24d5f06f81ba647253be54326f",
-                          "typeString": "literal_string \"seconds\""
-                        },
-                        {
-                          "typeIdentifier": "t_bool",
-                          "typeString": "bool"
-                        }
-                      ],
-                      "id": 358,
-                      "isConstant": false,
-                      "isLValue": false,
-                      "isPure": false,
-                      "lValueRequested": false,
-                      "nodeType": "NewExpression",
-                      "src": "582:15:2",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_function_creation_nonpayable$_t_address_$_t_address_payable_$_t_uint256_$_t_string_memory_ptr_$_t_uint8_$_t_string_memory_ptr_$_t_bool_$returns$_t_contract$_MiniMeToken_$2074_$",
-                        "typeString": "function (address,address payable,uint256,string memory,uint8,string memory,bool) returns (contract MiniMeToken)"
-                      },
-                      "typeName": {
-                        "contractScope": null,
-                        "id": 357,
-                        "name": "MiniMeToken",
-                        "nodeType": "UserDefinedTypeName",
-                        "referencedDeclaration": 2074,
-                        "src": "586:11:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_MiniMeToken_$2074",
-                          "typeString": "contract MiniMeToken"
-                        }
-                      }
-                    },
-                    "id": 370,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "kind": "functionCall",
-                    "lValueRequested": false,
-                    "names": [],
-                    "nodeType": "FunctionCall",
-                    "src": "582:168:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_MiniMeToken_$2074",
-                      "typeString": "contract MiniMeToken"
-                    }
-                  },
-                  "nodeType": "VariableDeclarationStatement",
-                  "src": "558:192:2"
-                },
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "arguments": [
-                      {
-                        "argumentTypes": null,
-                        "arguments": [
-                          {
-                            "argumentTypes": null,
-                            "expression": {
-                              "argumentTypes": null,
-                              "id": 375,
-                              "name": "msg",
-                              "nodeType": "Identifier",
-                              "overloadedDeclarations": [],
-                              "referencedDeclaration": 2170,
-                              "src": "794:3:2",
-                              "typeDescriptions": {
-                                "typeIdentifier": "t_magic_message",
-                                "typeString": "msg"
-                              }
-                            },
-                            "id": 376,
-                            "isConstant": false,
-                            "isLValue": false,
-                            "isPure": false,
-                            "lValueRequested": false,
-                            "memberName": "sender",
-                            "nodeType": "MemberAccess",
-                            "referencedDeclaration": null,
-                            "src": "794:10:2",
-                            "typeDescriptions": {
-                              "typeIdentifier": "t_address_payable",
-                              "typeString": "address payable"
-                            }
-                          },
-                          {
-                            "argumentTypes": null,
-                            "id": 377,
-                            "name": "tokenClaim",
-                            "nodeType": "Identifier",
-                            "overloadedDeclarations": [],
-                            "referencedDeclaration": 338,
-                            "src": "806:10:2",
-                            "typeDescriptions": {
-                              "typeIdentifier": "t_uint256",
-                              "typeString": "uint256"
-                            }
-                          }
-                        ],
-                        "expression": {
-                          "argumentTypes": [
-                            {
-                              "typeIdentifier": "t_address_payable",
-                              "typeString": "address payable"
-                            },
-                            {
-                              "typeIdentifier": "t_uint256",
-                              "typeString": "uint256"
-                            }
-                          ],
-                          "expression": {
-                            "argumentTypes": null,
-                            "id": 373,
-                            "name": "timeToken",
-                            "nodeType": "Identifier",
-                            "overloadedDeclarations": [],
-                            "referencedDeclaration": 356,
-                            "src": "769:9:2",
-                            "typeDescriptions": {
-                              "typeIdentifier": "t_contract$_MiniMeToken_$2074",
-                              "typeString": "contract MiniMeToken"
-                            }
-                          },
-                          "id": 374,
-                          "isConstant": false,
-                          "isLValue": false,
-                          "isPure": false,
-                          "lValueRequested": false,
-                          "memberName": "generateTokens",
-                          "nodeType": "MemberAccess",
-                          "referencedDeclaration": 1738,
-                          "src": "769:24:2",
-                          "typeDescriptions": {
-                            "typeIdentifier": "t_function_external_nonpayable$_t_address_$_t_uint256_$returns$_t_bool_$",
-                            "typeString": "function (address,uint256) external returns (bool)"
-                          }
-                        },
-                        "id": 378,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": false,
-                        "kind": "functionCall",
-                        "lValueRequested": false,
-                        "names": [],
-                        "nodeType": "FunctionCall",
-                        "src": "769:48:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_bool",
-                          "typeString": "bool"
-                        }
-                      }
-                    ],
-                    "expression": {
-                      "argumentTypes": [
-                        {
-                          "typeIdentifier": "t_bool",
-                          "typeString": "bool"
-                        }
-                      ],
-                      "id": 372,
-                      "name": "require",
-                      "nodeType": "Identifier",
-                      "overloadedDeclarations": [
-                        2173,
-                        2174
-                      ],
-                      "referencedDeclaration": 2173,
-                      "src": "761:7:2",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
-                        "typeString": "function (bool) pure"
-                      }
-                    },
-                    "id": 379,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "kind": "functionCall",
-                    "lValueRequested": false,
-                    "names": [],
-                    "nodeType": "FunctionCall",
-                    "src": "761:57:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_tuple$__$",
-                      "typeString": "tuple()"
-                    }
-                  },
-                  "id": 380,
-                  "nodeType": "ExpressionStatement",
-                  "src": "761:57:2"
-                },
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "arguments": [
-                      {
-                        "argumentTypes": null,
-                        "arguments": [
-                          {
-                            "argumentTypes": null,
-                            "id": 385,
-                            "name": "clone",
-                            "nodeType": "Identifier",
-                            "overloadedDeclarations": [],
-                            "referencedDeclaration": 344,
-                            "src": "863:5:2",
-                            "typeDescriptions": {
-                              "typeIdentifier": "t_address",
-                              "typeString": "address"
-                            }
-                          }
-                        ],
-                        "expression": {
-                          "argumentTypes": [
-                            {
-                              "typeIdentifier": "t_address",
-                              "typeString": "address"
-                            }
-                          ],
-                          "id": 384,
-                          "isConstant": false,
-                          "isLValue": false,
-                          "isPure": true,
-                          "lValueRequested": false,
-                          "nodeType": "ElementaryTypeNameExpression",
-                          "src": "855:7:2",
-                          "typeDescriptions": {
-                            "typeIdentifier": "t_type$_t_address_$",
-                            "typeString": "type(address)"
-                          },
-                          "typeName": "address"
-                        },
-                        "id": 386,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": false,
-                        "kind": "typeConversion",
-                        "lValueRequested": false,
-                        "names": [],
-                        "nodeType": "FunctionCall",
-                        "src": "855:14:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_address",
-                          "typeString": "address"
-                        }
-                      }
-                    ],
-                    "expression": {
-                      "argumentTypes": [
-                        {
-                          "typeIdentifier": "t_address",
-                          "typeString": "address"
-                        }
-                      ],
-                      "expression": {
-                        "argumentTypes": null,
-                        "id": 381,
-                        "name": "timeToken",
-                        "nodeType": "Identifier",
-                        "overloadedDeclarations": [],
-                        "referencedDeclaration": 356,
-                        "src": "828:9:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_MiniMeToken_$2074",
-                          "typeString": "contract MiniMeToken"
-                        }
-                      },
-                      "id": 383,
-                      "isConstant": false,
-                      "isLValue": false,
-                      "isPure": false,
-                      "lValueRequested": false,
-                      "memberName": "changeController",
-                      "nodeType": "MemberAccess",
-                      "referencedDeclaration": 1042,
-                      "src": "828:26:2",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_function_external_nonpayable$_t_address_$returns$__$",
-                        "typeString": "function (address) external"
-                      }
-                    },
-                    "id": 387,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "kind": "functionCall",
-                    "lValueRequested": false,
-                    "names": [],
-                    "nodeType": "FunctionCall",
-                    "src": "828:42:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_tuple$__$",
-                      "typeString": "tuple()"
-                    }
-                  },
-                  "id": 388,
-                  "nodeType": "ExpressionStatement",
-                  "src": "828:42:2"
-                },
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "arguments": [
-                      {
-                        "argumentTypes": null,
-                        "id": 392,
-                        "name": "timeToken",
-                        "nodeType": "Identifier",
-                        "overloadedDeclarations": [],
-                        "referencedDeclaration": 356,
-                        "src": "897:9:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_MiniMeToken_$2074",
-                          "typeString": "contract MiniMeToken"
-                        }
-                      },
-                      {
-                        "argumentTypes": null,
-                        "id": 393,
-                        "name": "reserveToken",
-                        "nodeType": "Identifier",
-                        "overloadedDeclarations": [],
-                        "referencedDeclaration": 332,
-                        "src": "908:12:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_ERC20_$995",
-                          "typeString": "contract ERC20"
-                        }
-                      },
-                      {
-                        "argumentTypes": null,
-                        "id": 394,
-                        "name": "birthTimestamp",
-                        "nodeType": "Identifier",
-                        "overloadedDeclarations": [],
-                        "referencedDeclaration": 336,
-                        "src": "922:14:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_uint256",
-                          "typeString": "uint256"
-                        }
-                      }
-                    ],
-                    "expression": {
-                      "argumentTypes": [
-                        {
-                          "typeIdentifier": "t_contract$_MiniMeToken_$2074",
-                          "typeString": "contract MiniMeToken"
-                        },
-                        {
-                          "typeIdentifier": "t_contract$_ERC20_$995",
-                          "typeString": "contract ERC20"
-                        },
-                        {
-                          "typeIdentifier": "t_uint256",
-                          "typeString": "uint256"
-                        }
-                      ],
-                      "expression": {
-                        "argumentTypes": null,
-                        "id": 389,
-                        "name": "medao",
-                        "nodeType": "Identifier",
-                        "overloadedDeclarations": [],
-                        "referencedDeclaration": 341,
-                        "src": "880:5:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_MeDao_$308",
-                          "typeString": "contract MeDao"
-                        }
-                      },
-                      "id": 391,
-                      "isConstant": false,
-                      "isLValue": false,
-                      "isPure": false,
-                      "lValueRequested": false,
-                      "memberName": "initialize",
-                      "nodeType": "MemberAccess",
-                      "referencedDeclaration": 147,
-                      "src": "880:16:2",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_function_external_nonpayable$_t_contract$_MiniMeToken_$2074_$_t_contract$_ERC20_$995_$_t_uint256_$returns$__$",
-                        "typeString": "function (contract MiniMeToken,contract ERC20,uint256) external"
-                      }
-                    },
-                    "id": 395,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "kind": "functionCall",
-                    "lValueRequested": false,
-                    "names": [],
-                    "nodeType": "FunctionCall",
-                    "src": "880:57:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_tuple$__$",
-                      "typeString": "tuple()"
-                    }
-                  },
-                  "id": 396,
-                  "nodeType": "ExpressionStatement",
-                  "src": "880:57:2"
-                },
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "arguments": [
-                      {
-                        "argumentTypes": null,
-                        "expression": {
-                          "argumentTypes": null,
-                          "id": 400,
-                          "name": "msg",
-                          "nodeType": "Identifier",
-                          "overloadedDeclarations": [],
-                          "referencedDeclaration": 2170,
-                          "src": "971:3:2",
-                          "typeDescriptions": {
-                            "typeIdentifier": "t_magic_message",
-                            "typeString": "msg"
-                          }
-                        },
-                        "id": 401,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": false,
-                        "lValueRequested": false,
-                        "memberName": "sender",
-                        "nodeType": "MemberAccess",
-                        "referencedDeclaration": null,
-                        "src": "971:10:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_address_payable",
-                          "typeString": "address payable"
-                        }
-                      }
-                    ],
-                    "expression": {
-                      "argumentTypes": [
-                        {
-                          "typeIdentifier": "t_address_payable",
-                          "typeString": "address payable"
-                        }
-                      ],
-                      "expression": {
-                        "argumentTypes": null,
-                        "id": 397,
-                        "name": "medao",
-                        "nodeType": "Identifier",
-                        "overloadedDeclarations": [],
-                        "referencedDeclaration": 341,
-                        "src": "947:5:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_MeDao_$308",
-                          "typeString": "contract MeDao"
-                        }
-                      },
-                      "id": 399,
-                      "isConstant": false,
-                      "isLValue": false,
-                      "isPure": false,
-                      "lValueRequested": false,
-                      "memberName": "transferOwnership",
-                      "nodeType": "MemberAccess",
-                      "referencedDeclaration": 2154,
-                      "src": "947:23:2",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_function_external_nonpayable$_t_address_$returns$__$",
-                        "typeString": "function (address) external"
-                      }
-                    },
-                    "id": 402,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "kind": "functionCall",
-                    "lValueRequested": false,
-                    "names": [],
-                    "nodeType": "FunctionCall",
-                    "src": "947:35:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_tuple$__$",
-                      "typeString": "tuple()"
-                    }
-                  },
-                  "id": 403,
-                  "nodeType": "ExpressionStatement",
-                  "src": "947:35:2"
-                },
-                {
-                  "expression": {
-                    "argumentTypes": null,
-                    "id": 410,
-                    "isConstant": false,
-                    "isLValue": false,
-                    "isPure": false,
-                    "lValueRequested": false,
-                    "leftHandSide": {
-                      "argumentTypes": null,
-                      "baseExpression": {
-                        "argumentTypes": null,
-                        "id": 404,
-                        "name": "created",
-                        "nodeType": "Identifier",
-                        "overloadedDeclarations": [],
-                        "referencedDeclaration": 320,
-                        "src": "992:7:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
-                          "typeString": "mapping(address => bool)"
-                        }
-                      },
-                      "id": 408,
-                      "indexExpression": {
-                        "argumentTypes": null,
-                        "arguments": [
-                          {
-                            "argumentTypes": null,
-                            "id": 406,
-                            "name": "medao",
-                            "nodeType": "Identifier",
-                            "overloadedDeclarations": [],
-                            "referencedDeclaration": 341,
-                            "src": "1008:5:2",
-                            "typeDescriptions": {
-                              "typeIdentifier": "t_contract$_MeDao_$308",
-                              "typeString": "contract MeDao"
-                            }
-                          }
-                        ],
-                        "expression": {
-                          "argumentTypes": [
-                            {
-                              "typeIdentifier": "t_contract$_MeDao_$308",
-                              "typeString": "contract MeDao"
-                            }
-                          ],
-                          "id": 405,
-                          "isConstant": false,
-                          "isLValue": false,
-                          "isPure": true,
-                          "lValueRequested": false,
-                          "nodeType": "ElementaryTypeNameExpression",
-                          "src": "1000:7:2",
-                          "typeDescriptions": {
-                            "typeIdentifier": "t_type$_t_address_$",
-                            "typeString": "type(address)"
-                          },
-                          "typeName": "address"
-                        },
-                        "id": 407,
-                        "isConstant": false,
-                        "isLValue": false,
-                        "isPure": false,
-                        "kind": "typeConversion",
-                        "lValueRequested": false,
-                        "names": [],
-                        "nodeType": "FunctionCall",
-                        "src": "1000:14:2",
-                        "typeDescriptions": {
-                          "typeIdentifier": "t_address",
-                          "typeString": "address"
-                        }
-                      },
-                      "isConstant": false,
-                      "isLValue": true,
-                      "isPure": false,
-                      "lValueRequested": true,
-                      "nodeType": "IndexAccess",
-                      "src": "992:23:2",
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_bool",
-                        "typeString": "bool"
-                      }
-                    },
-                    "nodeType": "Assignment",
-                    "operator": "=",
-                    "rightHandSide": {
-                      "argumentTypes": null,
-                      "hexValue": "74727565",
-                      "id": 409,
-                      "isConstant": false,
-                      "isLValue": false,
-                      "isPure": true,
-                      "kind": "bool",
-                      "lValueRequested": false,
-                      "nodeType": "Literal",
-                      "src": "1018:4:2",
-                      "subdenomination": null,
-                      "typeDescriptions": {
-                        "typeIdentifier": "t_bool",
-                        "typeString": "bool"
-                      },
-                      "value": "true"
-                    },
-                    "src": "992:30:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_bool",
-                      "typeString": "bool"
-                    }
-                  },
-                  "id": 411,
-                  "nodeType": "ExpressionStatement",
-                  "src": "992:30:2"
                 }
               ]
             },
@@ -4762,17 +2110,15 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "contractScope": null,
                     "id": 399,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "referencedDeclaration": 995,
                     "src": "262:7:2",
+                    "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
                       "typeString": "address"
-                    },
-                    "stateMutability": "nonpayable"
+                    }
                   },
                   "value": null,
                   "visibility": "internal"
@@ -4787,71 +2133,19 @@
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2236",
+                    "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2295",
                     "typeString": "contract MiniMeTokenFactory"
                   },
                   "typeName": {
+                    "contractScope": null,
                     "id": 401,
                     "name": "MiniMeTokenFactory",
                     "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 2295,
                     "src": "290:18:2",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2236",
+                      "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2295",
                       "typeString": "contract MiniMeTokenFactory"
-                    },
-                    "contractScope": null,
-                    "referencedDeclaration": 2236
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 336,
-                  "name": "birthTimestamp",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 413,
-                  "src": "389:19:2",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 335,
-                    "name": "uint",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "389:4:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                },
-                {
-                  "constant": false,
-                  "id": 338,
-                  "name": "tokenClaim",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 413,
-                  "src": "418:15:2",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_uint256",
-                    "typeString": "uint256"
-                  },
-                  "typeName": {
-                    "id": 337,
-                    "name": "uint",
-                    "nodeType": "ElementaryTypeName",
-                    "src": "418:4:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_uint256",
-                      "typeString": "uint256"
                     }
                   },
                   "value": null,
@@ -4863,36 +2157,7 @@
             "returnParameters": {
               "id": 404,
               "nodeType": "ParameterList",
-              "parameters": [
-                {
-                  "constant": false,
-                  "id": 341,
-                  "name": "medao",
-                  "nodeType": "VariableDeclaration",
-                  "scope": 413,
-                  "src": "456:11:2",
-                  "stateVariable": false,
-                  "storageLocation": "default",
-                  "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_MeDao_$308",
-                    "typeString": "contract MeDao"
-                  },
-                  "typeName": {
-                    "contractScope": null,
-                    "id": 340,
-                    "name": "MeDao",
-                    "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 308,
-                    "src": "456:5:2",
-                    "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_MeDao_$308",
-                      "typeString": "contract MeDao"
-                    }
-                  },
-                  "value": null,
-                  "visibility": "internal"
-                }
-              ],
+              "parameters": [],
               "src": "331:0:2"
             },
             "scope": 506,
@@ -4958,7 +2223,7 @@
                         "name": "createClone",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1027,
+                        "referencedDeclaration": 1086,
                         "src": "637:11:2",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_nonpayable$_t_address_$returns$_t_address_$",
@@ -5004,7 +2269,7 @@
                       "stateVariable": false,
                       "storageLocation": "default",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_MiniMeToken_$2193",
+                        "typeIdentifier": "t_contract$_MiniMeToken_$2252",
                         "typeString": "contract MiniMeToken"
                       },
                       "typeName": {
@@ -5012,10 +2277,10 @@
                         "id": 437,
                         "name": "MiniMeToken",
                         "nodeType": "UserDefinedTypeName",
-                        "referencedDeclaration": 2193,
+                        "referencedDeclaration": 2252,
                         "src": "670:11:2",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_MiniMeToken_$2193",
+                          "typeIdentifier": "t_contract$_MiniMeToken_$2252",
                           "typeString": "contract MiniMeToken"
                         }
                       },
@@ -5205,7 +2470,7 @@
                         "referencedDeclaration": 394,
                         "src": "694:7:2",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2236",
+                          "typeIdentifier": "t_contract$_MiniMeTokenFactory_$2295",
                           "typeString": "contract MiniMeTokenFactory"
                         }
                       },
@@ -5216,10 +2481,10 @@
                       "lValueRequested": false,
                       "memberName": "createCloneToken",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 2235,
+                      "referencedDeclaration": 2294,
                       "src": "694:24:2",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_external_nonpayable$_t_address_payable_$_t_uint256_$_t_string_memory_ptr_$_t_uint8_$_t_string_memory_ptr_$_t_bool_$returns$_t_contract$_MiniMeToken_$2193_$",
+                        "typeIdentifier": "t_function_external_nonpayable$_t_address_payable_$_t_uint256_$_t_string_memory_ptr_$_t_uint8_$_t_string_memory_ptr_$_t_bool_$returns$_t_contract$_MiniMeToken_$2252_$",
                         "typeString": "function (address payable,uint256,string memory,uint8,string memory,bool) external returns (contract MiniMeToken)"
                       }
                     },
@@ -5233,7 +2498,7 @@
                     "nodeType": "FunctionCall",
                     "src": "694:150:2",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_MiniMeToken_$2193",
+                      "typeIdentifier": "t_contract$_MiniMeToken_$2252",
                       "typeString": "contract MiniMeToken"
                     }
                   },
@@ -5274,7 +2539,7 @@
                         "referencedDeclaration": 438,
                         "src": "855:9:2",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_MiniMeToken_$2193",
+                          "typeIdentifier": "t_contract$_MiniMeToken_$2252",
                           "typeString": "contract MiniMeToken"
                         }
                       },
@@ -5285,7 +2550,7 @@
                       "lValueRequested": false,
                       "memberName": "changeController",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 1161,
+                      "referencedDeclaration": 1220,
                       "src": "855:26:2",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_external_nonpayable$_t_address_$returns$__$",
@@ -5325,7 +2590,7 @@
                               "name": "msg",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 2289,
+                              "referencedDeclaration": 2348,
                               "src": "932:3:2",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_magic_message",
@@ -5397,7 +2662,7 @@
                             "referencedDeclaration": 418,
                             "src": "906:12:2",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_contract$_ERC20_$1114",
+                              "typeIdentifier": "t_contract$_ERC20_$1173",
                               "typeString": "contract ERC20"
                             }
                           },
@@ -5408,7 +2673,7 @@
                           "lValueRequested": false,
                           "memberName": "transferFrom",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 1097,
+                          "referencedDeclaration": 1156,
                           "src": "906:25:2",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_external_nonpayable$_t_address_$_t_address_$_t_uint256_$returns$_t_bool_$",
@@ -5441,10 +2706,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        2292,
-                        2293
+                        2351,
+                        2352
                       ],
-                      "referencedDeclaration": 2292,
+                      "referencedDeclaration": 2351,
                       "src": "898:7:2",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -5495,7 +2760,7 @@
                         "referencedDeclaration": 438,
                         "src": "1008:9:2",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_MiniMeToken_$2193",
+                          "typeIdentifier": "t_contract$_MiniMeToken_$2252",
                           "typeString": "contract MiniMeToken"
                         }
                       },
@@ -5508,7 +2773,7 @@
                         "referencedDeclaration": 418,
                         "src": "1019:12:2",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_ERC20_$1114",
+                          "typeIdentifier": "t_contract$_ERC20_$1173",
                           "typeString": "contract ERC20"
                         }
                       },
@@ -5546,11 +2811,11 @@
                           "typeString": "address"
                         },
                         {
-                          "typeIdentifier": "t_contract$_MiniMeToken_$2193",
+                          "typeIdentifier": "t_contract$_MiniMeToken_$2252",
                           "typeString": "contract MiniMeToken"
                         },
                         {
-                          "typeIdentifier": "t_contract$_ERC20_$1114",
+                          "typeIdentifier": "t_contract$_ERC20_$1173",
                           "typeString": "contract ERC20"
                         },
                         {
@@ -5621,7 +2886,7 @@
                       "referencedDeclaration": 176,
                       "src": "977:23:2",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_external_nonpayable$_t_address_$_t_contract$_MiniMeToken_$2193_$_t_contract$_ERC20_$1114_$_t_int256_$_t_uint256_$returns$__$",
+                        "typeIdentifier": "t_function_external_nonpayable$_t_address_$_t_contract$_MiniMeToken_$2252_$_t_contract$_ERC20_$1173_$_t_int256_$_t_uint256_$returns$__$",
                         "typeString": "function (address,contract MiniMeToken,contract ERC20,int256,uint256) external"
                       }
                     },
@@ -5760,7 +3025,7 @@
                         "referencedDeclaration": 438,
                         "src": "1133:9:2",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_MiniMeToken_$2193",
+                          "typeIdentifier": "t_contract$_MiniMeToken_$2252",
                           "typeString": "contract MiniMeToken"
                         }
                       },
@@ -5773,7 +3038,7 @@
                         "referencedDeclaration": 418,
                         "src": "1144:12:2",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_ERC20_$1114",
+                          "typeIdentifier": "t_contract$_ERC20_$1173",
                           "typeString": "contract ERC20"
                         }
                       },
@@ -5802,11 +3067,11 @@
                           "typeString": "address"
                         },
                         {
-                          "typeIdentifier": "t_contract$_MiniMeToken_$2193",
+                          "typeIdentifier": "t_contract$_MiniMeToken_$2252",
                           "typeString": "contract MiniMeToken"
                         },
                         {
-                          "typeIdentifier": "t_contract$_ERC20_$1114",
+                          "typeIdentifier": "t_contract$_ERC20_$1173",
                           "typeString": "contract ERC20"
                         },
                         {
@@ -5821,7 +3086,7 @@
                       "referencedDeclaration": 505,
                       "src": "1106:12:2",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_function_event_nonpayable$_t_address_$_t_address_$_t_contract$_MiniMeToken_$2193_$_t_contract$_ERC20_$1114_$_t_int256_$returns$__$",
+                        "typeIdentifier": "t_function_event_nonpayable$_t_address_$_t_address_$_t_contract$_MiniMeToken_$2252_$_t_contract$_ERC20_$1173_$_t_int256_$returns$__$",
                         "typeString": "function (address,address,contract MiniMeToken,contract ERC20,int256)"
                       }
                     },
@@ -5893,7 +3158,7 @@
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_ERC20_$1114",
+                    "typeIdentifier": "t_contract$_ERC20_$1173",
                     "typeString": "contract ERC20"
                   },
                   "typeName": {
@@ -5901,10 +3166,10 @@
                     "id": 417,
                     "name": "ERC20",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 1114,
+                    "referencedDeclaration": 1173,
                     "src": "453:5:2",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_ERC20_$1114",
+                      "typeIdentifier": "t_contract$_ERC20_$1173",
                       "typeString": "contract ERC20"
                     }
                   },
@@ -6135,7 +3400,7 @@
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_MiniMeToken_$2193",
+                    "typeIdentifier": "t_contract$_MiniMeToken_$2252",
                     "typeString": "contract MiniMeToken"
                   },
                   "typeName": {
@@ -6143,10 +3408,10 @@
                     "id": 498,
                     "name": "MiniMeToken",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 2193,
+                    "referencedDeclaration": 2252,
                     "src": "1236:11:2",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_MiniMeToken_$2193",
+                      "typeIdentifier": "t_contract$_MiniMeToken_$2252",
                       "typeString": "contract MiniMeToken"
                     }
                   },
@@ -6164,7 +3429,7 @@
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_ERC20_$1114",
+                    "typeIdentifier": "t_contract$_ERC20_$1173",
                     "typeString": "contract ERC20"
                   },
                   "typeName": {
@@ -6172,10 +3437,10 @@
                     "id": 500,
                     "name": "ERC20",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 1114,
+                    "referencedDeclaration": 1173,
                     "src": "1259:5:2",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_ERC20_$1114",
+                      "typeIdentifier": "t_contract$_ERC20_$1173",
                       "typeString": "contract ERC20"
                     }
                   },
@@ -6229,12 +3494,12 @@
     "42": {
       "events": {},
       "links": {},
-      "address": "0x50127EED5A09404545777ae2097A4c448D19801B",
-      "transactionHash": "0x6a2eecb28637828a0b9d4ffb5bd65aedc1c7ad201d05603d9329d37409ceebaa"
+      "address": "0x7878353B3c82862c9EcCEDCb833c4744187b9335",
+      "transactionHash": "0xb3d1c16344edfdb3ec505081c35084144b7a047cf0885b8ef35d62b50af4484a"
     }
   },
   "schemaVersion": "3.0.9",
-  "updatedAt": "2019-05-29T20:14:20.802Z",
+  "updatedAt": "2019-05-29T23:12:48.471Z",
   "devdoc": {
     "methods": {}
   },

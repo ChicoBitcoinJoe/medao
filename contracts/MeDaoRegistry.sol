@@ -9,19 +9,16 @@ contract MeDaoRegistry {
 
     MeDaoFactory public factory;
     ERC20 public dai;
-    WETH public weth;
 
     mapping (address => MeDao) public registry;
     mapping (address => address) public transferRegistry;
 
     constructor (
         MeDaoFactory _factory,
-        ERC20 _dai,
-        WETH _weth
+        ERC20 _dai
     ) public {
         factory = _factory;
         dai = _dai;
-        weth = _weth;
     }
 
     function create (
@@ -44,34 +41,6 @@ contract MeDaoRegistry {
             initialReserve
         ));
 
-        medao.transferOwnership(msg.sender);
-        registry[msg.sender] = medao;
-    }
-
-    function create (
-        string memory name,
-        int birthTimestamp,
-        uint tokenClaim,
-        TokenConverter converter,
-        uint minFillAmount
-    ) public payable returns (MeDao medao) {
-        require(address(registry[msg.sender]) == NULL);
-
-        weth.deposit.value(msg.value)();
-        require(weth.approve(address(converter), msg.value));
-        uint initialReserve = converter.convert(msg.value, minFillAmount);
-        require(dai.approve(address(factory), initialReserve));
-
-        medao = MeDao(factory.create(
-            msg.sender,
-            dai,
-            name,
-            birthTimestamp,
-            tokenClaim,
-            initialReserve
-        ));
-
-        medao.transferOwnership(msg.sender);
         registry[msg.sender] = medao;
     }
 
@@ -82,13 +51,16 @@ contract MeDaoRegistry {
         TokenConverter converter,
         uint convertAmount,
         uint minFillAmount
-    ) public returns (MeDao medao) {
+    ) public payable returns (MeDao medao) {
         require(address(registry[msg.sender]) == NULL);
 
-        require(converter.payToken().transferFrom(msg.sender, address(this), convertAmount));
-        require(converter.payToken().approve(address(converter), convertAmount));
+        if(msg.value > 0)
+            converter.deposit.value(msg.value)();
 
+        require(converter.payToken().approve(address(converter), convertAmount));
         uint initialReserve = converter.convert(convertAmount, minFillAmount);
+        uint change = converter.payToken().balanceOf(address(this));
+        require(converter.payToken().transfer(msg.sender, change));
         require(dai.approve(address(factory), initialReserve));
 
         medao = MeDao(factory.create(
@@ -100,7 +72,6 @@ contract MeDaoRegistry {
             initialReserve
         ));
 
-        medao.transferOwnership(msg.sender);
         registry[msg.sender] = medao;
     }
 

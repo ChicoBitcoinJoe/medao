@@ -19,10 +19,15 @@ contract WethToDai is TokenConverter {
         buyToken = _buyToken;
     }
 
-    function convert (uint tokenAmount, uint minFillAmount) public returns (uint fillAmount) {
-        payToken.transferFrom(msg.sender, address(this), tokenAmount);
-        payToken.approve(address(exchange), tokenAmount);
-        fillAmount = exchange.sellAllAmount(payToken, tokenAmount, buyToken, minFillAmount);
+    function deposit () public payable {
+        payToken.deposit.value(msg.value)();
+        payToken.transfer(msg.sender, msg.value);
+    }
+
+    function convert (uint payAmount, uint minFillAmount) public returns (uint fillAmount) {
+        payToken.transferFrom(msg.sender, address(this), payAmount);
+        payToken.approve(address(exchange), payAmount);
+        fillAmount = exchange.sellAllAmount(payToken, payAmount, buyToken, minFillAmount);
         payToken.transfer(msg.sender, payToken.balanceOf(address(this)));
         buyToken.transfer(msg.sender, buyToken.balanceOf(address(this)));
     }

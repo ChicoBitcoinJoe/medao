@@ -2,11 +2,7 @@ const MeDao = artifacts.require("MeDao");
 const MeDaoFactory = artifacts.require("MeDaoFactory");
 const MeDaoRegistry = artifacts.require("MeDaoRegistry");
 const MiniMeTokenFactory = artifacts.require("MiniMeTokenFactory");
-<<<<<<< Updated upstream
-const EthToDai = artifacts.require("EthToDai");
-=======
 const WethToDai = artifacts.require("WethToDai");
->>>>>>> Stashed changes
 
 var Dex = {
     'live': "0x39755357759cE0d7f32dC8dC45414CCa409AE24e",
@@ -30,56 +26,20 @@ module.exports = function(deployer, network, accounts) {
     }
     else if(network == "kovan"){
         deployer.deploy(
-<<<<<<< Updated upstream
-            EthToDai,
-=======
             WethToDai,
->>>>>>> Stashed changes
             Dex[network],
             Weth[network],
             Dai[network]
         )
-<<<<<<< Updated upstream
-        .then(() => deployer.deploy(MeDao))
-        .then(() => deployer.deploy(MeDaoFactory, MeDao.address))
-=======
         .then(() => deployer.deploy(MiniMeTokenFactory))
         .then(() => deployer.deploy(MeDao))
         .then(() => deployer.deploy(MeDaoFactory, MeDao.address, MiniMeTokenFactory.address))
->>>>>>> Stashed changes
-        .then(() => deployer.deploy(
-            MeDaoRegistry,
-            MeDaoFactory.address,
-            Dai[network],
-            Weth[network]
-        ));
+        .then(() => deployer.deploy(MeDaoRegistry, MeDaoFactory.address, Dai[network]));
     }
     else if(network == "test"){
-<<<<<<< Updated upstream
-        /*
-        deployer.deploy(
-            EthToDai,
-            Dex[network],
-            Weth[network],
-            Dai[network]
-        )
-        */
         deployer.deploy(MiniMeTokenFactory)
         .then(() => deployer.deploy(MeDao))
         .then(() => deployer.deploy(MeDaoFactory, MeDao.address, MiniMeTokenFactory.address))
-        /*
-        .then(() => deployer.deploy(
-            MeDaoRegistry,
-            MeDaoFactory.address,
-            Dai[network],
-            Weth[network]
-        ));
-        */
-=======
-        deployer.deploy(MiniMeTokenFactory)
-        .then(() => deployer.deploy(MeDao))
-        .then(() => deployer.deploy(MeDaoFactory, MeDao.address, MiniMeTokenFactory.address))
->>>>>>> Stashed changes
     }
 
 };

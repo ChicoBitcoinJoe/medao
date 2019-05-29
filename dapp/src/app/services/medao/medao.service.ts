@@ -51,6 +51,7 @@ export class MedaoService {
                 birthTimestamp,
                 tokenClaim,
                 this.wethConverter.address,
+                valueInWei,
                 0
             )
             .send({

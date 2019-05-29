@@ -24,15 +24,7 @@ contract('MeDao', (accounts) => {
     it('should check if medao deployed correctly', async () => {
         MeDaoFactory = await MeDaoFactoryArtifact.deployed();
         TokenFactory = await MiniMeTokenFactoryArtifact.deployed();
-        ReserveToken = await MiniMeTokenArtifact.new(
-            TokenFactory.address,
-            nullAddress,
-            0,
-            'Dummy Reserve Token',
-            18,
-            'drt',
-            true
-        );
+        ReserveToken = await createToken('Dummy Reserve Token','drt');
 
         await ReserveToken.generateTokens(owner, initialReserve);
         await ReserveToken.approve(MeDaoFactory.address, initialReserve, {from: owner});
@@ -93,6 +85,20 @@ contract('MeDao', (accounts) => {
         assert(await TimeToken.balanceOf(owner) > initialTokens, "failed to collect pay");
         assert(await ReserveToken.balanceOf(MeDao.address) == initialReserve, "reserve balance incorrect");
     });
+
+    async function createToken (name, symbol) {
+        let Token = await MiniMeTokenArtifact.new(
+            TokenFactory.address,
+            nullAddress,
+            0,
+            name,
+            18,
+            symbol,
+            true
+        );
+
+        return Token;
+    }
 
     function seconds (s) {
         return new Promise((resolve, reject) => {
