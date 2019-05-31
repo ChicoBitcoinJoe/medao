@@ -52,7 +52,7 @@ contract MeDao is Owned {
 
     function collectPay () public onlyOwner {
         uint elapsedSeconds = (now - lastPayTimestamp) / 3;
-        uint fundedTime = elapsedSeconds * timeToken.totalSupply() / maxTokenSupply;
+        uint fundedTime = elapsedSeconds * timeToken.totalSupply() / (maxTokenSupply * 10^18);
         maxTokenSupply += elapsedSeconds;
         lastPayTimestamp = now;
         require(timeToken.generateTokens(owner, fundedTime), "failed to generate tokens");
@@ -60,7 +60,7 @@ contract MeDao is Owned {
     }
 
     function invest (uint reserveAmount) public {
-        uint availableSeconds = maxTokenSupply - timeToken.totalSupply();
+        uint availableSeconds = (maxTokenSupply * 10^18) - timeToken.totalSupply();
         uint claimedTokens = calculateTokenClaim(reserveAmount);
         require(availableSeconds >= claimedTokens, "invalid reserve amount");
         require(reserveToken.transferFrom(msg.sender, address(this), reserveAmount), "failed to transfer");

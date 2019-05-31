@@ -51,6 +51,10 @@ input {
     padding: 16px;
 }
 
+.no-margin {
+    margin: 0px;
+}
+
 .centered {
     text-align: center;
 }
@@ -79,4 +83,20 @@ h1, h2, h3, h4, h5, h6 {
 
 .secondary-bg {
     background-color: #29383e !important;
+}
+
+.scrollable {
+    overflow: auto;
+}
+
+.cursor {
+    cursor: hand;
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    outline: none;
 }

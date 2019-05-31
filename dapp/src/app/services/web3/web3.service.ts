@@ -44,6 +44,8 @@ export class Web3Service {
             this.instance = new Web3(window.web3.currentProvider);
         }
 
+        this.instance.utils['nullAddress'] = '0x0000000000000000000000000000000000000000';
+
         this.network.connected = this.instance != undefined;
     }
 
@@ -56,7 +58,7 @@ export class Web3Service {
                 Promise.all([
                     this.instance.eth.net.getNetworkType(),
                     this.instance.eth.net.getId(),
-                    this.watchForAccountChanges()
+                    this.getCurrentAccount()
                 ])
                 .then(async promises => {
                     var networkName = promises[0];

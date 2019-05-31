@@ -25,14 +25,15 @@ module.exports = function(deployer, network, accounts) {
         console.log("Live network not supported yet")
     }
     else if(network == "kovan"){
-        deployer.deploy(
+        /*deployer.deploy(
             WethToDai,
             Dex[network],
             Weth[network],
             Dai[network]
-        )
-        .then(() => deployer.deploy(MiniMeTokenFactory))
-        .then(() => deployer.deploy(MeDao))
+        )*/
+        //.then(() => deployer.deploy(MiniMeTokenFactory))
+        //.then(() => deployer.deploy(MeDao))
+        deployer.deploy(MeDao)
         .then(() => deployer.deploy(MeDaoFactory, MeDao.address, MiniMeTokenFactory.address))
         .then(() => deployer.deploy(MeDaoRegistry, MeDaoFactory.address, Dai[network]));
     }

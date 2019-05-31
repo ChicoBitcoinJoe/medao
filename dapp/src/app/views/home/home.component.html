@@ -7,35 +7,37 @@
                 Invest in people.
             </div>
         </h1>
-        <div class="secondary-bg" style="margin-top: 16px; position: relative" fxFlex="363px">
+        <div *ngIf="!User.medao" class="secondary-bg" style="margin-top: 16px; position: relative" fxFlex="363px">
             <div class="padding" fxLayout="column">
                 <mat-form-field>
                     <mat-label>Name</mat-label>
-                    <input matInput type="text" [(ngModel)]="medao.name">
+                    <input matInput type="text" [(ngModel)]="medao.name" [disabled]="medao.tx.promise">
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label>Birth Date</mat-label>
-                    <input matInput type="date" [(ngModel)]="medao.date" max="{{maxDate}}">
+                    <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="myDatepicker" [(ngModel)]="medao.date" placeholder="Choose a date">
+                    <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
+                    <mat-datepicker #myDatepicker></mat-datepicker>
                 </mat-form-field>
                 <mat-form-field>
                     <mat-label>Hourly Wage</mat-label>
-                    <input matInput type="number" step="0.01" min="0.01" [(ngModel)]="medao.wage">
-                    <span matSuffix>&nbsp;$</span>
+                    <input matInput type="number" step="0.01" min="0.01" [(ngModel)]="medao.wage" [disabled]="medao.tx.promise">
+                    <span style="padding: 0px 7px;" matSuffix>$</span>
                 </mat-form-field>
                 <div fxLayout="row">
                     <div style="overflow: hidden; min-width: 0px;" fxFlex>
                         <mat-form-field style="min-width: 0px; !important; width: 100%">
                             <mat-label>Seed funds</mat-label>
-                            <input matInput type="number" step="0.01" min="0.01" max="{{Web3.account.balance | toDai | number:'1.2-2'}}" [(ngModel)]="medao.seed">
-                            <span matSuffix>&nbsp;$</span>
+                            <input matInput type="number" step="0.01" min="0.01" max="{{Web3.account.balance | toDai | number:'1.2-2'}}" [(ngModel)]="medao.seed" [disabled]="medao.tx.promise">
+                            <span style="padding: 0px 7px;" matSuffix>$</span>
                             <mat-hint><span class="white-text">available: ${{Web3.account.balance | toDai | number:'1.2-2'}}</span></mat-hint>
                         </mat-form-field>
                     </div>
                     <div class="white-text" fxLayout="row" fxFlex="118px">
                         <span style="padding: 0px 4px; margin-top: 19px;">payed in</span>
                         <mat-form-field fxFlex="50px">
-                            <mat-select [(ngModel)]="medao.paymentToken">
-                                <mat-option *ngFor="let token of tokens" [value]="token">
+                            <mat-select [(ngModel)]="medao.paymentToken" [disabled]="medao.tx.promise">
+                                <mat-option *ngFor="let token of tokens" [value]="token" [disabled]="['dai','weth'].includes(token)">
                                   {{token}}
                                 </mat-option>
                             </mat-select>
@@ -43,8 +45,8 @@
                     </div>
                 </div>
                 <span fxFlex="32px"></span>
-                <button mat-button *ngIf="!valid()" style="color: grey;" disabled="true">submit</button>
-                <button mat-button *ngIf="valid()" style="color: white;" (click)="submit()">submit</button>
+                <button mat-button *ngIf="!valid() || medao.tx.promise" style="color: grey;" disabled="true">submit</button>
+                <button mat-button *ngIf="valid() && !medao.tx.promise" style="color: white;" (click)="submit()">submit</button>
             </div>
             <div *ngIf="!Web3.account.signedIn" style="background-color: rgba(0,0,0,0.87); z-index: 2; position: absolute; top: 0px; width: 100%; height: 100%;">
                 <div fxLayout="column" fxLayoutAlign="center center" fxFlex>
@@ -57,9 +59,36 @@
                     <div *ngIf="Web3.network.connected && !Web3.account.signedIn" fxLayout="column" fxLayoutAlign="center center" fxFlex>
                         <p *ngIf="Web3.network.valid">Sign in to web3 to continue</p>
                         <p *ngIf="!Web3.network.valid" class="centered">{{Web3.network.name}} not supported. <br> Try Kovan instead.</p>
-                        <app-signin-button *ngIf="Web3.network.valid" [disabled]="!Web3.network.valid"></app-signin-button>
+                        <app-signin-button *ngIf="Web3.network.valid" ([disabled])="!Web3.network.valid"></app-signin-button>
                     </div>
                 </div>
+            </div>
+            <div *ngIf="medao.tx.promise" fxLayoutAlign="center center" style="background-color: rgba(0,0,0,0.87); z-index: 2; position: absolute; top: 0px; width: 100%; height: 100%;">
+                <p *ngIf="!medao.tx.hash" class="centered">Waiting for user confirmation.</p>
+                <p *ngIf="medao.tx.hash" class="centered">Waiting for MeDao to deploy. <br> Be patient!</p>
+            </div>
+        </div>
+        <div *ngIf="User.medao" class="secondary-bg cursor" fxLayout="column" [routerLink]="['/medao/',User.medao.address]">
+            <div class="padding" fxLayout="column">
+                <h4 class="no-margin">Signed in as:</h4>
+                <h2 class="centered">{{User.medao.name}}</h2>
+                <div fxLayout="row" fxLayoutAlign="space-around center">
+                    <h5 class="no-margin" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
+                        <div>${{User.medao.hourlyWage | number: '1.2-2'}}/h</div>
+                        <small style="color: rgba(255,255,255,0.5);">hourly</small>
+                    </h5>
+                    <h5 class="no-margin" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
+                        <div>${{User.medao.balance/1000 | number: '1.0-0'}}k</div>
+                        <small style="color: rgba(255,255,255,0.5);">funded</small>
+                    </h5>
+                    <h5 class="no-margin" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
+                        <div>{{User.medao.owner.balance | number: '1.1-2'}}<span style="padding: 2px">h</span></div>
+                        <small style="color: rgba(255,255,255,0.5);">balance</small>
+                    </h5>
+                </div>
+            </div>
+            <div style="padding: 0px 16px 16px 16px;" fxLayout="column">
+                <button mat-button style="color: white">view</button>
             </div>
         </div>
         <div class="padding">

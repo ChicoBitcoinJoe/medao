@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material';
 
 import { Web3Service } from '../../services/web3/web3.service';
+import { UserService } from '../../services/user/user.service';
 import { MedaoService } from '../../services/medao/medao.service';
 
 @Component({
@@ -10,24 +13,29 @@ import { MedaoService } from '../../services/medao/medao.service';
 })
 export class HomeComponent implements OnInit {
 
-    tokens =  ['eth', 'dai'];
+    tokens =  ['eth', 'dai', 'weth'];
 
     medao = {
         /* user input */
         name: "Joseph Reed",
         date: '1989-12-23',
         wage: 10.00,
-        seed: 100.00,
+        seed: 1.00,
         paymentToken: 'eth',
         /* calculated */
         birthTimestamp: null,
         tokenClaim: null,
-        promise: null,
-        tx: null,
+        tx: {
+            promise: null,
+            hash: null,
+        },
     }
 
     constructor(
+        private router: Router,
+        private snackbar: MatSnackBar,
         public Web3: Web3Service,
+        public User: UserService,
         public MeDaoRegistry: MedaoService,
     ) { }
 
@@ -43,7 +51,7 @@ export class HomeComponent implements OnInit {
         var tokenClaim = this.medao.seed / this.medao.wage;
         this.medao.tokenClaim = this.Web3.instance.utils.toWei(tokenClaim.toString(), 'ether');
 
-        this.medao.promise = this.MeDaoRegistry.create(
+        this.medao.tx.promise = this.MeDaoRegistry.create(
             this.medao.name,
             this.medao.birthTimestamp,
             this.medao.tokenClaim,
@@ -51,6 +59,39 @@ export class HomeComponent implements OnInit {
             this.medao.paymentToken,
         );
 
+        this.medao.tx.promise
+        .on('transactionHash', (txHash) => {
+            this.medao.tx.hash = txHash;
+            console.log(this.medao);
+
+            let snackBarRef = this.snackbar.open('Deploying MeDao. Be patient!', 'details', {
+                duration: 10000,
+            });
+
+            snackBarRef.onAction().subscribe(() => {
+                var url = 'https://kovan.etherscan.io/tx/' + txHash;
+                window.open(url, "_blank");
+            });
+        })
+        .on('confirmation', (confirmation, txReceipt) => {
+            if(confirmation == 1) {
+                console.log(confirmation)
+                console.log(txReceipt)
+                let medaoAddress = txReceipt.events.Register_event.returnValues.medao;
+
+                let snackBarRef = this.snackbar.open('MeDao deployed!', 'view', {
+                    duration: 10000,
+                });
+
+                snackBarRef.onAction().subscribe(() => {
+                    this.router.navigate(['/medao', medaoAddress]);
+                });
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            this.medao.tx.promise = null;
+        })
     }
 
     valid () {
@@ -63,13 +104,6 @@ export class HomeComponent implements OnInit {
             if(this.medao.seed >= daiBalance) return false;
         }
         return true;
-    }
-
-    signIn () {
-        this.Web3.signIn()
-        .then(() => {
-
-        })
     }
 
 }

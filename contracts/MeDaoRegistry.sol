@@ -5,8 +5,6 @@ import "./MeDaoFactory.sol";
 
 contract MeDaoRegistry {
 
-    address constant NULL = address(0x0);
-
     MeDaoFactory public factory;
     ERC20 public dai;
 
@@ -27,8 +25,6 @@ contract MeDaoRegistry {
         uint tokenClaim,
         uint initialReserve
     ) public returns (MeDao medao) {
-        require(address(registry[msg.sender]) == NULL);
-
         require(dai.transferFrom(msg.sender, address(this), initialReserve));
         require(dai.approve(address(factory), initialReserve));
 
@@ -41,7 +37,7 @@ contract MeDaoRegistry {
             initialReserve
         ));
 
-        registry[msg.sender] = medao;
+        register(medao);
     }
 
     function create (
@@ -52,8 +48,6 @@ contract MeDaoRegistry {
         uint convertAmount,
         uint minFillAmount
     ) public payable returns (MeDao medao) {
-        require(address(registry[msg.sender]) == NULL);
-
         if(msg.value > 0)
             converter.deposit.value(msg.value)();
 
@@ -72,7 +66,14 @@ contract MeDaoRegistry {
             initialReserve
         ));
 
+        register(medao);
+    }
+
+    function register (MeDao medao) internal {
+        require(address(registry[msg.sender]) == address(0x0));
+
         registry[msg.sender] = medao;
+        emit Register_event(msg.sender, medao);
     }
 
     function transfer (address newOwner) public {
@@ -89,5 +90,7 @@ contract MeDaoRegistry {
         delete transferRegistry[oldOwner];
         delete registry[oldOwner];
     }
+
+    event Register_event (address owner, MeDao medao);
 
 }

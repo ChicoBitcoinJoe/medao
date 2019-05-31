@@ -3,6 +3,7 @@ import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer } from "@angular/platform-browser";
 
 import { Web3Service } from './services/web3/web3.service';
+import { UserService } from './services/user/user.service';
 
 @Component({
   selector: 'app-root',
@@ -15,13 +16,15 @@ export class AppComponent {
           private matIconRegistry: MatIconRegistry,
           private domSanitizer: DomSanitizer,
           public Web3: Web3Service,
+          public User: UserService,
       ) {
           this.Web3.setAllowedNetworks(['kovan']);
+
           this.Web3.ready()
-          .then(currentAccount => {
+          .then(() => {
               console.log(this.Web3)
-              if(currentAccount){
-                  // logged in = true;
+              if(this.Web3.account.signedIn){
+                  this.User.signIn();
               }
               else {
                   // logged in = false
