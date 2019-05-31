@@ -52,8 +52,9 @@
                 <div *ngIf="medao.totalSupply >= 1">Total Supply <span fxFlex></span> {{medao.totalSupply | number: '1.0-0'}}<span style="padding-left: 2px">h</span></div>
                 <div *ngIf="medao.totalSupply < 1">Total Supply <span fxFlex></span> {{medao.totalSupply | number: '1.0-2'}}<span style="padding-left: 2px">h</span></div>
                 <div>Max Supply <span fxFlex></span> {{medao.maxSupply / 3600 | number: '1.0-0'}}<span style="padding-left: 2px">h</span></div>
-                <div>Max Annual Inflation <span fxFlex></span> {{100 / medao.age | number: '1.1-1'}}%</div>
+                <div>Max Yearly Salary <span fxFlex></span> ${{medao.hourlyWage * 8 * 365.25 | number: '1.0-0'}}</div>
                 <div>Max Funding <span fxFlex></span> ${{ medao.maxFunding | number: '1.0-0'}}</div>
+                <div>Max Annual Inflation <span fxFlex></span> {{100 / medao.age | number: '1.1-1'}}%</div>
             </div>
             <div class="padding white-text" fxLayout="column" fxLayoutGap="16px">
                 <h3>Contract</h3>
