@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Web3Service } from '../../services/web3/web3.service';
@@ -10,12 +10,18 @@ import { Web3Service } from '../../services/web3/web3.service';
 })
 export class ToolbarComponent implements OnInit {
 
+    @Input() qrcode;
+
     constructor(
         private router: Router,
         public Web3: Web3Service,
     ) { }
 
     ngOnInit() {
+    }
+
+    openQrcodeDialog(){
+        console.log(this.qrcode);
     }
 
 }

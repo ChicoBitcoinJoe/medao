@@ -91,7 +91,7 @@ export class MedaoService {
         }
         else if(paymentToken == 'weth') {
 
-        }
+            }
     }
 
     async addressOf (account) {
@@ -129,13 +129,16 @@ export class MedaoService {
                     let oneYear = 60*60*24*365.25;
                     let age = Math.floor(timeElapsed/oneYear);
                     let maxFunding = hourlyWage * maxSupply/3600;
+                    let currentSalary = hourlyWage * fundedPercent / 100 * 56 * 52;
+                    let maxSalary = hourlyWage * 56 * 52;
 
-                    
                     MeDao['token'] = token;
                     MeDao['name'] = name;
                     MeDao['symbol'] = symbol;
                     MeDao['age'] = age;
                     MeDao['hourlyWage'] = hourlyWage;
+                    MeDao['currentSalary'] = currentSalary;
+                    MeDao['maxSalary'] = maxSalary;
                     MeDao['balance'] = daiBalance;
                     MeDao['totalSupply'] = totalSupply;
                     MeDao['maxSupply'] = maxSupply;

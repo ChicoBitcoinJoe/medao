@@ -6,3 +6,7 @@ button {
 .mat-button.mat-accent[disabled], .mat-button.mat-primary[disabled], .mat-button.mat-warn[disabled], .mat-button[disabled][disabled], .mat-icon-button.mat-accent[disabled], .mat-icon-button.mat-primary[disabled], .mat-icon-button.mat-warn[disabled], .mat-icon-button[disabled][disabled], .mat-stroked-button.mat-accent[disabled], .mat-stroked-button.mat-primary[disabled], .mat-stroked-button.mat-warn[disabled], .mat-stroked-button[disabled][disabled] {
     color: grey !important;
 }
+
+button {
+    border-radius: 0px !important;
+}

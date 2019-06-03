@@ -33,9 +33,10 @@ module.exports = function(deployer, network, accounts) {
         )*/
         //.then(() => deployer.deploy(MiniMeTokenFactory))
         //.then(() => deployer.deploy(MeDao))
-        deployer.deploy(MeDao)
-        .then(() => deployer.deploy(MeDaoFactory, MeDao.address, MiniMeTokenFactory.address))
-        .then(() => deployer.deploy(MeDaoRegistry, MeDaoFactory.address, Dai[network]));
+        //deployer.deploy(MeDao)
+        //.then(() => deployer.deploy(MeDaoFactory, MeDao.address, MiniMeTokenFactory.address))
+        //.then(() => deployer.deploy(MeDaoRegistry, MeDaoFactory.address, Dai[network]));
+        deployer.deploy(MeDaoRegistry, MeDaoFactory.address, Dai[network]);
     }
     else if(network == "test"){
         deployer.deploy(MiniMeTokenFactory)

@@ -1,6 +1,6 @@
 <div fxLayout="column" fxFlex>
-    <mat-toolbar color="primary" class="primary-bg" style="padding: 0px 8px;" fxLayoutGap="8px" fxFlex="56px">
-        <button mat-icon-button>
+    <mat-toolbar color="primary" class="primary-bg" fxLayoutGap="8px" fxFlex="56px">
+        <button fxHide mat-icon-button>
             <mat-icon>menu</mat-icon>
         </button>
         <h3 *ngIf="router.url != '/home'" [routerLink]="['/home']">MeDao</h3>
@@ -9,11 +9,8 @@
             try metamask
         </a>
         <app-signin-button *ngIf="Web3.network.valid && !Web3.account.signedIn"></app-signin-button>
-        <button *ngIf="!Web3.network.valid" style="border: 1px solid rgba(255,255,255,0.33); color: white;" mat-button disabled>
+        <button *ngIf="!Web3.network.valid" style="border: 1px solid rgba(255,255,255,0.33); color: red;" mat-button disabled>
             {{Web3.network.name}}
-        </button>
-        <button *ngIf="Web3.account.signedIn" mat-icon-button>
-            <mat-icon svgIcon="qrcode"></mat-icon>
         </button>
     </mat-toolbar>
 </div>

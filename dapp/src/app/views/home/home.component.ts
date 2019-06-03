@@ -18,7 +18,8 @@ export class HomeComponent implements OnInit {
     medao = {
         /* user input */
         name: "Joseph Reed",
-        date: '1989-12-23',
+        date: new Date('12/23/1989'),
+        maxDate: new Date(),
         wage: 10.00,
         seed: 1.00,
         paymentToken: 'eth',
@@ -62,7 +63,6 @@ export class HomeComponent implements OnInit {
         this.medao.tx.promise
         .on('transactionHash', (txHash) => {
             this.medao.tx.hash = txHash;
-            console.log(this.medao);
 
             let snackBarRef = this.snackbar.open('Deploying MeDao. Be patient!', 'details', {
                 duration: 10000,
@@ -77,21 +77,23 @@ export class HomeComponent implements OnInit {
             if(confirmation == 1) {
                 console.log(confirmation)
                 console.log(txReceipt)
-                let medaoAddress = txReceipt.events.Register_event.returnValues.medao;
+                this.MeDaoRegistry.addressOf(this.Web3.account.address)
+                .then(medaoAddress => {
+                    let snackBarRef = this.snackbar.open('MeDao deployed!', 'view', {
+                        duration: 10000,
+                    });
 
-                let snackBarRef = this.snackbar.open('MeDao deployed!', 'view', {
-                    duration: 10000,
-                });
-
-                snackBarRef.onAction().subscribe(() => {
-                    this.router.navigate(['/medao', medaoAddress]);
-                });
+                    this.User.signIn();
+                    snackBarRef.onAction().subscribe(() => {
+                        this.router.navigate(['/medao', medaoAddress]);
+                    });
+                })
             }
         })
         .catch(err => {
             console.error(err);
             this.medao.tx.promise = null;
-        })
+        });
     }
 
     valid () {
