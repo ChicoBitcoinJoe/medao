@@ -14,6 +14,7 @@ contract MeDao is Owned {
     int public birthTimestamp;
     uint public maxTokenSupply;
     uint public lastPayTimestamp;
+    string public hash;
 
     constructor () public {
         blockInitialized = block.number;
@@ -56,7 +57,7 @@ contract MeDao is Owned {
         maxTokenSupply += elapsedSeconds;
         lastPayTimestamp = now;
         require(timeToken.generateTokens(owner, fundedTime), "failed to generate tokens");
-        emit Pay_eventAAAA(owner, fundedTime);
+        emit Pay_event(owner, fundedTime);
     }
 
     function invest (uint reserveAmount) public {
@@ -75,7 +76,13 @@ contract MeDao is Owned {
         emit Divest_event(msg.sender, tokenAmount, reserveClaim);
     }
 
-    event Pay_eventAAAA (address owner, uint tokenAmount);
+    function setHash (string newHash) public onlyOwner {
+        hash = newHash;
+        emit Update_event(newHash);
+    }
+
+    event Pay_event (uint tokenAmount);
+    event Update_event (string newHash);
     event Invest_event (address msgSender, uint reserveAmount, uint tokenAmount);
     event Divest_event (address msgSender, uint tokenAmount, uint reserveAmount);
 }

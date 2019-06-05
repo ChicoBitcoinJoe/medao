@@ -11,6 +11,8 @@ import { Web3Service } from '../../services/web3/web3.service';
 export class ToolbarComponent implements OnInit {
 
     @Input() qrcode;
+    @Input() leftNav;
+    @Input() rightNav;
 
     constructor(
         private router: Router,

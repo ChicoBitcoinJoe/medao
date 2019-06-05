@@ -1,3 +1,94 @@
+<app-mobile-view *ngIf="false" fxHide.gt-xs></app-mobile-view>
+<app-tablet-view *ngIf="false" fxHide fxShow.gt-xs fxHide.gt-md></app-tablet-view>
+<app-desktop-view *ngIf="medao" [medao]="medao" fxHide fxShow.gt-md></app-desktop-view>
+
+<mat-drawer-container *ngIf="false" fxFlexFill>
+    <mat-drawer *ngIf="false" #leftNav opened mode="side" style="width: 33%;">
+        <div style="overflow: hidden; width: 100%; height: 100%;" fxLayout="column" fxLayoutAlign="center center">
+            <img style="height: 100%" src="./assets/profile-picture.jpeg">
+        </div>
+    </mat-drawer>
+    <mat-drawer-content class="primary-bg" fxLayout="row" fxFlex>
+        <div style="border-right: 1px solid white;" fxHide fxShow.gt-sm fxFlex="40" fxFlex.gt-lg="33">
+            <div style="overflow: hidden; width: 100%; height: 100%;" fxLayout="column" fxLayoutAlign="center center">
+                <img style="height: 100%" src="./assets/profile-picture.jpeg">
+            </div>
+        </div>
+        <div class="scrollable" fxFlex fxFlex.gt-lg="33">
+            <app-toolbar [leftNav]="leftNav" [rightNav]="rightNav"></app-toolbar>
+            <div class="padding" fxLayout="row">
+                <div fxLayout="column" fxFlex>
+                    <h1 style="margin-bottom: 8px;">{{medao.name}}</h1>
+                    <h4 style="margin-top: 8px; color: rgba(255,255,255,0.5)">age {{medao.age}}</h4>
+                    <div class="white-text" fxLayout="column" fxLayoutGap="16px">
+                        <h3 style="margin: 0px;">Details</h3>
+                        <div>Birth Date <span fxFlex></span> {{medao.birthDate | date: 'LLLL dd, yyyy'}}</div>
+                        <div>Salary <span fxFlex></span> ${{medao.currentSalary | number: '1.0-0'}}/{{medao.maxSalary | number: '1.0-0'}}</div>
+                        <div>Last Paycheck <span fxFlex></span> {{medao.lastPaycheck | date: 'LLLL dd, yyyy'}}</div>
+                        <div *ngIf="showMore" fxLayout="column" fxLayoutGap="16px">
+                            <div>
+                                Total Supply
+                                <span fxFlex></span>
+                                <div *ngIf="medao.totalSupply >= 1">{{medao.totalSupply | number: '1.0-0'}}</div>
+                                <div *ngIf="medao.totalSupply < 1">{{medao.totalSupply | number: '1.0-2'}}</div>
+                                /{{medao.maxSupply / 3600 | number: '1.0-0'}}
+                                 <span style="padding-left: 2px">h</span>
+                             </div>
+                             <div>Funding <span fxFlex></span> ${{ medao.balance | number: '1.0-0'}}/{{ medao.maxFunding | number: '1.0-0'}}</div>
+                            <div>Max Annual Inflation <span fxFlex></span> {{100 / medao.age | number: '1.1-1'}}%</div>
+                        </div>
+                        <button mat-button *ngIf="!showMore" (click)="showMore = !showMore">show more</button>
+                        <button mat-button *ngIf="showMore" (click)="showMore = !showMore">show less</button>
+                    </div>
+                    <div class="white-text" fxLayout="column" fxLayoutGap="16px">
+                        <h3>Contract</h3>
+                        <div fxLayout="row">No contract set.</div>
+                        <div fxFlex="32px"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div fxHide fxShow.gt-lg class="padding" style="border-left: 1px solid white;" fxFlex.gt-lg="33">
+            Secondary content
+        </div>
+    </mat-drawer-content>
+    <mat-drawer #rightNav [opened]="opened" [mode]="mode" position="end" fxFlex="157px">
+        <div class="scrollable secondary-bg" style="border-left: 1px solid white;" fxLayout="column" fxFlex="156px">
+            <div class="padding" fxLayout="column" fxLayoutGap="32px">
+                <mat-toolbar class="secondary-bg" fxFlex="56px" fxLayoutAlign="center">
+                    <button mat-icon-button style="width: 60px; height: 60px;" (click)="openQrcodeDialog()">
+                        <mat-icon style="width: 40px; height: 40px;" svgIcon="qrcode"></mat-icon>
+                    </button>
+                </mat-toolbar>
+                <h2 class="no-margin" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
+                    <div>${{medao.balance/1000 | number: '1.0-0'}}k</div>
+                    <span style="font-size: 12px; color: rgba(255,255,255,0.5);">{{medao.fundedPercent}}% funded</span>
+                </h2>
+                <h3 class="no-margin" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
+                    <div>${{medao.hourlyWage | number: '1.2-2'}}/h</div>
+                    <span style="font-size: 12px; color: rgba(255,255,255,0.5);">wage</span>
+                </h3>
+                <h3 class="no-margin" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
+                    <div fxLayout="row">
+                        <div *ngIf="!User.balances[medao.token.address]">0</div>
+                        <div *ngIf="User.balances[medao.token.address]">{{User.balances[medao.token.address]}}</div>
+                        <span style="padding-left: 2px">h</span>
+                    </div>
+                    <span class="centered" style="font-size: 12px; color: rgba(255,255,255,0.5);">balance</span>
+                    <span class="centered" style="font-size: 12px; color: rgba(255,255,255,0.5);">(${{medao.hourlyWage * User.balances[medao.token.address] | number: '1.2-2'}})</span>
+                </h3>
+            </div>
+            <span fxFlex></span>
+            <button style="padding: 16px;" mat-button>transfer</button>
+            <button style="padding: 16px;" mat-button>buy/sell</button>
+            <button style="padding: 16px;" mat-button>collect paycheck</button>
+            <button style="padding: 16px;" mat-button>update contract</button>
+            <button style="padding: 16px;" mat-button>change owner</button>
+        </div>
+    </mat-drawer>
+</mat-drawer-container>
+
+<!--
 <div fxHide fxShow.xs fxLayout="column" fxFlexFill>
     <app-toolbar *ngIf="medao" [qrcode]="medao.address"></app-toolbar>
     <div *ngIf="medao" class="scrollable" fxFlex>
@@ -202,3 +293,4 @@
         <button style="padding: 16px;" mat-button>change owner</button>
     </div>
 </div>
+-->

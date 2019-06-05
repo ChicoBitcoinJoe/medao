@@ -55,6 +55,10 @@ input {
     margin: 0px;
 }
 
+.margin {
+    margin: 16px;
+}
+
 .centered {
     text-align: center;
 }
@@ -71,6 +75,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .white-text * {
     color: white;
+}
+
+.grey-text {
+    color: rgba(255,255,255,0.5);
 }
 
 .input {
@@ -99,4 +107,8 @@ h1, h2, h3, h4, h5, h6 {
     -ms-user-select: none;
     user-select: none;
     outline: none;
+}
+
+.mat-form-field-appearance-legacy .mat-form-field-underline {
+    background-color: white !important;
 }

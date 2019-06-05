@@ -1,0 +1,8 @@
+<div fxLayout="column" fxLayoutGap="12px" (mouseenter)="showHover = true" (mouseleave)="showHover = false">
+    <span style="color: rgba(255,255,255,0.77)">
+        {{post.author}} says...
+        <span fxFlex></span>
+        <span *ngIf="showHover" style="color: inherit;">{{post.date | date: 'M/d/yy'}}</span>
+    </span>
+    <span style="text-align: justify;">{{post.body}}</span>
+</div>

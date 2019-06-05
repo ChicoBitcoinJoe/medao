@@ -36,6 +36,10 @@ import { HomeComponent } from './views/home/home.component';
 import { MedaoComponent } from './views/medao/medao.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { SigninButtonComponent } from './components/signin-button/signin-button.component';
+import { MobileViewComponent } from './components/mobile-view/mobile-view.component';
+import { DesktopViewComponent } from './components/desktop-view/desktop-view.component';
+import { TabletViewComponent } from './components/tablet-view/tablet-view.component';
+import { PostComponent } from './components/post/post.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +50,11 @@ import { SigninButtonComponent } from './components/signin-button/signin-button.
     HomeComponent,
     MedaoComponent,
     ToolbarComponent,
-    SigninButtonComponent
+    SigninButtonComponent,
+    MobileViewComponent,
+    DesktopViewComponent,
+    TabletViewComponent,
+    PostComponent
   ],
   imports: [
     BrowserModule,
@@ -61,6 +69,7 @@ import { SigninButtonComponent } from './components/signin-button/signin-button.
     MatInputModule,
     MatNativeDateModule,
     MatSelectModule,
+    MatSidenavModule,
     MatSnackBarModule,
     MatToolbarModule,
   ],

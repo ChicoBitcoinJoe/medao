@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
 
 import { Web3Service } from '../../services/web3/web3.service';
 import { UserService } from '../../services/user/user.service';
@@ -17,7 +16,6 @@ export class MedaoComponent implements OnInit {
 
     constructor(
         private router: Router,
-        private snackbar: MatSnackBar,
         public Web3: Web3Service,
         public User: UserService,
         public MeDaoRegistry: MedaoService,
@@ -33,8 +31,8 @@ export class MedaoComponent implements OnInit {
             if(this.Web3.account.signedIn){
                 this.User.setBalance(this.medao.token);
             }
-        })
-    }
+        });
 
+    }
 
 }
