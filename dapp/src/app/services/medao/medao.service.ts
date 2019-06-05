@@ -61,7 +61,7 @@ export class MedaoService {
         paymentToken,
     ) {
         if(paymentToken == 'eth') {
-            var valueInEther = seedFunds / this.Web3.ethPriceInDai;
+            var valueInEther = (seedFunds / this.Web3.ethPriceInDai).toFixed(18);
             var valueInWei = this.Web3.instance.utils.toWei(valueInEther.toString(), 'ether');
 
             console.log(name);
