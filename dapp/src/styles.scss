@@ -73,12 +73,20 @@ h1, h2, h3, h4, h5, h6 {
     font-family: "Courier New";
 }
 
+.mat-form-field-appearance-legacy .mat-form-field-label {
+    color: white !important;
+}
+
+.mat-button[disabled][disabled] {
+    color: grey;
+}
+
 .white-text * {
     color: white;
 }
 
 .grey-text {
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.5) !important;
 }
 
 .input {

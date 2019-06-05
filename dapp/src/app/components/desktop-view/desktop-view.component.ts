@@ -51,7 +51,7 @@ export class DesktopViewComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-
+        console.log(this.User)
     }
 
     configureSideNav() {

@@ -7,44 +7,7 @@
     </h1>
     <div *ngIf="!User.medao" class="secondary-bg" style="margin-top: 16px; position: relative;" fxLayout="row" fxLayoutAlign="center" fxFlex="363px">
         <div class="padding" fxLayout="column" fxFlex="420px">
-            <mat-form-field>
-                <mat-label>Name</mat-label>
-                <input matInput type="text" [(ngModel)]="medao.name" [disabled]="medao.tx.promise">
-            </mat-form-field>
-            <mat-form-field>
-                <mat-label>Birth Date</mat-label>
-                <input matInput [max]="medao.maxDate" [matDatepicker]="myDatepicker" [(ngModel)]="medao.date" placeholder="Choose a date">
-                <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
-                <mat-datepicker #myDatepicker></mat-datepicker>
-            </mat-form-field>
-            <mat-form-field>
-                <mat-label>Hourly Wage</mat-label>
-                <input matInput type="number" step="0.01" min="0.01" [(ngModel)]="medao.wage" [disabled]="medao.tx.promise">
-                <span style="padding: 0px 7px;" matSuffix>$</span>
-            </mat-form-field>
-            <div fxLayout="row">
-                <div style="overflow: hidden; min-width: 0px;" fxFlex>
-                    <mat-form-field style="min-width: 0px; !important; width: 100%">
-                        <mat-label>Seed funds</mat-label>
-                        <input matInput type="number" step="0.01" min="0.01" max="{{Web3.account.balance | toDai | number:'1.2-2'}}" [(ngModel)]="medao.seed" [disabled]="medao.tx.promise">
-                        <span style="padding: 0px 7px;" matSuffix>$</span>
-                        <mat-hint><span class="white-text">available: ${{Web3.account.balance | toDai | number:'1.2-2'}}</span></mat-hint>
-                    </mat-form-field>
-                </div>
-                <div class="white-text" fxLayout="row" fxFlex="118px">
-                    <span style="padding: 0px 4px; margin-top: 19px;">payed in</span>
-                    <mat-form-field fxFlex="50px">
-                        <mat-select [(ngModel)]="medao.paymentToken" [disabled]="medao.tx.promise">
-                            <mat-option *ngFor="let token of tokens" [value]="token" [disabled]="['dai','weth'].includes(token)">
-                              {{token}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-            </div>
-            <span fxFlex="32px"></span>
-            <button mat-button *ngIf="!valid() || medao.tx.promise" style="color: grey;" disabled="true">submit</button>
-            <button mat-button *ngIf="valid() && !medao.tx.promise" style="color: white;" (click)="submit()">submit</button>
+            <app-sign-up-form></app-sign-up-form>
         </div>
         <div *ngIf="!Web3.account.signedIn" style="background-color: rgba(0,0,0,0.87); z-index: 2; position: absolute; top: 0px; width: 100%; height: 100%;">
             <div fxLayout="column" fxLayoutAlign="center center" fxFlex>

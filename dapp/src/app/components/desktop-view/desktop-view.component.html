@@ -1,9 +1,18 @@
-<div class="white-text" fxLayout="row" fxLayoutAlign="center" fxFlexFill>
+<div fxLayout="row" fxLayoutAlign="center" fxFlexFill>
     <div fxLayout="row" fxFlex="1128px" fxFlex.xl="1448px" fxLayoutGap="32px">
         <div style="position: relative;" fxLayout="column" fxFlex="320px">
             <div style="position: fixed; width: 320px; height: 100%; border-left: 1px solid white; border-right: 1px solid white;">
                 <div class="scrollable padding" fxLayout="column">
-                    Signed in as: {{medao.name}}
+                    <h1 class="centered">
+                        <span class="cursor" routerLink="['/home']">MeDao</span>
+                    </h1>
+                    <div fxLayout="column" fxFlex="68px">
+                        <button mat-button *ngIf="Web3.network.connected && !User.account.signedIn" class="secondary-bg" style="padding: 16px;" (click)="User.signIn()">sign in to get started</button>
+                        <a mat-button *ngIf="!Web3.network.connected" class="secondary-bg" style="padding: 16px;" href="https://metamask.io" target="_blank">
+                            web3 not detected
+                        </a>
+                    </div>
+                    <app-sign-up-form [class.opacity50]="!User.account.signedIn"></app-sign-up-form>
                 </div>
             </div>
         </div>
@@ -16,7 +25,7 @@
                     <button mat-button>update contract</button>
                     <button mat-button>change owner</button>
                 </div>
-                <div class="padding" fxLayoutAlign="space-around end" fxFlex="100px">
+                <div *ngIf="medao" class="padding" fxLayoutAlign="space-around end" fxFlex="100px">
                     <h2 class="no-margin" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
                         <div>{{medao.age | number: '1.0-0'}}</div>
                         <span class="grey-text" style="font-size: 12px;">age</span>
@@ -29,17 +38,24 @@
                         <div>${{medao.hourlyWage | number: '1.2-2'}}</div>
                         <span class="grey-text" style="font-size: 12px;">hourly wage</span>
                     </h2>
-                    <h2 class="no-margin" style="position: relative; max-height: 79.22px;" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
-                        <div>${{medao.hourlyWage * User.balances[medao.token.address] | number: '1.2-2'}}</div>
-                        <div class="grey-text" fxLayout="row" style="font-size: 12px;">
-                            <div class="grey-text">balance:&nbsp;</div>
-                            <div *ngIf="!User.balances[medao.token.address]" class="grey-text">0</div>
-                            <div *ngIf="User.balances[medao.token.address]" class="grey-text">{{User.balances[medao.token.address]}}</div>
-                            <span class="grey-text" style="padding-left: 2px">h</span>
+                    <h2 class="no-margin" style="position: relative; max-height: 79.22px;" fxLayoutGap="4px">
+                        <div *ngIf="!User.balances[medao.token.address]" fxLayout="column" fxLayoutAlign="center center">
+                            <div>$0.00</div>
+                            <div class="grey-text" fxLayout="row" style="font-size: 12px;">
+                                <div class="grey-text">balance:&nbsp;</div>
+                                <div class="grey-text">0<span class="grey-text" style="padding-left: 2px">h</span></div>
+                            </div>
+                        </div>
+                        <div *ngIf="User.balances[medao.token.address]" class="grey-text" fxLayout="column" fxLayoutAlign="center center">
+                            <div>${{medao.hourlyWage * User.balances[medao.token.address] | number: '1.2-2'}}</div>
+                            <div class="grey-text" fxLayout="row" style="font-size: 12px;">
+                                <div class="grey-text">balance:&nbsp;</div>
+                                <div >{{User.balances[medao.token.address]}}<span class="grey-text" style="padding-left: 2px">h</span></div>
+                            </div>
                         </div>
                     </h2>
                 </div>
-                <div style="margin-bottom: 24px;" fxLayout="column" fxLayoutAlign="end start" fxLayoutGap="8px" fxFlex>
+                <div *ngIf="medao" style="margin-bottom: 24px;" fxLayout="column" fxLayoutAlign="end start" fxLayoutGap="8px" fxFlex>
                     <div fxLayout="row" fxLayoutAlign="start end">
                         <span fxFlex="256px"></span>
                         <h1 class="no-margin">{{medao.name}}</h1>
@@ -63,7 +79,7 @@
                             This is a short description of this particular medao. It should be simple but powerful.
                         </div>
                         <div fxFlex="32px"></div>
-                        <div fxLayout="column" fxLayoutGap="16px">
+                        <div *ngIf="medao" fxLayout="column" fxLayoutGap="16px">
                             <h3 class="no-margin">Details</h3>
                             <div>Last Paycheck <span fxFlex></span> {{medao.lastPaycheck | date: 'LLLL dd, yyyy'}}</div>
                             <div>Funding <span fxFlex></span> ${{ medao.balance | number: '1.0-0'}}/{{ medao.maxFunding | number: '1.0-0'}}</div>

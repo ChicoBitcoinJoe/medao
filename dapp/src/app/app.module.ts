@@ -40,6 +40,8 @@ import { MobileViewComponent } from './components/mobile-view/mobile-view.compon
 import { DesktopViewComponent } from './components/desktop-view/desktop-view.component';
 import { TabletViewComponent } from './components/tablet-view/tablet-view.component';
 import { PostComponent } from './components/post/post.component';
+import { SignUpFormComponent } from './components/sign-up-form/sign-up-form.component';
+import { LeftNavComponent } from './components/left-nav/left-nav.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +56,9 @@ import { PostComponent } from './components/post/post.component';
     MobileViewComponent,
     DesktopViewComponent,
     TabletViewComponent,
-    PostComponent
+    PostComponent,
+    SignUpFormComponent,
+    LeftNavComponent
   ],
   imports: [
     BrowserModule,

@@ -37,83 +37,96 @@ export class Web3Service {
 
     constructor () {
         if (window.ethereum) { // Modern dapp browsers...
-            this.instance = new Web3(window.ethereum);
+            window.web3 = new Web3(window.ethereum);
+            window.web3['connected'] = window.web3 != undefined;
+            this.network.connected = window.web3 != undefined;
         }
         else if (window.web3) { // Legacy dapp browsers...
-            console.warn("Your financial privacy is at risk! Disable automatic account exposure with whatever ethereum wallet provider you use")
-            this.instance = new Web3(window.web3.currentProvider);
+            console.warn("Your financial privacy is at risk! Disable automatic account exposure with whatever ethereum wallet provider you use.");
+            window.web3 = new Web3(window.web3.currentProvider);
+            window.web3['connected'] = window.web3 != undefined;
+            this.network.connected = window.web3 != undefined;
+        }
+        else {
+            window.web3 = new Web3("https://kovan.infura.io/v3/e49b5318974f466db1c55cb1247f1312");
         }
 
-        this.instance.utils['nullAddress'] = '0x0000000000000000000000000000000000000000';
-
-        this.network.connected = this.instance != undefined;
+        if(window.web3){
+            this.instance = window.web3;
+            window.web3.utils['nullAddress'] = '0x0000000000000000000000000000000000000000';
+        }
     }
 
     ready () {
-        if(this.readyPromise)
-            return this.readyPromise;
+        if(!this.readyPromise){
+            this.readyPromise = new Promise((resolve, reject) => {
+                if(this.instance){
+                    Promise.all([
+                        this.instance.eth.net.getNetworkType(),
+                        this.instance.eth.net.getId(),
+                        this.getCurrentAccount()
+                    ])
+                    .then(async promises => {
+                        var networkName = promises[0];
+                        var networkId = promises[1];
+                        var currentAccount = promises[2];
 
-        this.readyPromise = new Promise((resolve, reject) => {
-            if(this.instance){
-                Promise.all([
-                    this.instance.eth.net.getNetworkType(),
-                    this.instance.eth.net.getId(),
-                    this.getCurrentAccount()
-                ])
-                .then(async promises => {
-                    var networkName = promises[0];
-                    var networkId = promises[1];
-                    var currentAccount = promises[2];
+                        this.network.name = networkName.charAt(0).toUpperCase() + networkName.slice(1);
+                        this.network.id = networkId;
+                        this.network.valid = this.network.allowed.includes(networkName);
+                        this.account.signedIn = currentAccount != null;
+                        this.account.address = currentAccount;
 
-                    this.network.name = networkName.charAt(0).toUpperCase() + networkName.slice(1);
-                    this.network.id = networkId;
-                    this.network.valid = this.network.allowed.includes(networkName);
-                    this.account.signedIn = currentAccount != null;
-                    this.account.address = currentAccount;
+                        if(!this.network.valid)
+                            reject();
+                        else {
+                            if(this.DAI_PRICE_FEED[this.network.id])
+                                this.DaiPriceFeed = await new this.instance.eth.Contract(DaiPriceFeedArtifact.abi, this.DAI_PRICE_FEED[this.network.id]);
 
-                    if(!this.network.valid)
-                        reject();
-                    else {
-                        if(this.DAI_PRICE_FEED[this.network.id])
-                            this.DaiPriceFeed = await new this.instance.eth.Contract(DaiPriceFeedArtifact.abi, this.DAI_PRICE_FEED[this.network.id]);
-
-                        if(!currentAccount){
-                            if(this.DaiPriceFeed){
-                                this.DaiPriceFeed.methods.read().call()
-                                .then(daiPriceInWei => {
-                                    this.ethPriceInDai = Number(this.instance.utils.fromWei(daiPriceInWei, 'ether'));
+                            if(!currentAccount){
+                                if(this.DaiPriceFeed){
+                                    this.DaiPriceFeed.methods.read().call()
+                                    .then(daiPriceInWei => {
+                                        this.ethPriceInDai = Number(this.instance.utils.fromWei(daiPriceInWei, 'ether'));
+                                        resolve(null)
+                                    })
+                                    .catch(err => {
+                                        reject(err);
+                                    });
+                                }
+                                else {
                                     resolve(null)
-                                });
+                                }
                             }
                             else {
-                                resolve(null)
+                                Promise.all([
+                                    this.DaiPriceFeed.methods.read().call(),
+                                    this.instance.eth.getBalance(currentAccount)
+                                ])
+                                .then(promises => {
+                                    var daiPriceInWei = promises[0];
+                                    var balance = promises[1];
+
+                                    this.ethPriceInDai = Number(this.instance.utils.fromWei(daiPriceInWei, 'ether'));
+                                    this.account.balance = balance;
+
+                                    resolve(this.account.address);
+                                })
+                                .catch(err => {
+                                    reject(err);
+                                })
                             }
                         }
-                        else {
-                            Promise.all([
-                                this.DaiPriceFeed.methods.read().call(),
-                                this.instance.eth.getBalance(currentAccount)
-                            ])
-                            .then(promises => {
-                                var daiPriceInWei = promises[0];
-                                var balance = promises[1];
-
-                                this.ethPriceInDai = Number(this.instance.utils.fromWei(daiPriceInWei, 'ether'));
-                                this.account.balance = balance;
-
-                                resolve(this.account.address);
-                            })
-                        }
-                    }
-                })
-                .catch(err => {
-                    reject(err);
-                })
-            }
-            else {
-                reject(new Error('No web3 detected.'));
-            }
-        });
+                    })
+                    .catch(err => {
+                        reject(err);
+                    })
+                }
+                else {
+                    reject(new Error('No web3 detected.'));
+                }
+            });
+        }
 
         return this.readyPromise;
     }

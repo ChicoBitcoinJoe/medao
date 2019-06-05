@@ -1,6 +1,6 @@
 <app-mobile-view *ngIf="false" fxHide.gt-xs></app-mobile-view>
 <app-tablet-view *ngIf="false" fxHide fxShow.gt-xs fxHide.gt-md></app-tablet-view>
-<app-desktop-view *ngIf="medao" [medao]="medao" fxHide fxShow.gt-md></app-desktop-view>
+<app-desktop-view [medao]="medao" fxHide fxShow.gt-md></app-desktop-view>
 
 <mat-drawer-container *ngIf="false" fxFlexFill>
     <mat-drawer *ngIf="false" #leftNav opened mode="side" style="width: 33%;">

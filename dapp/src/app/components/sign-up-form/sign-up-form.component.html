@@ -1,0 +1,66 @@
+<div style="position: relative;" fxLayout="column">
+
+    <div *ngIf="false && !Web3.account.signedIn" class="padding" style="background-color: rgba(0,0,0,0.87); z-index: 2; position: absolute; top: 0px; width: 100%; height: 100%;">
+        <div fxLayout="column" fxLayoutAlign="center center" fxFlex>
+            <div *ngIf="!Web3.network.connected" fxLayout="column" >
+                <p>No web3 detected!</p>
+                <a *ngIf="!Web3.network.connected" mat-button style="border: 1px solid rgba(255,255,255,0.33); color: white;" href="https://metamask.io" target="_blank">
+                    try metamask
+                </a>
+            </div>
+            <div *ngIf="Web3.network.connected && !Web3.account.signedIn" fxLayout="column" fxLayoutAlign="center center" fxFlex>
+                <p *ngIf="Web3.network.valid">Sign in to web3 to continue</p>
+                <p *ngIf="!Web3.network.valid" class="centered">{{Web3.network.name}} not supported. <br> Try Kovan instead.</p>
+                <app-signin-button *ngIf="Web3.network.valid" ([disabled])="!Web3.network.valid"></app-signin-button>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="medao.tx.promise" class="padding"  style="background-color: rgba(0,0,0,0.87); z-index: 2; position: absolute; top: 0px; width: 100%; height: 100%;" fxLayoutAlign="center center">
+        <p *ngIf="!medao.tx.hash" class="centered">Waiting for user confirmation.</p>
+        <p *ngIf="medao.tx.hash" class="centered">Waiting for MeDao to deploy. <br> Be patient!</p>
+    </div>
+
+    <div *ngIf="!User.medao" fxLayout="column">
+        <h3 class="centered">Create your MeDao</h3>
+        <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput type="text" [(ngModel)]="medao.name" [disabled]="!User.account.signedIn || medao.tx.promise">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Birth Date</mat-label>
+            <input matInput [max]="medao.maxDate" [matDatepicker]="myDatepicker" [(ngModel)]="medao.date" [disabled]="!User.account.signedIn || medao.tx.promise">
+            <mat-datepicker-toggle matSuffix [for]="myDatepicker" class="white-text"></mat-datepicker-toggle>
+            <mat-datepicker #myDatepicker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Hourly Wage</mat-label>
+            <input matInput type="number" step="0.01" min="0.01" [(ngModel)]="medao.wage" [disabled]="!User.account.signedIn || medao.tx.promise">
+            <span style="padding: 0px 7px;" matSuffix>$</span>
+        </mat-form-field>
+        <div fxLayout="row">
+            <div style="overflow: hidden; min-width: 0px;" fxFlex>
+                <mat-form-field style="min-width: 0px; !important; width: 100%">
+                    <mat-label>Seed funds</mat-label>
+                    <input matInput type="number" step="0.01" min="0.01" max="{{Web3.account.balance | toDai | number:'1.2-2'}}" [(ngModel)]="medao.seed" [disabled]="!User.account.signedIn || medao.tx.promise">
+                    <span style="padding: 0px 7px;" matSuffix>$</span>
+                    <mat-hint *ngIf="Web3.account.balance" class="white-text"><span>available: ${{Web3.account.balance | toDai | number:'1.2-2'}}</span></mat-hint>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxFlex="118px">
+                <span style="padding: 0px 4px; margin-top: 19px;">payed in</span>
+                <mat-form-field class="white-text" fxFlex="50px">
+                    <mat-select [(ngModel)]="medao.paymentToken" [disabled]="!User.account.signedIn || medao.tx.promise">
+                        <mat-option *ngFor="let token of tokens" [value]="token" [disabled]="['dai','weth'].includes(token)">
+                          {{token}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+        <span fxFlex="16px"></span>
+        <button mat-button (click)="submit()" [class.grey-text]="!valid() || medao.tx.promise" [disabled]="!valid() || medao.tx.promise">submit</button>
+    </div>
+    <div *ngIf="User.medao" fxLayout="column">
+        
+    </div>
+</div>

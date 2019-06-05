@@ -9,10 +9,14 @@ import { MedaoService } from '../../services/medao/medao.service';
 })
 export class UserService {
 
-    account;
+    account = {
+        address: null,
+        signedIn: false,
+        balance: 0
+    };
+
     medao;
     balances = {};
-
 
     constructor(
         private router: Router,
@@ -21,20 +25,20 @@ export class UserService {
     ) { }
 
     signIn () {
-      this.Web3.signIn()
-      .then(async () => {
-          this.account = this.Web3.account;
-          let medaoAddress = await this.MeDao.addressOf(this.account.address);
-          this.medao = await this.MeDao.at(medaoAddress);
-          console.log('watching user: ', this);
+        this.Web3.signIn()
+        .then(async () => {
+            this.account = this.Web3.account;
+            let medaoAddress = await this.MeDao.addressOf(this.account.address);
+            this.medao = await this.MeDao.at(medaoAddress);
+            console.log('watching user: ', this);
 
-          let routes = this.router.url.split('/');
-          if(routes[1] == 'medao' && routes[2]){
+            let routes = this.router.url.split('/');
+            if(routes[1] == 'medao' && routes[2]){
               let currentRouteMeDao = <any>{};
               currentRouteMeDao = await this.MeDao.at(routes[2]);
               this.setBalance(currentRouteMeDao.token);
-          }
-      })
+            }
+        })
     }
 
     async setBalance (token) {

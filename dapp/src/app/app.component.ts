@@ -5,6 +5,8 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { Web3Service } from './services/web3/web3.service';
 import { UserService } from './services/user/user.service';
 
+declare let web3: any;
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -22,7 +24,8 @@ export class AppComponent {
 
           this.Web3.ready()
           .then(() => {
-              console.log(this.Web3)
+              console.log(this.Web3.network);
+              console.log(this.Web3.account);
               if(this.Web3.account.signedIn){
                   this.User.signIn();
               }
