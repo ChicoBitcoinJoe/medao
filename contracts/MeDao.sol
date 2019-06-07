@@ -4,7 +4,7 @@ import "./external/MiniMeToken.sol";
 import "./external/ERC20.sol";
 import "./external/Owned.sol";
 
-contract MeDao is Owned {
+contract MeDao is Owned, TokenController {
 
     uint public blockInitialized;
     address public factory;
@@ -51,13 +51,13 @@ contract MeDao is Owned {
         return reserveToken.balanceOf(address(this)) * tokenAmount / timeToken.totalSupply();
     }
 
-    function collectPay () public onlyOwner {
+    function pay () public onlyOwner {
         uint elapsedSeconds = (now - lastPayTimestamp) / 3;
         uint fundedTime = elapsedSeconds * timeToken.totalSupply() / (maxTokenSupply * 10^18);
         maxTokenSupply += elapsedSeconds;
         lastPayTimestamp = now;
         require(timeToken.generateTokens(owner, fundedTime), "failed to generate tokens");
-        emit Pay_event(owner, fundedTime);
+        emit Pay_event(fundedTime);
     }
 
     function invest (uint reserveAmount) public {
@@ -76,7 +76,7 @@ contract MeDao is Owned {
         emit Divest_event(msg.sender, tokenAmount, reserveClaim);
     }
 
-    function setHash (string newHash) public onlyOwner {
+    function setHash (string memory newHash) public onlyOwner {
         hash = newHash;
         emit Update_event(newHash);
     }
@@ -85,4 +85,22 @@ contract MeDao is Owned {
     event Update_event (string newHash);
     event Invest_event (address msgSender, uint reserveAmount, uint tokenAmount);
     event Divest_event (address msgSender, uint tokenAmount, uint reserveAmount);
+
+/// Token Controller Functions
+
+    function proxyPayment (address _owner) public payable returns(bool) {
+        _owner;
+        return false;
+    }
+
+    function onTransfer (address _from, address _to, uint _amount) public returns(bool) {
+        _from; _to; _amount;
+        return true;
+    }
+
+    function onApprove (address _owner, address _spender, uint _amount) public returns(bool) {
+        _owner; _spender; _amount;
+        return true;
+    }
+
 }
