@@ -9,10 +9,10 @@ module.exports = {
             gasPrice: 10000000000
         },
         kovan: {
-            host: "ec2-18-217-171-10.us-east-2.compute.amazonaws.com",
+            host: "localhost",
             port: 8545,
             network_id: 42,
-            from: '0xced49a637559c504807d7805ccf522b03cb585e0',
+            from: '0x2e9c6a76199854298775a6bac408052d8775bb68',
             gas: 4700000,
             gasPrice: 10000000000
         },
