@@ -43,6 +43,10 @@ input {
     color: white !important;
 }
 
+div, span, button, small {
+    color: white;
+}
+
 .grey .mat-button-wrapper {
     color: grey !important;
 }
@@ -63,6 +67,16 @@ input {
     text-align: center;
 }
 
+.borderLR {
+    border-left: 1px solid white;
+    border-right: 1px solid white;
+}
+
+.borderTB {
+    border-top: 1px solid white;
+    border-bottom: 1px solid white;
+}
+
 p {
     line-height: 24px;
     color: white;
@@ -79,6 +93,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .mat-button[disabled][disabled] {
     color: grey;
+}
+
+.mat-flat-button.mat-accent, .mat-raised-button.mat-accent, .mat-fab.mat-accent, .mat-mini-fab.mat-accent {
+    background-color: #29383e !important;
 }
 
 .white-text * {

@@ -34,14 +34,12 @@ import { OrderByPipe } from './pipes/order-by/order-by.pipe';
 
 import { HomeComponent } from './views/home/home.component';
 import { MedaoComponent } from './views/medao/medao.component';
-import { ToolbarComponent } from './components/toolbar/toolbar.component';
-import { SigninButtonComponent } from './components/signin-button/signin-button.component';
-import { MobileViewComponent } from './components/mobile-view/mobile-view.component';
-import { DesktopViewComponent } from './components/desktop-view/desktop-view.component';
-import { TabletViewComponent } from './components/tablet-view/tablet-view.component';
+import { SendDialog } from './views/medao/medao.component';
+import { TradeDialog } from './views/medao/medao.component';
 import { PostComponent } from './components/post/post.component';
 import { SignUpFormComponent } from './components/sign-up-form/sign-up-form.component';
 import { LeftNavComponent } from './components/left-nav/left-nav.component';
+import { RightNavComponent } from './components/right-nav/right-nav.component';
 
 @NgModule({
   declarations: [
@@ -51,14 +49,12 @@ import { LeftNavComponent } from './components/left-nav/left-nav.component';
     OrderByPipe,
     HomeComponent,
     MedaoComponent,
-    ToolbarComponent,
-    SigninButtonComponent,
-    MobileViewComponent,
-    DesktopViewComponent,
-    TabletViewComponent,
     PostComponent,
     SignUpFormComponent,
-    LeftNavComponent
+    LeftNavComponent,
+    RightNavComponent,
+    SendDialog,
+    TradeDialog
   ],
   imports: [
     BrowserModule,
@@ -78,6 +74,10 @@ import { LeftNavComponent } from './components/left-nav/left-nav.component';
     MatToolbarModule,
   ],
   providers: [],
+  entryComponents: [
+      SendDialog,
+      TradeDialog
+  ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }

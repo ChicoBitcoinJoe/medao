@@ -47,4 +47,8 @@ export class UserService {
         this.balances[token.address] = balance;
     }
 
+    follow (medao) {
+        console.log("following " + medao.address);
+    }
+
 }

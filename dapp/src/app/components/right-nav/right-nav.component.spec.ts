@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MobileViewComponent } from './mobile-view.component';
+import { RightNavComponent } from './right-nav.component';
 
-describe('MobileViewComponent', () => {
-  let component: MobileViewComponent;
-  let fixture: ComponentFixture<MobileViewComponent>;
+describe('RightNavComponent', () => {
+  let component: RightNavComponent;
+  let fixture: ComponentFixture<RightNavComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MobileViewComponent ]
+      declarations: [ RightNavComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MobileViewComponent);
+    fixture = TestBed.createComponent(RightNavComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

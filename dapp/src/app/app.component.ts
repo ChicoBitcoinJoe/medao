@@ -24,8 +24,8 @@ export class AppComponent {
 
           this.Web3.ready()
           .then(() => {
-              console.log(this.Web3.network);
-              console.log(this.Web3.account);
+              console.log('network', this.Web3.network);
+              console.log('account', this.Web3.account);
               if(this.Web3.account.signedIn){
                   this.User.signIn();
               }

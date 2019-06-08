@@ -25,6 +25,28 @@ let Weth = {
     '42': "0xd0A1E359811322d97991E03f863a0C30C2cF029C"
 }
 
+class MeDao {
+
+    Web3: Web3Service;
+    methods: any;
+    token: any;
+
+    transfer (address, tokenAmount) {
+        return this.token.methods.transfer(address, tokenAmount).send({
+            from: this.Web3.account.address
+        })
+    }
+
+    invest (reserveAmount) {
+
+    }
+
+    divest (tokenAmount) {
+
+    }
+
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -91,7 +113,7 @@ export class MedaoService {
         }
         else if(paymentToken == 'weth') {
 
-            }
+        }
     }
 
     async addressOf (account) {
@@ -106,13 +128,17 @@ export class MedaoService {
                     resolve(null);
                 }
                 else {
-                    let MeDao = await new this.Web3.instance.eth.Contract(MeDaoArtifact.abi, medaoAddress);
-                    let tokenAddress = await MeDao.methods.timeToken().call();
+                    let medaoInstance = await new this.Web3.instance.eth.Contract(MeDaoArtifact.abi, medaoAddress);
+                    let medao = new MeDao();
+                    medao.methods = medaoInstance.methods;
+                    let tokenAddress = await medao.methods.timeToken().call();
                     let token = await new this.Web3.instance.eth.Contract(MiniMeTokenArtifact.abi, tokenAddress);
+                    let controller = await token.methods.controller().call();
+                    let transfersEnabled = await token.methods.transfersEnabled().call();
                     let name = await token.methods.name.call();
                     let symbol = await token.methods.symbol.call();
-                    let maxSupply = await MeDao.methods.maxTokenSupply().call();
-                    let birthTimestamp = await MeDao.methods.birthTimestamp().call();
+                    let maxSupply = await medao.methods.maxTokenSupply().call();
+                    let birthTimestamp = await medao.methods.birthTimestamp().call();
                     let birthDate = new Date(birthTimestamp*1000);
                     let totalSupplyInWei = await token.methods.totalSupply().call();
                     let totalSupply =  this.Web3.instance.utils.fromWei(totalSupplyInWei.toString(), 'ether');
@@ -120,8 +146,8 @@ export class MedaoService {
                     let daiBalance =  this.Web3.instance.utils.fromWei(daiBalanceInWei.toString(), 'ether');
                     let hourlyWage = daiBalance / totalSupply;
                     let fundedPercent = Math.round(totalSupply / maxSupply);
-                    let owner = await MeDao.methods.owner().call();
-                    let lastPayTimestampInSeconds = await MeDao.methods.lastPayTimestamp().call();
+                    let owner = await medao.methods.owner().call();
+                    let lastPayTimestampInSeconds = await medao.methods.lastPayTimestamp().call();
                     let lastPayTimestamp = new Date(lastPayTimestampInSeconds*1000);
                     let tokenBalanceInWei = await token.methods.balanceOf(owner).call();
                     let tokenBalance = this.Web3.instance.utils.fromWei(tokenBalanceInWei.toString(), 'ether');
@@ -132,26 +158,28 @@ export class MedaoService {
                     let currentSalary = hourlyWage * fundedPercent / 100 * 56 * 52;
                     let maxSalary = hourlyWage * 56 * 52;
 
-                    MeDao['token'] = token;
-                    MeDao['name'] = name;
-                    MeDao['symbol'] = symbol;
-                    MeDao['age'] = age;
-                    MeDao['hourlyWage'] = hourlyWage;
-                    MeDao['currentSalary'] = currentSalary;
-                    MeDao['maxSalary'] = maxSalary;
-                    MeDao['balance'] = daiBalance;
-                    MeDao['totalSupply'] = totalSupply;
-                    MeDao['maxSupply'] = maxSupply;
-                    MeDao['birthDate'] = birthDate;
-                    MeDao['maxFunding'] = maxFunding;
-                    MeDao['fundedPercent'] = fundedPercent;
-                    MeDao['lastPaycheck'] = lastPayTimestamp;
-                    MeDao['owner'] = {
+                    medao['Web3'] = this.Web3;
+                    medao['address'] = medaoAddress;
+                    medao['token'] = token;
+                    medao['name'] = name;
+                    medao['symbol'] = symbol;
+                    medao['age'] = age;
+                    medao['hourlyWage'] = hourlyWage;
+                    medao['currentSalary'] = currentSalary;
+                    medao['maxSalary'] = maxSalary;
+                    medao['balance'] = daiBalance;
+                    medao['totalSupply'] = totalSupply;
+                    medao['maxSupply'] = maxSupply;
+                    medao['birthDate'] = birthDate;
+                    medao['maxFunding'] = maxFunding;
+                    medao['fundedPercent'] = fundedPercent;
+                    medao['lastPaycheck'] = lastPayTimestamp;
+                    medao['owner'] = {
                         address: owner,
                         balance: tokenBalance
                     };
 
-                    resolve(MeDao);
+                    resolve(medao);
                 }
             });
         });

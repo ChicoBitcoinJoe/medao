@@ -78,7 +78,7 @@ export class Web3Service {
                         this.account.address = currentAccount;
 
                         if(!this.network.valid)
-                            reject();
+                            reject(new Error('invalid network detected'));
                         else {
                             if(this.DAI_PRICE_FEED[this.network.id])
                                 this.DaiPriceFeed = await new this.instance.eth.Contract(DaiPriceFeedArtifact.abi, this.DAI_PRICE_FEED[this.network.id]);
