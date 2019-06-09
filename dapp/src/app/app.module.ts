@@ -40,6 +40,7 @@ import { PostComponent } from './components/post/post.component';
 import { SignUpFormComponent } from './components/sign-up-form/sign-up-form.component';
 import { LeftNavComponent } from './components/left-nav/left-nav.component';
 import { RightNavComponent } from './components/right-nav/right-nav.component';
+import { InfoBubblesComponent } from './components/info-bubbles/info-bubbles.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { RightNavComponent } from './components/right-nav/right-nav.component';
     LeftNavComponent,
     RightNavComponent,
     SendDialog,
-    TradeDialog
+    TradeDialog,
+    InfoBubblesComponent
   ],
   imports: [
     BrowserModule,

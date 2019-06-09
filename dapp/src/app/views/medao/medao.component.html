@@ -48,32 +48,7 @@
                         This is a short description of this particular medao. It should be simple but powerful.
                     </div>
 
-                    <div fxLayout="row">
-                        <div fxLayout="column" fxLayoutAlign="start center" fxFlex="50">
-                            <h2 class="padding no-margin" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
-                                <div>{{medao.fundedPercent}}%</div>
-                                <span class="grey-text" style="font-size: 12px;">funded</span>
-                            </h2>
-                            <h2 *ngIf="!User.balances[medao.token.address]" class="padding no-margin" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
-                                <div>$0.00</div>
-                                <span class="grey-text" style="font-size: 12px;">balance: 0h</span>
-                            </h2>
-                            <h2 *ngIf="User.balances[medao.token.address]" class="padding no-margin" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
-                                <div>${{medao.hourlyWage * User.balances[medao.token.address] | number: '1.2-2'}}</div>
-                                <span class="grey-text" style="font-size: 12px;">balance: {{User.balances[medao.token.address]}}h</span>
-                            </h2>
-                        </div>
-                        <div fxLayout="column" fxLayoutAlign="start center" fxFlex="50">
-                            <h2 class="padding no-margin" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
-                                <div>{{medao.age | number: '1.0-0'}}</div>
-                                <span class="grey-text" style="font-size: 12px;">age</span>
-                            </h2>
-                            <h2 class="padding no-margin" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
-                                <div>${{medao.hourlyWage | number: '1.2-2'}}</div>
-                                <span class="grey-text" style="font-size: 12px;">hourly wage</span>
-                            </h2>
-                        </div>
-                    </div>
+                    <app-info-bubbles class="padding" [medao]="medao" [User]="User"></app-info-bubbles>
 
                     <div fxLayout="column" fxLayoutGap="16px">
                         <h3 class="no-margin">Details</h3>
@@ -151,28 +126,8 @@
                                 This is a short description of this particular medao. It should be simple but powerful.
                             </div>
 
-                            <div class="margin padding" fxLayoutAlign="space-around end">
-                                <h2 class="no-margin" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
-                                    <div>{{medao.age | number: '1.0-0'}}</div>
-                                    <span class="grey-text" style="font-size: 12px;">age</span>
-                                </h2>
-                                <h2 class="no-margin" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
-                                    <div>{{medao.fundedPercent}}%</div>
-                                    <span class="grey-text" style="font-size: 12px;">funded</span>
-                                </h2>
-                                <h2 class="no-margin" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
-                                    <div>${{medao.hourlyWage | number: '1.2-2'}}</div>
-                                    <span class="grey-text" style="font-size: 12px;">hourly wage</span>
-                                </h2>
-                                <h2 *ngIf="!User.balances[medao.token.address]" class="no-margin" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
-                                    <div>$0.00</div>
-                                    <span class="grey-text" style="font-size: 12px;">balance: 0h</span>
-                                </h2>
-                                <h2 *ngIf="User.balances[medao.token.address]" class="no-margin" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
-                                    <div>${{medao.hourlyWage * User.balances[medao.token.address] | number: '1.2-2'}}</div>
-                                    <span class="grey-text" style="font-size: 12px;">balance: {{User.balances[medao.token.address]}}h</span>
-                                </h2>
-                            </div>
+                            <app-info-bubbles class="padding" [medao]="medao" [User]="User"></app-info-bubbles>
+
                             <div fxFlex="32px"></div>
                             <div fxLayout="column" fxLayoutGap="16px">
                                 <h3 class="no-margin">Details</h3>
