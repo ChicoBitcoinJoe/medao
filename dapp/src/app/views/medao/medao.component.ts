@@ -7,8 +7,8 @@ import { UserService } from '../../services/user/user.service';
 import { MedaoService } from '../../services/medao/medao.service';
 
 export interface DialogData {
-  animal: string;
-  name: string;
+    medao: any;
+    dai: any;
 }
 
 @Component({
@@ -36,6 +36,7 @@ export class MedaoComponent implements OnInit {
             let medao = await this.MeDaoRegistry.at(medaoAddress);
             this.medao = medao;
             if(this.Web3.account.signedIn){
+                this.User.account = this.Web3.account;
                 this.User.setBalance(this.medao.token);
             }
         });
@@ -43,8 +44,8 @@ export class MedaoComponent implements OnInit {
 
     openSendDialog () {
         const dialogRef = this.dialog.open(SendDialog, {
-            width: '250px',
-            data: {name: 'Joe', animal: 'human'}
+            // width: '250px',
+            data: {medao: this.medao}
         });
 
         dialogRef.afterClosed().subscribe(async result => {
@@ -70,7 +71,7 @@ export class MedaoComponent implements OnInit {
 
     openTradeDialog () {
         const dialogRef = this.dialog.open(TradeDialog, {
-            width: '250px',
+            // width: '250px',
             data: {name: 'Joe', animal: 'human'}
         });
 
@@ -98,7 +99,7 @@ export class MedaoComponent implements OnInit {
     follow () {
         this.User.follow(this.medao);
     }
-    
+
 }
 
 @Component({
@@ -107,13 +108,30 @@ export class MedaoComponent implements OnInit {
 })
 export class SendDialog {
 
+    sendAmount: number = 0;
+    selectedToken: string = 'dai';
+    tokens = ['dai','time'];
+    selectedDestination = "Joseph Brian Reed";
+
+    dai;
+    medao;
+
     constructor(
         public dialogRef: MatDialogRef<SendDialog>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData
-    ) {}
+    ) {
+        this.dai = data.dai;
+        this.medao = data.medao;
+        this.selectedDestination = this.medao.name;
+    }
 
-    onNoClick(): void {
-        this.dialogRef.close();
+    initiateSend(): void {
+        if(this.selectedToken == 'dai'){
+            console.log(this.selectedToken);
+        }
+        else if(this.selectedToken == 'time'){
+            console.log(this.selectedToken);
+        }
     }
 
 }

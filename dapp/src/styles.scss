@@ -35,6 +35,14 @@ body {
     background-color: #222d31;
 }
 
+.primary-bg {
+    background-color: #222d31 !important;
+}
+
+.secondary-bg {
+    background-color: #29383e !important;
+}
+
 input {
     caret-color: white !important;
 }
@@ -60,7 +68,7 @@ div, span, button, small {
 }
 
 .margin {
-    margin: 16px;
+    margin: 16px !important;
 }
 
 .centered {
@@ -87,6 +95,10 @@ h1, h2, h3, h4, h5, h6 {
     font-family: "Courier New";
 }
 
+.mat-form-field-appearance-legacy .mat-hint {
+    color: white;
+}
+
 .mat-form-field-appearance-legacy .mat-form-field-label {
     color: white !important;
 }
@@ -99,6 +111,10 @@ h1, h2, h3, h4, h5, h6 {
     background-color: #29383e !important;
 }
 
+.mat-dialog-container {
+    background-color: #29383e;
+}
+
 .white-text * {
     color: white;
 }
@@ -108,15 +124,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .input {
-    caret-color:: white !important;
-}
-
-.primary-bg {
-    background-color: #222d31 !important;
-}
-
-.secondary-bg {
-    background-color: #29383e !important;
+    caret-color: white !important;
 }
 
 .scrollable {
@@ -133,6 +141,10 @@ h1, h2, h3, h4, h5, h6 {
     -ms-user-select: none;
     user-select: none;
     outline: none;
+}
+
+.mat-option-text {
+    color: rgba(0,0,0,0.87);
 }
 
 .mat-form-field-appearance-legacy .mat-form-field-underline {

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Web3Service } from '../../services/web3/web3.service';
+import { DaiService } from '../../services/dai/dai.service';
 import { MedaoService } from '../../services/medao/medao.service';
 
 @Injectable({
@@ -21,6 +22,7 @@ export class UserService {
     constructor(
         private router: Router,
         public Web3: Web3Service,
+        public Dai: DaiService,
         public MeDao: MedaoService,
     ) { }
 
@@ -42,9 +44,17 @@ export class UserService {
     }
 
     async setBalance (token) {
-        let balanceInWei = await token.methods.balanceOf(this.account.address).call();
-        let balance = this.Web3.instance.utils.fromWei(balanceInWei.toString(), 'ether');
-        this.balances[token.address] = balance;
+        try {
+            let balanceInWei = await token.methods.balanceOf(this.account.address).call();
+            let balance = this.Web3.instance.utils.fromWei(balanceInWei.toString(), 'ether');
+            this.balances[token.address] = balance;
+
+            let daiBalance = await this.Dai.getBalance(this.account.address, 'ether');
+            this.balances[this.Dai.address] = balance;
+        }
+        catch(err){
+            console.error(err);
+        }
     }
 
     follow (medao) {

@@ -15,13 +15,14 @@
     <div *ngIf="User.account.signedIn" fxLayout="column" fxFlex>
         <div class="secondary-bg centered" style="border-bottom: 1px solid white;" fxLayout="column">
             <small>Signed in as:</small>
-            <h4 *ngIf="!User.medao" >{{User.account.address.slice(0,8)}}...</h4>
-            <h4 *ngIf="User.medao" >{{User.medao.name}}</h4>
+            <h4 *ngIf="!User.medao">{{User.account.address.slice(0,8)}}...</h4>
+            <h4 *ngIf="User.medao">{{User.medao.name}}</h4>
+            <button *ngIf="User.medao" mat-button class="margin white-text" [routerLink]="'/medao/' + User.medao.address">view my dao</button>
         </div>
         <div *ngIf="!User.medao" class="padding">
             <app-sign-up-form ></app-sign-up-form>
         </div>
-        <div *ngIf="User.medao" class="scrollable padding" fxFlex>
+        <div *ngIf="User.medao" class="scrollable padding" fxFlex.gt-xs>
             <h3>Following</h3>
             <div fxLayout="column" fxLayoutGap="32px">
                 <div fxLayout="column" fxLayoutGap="8px">
@@ -44,44 +45,3 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-
-        <div fxHide fxLayout="column" fxFlex>
-            <h1 class="secondary-bg centered padding no-margin" style="padding-top: 32px;">
-                <span class="cursor" routerLink="['/home']">MeDao</span>
-            </h1>
-            <div class="secondary-bg" fxLayout="column" fxFlex="68px">
-                <button mat-button *ngIf="Web3.network.connected && !User.medao" style="padding: 16px;" (click)="User.signIn()">sign in to get started</button>
-                <button mat-button *ngIf="User.medao" style="padding: 16px; color: white;" disabled="true">Signed in as: &nbsp; &nbsp; &nbsp; {{User.medao.name}}</button>
-                <a mat-button *ngIf="!Web3.network.connected" class="secondary-bg" style="padding: 16px;" href="https://metamask.io" target="_blank">
-                    web3 not detected
-                </a>
-            </div>
-            <div *ngIf="User.medao" class="secondary-bg padding" style="border-bottom: 1px solid white;" fxLayout="row" fxLayoutAlign="space-around center">
-                <h2 class="no-margin" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
-                    <div>${{User.medao.hourlyWage | number: '1.2-2'}}</div>
-                    <span class="grey-text" style="font-size: 12px;">hourly wage</span>
-                </h2>
-                <h2 class="no-margin" style="position: relative; max-height: 79.22px;" fxLayoutGap="4px">
-                    <div *ngIf="!User.balances[User.medao.token.address]" fxLayout="column" fxLayoutAlign="center center">
-                        <div>$0.00</div>
-                        <div class="grey-text" fxLayout="row" style="font-size: 12px;">
-                            <div class="grey-text">balance:&nbsp;</div>
-                            <div class="grey-text">0<span class="grey-text" style="padding-left: 2px">h</span></div>
-                        </div>
-                    </div>
-                    <div *ngIf="User.balances[User.medao.token.address]" fxLayout="column" fxLayoutAlign="center center">
-                        <div>${{User.medao.hourlyWage * User.balances[User.medao.token.address] | number: '1.2-2'}}</div>
-                        <div class="grey-text" fxLayout="row" style="font-size: 12px;">
-                            balance: {{User.balances[User.medao.token.address]}}h
-                        </div>
-                    </div>
-                </h2>
-            </div>
-
-
-        </div>

@@ -77,6 +77,9 @@ export class Web3Service {
                         this.account.signedIn = currentAccount != null;
                         this.account.address = currentAccount;
 
+                        window.web3['ready'] = this.ready;
+                        window.web3['network'] = {'id': networkId};
+
                         if(!this.network.valid)
                             reject(new Error('invalid network detected'));
                         else {

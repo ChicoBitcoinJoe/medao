@@ -1,46 +1,47 @@
-<div fxHide.gt-xs fxLayout="column" fxFlexFill>
-    <h1 class="no-margin" fxLayout="column" fxLayoutAlign="center center" fxFlex="160px">
-        MeDao
-        <div class="grey-text padding" style="font-size: 16px;">
-            Invest in people.
-        </div>
-    </h1>
-    <div class="borderTB padding" fxLayout="column">
-        <div *ngIf="!User.medao" class="centered">
-            <div *ngIf="!Web3.network.connected" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="16px">
-                <p>No web3 detected!</p>
-                <a *ngIf="!Web3.network.connected" mat-button style="color: white;" href="https://metamask.io" target="_blank">
-                    try metamask
-                </a>
+<div fxHide.gt-xs fxFlexFill>
+    <div fxLayout="column">
+        <app-left-nav [Web3]="Web3" [User]="User"></app-left-nav>
+        <div fxLayout="column">
+            <div class="padding" fxLayout="column">
+                <h3>How does it work?</h3>
+                <p>
+                    Having a MeDao makes you an employee of the world. Investors pool money together from which you (the employee) withdraw a salary for time worked. As value is returned to investors, the value of your time will go up.
+                </p>
             </div>
-            <div *ngIf="!Web3.account.signedIn" fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="16px">
-                <p *ngIf="!Web3.network.valid" class="centered">The {{Web3.network.name}} Ethereum Network is not supported. Try the Kovan Test Network instead.</p>
-                <button mat-button *ngIf="Web3.network.valid" ([disabled])="!Web3.network.valid" (click)="User.signIn()">sign in</button>
+            <div class="padding" fxLayout="column">
+                <h3>Is it safe?</h3>
+                <p>
+                    A MeDao has built in properties to protect the funds of each investor. Downside potential is something that can be calculated down to the penny. For example, if you invest $100 into a 33 year old employee, in exactly one year your investment will still be worth $97 even if no value is created by the employee.
+                </p>
             </div>
-            <div *ngIf="Web3.account.signedIn && !User.medao" fxLayout="column">
-                <app-sign-up-form></app-sign-up-form>
+            <div class="padding" fxLayout="column">
+                <h3>Third Bullet Point</h3>
+                <p>
+                    To do
+                </p>
             </div>
-        </div>
-        <div *ngIf="User.medao" class="centered" fxLayout="column">
-            <small>Signed in as:</small>
-            <h4>{{User.medao.name}}</h4>
-            <button mat-button class="white-text" [routerLink]="'/medao/' + User.medao.address">view my dao</button>
         </div>
     </div>
-    <div class="padding" fxLayout="column" fxLayout.gt-sm="row">
-        <div class="padding" fxLayout="column" fxFlex.gt-sm="33">
+</div>
+
+<div fxHide fxShow.sm fxLayout="row" fxLayoutGap="32px" fxFlexFill>
+    <div style="border-right: 1px solid white; position: relative;" fxLayout="column" fxFlex="320px">
+        <app-left-nav class="borderLR" style="position: fixed; width: 320px;" [Web3]="Web3" [User]="User" fxFlex></app-left-nav>
+    </div>
+    <div class="scrollable" style="border-left: 1px solid white;" fxFlex>
+        <div class="padding">
             <h3>How does it work?</h3>
             <p>
                 Having a MeDao makes you an employee of the world. Investors pool money together from which you (the employee) withdraw a salary for time worked. As value is returned to investors, the value of your time will go up.
             </p>
         </div>
-        <div class="padding" fxLayout="column" fxFlex.gt-sm="33">
+        <div class="padding">
             <h3>Is it safe?</h3>
             <p>
                 A MeDao has built in properties to protect the funds of each investor. Downside potential is something that can be calculated down to the penny. For example, if you invest $100 into a 33 year old employee, in exactly one year your investment will still be worth $97 even if no value is created by the employee.
             </p>
         </div>
-        <div class="padding" fxLayout="column" fxFlex.gt-sm="33">
+        <div class="padding">
             <h3>Third Bullet Point</h3>
             <p>
                 To do
@@ -49,88 +50,33 @@
     </div>
 </div>
 
-
-<div fxHide fxShow.md>
-
-</div>
-
-
-<div fxHide fxShow.gt-md>
-
-</div>
-
-<div *ngIf="false" class="scrollable" fxLayout="column" fxFlexFill>
-    <h1 style="margin: 16px 8px; text-align: center" fxLayout="column" fxLayoutAlign="center center" fxFlex="152px">
-        MeDao
-        <div style="padding: 8px 16px; font-size: 16px; color: rgba(255,255,255,0.5)">
-            Invest in people.
+<div fxHide fxShow.gt-sm fxLayout="row" fxLayoutAlign="center" fxFlexFill>
+    <div fxLayout="row" fxFlex fxFlex.lg="1128px" fxFlex.xl="1448px" fxLayoutGap="32px">
+        <div style="border-right: 1px solid white; position: relative;" fxLayout="column" fxFlex="320px">
+            <app-left-nav class="borderLR" style="position: fixed; width: 320px;" [Web3]="Web3" [User]="User" fxFlex></app-left-nav>
         </div>
-    </h1>
-    <div *ngIf="!User.medao" class="secondary-bg" style="margin-top: 16px; position: relative;" fxLayout="row" fxLayoutAlign="center" fxFlex="363px">
-        <div class="padding" fxLayout="column" fxFlex="420px">
-            <app-sign-up-form></app-sign-up-form>
-        </div>
-        <div *ngIf="!Web3.account.signedIn" style="background-color: rgba(0,0,0,0.87); z-index: 2; position: absolute; top: 0px; width: 100%; height: 100%;">
-            <div fxLayout="column" fxLayoutAlign="center center" fxFlex>
-                <div *ngIf="!Web3.network.connected" fxLayout="column" >
-                    <p>No web3 detected!</p>
-                    <a *ngIf="!Web3.network.connected" mat-button style="border: 1px solid rgba(255,255,255,0.33); color: white;" href="https://metamask.io" target="_blank">
-                        try metamask
-                    </a>
-                </div>
-                <div *ngIf="Web3.network.connected && !Web3.account.signedIn" fxLayout="column" fxLayoutAlign="center center" fxFlex>
-                    <p *ngIf="Web3.network.valid">Sign in to web3 to continue</p>
-                    <p *ngIf="!Web3.network.valid" class="centered">{{Web3.network.name}} not supported. <br> Try Kovan instead.</p>
-                    <button mat-button *ngIf="Web3.network.valid" ([disabled])="!Web3.network.valid" (click)="User.signIn()"></button>
-                </div>
-            </div>
-        </div>
-        <div *ngIf="medao.tx.promise" fxLayoutAlign="center center" style="background-color: rgba(0,0,0,0.87); z-index: 2; position: absolute; top: 0px; width: 100%; height: 100%;">
-            <p *ngIf="!medao.tx.hash" class="centered">Waiting for user confirmation.</p>
-            <p *ngIf="medao.tx.hash" class="centered">Waiting for MeDao to deploy. <br> Be patient!</p>
-        </div>
-    </div>
-    <div *ngIf="User.medao" class="secondary-bg" fxLayout="row" fxLayoutAlign="center" >
-        <div class="padding" fxLayout="column" fxLayoutGap="16px" fxFlex="420px">
-            <h4 class="centered">Signed in as:</h4>
-            <h2 class="centered">{{User.medao.name}}</h2>
-            <div fxLayout="row" fxLayoutAlign="space-around center">
-                <h5 class="no-margin" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
-                    <div>${{User.medao.hourlyWage | number: '1.2-2'}}/h</div>
-                    <small style="color: rgba(255,255,255,0.5);">hourly</small>
-                </h5>
-                <h5 class="no-margin" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
-                    <div>${{User.medao.balance/1000 | number: '1.0-0'}}k</div>
-                    <small style="color: rgba(255,255,255,0.5);">funded</small>
-                </h5>
-                <h5 class="no-margin" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
-                    <div>{{User.medao.owner.balance | number: '1.1-2'}}<span style="padding: 2px">h</span></div>
-                    <small style="color: rgba(255,255,255,0.5);">balance</small>
-                </h5>
-            </div>
+        <div class="borderLR scrollable" fxFlex>
             <div fxLayout="column">
-                <button mat-button style="color: white" [routerLink]="['/medao/',User.medao.address]">view</button>
+                <div class="padding" fxLayout="column">
+                    <h3>How does it work?</h3>
+                    <p>
+                        Having a MeDao makes you an employee of the world. Investors pool money together from which you (the employee) withdraw a salary for time worked. As value is returned to investors, the value of your time will go up.
+                    </p>
+                </div>
+                <div class="padding" fxLayout="column">
+                    <h3>Is it safe?</h3>
+                    <p>
+                        A MeDao has built in properties to protect the funds of each investor. Downside potential is something that can be calculated down to the penny. For example, if you invest $100 into a 33 year old employee, in exactly one year your investment will still be worth $97 even if no value is created by the employee.
+                    </p>
+                </div>
+                <div class="padding" fxLayout="column">
+                    <h3>Third Bullet Point</h3>
+                    <p>
+                        To do
+                    </p>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="padding" fxLayout="column" fxLayout.gt-sm="row">
-        <div class="padding" fxLayout="column" fxFlex.gt-sm="33">
-            <h3>How does it work?</h3>
-            <p>
-                Having a MeDao makes you an employee of the world. Investors pool money together from which you (the employee) withdraw a salary for time worked. As value is returned to investors, the value of your time will go up.
-            </p>
-        </div>
-        <div class="padding" fxLayout="column" fxFlex.gt-sm="33">
-            <h3>Is it safe?</h3>
-            <p>
-                A MeDao has built in properties to protect the funds of each investor. Downside potential is something that can be calculated down to the penny. For example, if you invest $100 into a 33 year old employee, in exactly one year your investment will still be worth $97 even if no value is created by the employee.
-            </p>
-        </div>
-        <div class="padding" fxLayout="column" fxFlex.gt-sm="33">
-            <h3>Third Bullet Point</h3>
-            <p>
-                To do
-            </p>
-        </div>
+        <app-right-nav fxHide fxShow.xl></app-right-nav>
     </div>
 </div>
