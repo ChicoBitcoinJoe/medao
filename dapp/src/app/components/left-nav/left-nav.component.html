@@ -1,28 +1,30 @@
 <div fxLayout="column" fxFlexFill>
-    <h1 class="secondary-bg no-margin" fxLayout="column" fxLayoutAlign="center center" fxFlex="160px">
+    <h1 class="secondary-bg no-margin" fxLayout="column" fxLayoutAlign="center center" fxFlex="120px">
         <span class="cursor" routerLink="['/home']">MeDao</span>
-        <div class="grey-text padding" style="font-size: 16px;">
-            Invest in people.
-        </div>
     </h1>
     <div *ngIf="!User.account.signedIn" fxLayout="column">
         <div class="secondary-bg padding" style="border-bottom: 1px solid white;" fxLayout="column">
-            <button *ngIf="Web3.network.connected" mat-button style="padding: 16px;" (click)="User.signIn()" [disabled]="!Web3.network.connected">sign in</button>
-            <a *ngIf="!Web3.network.connected" mat-button style="padding: 16px;" href="https://metamask.io" target="_blank">try metamask to continue</a>
+            <button *ngIf="web3.connected" mat-button style="padding: 16px;" (click)="User.signIn()" [disabled]="!web3.connected">sign in</button>
+            <a *ngIf="!web3.connected" mat-button style="padding: 16px;" href="https://metamask.io" target="_blank">try metamask to continue</a>
         </div>
-        <app-sign-up-form class="padding" [class.opacity50]="!User.account.signedIn"></app-sign-up-form>
     </div>
     <div *ngIf="User.account.signedIn" fxLayout="column" fxFlex>
         <div class="secondary-bg centered" style="border-bottom: 1px solid white;" fxLayout="column">
             <small>Signed in as:</small>
             <h4 *ngIf="!User.medao">{{User.account.address.slice(0,8)}}...</h4>
             <h4 *ngIf="User.medao">{{User.medao.name}}</h4>
-            <button *ngIf="User.medao" mat-button class="margin white-text" [routerLink]="'/medao/' + User.medao.address">view my dao</button>
+            <div>
+                <button *ngIf="User.medao" mat-button class="margin" [routerLink]="'/medao/' + User.medao.address">view my dao</button>
+            </div>
+            <div fxFlex="16px"></div>
         </div>
-        <div *ngIf="!User.medao" class="padding">
-            <app-sign-up-form ></app-sign-up-form>
+        <div *ngIf="User" class="padding" fxLayout="column" fxLayoutGap="16px">
+            <b>Time: <span fxFlex></span> {{User.balances.time | fromWei: 'ether' | number: '1.2-5'}}</b>
+            <b>Ether: <span fxFlex></span> &diams;{{User.balances.ether | fromWei: 'ether' | number: '1.2-5'}}</b>
+            <b>Dai: <span fxFlex></span> ${{User.balances.dai | fromWei: 'ether' | number: '1.2-5'}}</b>
+            <b>Wrapped Ether: <span fxFlex></span> &diams;{{User.balances.weth | fromWei: 'ether' | number: '1.2-5'}}</b>
         </div>
-        <div *ngIf="User.medao" class="scrollable padding" fxFlex.gt-xs>
+        <div class="scrollable padding incomplete" fxFlex.gt-xs>
             <h3>Following</h3>
             <div fxLayout="column" fxLayoutGap="32px">
                 <div fxLayout="column" fxLayoutGap="8px">

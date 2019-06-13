@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { DaiService } from '../../services/dai/dai.service';
 
-import { Web3Service } from '../../services/web3/web3.service';
-
+declare let web3: any;
 declare let require: any;
+
 let MiniMeTokenArtifact = require('../../../contracts/MiniMeToken.json');
 let MeDaoArtifact = require('../../../contracts/MeDao.json');
 let MeDaoRegistryArtifact = require('../../../contracts/MeDaoRegistry.json');
@@ -27,13 +29,13 @@ let Weth = {
 
 class MeDao {
 
-    Web3: Web3Service;
+    User: any;
     methods: any;
     token: any;
 
     transfer (address, tokenAmount) {
         return this.token.methods.transfer(address, tokenAmount).send({
-            from: this.Web3.account.address
+            from: this.User.account.address
         })
     }
 
@@ -59,20 +61,16 @@ export class MedaoService {
     dai;
 
     constructor(
-        public Web3: Web3Service,
-    ) {
-        this.ready = new Promise((resolve, reject) => {
-            this.Web3.ready()
-            .then(async () => {
-                var registry = await MeDaoRegistryArtifact.networks[this.Web3.network.id].address;
-                this.registry = new this.Web3.instance.eth.Contract(MeDaoRegistryArtifact.abi, registry);
-                var wethConverter = await WethToDaiConverterArtifact.networks[this.Web3.network.id].address;
-                this.wethConverter = new this.Web3.instance.eth.Contract(WethToDaiConverterArtifact.abi, wethConverter);
-                this.dai = new this.Web3.instance.eth.Contract(ERC20Artifact.abi, Dai[this.Web3.network.id]);
-                resolve();
-            })
-            .catch(reject)
-        });
+        private router: Router,
+        public Dai: DaiService,
+    ) { }
+
+    async initialize () {
+        var registry = await MeDaoRegistryArtifact.networks[web3.network.id].address;
+        this.registry = new web3.eth.Contract(MeDaoRegistryArtifact.abi, registry);
+        var wethConverter = await WethToDaiConverterArtifact.networks[web3.network.id].address;
+        this.wethConverter = new web3.eth.Contract(WethToDaiConverterArtifact.abi, wethConverter);
+        this.dai = this.Dai.token;
     }
 
     create (
@@ -81,10 +79,11 @@ export class MedaoService {
         tokenClaim,
         seedFunds,
         paymentToken,
+        fromAddress
     ) {
         if(paymentToken == 'eth') {
-            var valueInEther = (seedFunds / this.Web3.ethPriceInDai).toFixed(18);
-            var valueInWei = this.Web3.instance.utils.toWei(valueInEther.toString(), 'ether');
+            var valueInEther = (seedFunds / this.Dai.eth).toFixed(18);
+            var valueInWei = web3.utils.toWei(valueInEther.toString(), 'ether');
 
             console.log(name);
             console.log(birthTimestamp);
@@ -104,7 +103,7 @@ export class MedaoService {
                 0
             )
             .send({
-                from: this.Web3.account.address,
+                from: fromAddress,
                 value: valueInWei
             });
         }
@@ -122,66 +121,74 @@ export class MedaoService {
     }
 
     at (medaoAddress) {
-        return new Promise((resolve, reject) => {
-            this.ready.then(async () => {
-                if(medaoAddress == this.Web3.instance.utils.nullAddress){
-                    resolve(null);
-                }
-                else {
-                    let medaoInstance = await new this.Web3.instance.eth.Contract(MeDaoArtifact.abi, medaoAddress);
-                    let medao = new MeDao();
-                    medao.methods = medaoInstance.methods;
-                    let tokenAddress = await medao.methods.timeToken().call();
-                    let token = await new this.Web3.instance.eth.Contract(MiniMeTokenArtifact.abi, tokenAddress);
-                    let controller = await token.methods.controller().call();
-                    let transfersEnabled = await token.methods.transfersEnabled().call();
-                    let name = await token.methods.name.call();
-                    let symbol = await token.methods.symbol.call();
-                    let maxSupply = await medao.methods.maxTokenSupply().call();
-                    let birthTimestamp = await medao.methods.birthTimestamp().call();
-                    let birthDate = new Date(birthTimestamp*1000);
-                    let totalSupplyInWei = await token.methods.totalSupply().call();
-                    let totalSupply =  this.Web3.instance.utils.fromWei(totalSupplyInWei.toString(), 'ether');
-                    let daiBalanceInWei = await this.dai.methods.balanceOf(medaoAddress).call();
-                    let daiBalance =  this.Web3.instance.utils.fromWei(daiBalanceInWei.toString(), 'ether');
-                    let hourlyWage = daiBalance / totalSupply;
-                    let fundedPercent = Math.round(totalSupply / maxSupply);
-                    let owner = await medao.methods.owner().call();
-                    let lastPayTimestampInSeconds = await medao.methods.lastPayTimestamp().call();
-                    let lastPayTimestamp = new Date(lastPayTimestampInSeconds*1000);
-                    let tokenBalanceInWei = await token.methods.balanceOf(owner).call();
-                    let tokenBalance = this.Web3.instance.utils.fromWei(tokenBalanceInWei.toString(), 'ether');
-                    let timeElapsed = (new Date().getTime() - birthDate.getTime())/1000;
-                    let oneYear = 60*60*24*365.25;
-                    let age = Math.floor(timeElapsed/oneYear);
-                    let maxFunding = hourlyWage * maxSupply/3600;
-                    let currentSalary = hourlyWage * fundedPercent / 100 * 56 * 52;
-                    let maxSalary = hourlyWage * 56 * 52;
+        return new Promise(async (resolve, reject) => {
+            if(medaoAddress == web3.utils.nullAddress){
+                resolve(null);
+            }
+            else {
+                let medaoInstance = await new web3.eth.Contract(MeDaoArtifact.abi, medaoAddress);
+                let medao = new MeDao();
+                medao.methods = medaoInstance.methods;
+                let tokenAddress = await medao.methods.timeToken().call();
+                let token = await new web3.eth.Contract(MiniMeTokenArtifact.abi, tokenAddress);
+                let controller = await token.methods.controller().call();
+                let transfersEnabled = await token.methods.transfersEnabled().call();
+                let name = await token.methods.name.call();
+                let symbol = await token.methods.symbol.call();
+                let maxSupply = await medao.methods.maxTokenSupply().call();
+                let birthTimestamp = await medao.methods.birthTimestamp().call();
+                let birthDate = new Date(birthTimestamp*1000);
+                let totalSupplyInWei = await token.methods.totalSupply().call();
+                let totalSupply =  web3.utils.fromWei(totalSupplyInWei.toString(), 'ether');
+                let daiBalanceInWei = await this.dai.methods.balanceOf(medaoAddress).call();
+                let daiBalance =  web3.utils.fromWei(daiBalanceInWei.toString(), 'ether');
+                let hourlyWage = daiBalance / totalSupply;
+                let fundedPercent = Math.round(totalSupply / maxSupply);
+                let owner = await medao.methods.owner().call();
+                let lastPayTimestampInSeconds = await medao.methods.lastPayTimestamp().call();
+                let lastPayTimestamp = new Date(lastPayTimestampInSeconds*1000);
+                let tokenBalanceInWei = await token.methods.balanceOf(owner).call();
+                let tokenBalance = web3.utils.fromWei(tokenBalanceInWei.toString(), 'ether');
+                let timeElapsed = (new Date().getTime() - birthDate.getTime())/1000;
+                let oneYear = 60*60*24*365.25;
+                let age = Math.floor(timeElapsed/oneYear);
+                let maxFunding = hourlyWage * maxSupply/3600;
+                let currentSalary = hourlyWage * fundedPercent / 100 * 56 * 52;
+                let maxSalary = hourlyWage * 56 * 52;
 
-                    medao['Web3'] = this.Web3;
-                    medao['address'] = medaoAddress;
-                    medao['token'] = token;
-                    medao['name'] = name;
-                    medao['symbol'] = symbol;
-                    medao['age'] = age;
-                    medao['hourlyWage'] = hourlyWage;
-                    medao['currentSalary'] = currentSalary;
-                    medao['maxSalary'] = maxSalary;
-                    medao['balance'] = daiBalance;
-                    medao['totalSupply'] = totalSupply;
-                    medao['maxSupply'] = maxSupply;
-                    medao['birthDate'] = birthDate;
-                    medao['maxFunding'] = maxFunding;
-                    medao['fundedPercent'] = fundedPercent;
-                    medao['lastPaycheck'] = lastPayTimestamp;
-                    medao['owner'] = {
-                        address: owner,
-                        balance: tokenBalance
-                    };
+                medao['address'] = medaoAddress;
+                medao['token'] = token;
+                medao['name'] = name;
+                medao['symbol'] = symbol;
+                medao['age'] = age;
+                medao['hourlyWage'] = hourlyWage;
+                medao['currentSalary'] = currentSalary;
+                medao['maxSalary'] = maxSalary;
+                medao['balance'] = daiBalance;
+                medao['totalSupply'] = totalSupply;
+                medao['maxSupply'] = maxSupply;
+                medao['birthDate'] = birthDate;
+                medao['maxFunding'] = maxFunding;
+                medao['fundedPercent'] = fundedPercent;
+                medao['lastPaycheck'] = lastPayTimestamp;
+                medao['owner'] = {
+                    address: owner,
+                    balance: tokenBalance
+                };
 
-                    resolve(medao);
-                }
-            });
+                resolve(medao);
+            }
         });
     }
+
+
+    newMedao = {
+        name: null
+    };
+
+    createWizard (name) {
+        this.newMedao.name = name;
+        this.router.navigate(['/create']);
+    }
+
 }

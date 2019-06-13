@@ -1,26 +1,18 @@
-<div fxLayout="row" fxLayoutGap="16px">
-    <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutAlign.xs="start center" fxLayoutAlign.gt-xs="space-around" fxLayoutGap="16px" fxFlex="50">
-        <h2 class="no-margin" style="border: 1px solid white; border-radius: 60px; width: 120px; height: 120px; text-align: center;" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
-            <div>{{medao.fundedPercent}}%</div>
-            <span class="grey-text" style="font-size: 12px;">funded</span>
-        </h2>
-        <h2 class="no-margin" *ngIf="!User.balances[medao.token.address]" style="border: 1px solid white; border-radius: 60px; width: 120px; height: 120px; text-align: center;" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
-            <div>$0.00</div>
-            <span class="grey-text" style="font-size: 12px;">balance: 0h</span>
-        </h2>
-        <h2 class="no-margin" *ngIf="User.balances[medao.token.address]" style="border: 1px solid white; border-radius: 60px; width: 120px; height: 120px; text-align: center;" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
-            <div>${{medao.hourlyWage * User.balances[medao.token.address] | number: '1.2-2'}}</div>
-            <span class="grey-text" style="font-size: 12px;">balance: {{User.balances[medao.token.address]}}h</span>
-        </h2>
+<div fxLayout="row" fxLayoutGap="32px">
+    <div class="info-bubble">
+        <div class="dark-text" style="height: 24px;">${{medao.hourlyWage | number: '1.2-2'}}</div>
+        <div class="grey-text" style="font-size: 12px;">hourly wage</div>
     </div>
-    <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutAlign.xs="start center" fxLayoutAlign.gt-xs="space-around" fxLayoutGap="16px" fxFlex="50">
-        <h2 class="no-margin" style="border: 1px solid white; border-radius: 60px; width: 120px; height: 120px; text-align: center;" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
-            <div>{{medao.age | number: '1.0-0'}}</div>
-            <span class="grey-text" style="font-size: 12px;">age</span>
-        </h2>
-        <h2 class="no-margin" style="border: 1px solid white; border-radius: 60px; width: 120px; height: 120px; text-align: center;" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="4px">
-            <div>${{medao.hourlyWage | number: '1.2-2'}}</div>
-            <span class="grey-text" style="font-size: 12px;">hourly wage</span>
-        </h2>
+    <div class="info-bubble">
+        <div class="dark-text" style="height: 24px;">{{medao.balance / 1000 | number: '1.0-0'}}k/{{medao.maxFunding / 1000 | number: '1.0-0'}}k</div>
+        <div class="grey-text" style="font-size: 12px;">funding: {{medao.fundedPercent}}%</div>
+    </div>
+    <div class="info-bubble" *ngIf="!User.balances[medao.token.address]">
+        <div class="dark-text" style="height: 24px;">$0.00</div>
+        <div class="grey-text" style="font-size: 12px;">balance: 0h</div>
+    </div>
+    <div class="info-bubble" *ngIf="User.balances[medao.token.address]">
+        <div class="dark-text" style="height: 24px;">${{medao.hourlyWage * User.balances[medao.token.address] | number: '1.2-2'}}</div>
+        <div class="grey-text" style="font-size: 12px;">balance: {{User.balances[medao.token.address]}}h</div>
     </div>
 </div>

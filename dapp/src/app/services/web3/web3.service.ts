@@ -4,18 +4,15 @@ declare let window: any;
 declare let require: any;
 const Web3 = require('web3');
 
-let DaiPriceFeedArtifact = require('../../../contracts/DSValueInterface.json');
-
 @Injectable({
   providedIn: 'root'
 })
 export class Web3Service {
 
-    private DAI_PRICE_FEED = {
-        '1': "0x729D19f657BD0614b4985Cf1D82531c67569197B",
-        '42': "0xa5aA4e07F5255E14F02B385b1f04b35cC50bdb66",
-    }
+    private watching: string = null;
+    private interval: any = null;
 
+/*
     instance: any;
     readyPromise: any;
     DaiPriceFeed: any;
@@ -34,29 +31,45 @@ export class Web3Service {
         address: null,
         balance: 0,
     }
+*/
 
     constructor () {
         if (window.ethereum) { // Modern dapp browsers...
             window.web3 = new Web3(window.ethereum);
             window.web3['connected'] = window.web3 != undefined;
-            this.network.connected = window.web3 != undefined;
         }
         else if (window.web3) { // Legacy dapp browsers...
             console.warn("Your financial privacy is at risk! Disable automatic account exposure with whatever ethereum wallet provider you use.");
             window.web3 = new Web3(window.web3.currentProvider);
             window.web3['connected'] = window.web3 != undefined;
-            this.network.connected = window.web3 != undefined;
         }
         else {
             window.web3 = new Web3("https://kovan.infura.io/v3/e49b5318974f466db1c55cb1247f1312");
         }
 
         if(window.web3){
-            this.instance = window.web3;
             window.web3.utils['nullAddress'] = '0x0000000000000000000000000000000000000000';
         }
     }
 
+    async initialize (allowedNetworks) {
+        window.web3['ready'] = new Promise(async (resolve, reject) => {
+            let networkName = await window.web3.eth.net.getNetworkType();
+            let networkId = await window.web3.eth.net.getId();
+
+            window.web3['network'] = {
+                name: networkName,
+                id: networkId,
+                valid: allowedNetworks.includes(networkName)
+            }
+
+            resolve(window.web3.network.valid);
+        });
+
+        return window.web3.ready;
+    }
+
+/*
     ready () {
         if(!this.readyPromise){
             this.readyPromise = new Promise((resolve, reject) => {
@@ -83,8 +96,7 @@ export class Web3Service {
                         if(!this.network.valid)
                             reject(new Error('invalid network detected'));
                         else {
-                            if(this.DAI_PRICE_FEED[this.network.id])
-                                this.DaiPriceFeed = await new this.instance.eth.Contract(DaiPriceFeedArtifact.abi, this.DAI_PRICE_FEED[this.network.id]);
+
 
                             if(!currentAccount){
                                 if(this.DaiPriceFeed){
@@ -133,64 +145,63 @@ export class Web3Service {
 
         return this.readyPromise;
     }
+*/
 
     async signIn () {
         try {
-            await window.ethereum.enable();
-            this.account.signedIn = true;
-
-            return this.watchForAccountChanges()
-            .then(currentAccount => {
-                this.instance.eth.getBalance(currentAccount)
-                .then(balance => {
-                    this.account.balance = balance;
-                })
-                return Promise.resolve(currentAccount);
-            })
+            let accounts = await window.ethereum.enable();
+            if(accounts.length > 0)
+                return accounts[0];
+            else
+                return null;
         } catch (error) {
             return Promise.reject(new Error("User denied account access."));
         }
     }
 
     async getCurrentAccount(){
-		return this.instance.eth.getAccounts()
-        .then(accounts => {
-            if(accounts.length > 0){
-                return accounts[0];
-            } else {
-                return null;
-            }
-        })
+		let accounts = await window.web3.eth.getAccounts();
+        if(accounts.length > 0){
+            return accounts[0];
+        } else
+            return null;
 	}
 
-    private watchForAccountChanges(){
-        return this.getCurrentAccount()
-        .then(currentAccount => {
-            console.log("watching account: ", currentAccount);
-            this.account.address = currentAccount;
-            setInterval(() => {
-                this.getCurrentAccount()
-                .then(currentAccount => {
-                    //console.log(currentAccount, this.account.address)
-                    if(this.account.address && this.account.address != currentAccount)
-                        location.reload();
-                })
-                .catch(err => {
-                    console.error(err)
-                })
-            }, 250);
-            return currentAccount;
-        })
-        .catch(err => {
-            console.error(err);
-        })
+    async getAccountDetails (address) {
+        if(!address){
+            return {
+                signedIn: false,
+                address: null,
+                balance: 0,
+                subcription: null
+            };
+        }
+
+        let balance = await window.web3.eth.getBalance(address);
+        let subscription = 'todo: watch balance';
+
+        return {
+            signedIn: true,
+            address: address,
+            balance: balance,
+            subcription: subscription
+        };
     }
 
-    weiToDai (weiValue) {
-        return Number(this.instance.utils.fromWei(weiValue,'ether')) * this.ethPriceInDai;
+    async watchForAccountChanges(){
+        let currentAccount = await this.getCurrentAccount();
+        this.watching = currentAccount;
+        if(this.interval)
+            clearInterval(this.interval);
+
+        this.interval = setInterval(async () => {
+            let currentAccount = await this.getCurrentAccount();
+            // console.log(this.watching, currentAccount)
+            if(this.watching && this.watching != currentAccount)
+                location.reload();
+        }, 250);
+
+        return currentAccount;
     }
 
-    setAllowedNetworks (allowedNetworks) {
-        this.network.allowed = allowedNetworks;
-    }
 }

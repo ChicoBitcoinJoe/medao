@@ -10,11 +10,11 @@ import { MedaoService } from '../../services/medao/medao.service';
 declare let web3: any;
 
 @Component({
-  selector: 'app-sign-up-form',
-  templateUrl: './sign-up-form.component.html',
-  styleUrls: ['./sign-up-form.component.scss']
+  selector: 'app-create',
+  templateUrl: './create.component.html',
+  styleUrls: ['./create.component.scss']
 })
-export class SignUpFormComponent implements OnInit {
+export class CreateComponent implements OnInit {
 
     tokens =  ['eth', 'dai', 'weth'];
 
@@ -29,6 +29,12 @@ export class SignUpFormComponent implements OnInit {
         /* calculated */
         birthTimestamp: null,
         tokenClaim: null,
+        maxFunding: null,
+        expectedWage: null,
+        expectedSalary: null,
+        percentFunded: 50,
+        maxSalary: null,
+        requiredFunding: null,
         tx: {
             promise: null,
             hash: null,
@@ -41,10 +47,25 @@ export class SignUpFormComponent implements OnInit {
         public Web3: Web3Service,
         public Dai: DaiService,
         public User: UserService,
-        public MeDaoRegistry: MedaoService,
+        public Medao: MedaoService,
     ) { }
 
     ngOnInit() {
+        this.medao.name = this.Medao.newMedao.name;
+    }
+
+    updateView () {
+        console.log(this)
+        let now = new Date().getTime()/1000;
+        let birthTimestamp = new Date(this.medao.date).getTime()/1000;
+        console.log(birthTimestamp)
+        let age = (now - birthTimestamp) / (60*60*24*365.25);
+        console.log(age)
+        this.medao.maxFunding = this.medao.wage * 8*365.25 * age;
+        this.medao.requiredFunding = this.medao.maxFunding * this.medao.percentFunded / 100;
+        this.medao.maxSalary = this.medao.wage * 8*365.25;
+        this.medao.expectedSalary = this.medao.maxSalary * this.medao.percentFunded / 100;
+        this.medao.expectedWage = this.medao.wage * this.medao.percentFunded / 100;
     }
 
     submit () {
@@ -55,7 +76,7 @@ export class SignUpFormComponent implements OnInit {
         var tokenClaim = this.medao.seed / this.medao.wage;
         this.medao.tokenClaim = web3.utils.toWei(tokenClaim.toString(), 'ether');
 
-        this.medao.tx.promise = this.MeDaoRegistry.create(
+        this.medao.tx.promise = this.Medao.create(
             this.medao.name,
             this.medao.birthTimestamp,
             this.medao.tokenClaim,
@@ -81,7 +102,7 @@ export class SignUpFormComponent implements OnInit {
             if(confirmation == 1) {
                 console.log(confirmation)
                 console.log(txReceipt)
-                this.MeDaoRegistry.addressOf(this.User.account.address)
+                this.Medao.addressOf(this.User.account.address)
                 .then(medaoAddress => {
                     let snackBarRef = this.snackbar.open('MeDao deployed!', 'view', {
                         duration: 10000,

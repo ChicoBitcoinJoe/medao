@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-import { Web3Service } from '../../services/web3/web3.service';
+import { DaiService } from '../../services/dai/dai.service';
 
 @Pipe({
   name: 'toDai'
@@ -8,12 +8,12 @@ import { Web3Service } from '../../services/web3/web3.service';
 export class ToDaiPipe implements PipeTransform {
 
 	constructor(
-        public Web3: Web3Service,
+        public Dai: DaiService,
     ){}
 
 	transform(value: any, args?: any): any {
 		if(!value) return null;
-		return this.Web3.weiToDai(value)
+		return this.Dai.fromWei(value)
 	}
 
 }

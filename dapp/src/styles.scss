@@ -43,20 +43,24 @@ body {
     background-color: #29383e !important;
 }
 
+.incomplete {
+    opacity: 0.2;
+}
+
+.fixed {
+    position: fixed;
+}
+
+.dark-text {
+    color: rgba(0,0,0,0.87);
+}
+
 input {
     caret-color: white !important;
 }
 
-.white .mat-button-wrapper {
-    color: white !important;
-}
-
 div, span, button, small {
     color: white;
-}
-
-.grey .mat-button-wrapper {
-    color: grey !important;
 }
 
 .padding {
@@ -68,7 +72,7 @@ div, span, button, small {
 }
 
 .margin {
-    margin: 16px !important;
+    margin: 16px;
 }
 
 .centered {
@@ -103,6 +107,10 @@ h1, h2, h3, h4, h5, h6 {
     color: white !important;
 }
 
+.mat-button, .mat-flat-button, .mat-icon-button, .mat-stroked-button {
+    color: black;
+}
+
 .mat-button[disabled][disabled] {
     color: grey;
 }
@@ -111,16 +119,16 @@ h1, h2, h3, h4, h5, h6 {
     background-color: #29383e !important;
 }
 
+.mat-select-arrow {
+    color: white;
+}
+
 .mat-dialog-container {
     background-color: #29383e;
 }
 
-.white-text * {
-    color: white;
-}
-
 .grey-text {
-    color: rgba(255,255,255,0.5) !important;
+    color: rgba(0,0,0,0.5) !important;
 }
 
 .input {

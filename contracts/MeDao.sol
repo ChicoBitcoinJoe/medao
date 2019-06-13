@@ -6,8 +6,8 @@ import "./external/Owned.sol";
 
 contract MeDao is Owned, TokenController {
 
-    uint public blockInitialized;
     address public factory;
+    uint public blockInitialized;
 
     MiniMeToken public timeToken;
     ERC20 public reserveToken;
@@ -76,6 +76,10 @@ contract MeDao is Owned, TokenController {
         emit Divest_event(msg.sender, tokenAmount, reserveClaim);
     }
 
+    function burn (uint tokenAmount) public {
+        require(timeToken.destroyTokens(msg.sender, tokenAmount), "failed to burn tokens");
+    }
+
     function setHash (string memory newHash) public onlyOwner {
         hash = newHash;
         emit Update_event(newHash);
@@ -94,7 +98,10 @@ contract MeDao is Owned, TokenController {
     }
 
     function onTransfer (address _from, address _to, uint _amount) public returns(bool) {
-        _from; _to; _amount;
+        _from; _amount;
+        if(_to == address(this) || _to == address(0x0))
+            return false;
+
         return true;
     }
 

@@ -13,7 +13,7 @@ import {
     MatExpansionModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatSlideToggleModule,
+    MatSliderModule,
     MatSnackBarModule,
     MatDialogModule,
     MatToolbarModule,
@@ -34,13 +34,15 @@ import { OrderByPipe } from './pipes/order-by/order-by.pipe';
 
 import { HomeComponent } from './views/home/home.component';
 import { MedaoComponent } from './views/medao/medao.component';
-import { SendDialog } from './views/medao/medao.component';
-import { TradeDialog } from './views/medao/medao.component';
 import { PostComponent } from './components/post/post.component';
 import { SignUpFormComponent } from './components/sign-up-form/sign-up-form.component';
 import { LeftNavComponent } from './components/left-nav/left-nav.component';
 import { RightNavComponent } from './components/right-nav/right-nav.component';
 import { InfoBubblesComponent } from './components/info-bubbles/info-bubbles.component';
+import { MedaoButtonsComponent } from './components/medao-buttons/medao-buttons.component';
+import { SendDialog } from './components/medao-buttons/medao-buttons.component';
+import { TradeDialog } from './components/medao-buttons/medao-buttons.component';
+import { CreateComponent } from './views/create/create.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +58,9 @@ import { InfoBubblesComponent } from './components/info-bubbles/info-bubbles.com
     RightNavComponent,
     SendDialog,
     TradeDialog,
-    InfoBubblesComponent
+    InfoBubblesComponent,
+    MedaoButtonsComponent,
+    CreateComponent
   ],
   imports: [
     BrowserModule,
@@ -72,6 +76,7 @@ import { InfoBubblesComponent } from './components/info-bubbles/info-bubbles.com
     MatNativeDateModule,
     MatSelectModule,
     MatSidenavModule,
+    MatSliderModule,
     MatSnackBarModule,
     MatToolbarModule,
   ],

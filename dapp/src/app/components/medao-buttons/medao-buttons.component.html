@@ -1,0 +1,23 @@
+<div fxLayout="row" fxLayoutGap="26px" fxLayoutGap.gt-md="8px">
+    <button *ngIf="!medao || User.medao.address != medao.address" mat-button (click)="openFollowDialog()">
+        <div class="dark-text">follow</div>
+    </button>
+    <button *ngIf="medao && User.medao.address == medao.address" mat-button (click)="openFollowDialog()">
+        <div class="dark-text">collect</div>
+    </button>
+    <button mat-button (click)="openTradeDialog()">
+        <div class="dark-text">trade</div>
+    </button>
+    <button mat-button (click)="openSendDialog()">
+        <div class="dark-text">send</div>
+    </button>
+    <button mat-button fxHide>
+        <div class="dark-text">collect paycheck</div>
+    </button>
+    <button mat-button fxHide>
+        <div class="dark-text">update contract</div>
+    </button>
+    <button mat-button fxHide>
+        <div class="dark-text">change owner</div>
+    </button>
+</div>
