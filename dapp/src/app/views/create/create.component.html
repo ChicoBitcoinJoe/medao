@@ -65,10 +65,9 @@
         </div>
         <div fxFlex="32px"></div>
         <div *ngIf="medao.expectedSalary && medao.wage" class="padding" fxLayout="column" fxLayoutGap="16px">
-            <div>Max Funding: <span fxFlex></span> ${{medao.maxFunding | number: '1.0-0'}}</div>
-            <div>Required Funding: <span fxFlex></span> ${{medao.requiredFunding | number: '1.0-0'}}</div>
-            <div>Expected Salary: <span fxFlex></span> ${{medao.expectedSalary | number: '1.0-0'}}</div>
-            <div>Expected Wage: <span fxFlex></span> ${{medao.expectedWage | number: '1.2-2'}}/h</div>
+            <div>Funding: <span fxFlex></span> ${{medao.requiredFunding | number: '1.0-0'}}/{{medao.maxFunding | number: '1.0-0'}}</div>
+            <div>Salary: <span fxFlex></span> ${{medao.expectedSalary | number: '1.0-0'}}/{{medao.maxSalary | number: '1.0-0'}}</div>
+            <div>Wage: <span fxFlex></span> ${{medao.expectedWage | number: '1.2-2'}}/{{medao.wage | number: '1.2-2'}}</div>
             <div>Invested Time: <span fxFlex></span> {{medao.seed / medao.wage| number: '1.1-2'}} hours</div>
         </div>
     </div>
@@ -153,10 +152,9 @@
                         </small>
                         <div fxFlex="32px"></div>
                         <div *ngIf="medao.expectedSalary && medao.wage" class="padding" fxLayout="column" fxLayoutGap="16px">
-                            <div>Max Funding: <span fxFlex></span> ${{medao.maxFunding | number: '1.0-0'}}</div>
-                            <div>Required Funding: <span fxFlex></span> ${{medao.requiredFunding | number: '1.0-0'}}</div>
-                            <div>Expected Salary: <span fxFlex></span> ${{medao.expectedSalary | number: '1.0-0'}}</div>
-                            <div>Expected Wage: <span fxFlex></span> ${{medao.expectedWage | number: '1.2-2'}}/h</div>
+                            <div>Funding: <span fxFlex></span> ${{medao.requiredFunding | number: '1.0-0'}}/{{medao.maxFunding | number: '1.0-0'}}</div>
+                            <div>Salary: <span fxFlex></span> ${{medao.expectedSalary | number: '1.0-0'}}/{{medao.maxSalary | number: '1.0-0'}}</div>
+                            <div>Wage: <span fxFlex></span> ${{medao.expectedWage | number: '1.2-2'}}/{{medao.wage | number: '1.2-2'}}</div>
                             <div>Invested Time: <span fxFlex></span> {{medao.seed / medao.wage| number: '1.1-2'}} hours</div>
                         </div>
                     </div>

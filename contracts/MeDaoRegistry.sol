@@ -43,16 +43,17 @@ contract MeDaoRegistry {
         int birthTimestamp,
         uint tokenClaim,
         TokenConverter converter,
-        uint convertAmount,
+        uint maxConvertAmount,
         uint minFillAmount
     ) public payable returns (MeDao medao) {
         if(msg.value > 0)
             converter.deposit.value(msg.value)();
 
-        require(converter.payToken().approve(address(converter), convertAmount));
-        uint initialReserve = converter.convert(convertAmount, minFillAmount);
+        require(converter.payToken().approve(address(converter), maxConvertAmount));
+        uint initialReserve = converter.convert(maxConvertAmount, minFillAmount);
         uint change = converter.payToken().balanceOf(address(this));
         require(converter.payToken().transfer(msg.sender, change));
+        msg.sender.transfer(address(this).balance);
         require(dai.approve(address(factory), initialReserve));
 
         medao = MeDao(factory.create(

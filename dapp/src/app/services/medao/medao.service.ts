@@ -81,8 +81,8 @@ export class MedaoService {
         paymentToken,
         fromAddress
     ) {
-        if(paymentToken == 'eth') {
-            var valueInEther = (seedFunds / this.Dai.eth).toFixed(18);
+        if(paymentToken == 'ether') {
+            var valueInEther = (seedFunds * 2 / this.Dai.eth).toFixed(18);
             var valueInWei = web3.utils.toWei(valueInEther.toString(), 'ether');
 
             console.log(name);
@@ -100,7 +100,7 @@ export class MedaoService {
                 tokenClaim,
                 this.wethConverter.address,
                 valueInWei,
-                0
+                seedFunds
             )
             .send({
                 from: fromAddress,

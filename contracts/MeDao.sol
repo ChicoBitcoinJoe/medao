@@ -37,7 +37,7 @@ contract MeDao is Owned, TokenController {
         timeToken = _timeToken;
         reserveToken = _reserveToken;
         birthTimestamp = _birthTimestamp;
-        maxTokenSupply = uint(int(now) - birthTimestamp) / 3;
+        maxTokenSupply = (uint(int(now) - birthTimestamp) / 3) * 10^18;
         lastPayTimestamp = now;
 
         require(timeToken.generateTokens(owner, _tokenClaim), "failed to generate tokens");
@@ -52,8 +52,8 @@ contract MeDao is Owned, TokenController {
     }
 
     function pay () public onlyOwner {
-        uint elapsedSeconds = (now - lastPayTimestamp) / 3;
-        uint fundedTime = elapsedSeconds * timeToken.totalSupply() / (maxTokenSupply * 10^18);
+        uint elapsedSeconds = ((now - lastPayTimestamp) / 3) * 10^18;
+        uint fundedTime = elapsedSeconds * timeToken.totalSupply() / maxTokenSupply;
         maxTokenSupply += elapsedSeconds;
         lastPayTimestamp = now;
         require(timeToken.generateTokens(owner, fundedTime), "failed to generate tokens");
@@ -78,6 +78,8 @@ contract MeDao is Owned, TokenController {
 
     function burn (uint tokenAmount) public {
         require(timeToken.destroyTokens(msg.sender, tokenAmount), "failed to burn tokens");
+        maxTokenSupply -= tokenAmount;
+        emit Burn_event(msg.sender, tokenAmount);
     }
 
     function setHash (string memory newHash) public onlyOwner {
@@ -87,6 +89,7 @@ contract MeDao is Owned, TokenController {
 
     event Pay_event (uint tokenAmount);
     event Update_event (string newHash);
+    event Burn_event (address msgSender, uint tokenAmount);
     event Invest_event (address msgSender, uint reserveAmount, uint tokenAmount);
     event Divest_event (address msgSender, uint tokenAmount, uint reserveAmount);
 
