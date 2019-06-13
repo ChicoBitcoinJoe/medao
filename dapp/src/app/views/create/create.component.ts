@@ -16,7 +16,7 @@ declare let web3: any;
 })
 export class CreateComponent implements OnInit {
 
-    tokens =  ['eth', 'dai', 'weth'];
+    tokens =  ['ether', 'dai', 'weth'];
 
     medao = {
         /* user input */
@@ -25,7 +25,7 @@ export class CreateComponent implements OnInit {
         maxDate: new Date(),
         wage: null,
         seed: null,
-        paymentToken: 'eth',
+        paymentToken: 'ether',
         /* calculated */
         birthTimestamp: null,
         tokenClaim: null,
@@ -55,12 +55,9 @@ export class CreateComponent implements OnInit {
     }
 
     updateView () {
-        console.log(this)
         let now = new Date().getTime()/1000;
         let birthTimestamp = new Date(this.medao.date).getTime()/1000;
-        console.log(birthTimestamp)
         let age = (now - birthTimestamp) / (60*60*24*365.25);
-        console.log(age)
         this.medao.maxFunding = this.medao.wage * 8*365.25 * age;
         this.medao.requiredFunding = this.medao.maxFunding * this.medao.percentFunded / 100;
         this.medao.maxSalary = this.medao.wage * 8*365.25;
