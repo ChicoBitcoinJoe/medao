@@ -8,10 +8,3 @@ contract DEX {
     function getBuyAmount(ERC20 buy_gem, ERC20 pay_gem, uint pay_amt) public view returns (uint fill_amt);
     function getPayAmount(ERC20 pay_gem, ERC20 buy_gem, uint buy_amt) public view returns (uint fill_amt);
 }
-
-contract TokenConverter {
-    ERC20 public payToken;
-    ERC20 public buyToken;
-    function deposit () public payable;
-    function convert (uint maxPayAmount, uint minFillAmount) public returns (uint fillAmount);
-}

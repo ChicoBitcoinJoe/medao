@@ -37,7 +37,9 @@ contract MeDao is Owned, TokenController {
         timeToken = _timeToken;
         reserveToken = _reserveToken;
         birthTimestamp = _birthTimestamp;
-        maxTokenSupply = (uint(int(now) - birthTimestamp) / 3) * 10^18;
+
+        uint elapsedSeconds = uint(int(now) - birthTimestamp);
+        maxTokenSupply = calculateWorkTime(elapsedSeconds);
         lastPayTimestamp = now;
 
         require(timeToken.generateTokens(owner, _tokenClaim), "failed to generate tokens");
@@ -51,17 +53,22 @@ contract MeDao is Owned, TokenController {
         return reserveToken.balanceOf(address(this)) * tokenAmount / timeToken.totalSupply();
     }
 
+    function calculateWorkTime (uint elapsedSeconds) public pure returns (uint) {
+        return (elapsedSeconds * 1 ether * 5) / (7 * 8);
+    }
+
     function pay () public onlyOwner {
-        uint elapsedSeconds = ((now - lastPayTimestamp) / 3) * 10^18;
-        uint fundedTime = elapsedSeconds * timeToken.totalSupply() / maxTokenSupply;
-        maxTokenSupply += elapsedSeconds;
+        uint elapsedSeconds = now - lastPayTimestamp;
+        uint workTime = calculateWorkTime(elapsedSeconds);
+        uint fundedTime = workTime * timeToken.totalSupply() / maxTokenSupply;
+        maxTokenSupply += workTime;
         lastPayTimestamp = now;
         require(timeToken.generateTokens(owner, fundedTime), "failed to generate tokens");
         emit Pay_event(fundedTime);
     }
 
     function invest (uint reserveAmount) public {
-        uint availableSeconds = (maxTokenSupply * 10^18) - timeToken.totalSupply();
+        uint availableSeconds = maxTokenSupply - timeToken.totalSupply();
         uint claimedTokens = calculateTokenClaim(reserveAmount);
         require(availableSeconds >= claimedTokens, "invalid reserve amount");
         require(reserveToken.transferFrom(msg.sender, address(this), reserveAmount), "failed to transfer");
