@@ -15,7 +15,7 @@ module.exports = {
             from: '0x2e9c6a76199854298775a6bac408052d8775bb68',
             gas: 6000000,
             gasPrice: 1000000000
-        },
+        }
     },
     mocha: {
         enableTimeouts: false

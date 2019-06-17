@@ -35,7 +35,6 @@ import { OrderByPipe } from './pipes/order-by/order-by.pipe';
 import { HomeComponent } from './views/home/home.component';
 import { MedaoComponent } from './views/medao/medao.component';
 import { PostComponent } from './components/post/post.component';
-import { SignUpFormComponent } from './components/sign-up-form/sign-up-form.component';
 import { LeftNavComponent } from './components/left-nav/left-nav.component';
 import { RightNavComponent } from './components/right-nav/right-nav.component';
 import { InfoBubblesComponent } from './components/info-bubbles/info-bubbles.component';
@@ -53,7 +52,6 @@ import { CreateComponent } from './views/create/create.component';
     HomeComponent,
     MedaoComponent,
     PostComponent,
-    SignUpFormComponent,
     LeftNavComponent,
     RightNavComponent,
     SendDialog,

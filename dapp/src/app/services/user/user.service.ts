@@ -78,8 +78,6 @@ export class UserService {
             let balanceInWei = await token.methods.balanceOf(this.account.address).call();
             let balance = web3.utils.fromWei(balanceInWei.toString(), 'ether');
             this.balances[token.address] = balance;
-
-
         }
         catch(err){
             console.error(err);

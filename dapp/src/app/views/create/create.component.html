@@ -30,13 +30,20 @@
                     <mat-label>Seed funds</mat-label>
                     <input matInput type="number" step="0.01" min="0.01" max="{{User.balances[paymentToken] | toDai | number:'1.2-2'}}" [(ngModel)]="medao.seed" (ngModelChange)="updateView()" [disabled]="!User.account.signedIn || medao.tx.promise">
                     <span style="padding: 0px 7px;" matSuffix>$</span>
-                    <mat-hint>available: ${{User.balances[medao.paymentToken] | fromWei: 'ether' | number: '1.2-5'}}</mat-hint>
+                    <mat-hint>
+                        <span *ngIf="paymentToken == 'dai'">
+                            available: ${{User.balances[paymentToken] | number: '1.2-5'}}
+                        </span>
+                        <span *ngIf="paymentToken != 'dai'">
+                            available: ${{medao.maxPayAmount | toDai | number: '1.2-2'}}/{{User.balances[paymentToken] | toDai | number: '1.2-5'}}
+                        </span>
+                    </mat-hint>
                 </mat-form-field>
             </div>
             <div fxLayout="row" fxFlex="136px">
                 <span style="padding: 0px 4px; margin-top: 19px;">payed in</span>
                 <mat-form-field fxFlex="64px">
-                    <mat-select [(ngModel)]="medao.paymentToken" [disabled]="!User.account.signedIn || medao.tx.promise">
+                    <mat-select [(ngModel)]="paymentToken" [disabled]="!User.account.signedIn || medao.tx.promise">
                         <mat-option *ngFor="let token of tokens" [value]="token" [disabled]="['dai','weth'].includes(token)">
                             {{token}}
                         </mat-option>
@@ -110,14 +117,21 @@
                         <div fxLayout="row">
                             <mat-form-field fxFlex>
                                 <mat-label>Seed funds</mat-label>
-                                <input matInput type="number" step="0.01" min="0.01" max="{{User.balances[medao.paymentToken] | toDai | number:'1.2-5'}}" [(ngModel)]="medao.seed" (ngModelChange)="updateView()" [disabled]="!User.account.signedIn || medao.tx.promise">
+                                <input matInput type="number" step="0.01" min="0.01" max="{{User.balances[paymentToken] | toDai | number:'1.2-5'}}" [(ngModel)]="medao.seed" (ngModelChange)="updateView()" [disabled]="!User.account.signedIn || medao.tx.promise">
                                 <span style="padding: 0px 7px;" matSuffix>$</span>
-                                <mat-hint>available: {{User.balances[medao.paymentToken] | fromWei: 'ether' | number: '1.2-5'}} {{medao.paymentToken}}</mat-hint>
+                                <mat-hint>
+                                    <span *ngIf="paymentToken == 'dai'">
+                                        available: ${{User.balances[paymentToken] | number: '1.2-5'}}
+                                    </span>
+                                    <span *ngIf="paymentToken != 'dai'">
+                                        available: ${{medao.maxPayAmount | toDai | number: '1.2-2'}}/{{User.balances[paymentToken] | toDai | number: '1.2-5'}}
+                                    </span>
+                                </mat-hint>
                             </mat-form-field>
                             <div fxLayout="row" fxFlex="136px">
                                 <span style="padding: 0px 4px; margin-top: 19px;">payed in</span>
                                 <mat-form-field fxFlex="64px">
-                                    <mat-select [(ngModel)]="medao.paymentToken" [disabled]="!User.account.signedIn || medao.tx.promise">
+                                    <mat-select [(ngModel)]="paymentToken" [disabled]="!User.account.signedIn || medao.tx.promise">
                                         <mat-option *ngFor="let token of tokens" [value]="token">
                                             {{token}}
                                         </mat-option>

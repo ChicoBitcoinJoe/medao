@@ -8,24 +8,7 @@ declare let require: any;
 let MiniMeTokenArtifact = require('../../../contracts/MiniMeToken.json');
 let MeDaoArtifact = require('../../../contracts/MeDao.json');
 let MeDaoRegistryArtifact = require('../../../contracts/MeDaoRegistry.json');
-let WethToDaiConverterArtifact = require('../../../contracts/WethToDai.json');
 let ERC20Artifact = require('../../../contracts/ERC20.json');
-
-
-let Dex = {
-    '1': "0x39755357759cE0d7f32dC8dC45414CCa409AE24e",
-    '42': "0x4A6bC4e803c62081ffEbCc8d227B5a87a58f1F8F"
-}
-
-let Dai = {
-    '1': "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359",
-    '42': "0xc4375b7de8af5a38a93548eb8453a498222c4ff2"
-}
-
-let Weth = {
-    '1': "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-    '42': "0xd0A1E359811322d97991E03f863a0C30C2cF029C"
-}
 
 class MeDao {
 
@@ -57,7 +40,7 @@ export class MedaoService {
     private ready: Promise<any>;
 
     registry;
-    wethConverter;
+    exchange;
     dai;
 
     constructor(
@@ -68,8 +51,6 @@ export class MedaoService {
     async initialize () {
         var registry = await MeDaoRegistryArtifact.networks[web3.network.id].address;
         this.registry = new web3.eth.Contract(MeDaoRegistryArtifact.abi, registry);
-        var wethConverter = await WethToDaiConverterArtifact.networks[web3.network.id].address;
-        this.wethConverter = new web3.eth.Contract(WethToDaiConverterArtifact.abi, wethConverter);
         this.dai = this.Dai.token;
     }
 
@@ -77,30 +58,30 @@ export class MedaoService {
         name,
         birthTimestamp,
         tokenClaim,
-        seedFunds,
         paymentToken,
+        maxPayAmount,
+        minFillAmount,
+        valueInWei,
         fromAddress
     ) {
         if(paymentToken == 'ether') {
-            var valueInEther = (seedFunds * 2 / this.Dai.eth).toFixed(18);
-            var valueInWei = web3.utils.toWei(valueInEther.toString(), 'ether');
-
             console.log(name);
             console.log(birthTimestamp);
             console.log(tokenClaim);
-            console.log(seedFunds);
-            console.log(paymentToken);
+            console.log(this.Dai.exchange.address);
+            console.log(this.Dai.weth.address);
+            console.log(maxPayAmount);
+            console.log(minFillAmount);
             console.log(valueInWei);
 
-            console.log(this.registry.address);
-            console.log(this.wethConverter.address);
             return this.registry.methods.create(
                 name,
                 birthTimestamp,
                 tokenClaim,
-                this.wethConverter.address,
-                valueInWei,
-                seedFunds
+                this.Dai.exchange.address,
+                this.Dai.weth.address,
+                maxPayAmount,
+                minFillAmount
             )
             .send({
                 from: fromAddress,
@@ -113,6 +94,34 @@ export class MedaoService {
         else if(paymentToken == 'weth') {
 
         }
+    }
+
+    createWithEther (
+        name,
+        birthTimestamp,
+        tokenClaim,
+        maxPayAmount,
+        reserveAmount,
+        fromAddress
+    ) {
+        console.log(name);
+        console.log(birthTimestamp);
+        console.log(tokenClaim);
+        console.log(maxPayAmount);
+        console.log(reserveAmount);
+        console.log(this.Dai.exchange.address);
+
+        return this.registry.methods.create(
+            name,
+            birthTimestamp,
+            tokenClaim,
+            reserveAmount,
+            this.Dai.exchange.address,
+        )
+        .send({
+            from: fromAddress,
+            value: maxPayAmount
+        });
     }
 
     async addressOf (account) {
@@ -135,15 +144,18 @@ export class MedaoService {
                 let transfersEnabled = await token.methods.transfersEnabled().call();
                 let name = await token.methods.name.call();
                 let symbol = await token.methods.symbol.call();
-                let maxSupply = await medao.methods.maxTokenSupply().call();
+                let maxSupplyInWei = await medao.methods.maxTokenSupply().call();
+                let maxSupply = web3.utils.fromWei(maxSupplyInWei.toString(),'ether');
                 let birthTimestamp = await medao.methods.birthTimestamp().call();
                 let birthDate = new Date(birthTimestamp*1000);
                 let totalSupplyInWei = await token.methods.totalSupply().call();
-                let totalSupply =  web3.utils.fromWei(totalSupplyInWei.toString(), 'ether');
+                let totalSupplyInSeconds =  web3.utils.fromWei(totalSupplyInWei.toString(), 'ether');
+                let totalSupplyInHours =  totalSupplyInSeconds / 3600;
                 let daiBalanceInWei = await this.dai.methods.balanceOf(medaoAddress).call();
                 let daiBalance =  web3.utils.fromWei(daiBalanceInWei.toString(), 'ether');
-                let hourlyWage = daiBalance / totalSupply;
-                let fundedPercent = Math.round(totalSupply / maxSupply);
+                let hourlyWage = daiBalance / totalSupplyInHours;
+                console.log(daiBalance)
+                let fundedPercent = Math.round(totalSupplyInHours / maxSupply);
                 let owner = await medao.methods.owner().call();
                 let lastPayTimestampInSeconds = await medao.methods.lastPayTimestamp().call();
                 let lastPayTimestamp = new Date(lastPayTimestampInSeconds*1000);
@@ -165,7 +177,7 @@ export class MedaoService {
                 medao['currentSalary'] = currentSalary;
                 medao['maxSalary'] = maxSalary;
                 medao['balance'] = daiBalance;
-                medao['totalSupply'] = totalSupply;
+                medao['totalSupply'] = totalSupplyInHours;
                 medao['maxSupply'] = maxSupply;
                 medao['birthDate'] = birthDate;
                 medao['maxFunding'] = maxFunding;

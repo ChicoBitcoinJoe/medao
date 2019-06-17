@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
@@ -12,7 +12,7 @@ import { MedaoService } from '../../services/medao/medao.service';
   templateUrl: './medao.component.html',
   styleUrls: ['./medao.component.scss']
 })
-export class MedaoComponent implements OnInit {
+export class MedaoComponent implements OnInit, OnDestroy {
 
     subscription;
     medao;
@@ -39,9 +39,6 @@ export class MedaoComponent implements OnInit {
             }
 
             if (event instanceof NavigationError) {
-                // Hide loading indicator
-
-                // Present error to user
                 console.log(event.error);
             }
         });
@@ -55,6 +52,8 @@ export class MedaoComponent implements OnInit {
         let routes = this.router.url.split('/');
         let medaoAddress = routes[2];
         let medao = await this.MeDaoRegistry.at(medaoAddress);
+        console.log(medao)
+        this.User.setBalance(medao.token);
         this.medao = medao;
     }
 

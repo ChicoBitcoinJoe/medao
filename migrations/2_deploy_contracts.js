@@ -2,7 +2,6 @@ const MeDao = artifacts.require("MeDao");
 const MeDaoFactory = artifacts.require("MeDaoFactory");
 const MeDaoRegistry = artifacts.require("MeDaoRegistry");
 const MiniMeTokenFactory = artifacts.require("MiniMeTokenFactory");
-const WethToDai = artifacts.require("WethToDai");
 
 var Dex = {
     'live': "0x39755357759cE0d7f32dC8dC45414CCa409AE24e",
@@ -25,22 +24,13 @@ module.exports = function(deployer, network, accounts) {
         console.log("Live network not supported yet")
     }
     else if(network == "kovan"){
-        /*
-        deployer.deploy(
-            WethToDai,
-            Dex[network],
-            Weth[network],
-            Dai[network]
-        )
-        .then(() => deployer.deploy(MiniMeTokenFactory))
-        .then(() => deployer.deploy(MeDao))
-        */
-        return deployer.deploy(MeDao)
-        .then(() => deployer.deploy(MeDaoFactory, MeDao.address, MiniMeTokenFactory.address))
-        .then(() => deployer.deploy(MeDaoRegistry, MeDaoFactory.address, Dai[network]));
+        return deployer.deploy(MiniMeTokenFactory, {overwrite: false})
+        //.then(() => deployer.deploy(MeDao))
+        //.then(() => deployer.deploy(MeDaoFactory, MeDao.address, MiniMeTokenFactory.address))
+        .then(() => deployer.deploy(MeDaoRegistry, MeDaoFactory.address, Dai[network], Weth[network]));
     }
-    else if(network == "test"){
-        deployer.deploy(MiniMeTokenFactory)
+    else if(network == "test" || network == "develop"){
+        return deployer.deploy(MiniMeTokenFactory)
         .then(() => deployer.deploy(MeDao))
         .then(() => deployer.deploy(MeDaoFactory, MeDao.address, MiniMeTokenFactory.address))
     }

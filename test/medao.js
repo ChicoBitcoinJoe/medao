@@ -1,3 +1,5 @@
+var BigNumber = require('bignumber.js');
+
 const MeDaoArtifact = artifacts.require("MeDao");
 const MeDaoFactoryArtifact = artifacts.require("MeDaoFactory");
 const MiniMeTokenArtifact = artifacts.require("MiniMeToken");
@@ -22,8 +24,8 @@ contract('MeDao', (accounts) => {
     let investor = accounts[2];
 
     it('should check if medao deployed correctly', async () => {
-        MeDaoFactory = await MeDaoFactoryArtifact.deployed();
         TokenFactory = await MiniMeTokenFactoryArtifact.deployed();
+        MeDaoFactory = await MeDaoFactoryArtifact.deployed();
         ReserveToken = await createToken('Dummy Reserve Token','drt');
 
         await ReserveToken.generateTokens(owner, initialReserve);
@@ -41,7 +43,11 @@ contract('MeDao', (accounts) => {
         MeDao = await MeDaoArtifact.at(medaoTx.logs[0].args.medao);
         TimeToken = await MiniMeTokenArtifact.at(await MeDao.timeToken());
         let currentBlock = await web3.eth.getBlock('latest');
-        let expectedMaxTokenSupply = Math.floor((currentBlock.timestamp - birthTimestamp)/3);
+        let elapsedSeconds = currentBlock.timestamp - birthTimestamp;
+        let expectedMaxTokenSupply = new BigNumber(web3.utils.toWei(elapsedSeconds.toString(),'ether'));
+        let actualMaxTokenSupply = await MeDao.maxTokenSupply();
+        console.log("expected max token supply", expectedMaxTokenSupply);
+        console.log("  actual max token supply", actualMaxTokenSupply.toString());
 
         assert(await MeDao.blockInitialized() == currentBlock.number, "blockInitialized incorrect");
         assert(await MeDao.factory() == MeDaoFactory.address, "factory address incorrect");
@@ -54,7 +60,7 @@ contract('MeDao', (accounts) => {
         assert(await MeDao.calculateReserveClaim(initialTokens) == initialReserve, "reserve claim incorrect");
         assert(await MeDao.calculateTokenClaim(initialReserve) == initialTokens, "token claim incorrect");
     });
-
+/*
     it('should invest in a medao', async () => {
         let investAmount = initialReserve;
         await ReserveToken.generateTokens(investor, investAmount);
@@ -81,11 +87,11 @@ contract('MeDao', (accounts) => {
 
     it('should collect pay in a medao', async () => {
         await seconds(5);
-        await MeDao.collectPay({from: owner});
+        await MeDao.collect({from: owner});
         assert(await TimeToken.balanceOf(owner) > initialTokens, "failed to collect pay");
         assert(await ReserveToken.balanceOf(MeDao.address) == initialReserve, "reserve balance incorrect");
     });
-
+*/
     async function createToken (name, symbol) {
         let Token = await MiniMeTokenArtifact.new(
             TokenFactory.address,

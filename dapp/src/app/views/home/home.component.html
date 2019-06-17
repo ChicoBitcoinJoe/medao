@@ -12,7 +12,7 @@
                         <button *ngIf="web3.connected" mat-button style="padding: 16px;" (click)="User.signIn()" [disabled]="!web3.connected">sign in</button>
                         <a *ngIf="!web3.connected" mat-button style="padding: 16px;" href="https://metamask.io" target="_blank">try metamask to continue</a>
                     </div>
-                    <div *ngIf="!User.medao" class="margin" fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutGap.gt-xs="16px">
+                    <div *ngIf="User.account.signedIn && !User.medao" class="margin" fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutGap.gt-xs="16px">
                         <mat-form-field floatLabel="never">
                             <input matInput type="text" [(ngModel)]="name" placeholder="Enter your name...">
                         </mat-form-field>

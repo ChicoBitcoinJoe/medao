@@ -49,9 +49,13 @@
                             </div>
                             <h3 class="no-margin">Details</h3>
                             <div>Last Paycheck <span fxFlex></span> {{medao.lastPaycheck | date: 'LLLL dd, yyyy'}}</div>
-                            <div>Birth Date <span fxFlex></span> {{medao.birthDate | date: 'LLLL dd, yyyy'}}</div>
-                            <div>Funding <span fxFlex></span> ${{ medao.balance | number: '1.0-0'}}/{{ medao.maxFunding | number: '1.0-0'}}</div>
-                            <div>Salary <span fxFlex></span> ${{medao.currentSalary | number: '1.0-0'}}/{{medao.maxSalary | number: '1.0-0'}}</div>
+                            <div>Birth Date <span fxFlex></span>{{medao.birthDate | date: 'LLLL dd, yyyy'}}</div>
+                            <div>
+                                Funding
+                                <span fxFlex></span>
+                                ${{ medao.balance | number: '1.0-2'}}/{{medao.maxFunding | number: '1.0-0'}}
+                            </div>
+                            <div>Salary <span fxFlex></span>${{medao.currentSalary | number: '1.0-0'}}/{{medao.maxSalary | number: '1.0-0'}}</div>
                             <div *ngIf="showMore" fxLayout="column" fxLayoutGap="16px">
                                 <div>
                                     Hourly Wage
@@ -142,7 +146,7 @@
                                     <h3 class="no-margin">Details</h3>
                                     <div>Last Paycheck <span fxFlex></span> {{medao.lastPaycheck | date: 'LLLL dd, yyyy'}}</div>
                                     <div>Birth Date <span fxFlex></span> {{medao.birthDate | date: 'LLLL dd, yyyy'}}</div>
-                                    <div>Funding <span fxFlex></span> ${{ medao.balance | number: '1.0-0'}}/{{ medao.maxFunding | number: '1.0-0'}}</div>
+                                    <div>Funding <span fxFlex></span> ${{ medao.balance | number: '1.0-2'}}/{{ medao.maxFunding | number: '1.0-0'}}</div>
                                     <div>Salary <span fxFlex></span> ${{medao.currentSalary | number: '1.0-0'}}/{{medao.maxSalary | number: '1.0-0'}}</div>
                                     <div *ngIf="showMore" fxLayout="column" fxLayoutGap="16px">
                                         <div>

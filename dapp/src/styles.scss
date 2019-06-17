@@ -162,3 +162,7 @@ h1, h2, h3, h4, h5, h6 {
 .mat-calendar-period-button .mat-button-wrapper {
     color: black !important;
 }
+
+input:-internal-autofill-previewed {
+    background-color: none !important;
+}
