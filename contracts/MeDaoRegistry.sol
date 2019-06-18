@@ -51,12 +51,10 @@ contract MeDaoRegistry {
         uint reserveAmount,
         DEX exchange
     ) public payable returns (MeDao medao) {
-        uint maxPayAmount = msg.value;
-        weth.deposit.value(maxPayAmount)();
-        require(weth.approve(address(exchange), maxPayAmount));
-        uint payedAmount = exchange.buyAllAmount(dai, reserveAmount, weth, maxPayAmount);
-        weth.withdraw(maxPayAmount - payedAmount);
-        msg.sender.transfer(address(this).balance);
+        uint payAmount = exchange.getPayAmount(weth, dai, reserveAmount);
+        weth.deposit.value(payAmount)();
+        require(weth.approve(address(exchange), payAmount));
+        exchange.buyAllAmount(dai, reserveAmount, weth, payAmount);
         require(dai.approve(address(factory), reserveAmount));
 
         medao = MeDao(factory.create(
@@ -80,9 +78,10 @@ contract MeDaoRegistry {
         uint maxPayAmount,
         uint reserveAmount
     ) public returns (MeDao medao) {
-        require(payToken.transferFrom(msg.sender, address(this), maxPayAmount));
-        require(payToken.approve(address(exchange), maxPayAmount));
-        uint payedAmount = exchange.buyAllAmount(dai, reserveAmount, payToken, maxPayAmount);
+        uint payAmount = exchange.getPayAmount(payToken, dai, reserveAmount);
+        require(payToken.transferFrom(msg.sender, address(this), payAmount));
+        require(payToken.approve(address(exchange), payAmount));
+        exchange.buyAllAmount(dai, reserveAmount, payToken, payAmount);
         require(dai.approve(address(factory), reserveAmount));
 
         medao = MeDao(factory.create(
