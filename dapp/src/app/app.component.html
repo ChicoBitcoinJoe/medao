@@ -9,8 +9,7 @@
     <div fxLayout="column" fxFlexFill>
         <div fxLayout="row" fxLayoutAlign="center" fxFlex>
             <div fxLayout="row" fxFlex fxFlex.lg="1128px" fxFlex.xl="1448px">
-                <div routerLink="/home" routerLinkActive="active" #rla="routerLinkActive"></div>
-                <div fxHide fxShow.gt-sm *ngIf="!rla.isActive"style="position: relative; margin-right: 32px;" fxLayout="column" fxFlex="320px" routerActive>
+                <div *ngIf="route == 'medao'" fxHide fxShow.gt-sm style="position: relative; margin-right: 32px;" fxLayout="column" fxFlex="320px">
                     <app-sidenav-left ngClass.gt-sm="borderR" ngClass.gt-md="borderLR" style="position: fixed; width: 320px;" [Web3]="Web3" [User]="User" fxFlex></app-sidenav-left>
                 </div>
 
@@ -18,7 +17,9 @@
                     <router-outlet></router-outlet>
                 </div>
 
-                <app-sidenav-right ngClass.xl="borderL" fxHide fxShow.xl></app-sidenav-right>
+                <div *ngIf="route == 'medao'" class="borderLR" fxHide fxShow.xl style="position: relative; margin-left: 32px;" fxLayout="column" fxFlex="320px">
+                    <app-sidenav-right></app-sidenav-right>
+                </div>
             </div>
         </div>
     </div>
