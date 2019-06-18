@@ -21,10 +21,13 @@
         </div>
         <div fxFlex.gt-md="32px"></div>
         <div *ngIf="User.account.signedIn" fxLayout="row" fxLayoutGap="26px" fxLayoutGap.gt-md="8px">
-            <button *ngIf="!User.medao || User.medao.address != medao.address" mat-button (click)="openFollowDialog()">
+            <button *ngIf="(!User.medao || User.medao.address != medao.address) && !User.isFollowing(medao.address)" mat-button (click)="User.follow(medao.address)">
                 <div class="dark-text">follow</div>
             </button>
-            <button *ngIf="(medao && User.medao) && User.medao.address == medao.address" mat-button (click)="openFollowDialog()">
+            <button *ngIf="(!User.medao || User.medao.address != medao.address) && User.isFollowing(medao.address)" mat-button (click)="User.unfollow(medao.address)">
+                <div class="dark-text">unfollow</div>
+            </button>
+            <button *ngIf="(medao && User.medao) && User.medao.address == medao.address" mat-button (click)="User.medao.collect()">
                 <div class="dark-text">collect</div>
             </button>
             <button mat-button (click)="openTradeDialog()">

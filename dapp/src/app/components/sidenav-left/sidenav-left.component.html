@@ -24,25 +24,10 @@
             <b>Dai: <span fxFlex></span> ${{User.balances.dai | fromWei: 'ether' | number: '1.2-5'}}</b>
             <b>Wrapped Ether: <span fxFlex></span> &diams;{{User.balances.weth | fromWei: 'ether' | number: '1.2-5'}}</b>
         </div>
-        <div class="scrollable padding incomplete" fxFlex.gt-xs>
+        <div class="scrollable padding" fxFlex.gt-xs>
             <h3>Following</h3>
-            <div fxLayout="column" fxLayoutGap="32px">
-                <div fxLayout="column" fxLayoutGap="8px">
-                    <div>Person A <span fxFlex></span> $0.00</div>
-                    <div class="grey-text">$0.00/h <span fxFlex></span> 0h</div>
-                </div>
-                <div fxLayout="column" fxLayoutGap="8px">
-                    <div>Person B <span fxFlex></span> $0.00</div>
-                    <div class="grey-text">$0.00/h <span fxFlex></span> 0h</div>
-                </div>
-                <div fxLayout="column" fxLayoutGap="8px">
-                    <div>Person C <span fxFlex></span> $0.00</div>
-                    <div class="grey-text">$0.00/h <span fxFlex></span> 0h</div>
-                </div>
-                <div fxLayout="column" fxLayoutGap="8px">
-                    <div>Person D <span fxFlex></span> $0.00</div>
-                    <div class="grey-text">$0.00/h <span fxFlex></span> 0h</div>
-                </div>
+            <div *ngFor="let medaoAddress of User.followers">
+                {{medaoAddress}}
             </div>
         </div>
     </div>

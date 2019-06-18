@@ -87,7 +87,7 @@ export class MedaoHighlightComponent implements OnInit {
     }
 
     follow () {
-      this.User.follow(this.medao);
+        this.User.follow(this.medao);
     }
 
 }
