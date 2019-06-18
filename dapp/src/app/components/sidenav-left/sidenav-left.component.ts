@@ -3,11 +3,11 @@ import { Component, OnInit, Input } from '@angular/core';
 declare let web3: any;
 
 @Component({
-  selector: 'app-left-nav',
-  templateUrl: './left-nav.component.html',
-  styleUrls: ['./left-nav.component.scss']
+  selector: 'app-sidenav-left',
+  templateUrl: './sidenav-left.component.html',
+  styleUrls: ['./sidenav-left.component.scss']
 })
-export class LeftNavComponent implements OnInit {
+export class SidenavLeftComponent implements OnInit {
 
     @Input() Web3;
     @Input() User;

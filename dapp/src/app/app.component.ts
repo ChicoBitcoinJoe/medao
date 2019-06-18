@@ -17,6 +17,7 @@ declare let web3: any;
 export class AppComponent {
 
     ready: boolean = false;
+    supportedNetworks = [42];
 
     constructor (
         private matIconRegistry: MatIconRegistry,
@@ -31,16 +32,14 @@ export class AppComponent {
     }
 
     async initialize() {
-        let allowedNetworks = ['kovan'];
-        let initialized = await this.Web3.initialize(allowedNetworks);
+        let initialized = await this.Web3.initialize(this.supportedNetworks);
         if(initialized){
             this.Dai.initialize();
             this.Medao.initialize();
-            this.User.initialize();
-            this.ready = true;
+            this.ready = await this.User.initialize();
         }
         else {
-
+            console.error(new Error("this network is not supported"));
         }
     }
 

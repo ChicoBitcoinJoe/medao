@@ -1,9 +1,9 @@
-<router-outlet *ngIf="ready"></router-outlet>
+<router-outlet *ngIf="false && ready"></router-outlet>
 
-<mat-sidenav-container *ngIf class="primary-bg" fxFlexFill>
+<mat-sidenav-container *ngIf="ready" class="primary-bg" fxFlexFill>
 
     <mat-sidenav #left opened="false" mode="over" class="primary-bg">
-        <app-left-nav style="border-right: 1px solid white;" [Web3]="Web3" [User]="User" fxFlex="288px"></app-left-nav>
+        <app-sidenav-left style="border-right: 1px solid white;" [Web3]="Web3" [User]="User" fxFlex="288px"></app-sidenav-left>
     </mat-sidenav>
 
     <div fxLayout="column" fxFlexFill>
@@ -11,20 +11,20 @@
             <div fxLayout="row" fxFlex fxFlex.lg="1128px" fxFlex.xl="1448px">
                 <div routerLink="/home" routerLinkActive="active" #rla="routerLinkActive"></div>
                 <div fxHide fxShow.gt-sm *ngIf="!rla.isActive"style="position: relative; margin-right: 32px;" fxLayout="column" fxFlex="320px" routerActive>
-                    <app-left-nav class="borderLR" style="position: fixed; width: 320px;" [Web3]="Web3" [User]="User" fxFlex></app-left-nav>
+                    <app-sidenav-left ngClass.gt-sm="borderR" ngClass.gt-md="borderLR" style="position: fixed; width: 320px;" [Web3]="Web3" [User]="User" fxFlex></app-sidenav-left>
                 </div>
 
-                <div fxLayout="column" fxFlex>
+                <div ngClass.gt-sm="borderL" ngClass.gt-md="borderLR" fxLayout="column" fxFlex>
                     <router-outlet></router-outlet>
                 </div>
 
-                <app-right-nav fxHide fxShow.xl></app-right-nav>
+                <app-sidenav-right ngClass.xl="borderL" fxHide fxShow.xl></app-sidenav-right>
             </div>
         </div>
     </div>
 
     <mat-sidenav #right opened="false" mode="over" position="end" class="primary-bg">
-        <app-right-nav fxFlex="320px"></app-right-nav>
+        <app-sidenav-right fxFlex="320px"></app-sidenav-right>
     </mat-sidenav>
 
 </mat-sidenav-container>

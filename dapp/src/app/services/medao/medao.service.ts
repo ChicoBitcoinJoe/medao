@@ -15,6 +15,7 @@ class MeDao {
     User: any;
     methods: any;
     token: any;
+    title: string = "Cofounder and CEO of Everchain";
 
     transfer (address, tokenAmount) {
         return this.token.methods.transfer(address, tokenAmount).send({
@@ -166,10 +167,10 @@ export class MedaoService {
                 let age = Math.floor(timeElapsed/oneYear);
                 let maxFunding = hourlyWage * maxSupply/3600;
                 let currentSalary = hourlyWage * fundedPercent / 100 * 56 * 52;
-                let maxSalary = hourlyWage * 56 * 52;
+                let maxSalary = hourlyWage * 40 * 52;
 
                 medao['address'] = medaoAddress;
-                medao['token'] = token;
+                medao.token = token;
                 medao['name'] = name;
                 medao['symbol'] = symbol;
                 medao['age'] = age;

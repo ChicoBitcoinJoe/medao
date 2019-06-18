@@ -1,0 +1,54 @@
+<div class="secondary-bg" fxLayout="column" fxFlexFill>
+    <mat-toolbar class="secondary-bg" ngClass.lt-sm="fixed" fxLayoutGap="16px" fxFlex="56px">
+        <button mat-icon-button fxHide.gt-sm (click)="left.toggle() && right.close()"><mat-icon>menu</mat-icon></button>
+        <span fxFlex></span>
+        <button mat-icon-button fxHide.xl (click)="right.toggle() && left.close()"><mat-icon>public</mat-icon></button>
+    </mat-toolbar>
+    <span fxFlex.lt-sm="56px"></span>
+    <div fxHide.gt-sm fxLayout="column">
+        <div fxLayout="column" fxLayoutAlign="start center">
+            <div style="position: relative;">
+                <div class="img-container">
+                    <img *ngIf="medao" style="width: 100%; height: 100%; z-index: 4;" src="./assets/profile-picture.jpeg">
+                </div>
+                <div style="position: absolute; bottom: -6px; left: -8px;">
+                    <button mat-icon-button>
+                        <mat-icon svgIcon="qrcode"></mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div fxFlex="32px"></div>
+        <div style="margin-bottom: 24px;" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="8px" fxFlex>
+            <h2 *ngIf="medao" class="no-margin">{{medao.name}}</h2>
+            <div *ngIf="medao" style="color: white;">{{medao.title}}</div>
+        </div>
+        <app-medao-highlight fxLayout="column" [medao]="medao" [User]="User"></app-medao-highlight>
+    </div>
+    <div fxHide.lt-md fxLayout="column">
+        <div style="margin-bottom: 24px;" fxLayout="column" fxLayoutAlign="end start" fxLayoutGap="8px" fxFlex="66px">
+            <div fxLayout="row" fxLayoutAlign="start end">
+                <span fxFlex="224px"></span>
+                <h2 *ngIf="medao" class="no-margin">{{medao.name}}</h2>
+            </div>
+            <div fxLayout="row">
+                <span fxFlex="240px"></span>
+                <div *ngIf="medao" style="color: white;">{{medao.title}}</div>
+            </div>
+        </div>
+        <div fxLayout="column" style="position: relative;">
+            <div style="position: absolute; top: 60px; left: 0px;">
+                <button mat-icon-button>
+                    <mat-icon fxShow fxHide.gt-md style="color: #222d31" svgIcon="qrcode"></mat-icon>
+                    <mat-icon fxHide fxShow.gt-md svgIcon="qrcode"></mat-icon>
+                </button>
+            </div>
+            <div style="background-color: #222d31; position: absolute; top: -100px; height: 200px; max-height: 200px; width: 200px; max-width: 200px; overflow: hidden; border: 4px solid white; border-radius: 100px; margin-left: 16px;">
+                <div style="width: 100%; height: 100%;" fxLayout="column" fxLayoutAlign="center center">
+                    <img *ngIf="medao" style="width: 100%;" src="./assets/profile-picture.jpeg">
+                </div>
+            </div>
+        </div>
+        <app-medao-highlight fxLayout="column" [medao]="medao" [User]="User"></app-medao-highlight>
+    </div>
+</div>

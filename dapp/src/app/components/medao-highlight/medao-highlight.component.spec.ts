@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MedaoButtonsComponent } from './medao-buttons.component';
+import { MedaoHighlightComponent } from './medao-highlight.component';
 
-describe('MedaoButtonsComponent', () => {
-  let component: MedaoButtonsComponent;
-  let fixture: ComponentFixture<MedaoButtonsComponent>;
+describe('MedaoHighlightComponent', () => {
+  let component: MedaoHighlightComponent;
+  let fixture: ComponentFixture<MedaoHighlightComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MedaoButtonsComponent ]
+      declarations: [ MedaoHighlightComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MedaoButtonsComponent);
+    fixture = TestBed.createComponent(MedaoHighlightComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

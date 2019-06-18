@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Input, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
@@ -12,27 +12,24 @@ export interface DialogData {
 }
 
 @Component({
-  selector: 'app-medao-buttons',
-  templateUrl: './medao-buttons.component.html',
-  styleUrls: ['./medao-buttons.component.scss']
+  selector: 'app-medao-highlight',
+  templateUrl: './medao-highlight.component.html',
+  styleUrls: ['./medao-highlight.component.scss']
 })
-export class MedaoButtonsComponent implements OnInit {
+export class MedaoHighlightComponent implements OnInit {
 
-    medao;
+    @Input() medao;
+    @Input() User;
 
     constructor(
         public dialog: MatDialog,
         private router: Router,
         public Web3: Web3Service,
-        public User: UserService,
         public MeDaoRegistry: MedaoService,
     ) { }
 
-    async ngOnInit() {
-        let routes = this.router.url.split('/');
-        let medaoAddress = routes[2];
-        let medao = await this.MeDaoRegistry.at(medaoAddress);
-        this.medao = medao;
+    ngOnInit () {
+
     }
 
     openSendDialog () {
@@ -96,8 +93,8 @@ export class MedaoButtonsComponent implements OnInit {
 }
 
 @Component({
-  selector: 'send-dialog',
-  templateUrl: 'send.dialog.html',
+    selector: 'send-dialog',
+    templateUrl: 'send.dialog.html',
 })
 export class SendDialog {
 
@@ -127,13 +124,13 @@ export class SendDialog {
         }
     }
 
-}
+    }
 
-@Component({
-  selector: 'trade-dialog',
-  templateUrl: 'trade.dialog.html',
-})
-export class TradeDialog {
+    @Component({
+    selector: 'trade-dialog',
+    templateUrl: 'trade.dialog.html',
+    })
+    export class TradeDialog {
 
     constructor(
         public dialogRef: MatDialogRef<TradeDialog>,

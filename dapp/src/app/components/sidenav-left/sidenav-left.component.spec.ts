@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { InfoBubblesComponent } from './info-bubbles.component';
+import { SidenavLeftComponent } from './sidenav-left.component';
 
-describe('InfoBubblesComponent', () => {
-  let component: InfoBubblesComponent;
-  let fixture: ComponentFixture<InfoBubblesComponent>;
+describe('SidenavLeftComponent', () => {
+  let component: SidenavLeftComponent;
+  let fixture: ComponentFixture<SidenavLeftComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ InfoBubblesComponent ]
+      declarations: [ SidenavLeftComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(InfoBubblesComponent);
+    fixture = TestBed.createComponent(SidenavLeftComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

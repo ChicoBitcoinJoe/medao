@@ -44,6 +44,8 @@ export class UserService {
             this.signIn();
         else
             console.log('not signed in');
+
+        return true;
     }
 
     signIn () {
@@ -62,9 +64,12 @@ export class UserService {
             this.balances.ether = this.account.balance;
             this.balances.weth = wethBalance.toString();
             if(routes[1] == 'medao' && routes[2]){
-                let medao = <any>{};
+                let medao = <any>{
+                    token: null
+                };
+
                 medao = await this.MeDao.at(routes[2]);
-                let timeBalance = await this.medao.token.methods.balanceOf(this.account.address).call();
+                let timeBalance = await medao.token.methods.balanceOf(this.account.address).call();
                 this.balances.time = timeBalance.toString();
             }
         })

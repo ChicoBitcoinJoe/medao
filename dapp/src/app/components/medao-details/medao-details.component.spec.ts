@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RightNavComponent } from './right-nav.component';
+import { MedaoDetailsComponent } from './medao-details.component';
 
-describe('RightNavComponent', () => {
-  let component: RightNavComponent;
-  let fixture: ComponentFixture<RightNavComponent>;
+describe('MedaoDetailsComponent', () => {
+  let component: MedaoDetailsComponent;
+  let fixture: ComponentFixture<MedaoDetailsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RightNavComponent ]
+      declarations: [ MedaoDetailsComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RightNavComponent);
+    fixture = TestBed.createComponent(MedaoDetailsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

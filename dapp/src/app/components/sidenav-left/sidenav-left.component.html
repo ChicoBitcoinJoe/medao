@@ -19,7 +19,7 @@
             <div fxFlex="16px"></div>
         </div>
         <div *ngIf="User" class="padding" fxLayout="column" fxLayoutGap="16px">
-            <b>Time: <span fxFlex></span> {{User.balances.time | fromWei: 'ether' | number: '1.2-5'}} h</b>
+            <b>Time: <span fxFlex></span> {{(User.balances.time | fromWei: 'ether')/ 3600 | number: '1.2-5'}} h</b>
             <b>Ether: <span fxFlex></span> &diams;{{User.balances.ether | fromWei: 'ether' | number: '1.2-5'}}</b>
             <b>Dai: <span fxFlex></span> ${{User.balances.dai | fromWei: 'ether' | number: '1.2-5'}}</b>
             <b>Wrapped Ether: <span fxFlex></span> &diams;{{User.balances.weth | fromWei: 'ether' | number: '1.2-5'}}</b>

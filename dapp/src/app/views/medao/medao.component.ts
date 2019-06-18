@@ -51,8 +51,9 @@ export class MedaoComponent implements OnInit, OnDestroy {
     async initialize () {
         let routes = this.router.url.split('/');
         let medaoAddress = routes[2];
-        let medao = await this.MeDaoRegistry.at(medaoAddress);
-        console.log(medao)
+        let medao = <any>{};
+        medao = await this.MeDaoRegistry.at(medaoAddress);
+        console.log(medao.token)
         this.User.setBalance(medao.token);
         this.medao = medao;
     }

@@ -35,13 +35,14 @@ import { OrderByPipe } from './pipes/order-by/order-by.pipe';
 import { HomeComponent } from './views/home/home.component';
 import { MedaoComponent } from './views/medao/medao.component';
 import { PostComponent } from './components/post/post.component';
-import { LeftNavComponent } from './components/left-nav/left-nav.component';
-import { RightNavComponent } from './components/right-nav/right-nav.component';
-import { InfoBubblesComponent } from './components/info-bubbles/info-bubbles.component';
-import { MedaoButtonsComponent } from './components/medao-buttons/medao-buttons.component';
-import { SendDialog } from './components/medao-buttons/medao-buttons.component';
-import { TradeDialog } from './components/medao-buttons/medao-buttons.component';
+import { SendDialog } from './components/medao-highlight/medao-highlight.component';
+import { TradeDialog } from './components/medao-highlight/medao-highlight.component';
 import { CreateComponent } from './views/create/create.component';
+import { SidenavLeftComponent } from './components/sidenav-left/sidenav-left.component';
+import { SidenavRightComponent } from './components/sidenav-right/sidenav-right.component';
+import { MedaoHeaderComponent } from './components/medao-header/medao-header.component';
+import { MedaoHighlightComponent } from './components/medao-highlight/medao-highlight.component';
+import { MedaoDetailsComponent } from './components/medao-details/medao-details.component';
 
 @NgModule({
   declarations: [
@@ -52,13 +53,14 @@ import { CreateComponent } from './views/create/create.component';
     HomeComponent,
     MedaoComponent,
     PostComponent,
-    LeftNavComponent,
-    RightNavComponent,
     SendDialog,
     TradeDialog,
-    InfoBubblesComponent,
-    MedaoButtonsComponent,
-    CreateComponent
+    CreateComponent,
+    SidenavLeftComponent,
+    SidenavRightComponent,
+    MedaoHeaderComponent,
+    MedaoHighlightComponent,
+    MedaoDetailsComponent
   ],
   imports: [
     BrowserModule,

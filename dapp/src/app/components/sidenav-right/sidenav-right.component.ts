@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-right-nav',
-  templateUrl: './right-nav.component.html',
-  styleUrls: ['./right-nav.component.scss']
+  selector: 'app-sidenav-right',
+  templateUrl: './sidenav-right.component.html',
+  styleUrls: ['./sidenav-right.component.scss']
 })
-export class RightNavComponent implements OnInit {
+export class SidenavRightComponent implements OnInit {
 
     posts = [
         {
@@ -29,5 +29,5 @@ export class RightNavComponent implements OnInit {
 
     ngOnInit() {
     }
-
+    
 }

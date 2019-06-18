@@ -1,53 +1,47 @@
-<div fxLayout="column" fxFlexFill>
-    <div fxLayout="row" fxLayoutAlign="center" fxFlex>
-        <div fxLayout="row" fxFlex fxFlex.lg="1128px" fxFlex.xl="1448px">
-            <div class="borderLR" fxLayout="column" fxFlex>
-                <mat-toolbar class="secondary-bg"></mat-toolbar>
-                <div class="secondary-bg padding" style="border-bottom: 1px solid white;" fxLayout="column" fxLayoutAlign="center center">
-                    <h1 class="cursor no-margin" style="font-size: 48px;" routerLink="['/home']">MeDao</h1>
-                    <h4 class="centered padding no-margin" style="color: rgba(255,255,255,0.5)">
-                        Unleash your financial identity.
-                    </h4>
-                    <div *ngIf="!User.account.signedIn">
-                        <button *ngIf="web3.connected" mat-button style="padding: 16px;" (click)="User.signIn()" [disabled]="!web3.connected">sign in</button>
-                        <a *ngIf="!web3.connected" mat-button style="padding: 16px;" href="https://metamask.io" target="_blank">try metamask to continue</a>
-                    </div>
-                    <div *ngIf="User.account.signedIn && !User.medao" class="margin" fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutGap.gt-xs="16px">
-                        <mat-form-field floatLabel="never">
-                            <input matInput type="text" [(ngModel)]="name" placeholder="Enter your name...">
-                        </mat-form-field>
+<div ngClass.gt-md="borderLR" fxLayout="column" fxFlex>
+    <mat-toolbar class="secondary-bg"></mat-toolbar>
+    <div class="secondary-bg padding" style="border-bottom: 1px solid white;" fxLayout="column" fxLayoutAlign="center center">
+        <h1 class="cursor no-margin" style="font-size: 48px;" routerLink="['/home']">MeDao</h1>
+        <h4 class="centered padding no-margin" style="color: rgba(255,255,255,0.5)">
+            Unleash your financial identity.
+        </h4>
+        <div *ngIf="!User.account.signedIn" class="padding">
+            <button *ngIf="web3.connected" mat-button (click)="User.signIn()" [disabled]="!web3.connected">sign in</button>
+            <a *ngIf="!web3.connected" mat-button style="padding: 16px;" href="https://metamask.io" target="_blank">try metamask to continue</a>
+        </div>
+        <div *ngIf="User.account.signedIn && !User.medao" class="margin" fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutGap.gt-xs="16px">
+            <mat-form-field floatLabel="never">
+                <input matInput type="text" [(ngModel)]="name" placeholder="Enter your name...">
+            </mat-form-field>
 
-                        <div fxLayout="column">
-                            <button mat-raised-button class="primary-bg" style="margin-bottom: 4px;" (click)="Medao.createWizard(name)">get started</button>
-                        </div>
-                    </div>
-                    <div *ngIf="User.medao" class="margin" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap.gt-xs="16px">
-                        <small>Signed in as:</small>
-                        <div>{{User.medao.name}}</div>
-                        <button mat-button [routerLink]="'/medao/' + User.medao.address">view</button>
-                    </div>
-                </div>
-                <div fxLayout="column" fxLayout.gt-sm="row">
-                    <div class="padding" fxLayout="column" fxFlex.gt-sm="33">
-                        <h3>How does it work?</h3>
-                        <p>
-                            Having a MeDao makes you an employee of the world. Investors pool money together from which you (the employee) withdraw a salary for time worked. As value is returned to investors, the value of your time will go up.
-                        </p>
-                    </div>
-                    <div class="padding" fxLayout="column" fxFlex.gt-sm="33">
-                        <h3>Is it safe?</h3>
-                        <p>
-                            A MeDao has built in properties to protect the funds of each investor. Downside potential is something that can be calculated down to the penny. For example, if you invest $100 into a 33 year old employee, in exactly one year your investment will still be worth $97 even if no value is created by the employee.
-                        </p>
-                    </div>
-                    <div class="padding" fxLayout="column" fxFlex.gt-sm="33">
-                        <h3>Third Bullet Point</h3>
-                        <p>
-                            To do
-                        </p>
-                    </div>
-                </div>
+            <div fxLayout="column">
+                <button mat-raised-button class="primary-bg" style="margin-bottom: 4px;" (click)="Medao.createWizard(name)">get started</button>
             </div>
+        </div>
+        <div *ngIf="User.medao" class="margin" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap.gt-xs="16px">
+            <small>Signed in as:</small>
+            <div>{{User.medao.name}}</div>
+            <button mat-button [routerLink]="'/medao/' + User.medao.address">view</button>
+        </div>
+    </div>
+    <div fxLayout="column" fxLayout.gt-sm="row">
+        <div class="padding" fxLayout="column" fxFlex.gt-sm="33">
+            <h3>How does it work?</h3>
+            <p>
+                Having a MeDao makes you an employee of the world. Investors pool money together from which you (the employee) withdraw a salary for time worked. As value is returned to investors, the value of your time will go up.
+            </p>
+        </div>
+        <div class="padding" fxLayout="column" fxFlex.gt-sm="33">
+            <h3>Is it safe?</h3>
+            <p>
+                A MeDao has built in properties to protect the funds of each investor. Downside potential is something that can be calculated down to the penny. For example, if you invest $100 into a 33 year old employee, in exactly one year your investment will still be worth $97 even if no value is created by the employee.
+            </p>
+        </div>
+        <div class="padding" fxLayout="column" fxFlex.gt-sm="33">
+            <h3>Third Bullet Point</h3>
+            <p>
+                To do
+            </p>
         </div>
     </div>
 </div>
