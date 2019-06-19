@@ -13,7 +13,13 @@
                     <app-sidenav-left ngClass.gt-sm="borderR" ngClass.gt-md="borderLR" style="position: fixed; width: 320px;" [Web3]="Web3" [User]="User" fxFlex></app-sidenav-left>
                 </div>
 
-                <div ngClass.gt-sm="borderL" ngClass.gt-md="borderLR" fxLayout="column" fxFlex>
+                <div ngClass.gt-sm="borderL" ngClass.gt-md="borderLR" style="position: relative;" fxLayout="column" fxFlex>
+                    <mat-toolbar class="secondary-bg" ngClass.lt-sm="fixed" fxLayoutGap="16px" fxFlex="56px">
+                        <button mat-icon-button fxHide.gt-sm (click)="left.toggle() && right.close()"><mat-icon>menu</mat-icon></button>
+                        <span fxFlex></span>
+                        <button mat-icon-button fxHide.xl (click)="right.toggle() && left.close()"><mat-icon>public</mat-icon></button>
+                    </mat-toolbar>
+                    <span fxFlex.lt-sm="56px"></span>
                     <router-outlet></router-outlet>
                 </div>
 
@@ -25,7 +31,7 @@
     </div>
 
     <mat-sidenav #right opened="false" mode="over" position="end" class="primary-bg">
-        <app-sidenav-right fxFlex="320px"></app-sidenav-right>
+        <app-sidenav-right fxFlex="288px"></app-sidenav-right>
     </mat-sidenav>
 
 </mat-sidenav-container>
