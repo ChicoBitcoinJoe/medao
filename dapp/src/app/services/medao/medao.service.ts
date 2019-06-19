@@ -42,7 +42,6 @@ export class MedaoService {
 
     registry;
     exchange;
-    dai;
 
     constructor(
         private router: Router,
@@ -52,7 +51,6 @@ export class MedaoService {
     async initialize () {
         var registry = await MeDaoRegistryArtifact.networks[web3.network.id].address;
         this.registry = new web3.eth.Contract(MeDaoRegistryArtifact.abi, registry);
-        this.dai = this.Dai.token;
     }
 
     create (
@@ -152,10 +150,9 @@ export class MedaoService {
                 let totalSupplyInWei = await token.methods.totalSupply().call();
                 let totalSupplyInSeconds =  web3.utils.fromWei(totalSupplyInWei.toString(), 'ether');
                 let totalSupplyInHours =  totalSupplyInSeconds / 3600;
-                let daiBalanceInWei = await this.dai.methods.balanceOf(medaoAddress).call();
+                let daiBalanceInWei = await this.Dai.getBalance(medaoAddress);
                 let daiBalance =  web3.utils.fromWei(daiBalanceInWei.toString(), 'ether');
                 let hourlyWage = daiBalance / totalSupplyInHours;
-                console.log(daiBalance)
                 let fundedPercent = Math.round(totalSupplyInHours / maxSupply);
                 let owner = await medao.methods.owner().call();
                 let lastPayTimestampInSeconds = await medao.methods.lastPayTimestamp().call();
