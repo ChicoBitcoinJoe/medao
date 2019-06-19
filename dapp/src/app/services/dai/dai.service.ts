@@ -59,11 +59,9 @@ export class DaiService {
         return Number(web3.utils.fromWei(weiValue, 'ether')) * this.price.eth;
     }
 
-    async getBalance (address, unit) {
-        if(!unit) unit = 'ether';
-
+    async getBalance (address) {
         let balance = await this.instance.methods.balanceOf(address).call();
-        return web3.utils.fromWei(balance.toString(), unit);
+        return balance.toString();
     }
 
 }
