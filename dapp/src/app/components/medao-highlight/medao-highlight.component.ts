@@ -88,10 +88,8 @@ export class SendDialog {
         this.user = data.user;
     }
 
-    pay(): void {
+    async pay() {
         let address;
-        let sendAmount = web3.utils.toWei(this.sendAmount.toString(), 'ether');
-
         if(this.paymentSelection == this.medao.name){
             address = this.medao.owner;
         }
@@ -102,68 +100,62 @@ export class SendDialog {
             address = this.customAddress;
         }
 
+        let txPromise = null;
         if(this.selectedToken == 'ether'){
+            let sendAmount = web3.utils.toWei(this.sendAmount.toString(), 'ether');
             if(address == this.medao.address){
                 // convert to dai then send to dao
             }
             else {
-                web3.eth.sendTransaction({
+                txPromise = web3.eth.sendTransaction({
                     from: this.user.address,
                     to: address,
                     value: sendAmount
-                })
-                .on('transactionHash', txHash => {
-                    console.log(txHash);
-                })
-                .catch(err => {
-                    console.error(err)
-                })
+                });
             }
         }
         else if(this.selectedToken == 'dai'){
-            this.Dai.methods.transfer(
+            let sendAmount = web3.utils.toWei(this.sendAmount.toString(), 'ether');
+            txPromise = this.Dai.methods.transfer(
                 address,
                 sendAmount
             )
             .send({
                 from: this.user.address
-            })
-            .on('transactionHash', txHash => {
-                console.log(txHash);
-            })
-            .catch(err => {
-                console.error(err)
-            })
+            });
         }
         else if(this.selectedToken == 'time'){
+            let sendAmount = web3.utils.toWei((this.sendAmount * 3600).toString(), 'ether');
             if(address == this.medao.address){
-                this.medao.methods.burn(sendAmount)
+                txPromise = this.medao.methods.burn(sendAmount)
                 .send({
                     from: this.user.address
-                })
-                .on('transactionHash', txHash => {
-                    console.log(txHash);
-                })
-                .catch(err => {
-                    console.error(err)
-                })
+                });
             }
             else {
-                this.medao.token.methods.transfer(
+                txPromise = this.medao.token.methods.transfer(
                     address,
                     sendAmount
                 )
                 .send({
                     from: this.user.address
-                })
-                .on('transactionHash', txHash => {
-                    console.log(txHash);
-                })
-                .catch(err => {
-                    console.error(err)
-                })
+                });
             }
         }
+
+        let tx = await txPromise;
+        tx.on('transactionHash', txHash => {
+            console.log(txHash);
+        })
+        .on('confirmation', (confirmations, txReceipt) => {
+            if(confirmations == 1){
+                console.log(txReceipt);
+                this.medao.update();
+            }
+        })
+        .catch(err => {
+            console.error(err)
+        });
     }
 
     valid () {
