@@ -97,12 +97,10 @@ export class SendDialog {
         }
         else if(this.paymentSelection == 'Dao'){
             address = this.medao.address;
-
         }
         else if(this.paymentSelection == 'Address'){
             address = this.customAddress;
         }
-
 
         if(this.selectedToken == 'ether'){
             if(address == this.medao.address){

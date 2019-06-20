@@ -14,7 +14,7 @@
             <h4 *ngIf="!User.medao">{{User.account.address.slice(0,8)}}...</h4>
             <h4 *ngIf="User.medao">{{User.medao.name}}</h4>
             <div>
-                <button *ngIf="User.medao" mat-button class="margin" [routerLink]="'/medao/' + User.medao.address">view my dao</button>
+                <button *ngIf="User.medao" mat-button class="margin white" [routerLink]="'/medao/' + User.medao.address">view my dao</button>
             </div>
             <div fxFlex="16px"></div>
         </div>
