@@ -157,8 +157,6 @@ export class MedaoService {
                 let owner = await medao.methods.owner().call();
                 let lastPayTimestampInSeconds = await medao.methods.lastPayTimestamp().call();
                 let lastPayTimestamp = new Date(lastPayTimestampInSeconds*1000);
-                let tokenBalanceInWei = await token.methods.balanceOf(owner).call();
-                let tokenBalance = web3.utils.fromWei(tokenBalanceInWei.toString(), 'ether');
                 let timeElapsed = (new Date().getTime() - birthDate.getTime())/1000;
                 let oneYear = 60*60*24*365.25;
                 let age = Math.floor(timeElapsed/oneYear);
@@ -181,10 +179,7 @@ export class MedaoService {
                 medao['maxFunding'] = maxFunding;
                 medao['fundedPercent'] = fundedPercent;
                 medao['lastPaycheck'] = lastPayTimestamp;
-                medao['owner'] = {
-                    address: owner,
-                    balance: tokenBalance
-                };
+                medao['owner'] = owner;
 
                 resolve(medao);
             }

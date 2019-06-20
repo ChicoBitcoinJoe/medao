@@ -26,6 +26,7 @@ import {
     MatGridListModule,
     MatCardModule,
     MatMenuModule,
+    MatRadioModule
 } from '@angular/material';
 
 import { FromWeiPipe } from './pipes/from-wei/from-wei.pipe';
@@ -74,6 +75,7 @@ import { MedaoDetailsComponent } from './components/medao-details/medao-details.
     MatIconModule,
     MatInputModule,
     MatNativeDateModule,
+    MatRadioModule,
     MatSelectModule,
     MatSidenavModule,
     MatSliderModule,

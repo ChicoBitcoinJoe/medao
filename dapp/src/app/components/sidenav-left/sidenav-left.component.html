@@ -22,7 +22,6 @@
             <b>Time: <span fxFlex></span> {{(User.balances.time | fromWei: 'ether')/ 3600 | number: '1.2-5'}} h</b>
             <b>Ether: <span fxFlex></span> &diams;{{User.balances.ether | fromWei: 'ether' | number: '1.2-5'}}</b>
             <b>Dai: <span fxFlex></span> ${{User.balances.dai | fromWei: 'ether' | number: '1.2-5'}}</b>
-            <b>Wrapped Ether: <span fxFlex></span> &diams;{{User.balances.weth | fromWei: 'ether' | number: '1.2-5'}}</b>
         </div>
         <div class="scrollable padding" fxFlex.gt-xs>
             <h3>Following</h3>
