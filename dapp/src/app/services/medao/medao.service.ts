@@ -10,17 +10,92 @@ let MeDaoArtifact = require('../../../contracts/MeDao.json');
 let MeDaoRegistryArtifact = require('../../../contracts/MeDaoRegistry.json');
 let ERC20Artifact = require('../../../contracts/ERC20.json');
 
-class MeDao {
+export class MeDao {
 
-    User: any;
-    methods: any;
-    token: any;
     title: string = "Cofounder and CEO of Everchain";
 
-    transfer (address, tokenAmount) {
-        return this.token.methods.transfer(address, tokenAmount).send({
-            from: this.User.account.address
-        })
+    instance: any;
+    methods: any;
+    token: any;
+    owner: string;
+    name: string;
+    age: number;
+    birthDate: Date;
+    lastPaycheck: Date;
+
+    wage = {
+        current: null,
+        max: null,
+    };
+
+    salary = {
+        current: null,
+        max: null
+    };
+
+    supply = {
+        current: null,
+        max: null
+    };
+
+    funding = {
+        current: null,
+        max: null,
+        percent: null
+    };
+
+    constructor (
+        public Dai: DaiService,
+        public address: string,
+    ) {
+        this.instance = new web3.eth.Contract(MeDaoArtifact.abi, address);
+        this.methods = this.instance.methods;
+        this.update();
+    }
+
+    async update () {
+        let tokenAddress = await this.methods.timeToken().call();
+        let token = await new web3.eth.Contract(MiniMeTokenArtifact.abi, tokenAddress);
+        let controller = await token.methods.controller().call();
+        let transfersEnabled = await token.methods.transfersEnabled().call();
+        let name = await token.methods.name.call();
+        let maxSupplyInWei = await this.methods.maxTokenSupply().call();
+        let maxSupplyInHours = web3.utils.fromWei(maxSupplyInWei.toString(),'ether') / 3600;
+        let birthTimestamp = await this.methods.birthTimestamp().call();
+        let birthDate = new Date(birthTimestamp*1000);
+        let totalSupplyInWei = await token.methods.totalSupply().call();
+        let totalSupplyInSeconds =  web3.utils.fromWei(totalSupplyInWei.toString(), 'ether');
+        let totalSupplyInHours =  totalSupplyInSeconds / 3600;
+        let daiBalanceInWei = await this.Dai.getBalance(this.address);
+        let daiBalance =  web3.utils.fromWei(daiBalanceInWei.toString(), 'ether');
+        let fundedPercent = Math.round(totalSupplyInHours / maxSupplyInHours);
+        let hourlyWage = daiBalance / totalSupplyInHours;
+        let currentWage =  hourlyWage * fundedPercent;
+        let owner = await this.methods.owner().call();
+        let lastPayTimestampInSeconds = await this.methods.lastPayTimestamp().call();
+        let lastPayTimestamp = new Date(lastPayTimestampInSeconds*1000);
+        let timeElapsed = (new Date().getTime() - birthDate.getTime())/1000;
+        let oneYear = 60*60*24*365.25;
+        let age = Math.floor(timeElapsed/oneYear);
+        let maxFunding = hourlyWage * maxSupplyInHours;
+        let maxSalary = hourlyWage * 40 * 52;
+        let currentSalary = maxSalary * fundedPercent / 100;
+
+        this.owner = owner;
+        this.token = token;
+        this.name = name;
+        this.age = age;
+        this.funding.current = daiBalance;
+        this.funding.max = maxFunding;
+        this.funding.percent = fundedPercent;
+        this.wage.current = currentWage;
+        this.wage.max = hourlyWage;
+        this.birthDate = birthDate;
+        this.lastPaycheck = lastPayTimestamp;
+        this.salary.current = currentSalary;
+        this.salary.max = maxSalary;
+        this.supply.current = totalSupplyInHours;
+        this.supply.max = maxSupplyInHours;
     }
 
     invest (reserveAmount) {
@@ -46,7 +121,7 @@ export class MedaoService {
     constructor(
         private router: Router,
         public Dai: DaiService,
-    ) { }
+    ) {}
 
     async initialize () {
         var registry = await MeDaoRegistryArtifact.networks[web3.network.id].address;
@@ -134,53 +209,8 @@ export class MedaoService {
                 resolve(null);
             }
             else {
-                let medaoInstance = await new web3.eth.Contract(MeDaoArtifact.abi, medaoAddress);
-                let medao = new MeDao();
-                medao.methods = medaoInstance.methods;
-                let tokenAddress = await medao.methods.timeToken().call();
-                let token = await new web3.eth.Contract(MiniMeTokenArtifact.abi, tokenAddress);
-                let controller = await token.methods.controller().call();
-                let transfersEnabled = await token.methods.transfersEnabled().call();
-                let name = await token.methods.name.call();
-                let symbol = await token.methods.symbol.call();
-                let maxSupplyInWei = await medao.methods.maxTokenSupply().call();
-                let maxSupply = web3.utils.fromWei(maxSupplyInWei.toString(),'ether');
-                let birthTimestamp = await medao.methods.birthTimestamp().call();
-                let birthDate = new Date(birthTimestamp*1000);
-                let totalSupplyInWei = await token.methods.totalSupply().call();
-                let totalSupplyInSeconds =  web3.utils.fromWei(totalSupplyInWei.toString(), 'ether');
-                let totalSupplyInHours =  totalSupplyInSeconds / 3600;
-                let daiBalanceInWei = await this.Dai.getBalance(medaoAddress);
-                let daiBalance =  web3.utils.fromWei(daiBalanceInWei.toString(), 'ether');
-                let hourlyWage = daiBalance / totalSupplyInHours;
-                let fundedPercent = Math.round(totalSupplyInHours / maxSupply);
-                let owner = await medao.methods.owner().call();
-                let lastPayTimestampInSeconds = await medao.methods.lastPayTimestamp().call();
-                let lastPayTimestamp = new Date(lastPayTimestampInSeconds*1000);
-                let timeElapsed = (new Date().getTime() - birthDate.getTime())/1000;
-                let oneYear = 60*60*24*365.25;
-                let age = Math.floor(timeElapsed/oneYear);
-                let maxFunding = hourlyWage * maxSupply/3600;
-                let currentSalary = hourlyWage * fundedPercent / 100 * 56 * 52;
-                let maxSalary = hourlyWage * 40 * 52;
-
-                medao['address'] = medaoAddress;
-                medao.token = token;
-                medao['name'] = name;
-                medao['symbol'] = symbol;
-                medao['age'] = age;
-                medao['hourlyWage'] = hourlyWage;
-                medao['currentSalary'] = currentSalary;
-                medao['maxSalary'] = maxSalary;
-                medao['balance'] = daiBalance;
-                medao['totalSupply'] = totalSupplyInHours;
-                medao['maxSupply'] = maxSupply;
-                medao['birthDate'] = birthDate;
-                medao['maxFunding'] = maxFunding;
-                medao['fundedPercent'] = fundedPercent;
-                medao['lastPaycheck'] = lastPayTimestamp;
-                medao['owner'] = owner;
-
+                let medao = new MeDao(this.Dai, medaoAddress);
+                await medao.update();
                 resolve(medao);
             }
         });

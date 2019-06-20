@@ -10,26 +10,40 @@
     <h3 class="no-margin">Details</h3>
     <div>Last Paycheck <span fxFlex></span> {{medao.lastPaycheck | date: 'LLLL dd, yyyy'}}</div>
     <div>Birth Date <span fxFlex></span> {{medao.birthDate | date: 'LLLL dd, yyyy'}}</div>
-    <div>Funding <span fxFlex></span> ${{ medao.balance | number: '1.0-2'}}/{{ medao.maxFunding | number: '1.0-0'}}</div>
-    <div>Salary <span fxFlex></span> ${{medao.currentSalary | number: '1.0-0'}}/{{medao.maxSalary | number: '1.0-0'}}</div>
+    <div>
+        Funding
+        <span fxFlex></span>
+        ({{medao.funding.percent}}%)
+        <span fxFlex="16px"></span>
+        ${{ medao.funding.current | number: '1.0-2'}}/{{ medao.funding.max | number: '1.0-0'}}
+    </div>
+    <div>
+        Salary
+        <span fxFlex></span>
+        ${{medao.salary.current | number: '1.0-0'}}/{{medao.salary.max | number: '1.0-0'}}
+    </div>
     <div *ngIf="showMore" fxLayout="column" fxLayoutGap="16px">
         <div>
             Hourly Wage
             <span fxFlex></span>
-            ${{medao.hourlyWage * medao.fundedPercent / 100 | number: '1.2-2'}}/{{medao.hourlyWage | number: '1.2-2'}}
+            ${{medao.wage.current | number: '1.2-2'}}/{{medao.wage.max | number: '1.2-2'}}
         </div>
         <div>
             Total Supply
             <span fxFlex></span>
-            <div *ngIf="medao.totalSupply >= 1">{{medao.totalSupply | number: '1.0-0'}}</div>
-            <div *ngIf="medao.totalSupply < 1">{{medao.totalSupply | number: '1.0-2'}}</div>
-            /{{medao.maxSupply / 3600 | number: '1.0-0'}}
+            <div *ngIf="medao.supply.current > 1">{{medao.supply.current | number: '1.0-0'}}</div>
+            <div *ngIf="medao.supply.current <= 1">{{medao.supply.current | number: '1.0-2'}}</div>
+            /{{medao.supply.max | number: '1.0-0'}}
             <span style="padding-left: 2px">h</span>
         </div>
-        <div>Max Annual Inflation <span fxFlex></span> {{100 / medao.age | number: '1.1-1'}}%</div>
+        <div>
+            Max Annual Inflation
+            <span fxFlex></span>
+            todo
+        </div>
     </div>
-    <button mat-button *ngIf="!showMore" (click)="showMore = !showMore">show more</button>
-    <button mat-button *ngIf="showMore" (click)="showMore = !showMore">show less</button>
+    <button mat-button *ngIf="!showMore" class="white" (click)="showMore = !showMore">show more</button>
+    <button mat-button *ngIf="showMore" class="white" (click)="showMore = !showMore">show less</button>
 </div>
 <div fxLayout="column" fxLayoutGap="16px">
     <h3>Contact</h3>
