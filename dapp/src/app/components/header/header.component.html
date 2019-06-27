@@ -1,0 +1,46 @@
+<div ngClass.gt-xs="margin" fxLayout="row">
+    <mat-card ngStyle.gt-xs="border-radius: 136px;" style="border-radius: 0px;" fxFlex>
+        <div fxLayout.xs="column" fxLayout="row" fxLayoutAlign.xs="center center" fxLayoutAlign.gt-xs="start center" fxLayoutGap="16px">
+            <div style="width: 240px; height: 240px;" fxLayout="column" fxLayoutAlign="center center">
+                <img style="width: 100%; border-radius: 120px;" src="./assets/profile-picture.jpeg">
+            </div>
+            <div ngStyle.gt-xs="padding-right: 32px" fxLayout="column" fxFlex.gt-xs>
+                <div fxLayout="column" fxLayoutGap="16px">
+                    <h1 fxHide.lt-md class="dark-text no-margin" ngClass.xs="centered">
+                        Joseph Brian Reed
+                    </h1>
+                    <h2 fxHide fxShow.sm class="dark-text no-margin" ngClass.xs="centered">
+                        Joseph Brian Reed
+                    </h2>
+                    <h3 fxHide fxShow.xs class="dark-text no-margin" ngClass.xs="centered">
+                        Joseph Brian Reed
+                    </h3>
+                    <div class="dark-text" ngClass.xs="centered" style="padding-left: 8px;">
+                        Founder and CEO of MeDao / Co-founder and CEO of the Everchain Project
+                    </div>
+
+                    <div fxLayoutAlign.xs="center" style="padding-left: 8px;" fxLayout="row" fxLayoutGap.lt-md="24px" fxLayoutGap="48px">
+                        <div class="centered" fxLayout="column" fxLayoutGap="4px">
+                            <div class="dark-text" style="font-weight: bold; font-size: 24px;">{{medao.funding.percent}}%</div>
+                            <div class="grey-text" style="font-size: 12px;">funded</div>
+                        </div>
+                        <div class="centered" fxLayout="column" fxLayoutGap="4px">
+                            <div class="dark-text" style="font-weight: bold; font-size: 24px;">${{medao.wage.max | number: '1.2-2'}}</div>
+                            <div class="grey-text" style="font-size: 12px;">hourly wage</div>
+                        </div>
+                        <div *ngIf="User.balances[medao.token.address]" class="centered" fxLayout="column" fxLayoutGap="4px">
+                            <div class="dark-text" style="font-weight: bold; font-size: 24px;">${{medao.wage.max * (User.balances[medao.token.address] | fromWei: 'ether') / 3600 | number: '1.2-2'}}</div>
+                            <div class="grey-text" style="font-size: 12px;">balance: {{(User.balances[medao.token.address] | fromWei: 'ether') / 3600 | number: '1.2-5'}}h</div>
+                        </div>
+                    </div>
+                    <span fxFlex.gt-xs></span>
+                    <div ngClass.xs="centered" fxLayoutGap="16px">
+                        <button mat-raised-button color="primary">connect</button>
+                        <button mat-raised-button color="primary">transfer</button>
+                        <button mat-raised-button color="primary">exchange</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-card>
+</div>

@@ -1,37 +1,15 @@
-<router-outlet *ngIf="false && ready"></router-outlet>
-
-<mat-sidenav-container *ngIf="ready" class="primary-bg" fxFlexFill>
-
-    <mat-sidenav #left opened="false" mode="over" class="primary-bg">
-        <app-sidenav-left style="border-right: 1px solid white;" [Web3]="Web3" [User]="User" fxFlex="288px"></app-sidenav-left>
-    </mat-sidenav>
-
-    <div fxLayout="column" fxFlexFill>
-        <div fxLayout="row" fxLayoutAlign="center" fxFlex>
-            <div fxLayout="row" fxFlex fxFlex.lg="1128px" fxFlex.xl="1448px">
-                <div *ngIf="route == 'medao'" fxHide fxShow.gt-sm style="position: relative; margin-right: 32px;" fxLayout="column" fxFlex="320px">
-                    <app-sidenav-left ngClass.gt-sm="borderR" ngClass.gt-md="borderLR" style="position: fixed; width: 320px;" [Web3]="Web3" [User]="User" fxFlex></app-sidenav-left>
-                </div>
-
-                <div ngClass.gt-sm="borderL" ngClass.gt-md="borderLR" style="position: relative;" fxLayout="column" fxFlex>
-                    <mat-toolbar class="secondary-bg" ngClass.lt-sm="fixed" fxLayoutGap="16px" fxFlex="56px">
-                        <button mat-icon-button fxHide.gt-sm (click)="left.toggle() && right.close()"><mat-icon>menu</mat-icon></button>
-                        <span fxFlex></span>
-                        <button mat-icon-button fxHide.xl (click)="right.toggle() && left.close()"><mat-icon>public</mat-icon></button>
-                    </mat-toolbar>
-                    <span fxFlex.lt-sm="56px"></span>
-                    <router-outlet></router-outlet>
-                </div>
-
-                <div *ngIf="route == 'medao'" class="borderLR" fxHide fxShow.xl style="position: relative; margin-left: 32px;" fxLayout="column" fxFlex="320px">
-                    <app-sidenav-right></app-sidenav-right>
-                </div>
-            </div>
+<div fxLayout="row" fxLayoutAlign="center" fxFlexFill>
+    <div fxLayout="column" style="max-width: 996px; width: 100%">
+        <div class="fixed" fxFlex="56px">
+            <mat-toolbar class="primary-bg white" style="margin: auto; max-width: 796px; width: 100%" fxLayoutGap="8px">
+                <span class="cursor white-text" routerLink="['/home']">MeDao</span>
+                <span fxFlex></span>
+                <button mat-button (click)="null">connections</button>
+                <button mat-button (click)="null">my dao</button>
+            </mat-toolbar>
         </div>
+        <span fxFlex="56px"></span>
+        <span fxFlex.gt-xs="24px"></span>
+        <router-outlet></router-outlet>
     </div>
-
-    <mat-sidenav #right opened="false" mode="over" position="end" class="primary-bg">
-        <app-sidenav-right fxFlex="288px"></app-sidenav-right>
-    </mat-sidenav>
-
-</mat-sidenav-container>
+</div>

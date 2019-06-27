@@ -1,4 +1,13 @@
-<div fxLayout="column">
-    <app-medao-header [User]="User" [medao]="medao"></app-medao-header>
-    <app-medao-details class="padding" fxLayout="column" [medao]="medao" [User]="User"></app-medao-details>
+<div *ngIf="User && medao" fxLayout="column">
+    <app-header fxLayout="column" [medao]="medao" [User]="User"></app-header>
+    <div class="padding" ngStyle.gt-xs="margin: 0px 100px;" fxLayout="column">
+        <mat-form-field fxFlex>
+            <mat-select [(ngModel)]="selectedOption">
+                <mat-option *ngFor="let option of options" [value]="option">
+                    {{option}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <app-details *ngIf="selectedOption == 'Details'" fxLayout="column" [medao]="medao" [User]="User"></app-details>
+    </div>
 </div>

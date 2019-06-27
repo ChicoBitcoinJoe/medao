@@ -35,7 +35,8 @@ export class MeDao {
 
     supply = {
         current: null,
-        max: null
+        max: null,
+        inflation: null,
     };
 
     funding = {
@@ -76,7 +77,7 @@ export class MeDao {
         let lastPayTimestamp = new Date(lastPayTimestampInSeconds*1000);
         let timeElapsed = (new Date().getTime() - birthDate.getTime())/1000;
         let oneYear = 60*60*24*365.25;
-        let age = Math.floor(timeElapsed/oneYear);
+        let age = timeElapsed/oneYear;
         let maxFunding = hourlyWage * maxSupplyInHours;
         let maxSalary = hourlyWage * 40 * 52;
         let currentSalary = maxSalary * fundedPercent / 100;
@@ -96,6 +97,11 @@ export class MeDao {
         this.salary.max = maxSalary;
         this.supply.current = totalSupplyInHours;
         this.supply.max = maxSupplyInHours;
+        this.supply.inflation = 1 / age;
+    }
+
+    collect () {
+
     }
 
     invest (reserveAmount) {
@@ -104,6 +110,19 @@ export class MeDao {
 
     divest (tokenAmount) {
 
+    }
+
+    transfer(destinationAddress, amount, fromAddress) {
+        return this.token.methods.transfer(destinationAddress, amount)
+        .send({
+            from: fromAddress
+        })
+        .on('transactionHash', txHash => {
+
+        })
+        .on('confirmation', (confirmations, txReciept) => {
+
+        })
     }
 
 }

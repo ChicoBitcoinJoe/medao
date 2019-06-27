@@ -43,6 +43,14 @@ body {
     background-color: #29383e !important;
 }
 
+button {
+    border-radius: 18px !important;
+}
+
+.mat-select-value-text > span {
+    font-size: 20px;
+}
+
 .incomplete {
     opacity: 0.2;
 }
@@ -55,8 +63,16 @@ body {
     color: white !important;
 }
 
+.black {
+    color: rgba(0,0,0,0.87) !important;
+}
+
 .dark-text {
     color: rgba(0,0,0,0.87);
+}
+
+.white-text {
+    color: white;
 }
 
 input {
@@ -88,13 +104,17 @@ div, button, small, mat-icon, .mat-select-value {
 }
 
 .img-container {
-    height: 200px;
-    width: 200px;
-    max-height: 200px;
-    max-width: 200px;
+    height: 240px;
+    width: 240px;
+    max-height: 240px;
+    max-width: 240px;
     overflow: hidden;
     border: 4px solid white;
-    border-radius: 100px;
+    border-radius: 120px;
+}
+
+.border {
+    border: 1px solid white;
 }
 
 .borderLR {
@@ -117,6 +137,14 @@ div, button, small, mat-icon, .mat-select-value {
 
 .borderTB {
     border-top: 1px solid white;
+    border-bottom: 1px solid white;
+}
+
+.borderT {
+    border-top: 1px solid white;
+}
+
+.borderB {
     border-bottom: 1px solid white;
 }
 
@@ -196,4 +224,8 @@ h1, h2, h3, h4, h5, h6 {
 
 input:-internal-autofill-previewed {
     background-color: none !important;
+}
+
+.mat-checkbox-frame {
+    border-color: white;
 }

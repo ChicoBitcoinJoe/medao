@@ -8,25 +8,26 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import {
-    MatSelectModule,
-    MatCheckboxModule,
-    MatExpansionModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatSliderModule,
-    MatSnackBarModule,
-    MatDialogModule,
-    MatToolbarModule,
-    MatInputModule,
     MatButtonModule,
-    MatFormFieldModule,
-    MatSidenavModule,
-    MatIconModule,
-    MatListModule,
-    MatGridListModule,
     MatCardModule,
+    MatCheckboxModule,
+    MatDatepickerModule,
+    MatDialogModule,
+    MatExpansionModule,
+    MatFormFieldModule,
+    MatGridListModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
     MatMenuModule,
-    MatRadioModule
+    MatNativeDateModule,
+    MatRadioModule,
+    MatSelectModule,
+    MatSidenavModule,
+    MatSliderModule,
+    MatSlideToggleModule,
+    MatSnackBarModule,
+    MatToolbarModule,
 } from '@angular/material';
 
 import { FromWeiPipe } from './pipes/from-wei/from-wei.pipe';
@@ -34,16 +35,12 @@ import { ToDaiPipe } from './pipes/to-dai/to-dai.pipe';
 import { OrderByPipe } from './pipes/order-by/order-by.pipe';
 
 import { HomeComponent } from './views/home/home.component';
-import { MedaoComponent } from './views/medao/medao.component';
-import { PostComponent } from './components/post/post.component';
-import { SendDialog } from './components/medao-highlight/medao-highlight.component';
-import { TradeDialog } from './components/medao-highlight/medao-highlight.component';
 import { CreateComponent } from './views/create/create.component';
-import { SidenavLeftComponent } from './components/sidenav-left/sidenav-left.component';
-import { SidenavRightComponent } from './components/sidenav-right/sidenav-right.component';
-import { MedaoHeaderComponent } from './components/medao-header/medao-header.component';
-import { MedaoHighlightComponent } from './components/medao-highlight/medao-highlight.component';
-import { MedaoDetailsComponent } from './components/medao-details/medao-details.component';
+import { MedaoComponent } from './views/medao/medao.component';
+import { HeaderComponent } from './components/header/header.component';
+import { DetailsComponent } from './components/details/details.component';
+import { AboutComponent } from './components/about/about.component';
+import { ContractComponent } from './components/contract/contract.component';
 
 @NgModule({
   declarations: [
@@ -52,16 +49,12 @@ import { MedaoDetailsComponent } from './components/medao-details/medao-details.
     ToDaiPipe,
     OrderByPipe,
     HomeComponent,
-    MedaoComponent,
-    PostComponent,
-    SendDialog,
-    TradeDialog,
     CreateComponent,
-    SidenavLeftComponent,
-    SidenavRightComponent,
-    MedaoHeaderComponent,
-    MedaoHighlightComponent,
-    MedaoDetailsComponent
+    MedaoComponent,
+    HeaderComponent,
+    DetailsComponent,
+    AboutComponent,
+    ContractComponent,
   ],
   imports: [
     BrowserModule,
@@ -71,6 +64,8 @@ import { MedaoDetailsComponent } from './components/medao-details/medao-details.
     FormsModule,
     HttpClientModule,
     MatButtonModule,
+    MatCardModule,
+    MatCheckboxModule,
     MatDatepickerModule,
     MatIconModule,
     MatInputModule,
@@ -78,15 +73,19 @@ import { MedaoDetailsComponent } from './components/medao-details/medao-details.
     MatRadioModule,
     MatSelectModule,
     MatSidenavModule,
+    MatSlideToggleModule,
     MatSliderModule,
     MatSnackBarModule,
     MatToolbarModule,
   ],
-  providers: [],
-  entryComponents: [
-      SendDialog,
-      TradeDialog
+  providers: [
+
   ],
-  bootstrap: [ AppComponent ]
+  entryComponents: [
+
+  ],
+  bootstrap: [
+      AppComponent
+  ]
 })
 export class AppModule { }

@@ -28,6 +28,8 @@ export class Web3Service {
 
         if(window.web3){
             window.web3.utils['nullAddress'] = '0x0000000000000000000000000000000000000000';
+            let maxInHex = window.web3.utils.toTwosComplement('-1');
+            window.web3.utils['maxUintValue'] = window.web3.utils.hexToNumberString(maxInHex).toString();
         }
     }
 

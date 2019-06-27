@@ -96,14 +96,8 @@ export class UserService {
     }
 
     async setBalance (token) {
-        try {
-            let balanceInWei = await token.methods.balanceOf(this.address).call();
-            let balance = web3.utils.fromWei(balanceInWei.toString(), 'ether');
-            this.balances[token.address] = balance;
-        }
-        catch(err){
-            console.error(err);
-        }
+        let balanceInWei = await token.methods.balanceOf(this.address).call();
+        this.balances[token.address] = balanceInWei.toString();
     }
 
     follow (medaoAddress) {
