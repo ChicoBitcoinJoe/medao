@@ -41,6 +41,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { DetailsComponent } from './components/details/details.component';
 import { AboutComponent } from './components/about/about.component';
 import { ContractComponent } from './components/contract/contract.component';
+import { ToolbarComponent } from './components/toolbar/toolbar.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { ContractComponent } from './components/contract/contract.component';
     DetailsComponent,
     AboutComponent,
     ContractComponent,
+    ToolbarComponent,
   ],
   imports: [
     BrowserModule,

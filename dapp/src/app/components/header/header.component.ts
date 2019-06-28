@@ -9,6 +9,7 @@ export class HeaderComponent implements OnInit {
 
     @Input() User;
     @Input() medao;
+    @Input() view;
 
     constructor() { }
 

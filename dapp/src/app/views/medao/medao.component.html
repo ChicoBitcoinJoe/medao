@@ -1,13 +1,14 @@
 <div *ngIf="User && medao" fxLayout="column">
+    <app-toolbar [User]="User" fxLayout="column"></app-toolbar>
     <app-header fxLayout="column" [medao]="medao" [User]="User"></app-header>
     <div class="padding" ngStyle.gt-xs="margin: 0px 100px;" fxLayout="column">
         <mat-form-field fxFlex>
-            <mat-select [(ngModel)]="selectedOption">
+            <mat-select class="white" [(ngModel)]="selectedOption">
                 <mat-option *ngFor="let option of options" [value]="option">
                     {{option}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
-        <app-details *ngIf="selectedOption == 'Details'" fxLayout="column" [medao]="medao" [User]="User"></app-details>
+        <app-details *ngIf="selectedOption == 'Details'" class="white" fxLayout="column" [medao]="medao" [User]="User"></app-details>
     </div>
 </div>

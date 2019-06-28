@@ -39,7 +39,6 @@ export class MedaoComponent implements OnInit, OnDestroy {
         this.initialize();
 
         this.subscription = this.router.events.subscribe( (event: Event) => {
-
             if (event instanceof NavigationStart) {
 
             }
@@ -62,12 +61,14 @@ export class MedaoComponent implements OnInit, OnDestroy {
         let routes = this.router.url.split('/');
         let medaoAddress = routes[2];
         this.medao = await this.MeDao.at(medaoAddress);
-        this.User.setBalance(this.medao.token);
 
-        this.medao.token.methods.allowance(this.User.address, this.medao.address).call()
-        .then(allowance => {
-            this.paymentsEnabled = allowance.gt(0);
-        })
+        if(this.User.address){
+            this.User.setBalance(this.medao.token);
+            this.medao.token.methods.allowance(this.User.address, this.medao.address).call()
+            .then(allowance => {
+                this.paymentsEnabled = allowance.gt(0);
+            })
+        }
     }
 
     enableDaiTrading(): void {

@@ -19,7 +19,7 @@
                         Founder and CEO of MeDao / Co-founder and CEO of the Everchain Project
                     </div>
 
-                    <div fxLayoutAlign.xs="center" style="padding-left: 8px;" fxLayout="row" fxLayoutGap.lt-md="24px" fxLayoutGap="48px">
+                    <div style="padding-left: 8px;" fxLayout="row" fxLayoutGap.lt-md="24px" fxLayoutGap="48px" fxLayoutAlign.xs="center" fxLayoutAlign.gt-xs="none">
                         <div class="centered" fxLayout="column" fxLayoutGap="4px">
                             <div class="dark-text" style="font-weight: bold; font-size: 24px;">{{medao.funding.percent}}%</div>
                             <div class="grey-text" style="font-size: 12px;">funded</div>
@@ -34,8 +34,20 @@
                         </div>
                     </div>
                     <span fxFlex.gt-xs></span>
-                    <div ngClass.xs="centered" fxLayoutGap="16px">
-                        <button mat-raised-button color="primary">connect</button>
+                    <div *ngIf="view" ngClass.xs="centered" fxLayoutGap="16px">
+                        <button mat-raised-button color="primary" (click)="view.go()">view</button>
+                    </div>
+                    <div *ngIf="!view" ngClass.xs="centered" fxLayoutGap="16px">
+                        <span *ngIf="User.medao && User.medao.address == medao.address">
+                            <button mat-raised-button color="primary">collect</button>
+                        </span>
+                        <span *ngIf="User.medao && medao && User.medao.address != medao.address">
+                            <button mat-raised-button color="primary" *ngIf="!User.isFollowing(medao.address)" (click)="User.follow(medao.address)">connect</button>
+                            <button mat-raised-button color="primary" *ngIf="User.isFollowing(medao.address)" (click)="User.unfollow(medao.address)" (mouseover)="isHovering = true" (mouseout)="isHovering = false">
+                                <span *ngIf="!isHovering">connected</span>
+                                <span *ngIf="isHovering">forget</span>
+                            </button>
+                        </span>
                         <button mat-raised-button color="primary">transfer</button>
                         <button mat-raised-button color="primary">exchange</button>
                     </div>

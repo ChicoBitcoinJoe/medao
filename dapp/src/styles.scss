@@ -43,24 +43,20 @@ body {
     background-color: #29383e !important;
 }
 
-button {
-    border-radius: 18px !important;
+.white-bg {
+     background-color: white;
 }
 
-.mat-select-value-text > span {
-    font-size: 20px;
+button, a {
+    border-radius: 18px !important;
 }
 
 .incomplete {
     opacity: 0.2;
 }
 
-.fixed {
-    position: fixed;
-}
-
-.white .mat-button-wrapper {
-    color: white !important;
+.white {
+    color: rgba(255,255,255,0.87) !important;
 }
 
 .black {
@@ -75,12 +71,8 @@ button {
     color: white;
 }
 
-input {
-    caret-color: white !important;
-}
-
-div, button, small, mat-icon, .mat-select-value {
-    color: white;
+.grey-text {
+    color: rgba(0,0,0,0.5) !important;
 }
 
 .mat-radio-outer-circle {
@@ -150,24 +142,14 @@ div, button, small, mat-icon, .mat-select-value {
 
 p {
     line-height: 24px;
-    color: white;
 }
 
 h1, h2, h3, h4, h5, h6 {
-    color: white;
     font-family: "Courier New";
 }
 
-.mat-form-field-appearance-legacy .mat-hint {
-    color: white;
-}
-
-.mat-form-field-appearance-legacy .mat-form-field-label {
-    color: white !important;
-}
-
 .mat-button, .mat-flat-button, .mat-icon-button, .mat-stroked-button {
-    color: black;
+    color: white;
 }
 
 .mat-button[disabled][disabled] {
@@ -178,20 +160,8 @@ h1, h2, h3, h4, h5, h6 {
     background-color: #29383e !important;
 }
 
-.mat-select-arrow {
-    color: white;
-}
-
 .mat-dialog-container {
     background-color: #29383e;
-}
-
-.grey-text {
-    color: rgba(0,0,0,0.5) !important;
-}
-
-.input {
-    caret-color: white !important;
 }
 
 .scrollable {
@@ -214,18 +184,19 @@ h1, h2, h3, h4, h5, h6 {
     color: rgba(0,0,0,0.87);
 }
 
-.mat-form-field-appearance-legacy .mat-form-field-underline {
-    background-color: white !important;
-}
-
 .mat-calendar-period-button .mat-button-wrapper {
     color: black !important;
 }
 
-input:-internal-autofill-previewed {
-    background-color: none !important;
-}
-
 .mat-checkbox-frame {
     border-color: white;
+}
+
+.white .mat-select-value-text span {
+    font-size: 20px !important;
+    color: white !important;
+}
+
+.white .mat-select-arrow {
+    color: white;
 }

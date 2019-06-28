@@ -35,7 +35,6 @@ export class AppComponent {
         this.matIconRegistry.addSvgIcon("qrcode", this.domSanitizer.bypassSecurityTrustResourceUrl("./assets/qrcode.svg"));
 
         this.subscription = this.router.events.subscribe( (event: Event) => {
-
             if (event instanceof NavigationStart) {
 
             }
@@ -56,6 +55,7 @@ export class AppComponent {
             this.Dai.initialize();
             this.Medao.initialize();
             this.ready = await this.User.initialize();
+            console.log('App ready', this.ready)
         }
         else {
             console.error(new Error("network is not supported"));
