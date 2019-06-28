@@ -9,6 +9,7 @@ const Web3 = require('web3');
 })
 export class Web3Service {
 
+    public currentAccount: string = null;
     private watching: string = null;
     private interval: any = null;
 
@@ -37,7 +38,11 @@ export class Web3Service {
         window.web3['ready'] = new Promise(async (resolve, reject) => {
             let networkName = await window.web3.eth.net.getNetworkType();
             let networkId = await window.web3.eth.net.getId();
-            console.log("Found Network: " + networkName + " (id:" + networkId + ")");
+            console.log("Ethereum Network: " + networkName + " (id:" + networkId + ")");
+
+            let currentAccount =await this.getCurrentAccount();
+            this.currentAccount = currentAccount;
+            
             window.web3['network'] = {
                 name: networkName,
                 id: networkId,
@@ -53,10 +58,14 @@ export class Web3Service {
     async signIn () {
         try {
             let accounts = await window.ethereum.enable();
-            if(accounts.length > 0)
+            if(accounts.length > 0) {
+                console.log("Signed in as: ", accounts[0]);
                 return accounts[0];
-            else
+            }
+            else {
+                console.log("Not signed in")
                 return null;
+            }
         } catch (error) {
             return Promise.reject(new Error("User denied account access."));
         }
