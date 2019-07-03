@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Web3Service } from '../../services/web3/web3.service';
+import { BoxService } from '../../services/box/box.service';
 import { DaiService } from '../../services/dai/dai.service';
 import { MedaoService } from '../../services/medao/medao.service';
 
@@ -20,7 +21,8 @@ export class UserService {
 
     signedIn: boolean = false;
     address: string = null;
-    medao: any = {};
+    medao: any = null;
+
     balances = {
         ether: 0,
         dai: 0,
@@ -28,71 +30,72 @@ export class UserService {
         time: 0
     };
 
-    followers = [];
+    box;
+    following = [];
     tokens = ['ether','dai','weth','time'];
 
     constructor(
         private router: Router,
         public Web3: Web3Service,
+        public Box: BoxService,
         public Dai: DaiService,
         public MeDao: MedaoService,
     ) {
     }
 
-    async initialize () {
-        let currentAccount = await this.Web3.getCurrentAccount();
-        this.account = await this.Web3.getAccountDetails(currentAccount);
-
-        if(this.account.signedIn)
-            this.signIn();
-        else
-            console.log('not signed in');
-
-        return true;
-    }
-
     signIn () {
-        this.Web3.signIn()
-        .then(async currentAccount => {
-            this.Web3.watchForAccountChanges();
-            this.account = await this.Web3.getAccountDetails(currentAccount);
-            this.signedIn = this.account.signedIn;
-            this.address = this.account.address;
-            this.balances.ether = this.account.balance;
+        return new Promise((resolve, reject) => {
+            this.Web3.signIn()
+            .then(async account => {
+                console.log("Signing in to 3box")
+                await this.Box.initialize(account);
 
-            let medaoAddress = await this.MeDao.addressOf(this.address);
-            this.medao = await this.MeDao.at(medaoAddress);
+                this.Web3.watchForAccountChanges();
+                this.account = await this.Web3.getAccountDetails(account);
+                this.signedIn = this.account.signedIn;
+                this.address = this.account.address;
+                this.balances.ether = this.account.balance;
 
-            let daiBalance = await this.Dai.getBalance(this.address);
-            let wethBalance = await this.Dai.weth.methods.balanceOf(this.address).call();
-            this.balances.dai = daiBalance.toString();
-            this.balances.weth = wethBalance.toString();
+                let medaoAddress = await this.MeDao.addressOf(this.address);
+                if(medaoAddress != web3.utils.nullAddress){
+                    this.medao = await this.MeDao.at(medaoAddress);
+                    this.setBalance(this.medao.token);
 
-            let routes = this.router.url.split('/');
-            if(routes[1] == 'medao' && routes[2]){
-                let medao = <any>{
-                    token: null
-                };
+                    let daiBalance = await this.Dai.getBalance(this.address);
+                    let wethBalance = await this.Dai.weth.methods.balanceOf(this.address).call();
+                    this.balances.dai = daiBalance.toString();
+                    this.balances.weth = wethBalance.toString();
+                }
 
-                medao = await this.MeDao.at(routes[2]);
-                let timeBalance = await medao.token.methods.balanceOf(this.address).call();
-                this.balances.time = timeBalance.toString();
-            }
+                // I'm not happy about using routes in the User Service
+                // Will look for better way of doing this in future
+                let routes = this.router.url.split('/');
+                if(routes[1] == 'medao' && routes[2]){
+                    let medao: any = {
+                        token: null
+                    };
 
-            let followers = localStorage.getItem(this.address + ".followers");
-            if(!followers){
-                localStorage.setItem(this.address + ".followers", JSON.stringify([]));
-                this.followers = [];
-            }
-            else {
-                this.followers = JSON.parse(followers);
-            }
+                    medao = await this.MeDao.at(routes[2]);
+                    let timeBalance = await medao.token.methods.balanceOf(this.address).call();
+                    this.balances.time = timeBalance.toString();
+                }
 
-            console.log('Logged in as User: ', this);
-        })
-        .catch(err => {
-            console.error(err);
-        })
+                let following = await this.Box.private.get(this.address + ".following");
+                if(!following){
+                    this.Box.private.set(this.address + ".following", JSON.stringify([]));
+                    this.following = [];
+                }
+                else {
+                    this.following = JSON.parse(following);
+                }
+
+                console.log('Logged in as User: ', this);
+                resolve(true);
+            })
+            .catch(err => {
+                console.error(err);
+            });
+        });
     }
 
     async setBalance (token) {
@@ -103,22 +106,28 @@ export class UserService {
     follow (medaoAddress) {
         console.log("following " + medaoAddress);
         if(!this.isFollowing(medaoAddress)) {
-            this.followers.push(medaoAddress);
-            localStorage.setItem(this.address + ".followers", JSON.stringify(this.followers));
+            this.following.push(medaoAddress);
+            console.log(this.following)
+            this.Box.private.set(this.address + ".following", JSON.stringify(this.following));
         }
     }
 
     unfollow (medaoAddress) {
         console.log("unfollowing " + medaoAddress);
         if(this.isFollowing(medaoAddress)) {
-            let i = this.followers.indexOf(medaoAddress);
-            this.followers.splice(i,1);
-            localStorage.setItem(this.address + ".followers", JSON.stringify(this.followers));
+            let i = this.following.indexOf(medaoAddress);
+            this.following.splice(i,1);
+            this.Box.private.set(this.address + ".following", JSON.stringify(this.following));
         }
     }
 
     isFollowing (medaoAddress) {
-        return this.followers.includes(medaoAddress);
+        return this.following.includes(medaoAddress);
     }
 
+    private async unpack3box(account){
+        let profile = await this.Box.getProfile(account);
+        console.log(profile);
+        return profile;
+    }
 }
