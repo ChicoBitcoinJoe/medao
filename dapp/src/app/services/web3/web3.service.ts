@@ -40,9 +40,8 @@ export class Web3Service {
             let networkId = await window.web3.eth.net.getId();
             console.log("Ethereum Network: " + networkName + " (id:" + networkId + ")");
 
-            let currentAccount =await this.getCurrentAccount();
-            this.currentAccount = currentAccount;
-            
+            let currentAccount = await this.getCurrentAccount();
+            window.web3['currentAccount'] = currentAccount;
             window.web3['network'] = {
                 name: networkName,
                 id: networkId,
@@ -55,26 +54,24 @@ export class Web3Service {
         return window.web3.ready;
     }
 
-    async signIn () {
-        try {
+    signIn () {
+        return new Promise(async (resolve, reject) => {
             let accounts = await window.ethereum.enable();
             if(accounts.length > 0) {
-                console.log("Signed in as: ", accounts[0]);
-                return accounts[0];
+                let account = window.web3.utils.toChecksumAddress(accounts[0]);
+                resolve(account);
             }
             else {
                 console.log("Not signed in")
-                return null;
+                reject(new Error("User denied account access."));
             }
-        } catch (error) {
-            return Promise.reject(new Error("User denied account access."));
-        }
+        });
     }
 
     async getCurrentAccount(){
 		let accounts = await window.web3.eth.getAccounts();
         if(accounts.length > 0){
-            return accounts[0];
+            return window.web3.utils.toChecksumAddress(accounts[0]);
         } else
             return null;
 	}
