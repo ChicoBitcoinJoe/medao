@@ -1,58 +1,74 @@
-<div ngClass.gt-xs="margin" fxLayout="row">
-    <mat-card ngStyle.gt-xs="border-radius: 136px;" style="border-radius: 0px;" fxFlex>
-        <div fxLayout.xs="column" fxLayout="row" fxLayoutAlign.xs="center center" fxLayoutAlign.gt-xs="start center" fxLayoutGap="16px">
-            <div style="width: 240px; height: 240px;" fxLayout="column" fxLayoutAlign="center center">
-                <img style="width: 100%; border-radius: 120px;" src="./assets/profile-picture.jpeg">
+<mat-card ngStyle.gt-xs="border-radius: 136px;" ngStyle.xs="border-radius: 40px;" fxLayout.xs="column" fxLayout="row" fxLayoutAlign="center center" fxLayoutAlign.xs="start center">
+    <span fxFlex.xs="16px"></span>
+    <div style="overflow: hidden;" [style.border-radius]="diameter/2 + 'px'" [style.height]="diameter + 'px'" [style.width]="diameter + 'px'" fxLayout="column" fxLayoutAlign="center center">
+        <img style="width: 100%;" src="./assets/profile-picture.jpeg">
+    </div>
+    <div
+        [style.border-top-right-radius]="diameter/2 + 'px'"
+        [style.border-bottom-right-radius]="diameter/2 + 'px'"
+        ngStyle.gt-xs="padding-right: 32px"
+        fxLayout="column"
+        fxFlex.gt-xs>
+        <div
+            fxLayout="column"
+            fxLayoutAlign.xs="start center"
+            fxLayoutGap="16px"
+            fxFlex>
+            <h1 class="dark-text"
+                ngClass.xs="centered"
+                ngStyle.xs="font-size: 24px"
+                ngStyle.sm="font-size: 28px"
+                ngStyle.md="font-size: 32px">
+                Joseph Brian Reed
+            </h1>
+
+            <div class="dark-text" ngClass.xs="centered" style="padding-left: 16px; font-size: 18px;" ngStyle.xs="padding-left: 0px" fxFlex>
+                Founder and CEO of MeDao / Co-founder and CEO of the Everchain Project.
             </div>
-            <div ngStyle.gt-xs="padding-right: 32px" fxLayout="column" fxFlex.gt-xs>
-                <div fxLayout="column" fxLayoutGap="16px">
-                    <h1 fxHide.lt-md class="dark-text no-margin" ngClass.xs="centered">
-                        Joseph Brian Reed
-                    </h1>
-                    <h2 fxHide fxShow.sm class="dark-text no-margin" ngClass.xs="centered">
-                        Joseph Brian Reed
-                    </h2>
-                    <h3 fxHide fxShow.xs class="dark-text no-margin" ngClass.xs="centered">
-                        Joseph Brian Reed
-                    </h3>
-                    <div class="dark-text" ngClass.xs="centered" style="padding-left: 8px;">
-                        Founder and CEO of MeDao / Co-founder and CEO of the Everchain Project
+
+            <div *ngIf="view" ngClass.xs="centered" fxLayout="column" fxLayoutGap="16px" >
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center">
+                    <b *ngIf="!User.signedIn">&nbsp;</b>
+                    <b *ngIf="User.signedIn" style="padding: 0px 16px">
+                        balance: ${{medao.wage.max * (User.balances[medao.token.address] | fromWei: 'ether') / 3600 | number: '1.2-2'}}
+                    </b>
+                    <small *ngIf="User.signedIn" >({{(User.balances[medao.token.address] | fromWei: 'ether') / 3600 | number: '1.2-5'}} hours)</small>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center">
+                    <button mat-raised-button color="primary" (click)="view.go()">view</button>
+                </div>
+            </div>
+            <div *ngIf="!view" ngClass.xs="centered" fxLayout="column" fxLayoutGap="16px">
+                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center">
+                    <b *ngIf="!User.signedIn">&nbsp;</b>
+                    <b *ngIf="User.signedIn" style="padding-right: 16px" ngStyle.gt-xs="padding-left: 16px">
+                        balance: ${{medao.wage.max * (User.balances[medao.token.address] | fromWei: 'ether') / 3600 | number: '1.2-2'}}
+                    </b>
+                    <small *ngIf="User.signedIn">({{(User.balances[medao.token.address] | fromWei: 'ether') | time }})</small>
+                </div>
+                <div fxLayout="row" fxLayoutGap="16px">
+                    <div>
+                        <button *ngIf="User.address == medao.owner" mat-raised-button color="primary" [disabled]="!User.signedIn">collect</button>
+                        <span *ngIf="User.address != medao.owner">
+                            <button mat-raised-button color="primary" *ngIf="!User.isFollowing(medao.address)" (click)="User.follow(medao.address)" [disabled]="!User.signedIn">connect</button>
+                            <button mat-raised-button color="primary" *ngIf="User.isFollowing(medao.address)">connected</button>
+                        </span>
                     </div>
 
-                    <div style="padding-left: 8px;" fxLayout="row" fxLayoutGap.lt-md="24px" fxLayoutGap="48px" fxLayoutAlign.xs="center" fxLayoutAlign.gt-xs="none">
-                        <div class="centered" fxLayout="column" fxLayoutGap="4px">
-                            <div class="dark-text" style="font-weight: bold; font-size: 24px;">{{medao.funding.percent}}%</div>
-                            <div class="grey-text" style="font-size: 12px;">funded</div>
-                        </div>
-                        <div class="centered" fxLayout="column" fxLayoutGap="4px">
-                            <div class="dark-text" style="font-weight: bold; font-size: 24px;">${{medao.wage.max | number: '1.2-2'}}</div>
-                            <div class="grey-text" style="font-size: 12px;">hourly wage</div>
-                        </div>
-                        <div *ngIf="User.balances[medao.token.address]" class="centered" fxLayout="column" fxLayoutGap="4px">
-                            <div class="dark-text" style="font-weight: bold; font-size: 24px;">${{medao.wage.max * (User.balances[medao.token.address] | fromWei: 'ether') / 3600 | number: '1.2-2'}}</div>
-                            <div class="grey-text" style="font-size: 12px;">balance: {{(User.balances[medao.token.address] | fromWei: 'ether') / 3600 | number: '1.2-5'}}h</div>
-                        </div>
-                    </div>
-                    <span fxFlex.gt-xs></span>
-                    <div *ngIf="view" ngClass.xs="centered" fxLayoutGap="16px">
-                        <button mat-raised-button color="primary" (click)="view.go()">view</button>
-                    </div>
-                    <div *ngIf="!view" ngClass.xs="centered" fxLayoutGap="16px">
-                        <span *ngIf="User.medao && User.medao.address == medao.address">
-                            <button mat-raised-button color="primary">collect</button>
-                        </span>
-                        <span *ngIf="User.medao && medao && User.medao.address != medao.address">
-                            <button mat-raised-button color="primary" *ngIf="!User.isFollowing(medao.address)" (click)="User.follow(medao.address)">connect</button>
-                            <button mat-raised-button color="primary" *ngIf="User.isFollowing(medao.address)" (click)="User.unfollow(medao.address)" (mouseover)="isHovering = true" (mouseout)="isHovering = false">
-                                <span *ngIf="!isHovering">connected</span>
-                                <span *ngIf="isHovering">forget</span>
-                            </button>
-                        </span>
-                        <button mat-raised-button color="primary">transfer</button>
-                        <button mat-raised-button color="primary">exchange</button>
+                    <div>
+                        <button mat-stroked-button [ngClass]="{'black': User.signedIn}" [disabled]="!User.signedIn" [matMenuTriggerFor]="moreMenu">
+                            more... <mat-icon fxHide.sm>arrow_drop_down</mat-icon>
+                        </button>
+                        <mat-menu #moreMenu="matMenu">
+                            <button mat-menu-item *ngIf="User.address != medao.owner">message</button>
+                            <button mat-menu-item (click)="openTransferDialog()">transfer</button>
+                            <button mat-menu-item (click)="openTradeDialog()">buy/sell</button>
+                            <button mat-menu-item *ngIf="User.isFollowing(medao.address)" (click)="User.unfollow(medao.address)">unfollow</button>
+                            <button mat-menu-item *ngIf="User.address == medao.owner" (click)="openEditDialog()">edit profile</button>
+                        </mat-menu>
                     </div>
                 </div>
             </div>
         </div>
-    </mat-card>
-</div>
+    </div>
+</mat-card>

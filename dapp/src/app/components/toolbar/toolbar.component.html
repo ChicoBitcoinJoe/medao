@@ -1,4 +1,4 @@
-<mat-toolbar class="primary-bg white" style="margin: auto; max-width: 796px; width: 100%" fxLayoutGap="8px">
+<mat-toolbar class="primary-bg white" fxLayoutGap="8px" fxFlex>
     <span class="cursor white-text" routerLink="['/home']">MeDao</span>
     <span fxFlex></span>
     <button mat-button (click)="User.signIn()" *ngIf="!User.address">sign in</button>

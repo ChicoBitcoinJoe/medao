@@ -25,7 +25,7 @@ export class MedaoComponent implements OnInit, OnDestroy {
     tokens = ['dai','ether'];
 
     selectedOption: string = 'Details';
-    options = ['Details','About','Contract']; // ['Activity','Posts']
+    options = ['Details','Contract']; // ['Activity','Posts']
 
     constructor(
         public dialog: MatDialog,

@@ -1,14 +1,13 @@
 <div fxLayout="column" fxLayoutGap="32px" fxFlex>
-    <span fxFlex="76px"></span>
     <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="16px">
         <h1 class="cursor no-margin white" style="font-size: 48px;" routerLink="['/home']">MeDao</h1>
         <h4 class="centered padding no-margin" style="color: rgba(255,255,255,0.5)">Unleash your financial identity.</h4>
         <div *ngIf="!User.account.signedIn" class="padding">
-            <button *ngIf="web3.connected" mat-raised-button (click)="User.signIn()" [disabled]="!web3.connected">sign in</button>
+            <button *ngIf="web3.connected" mat-raised-button (click)="signIn()" [disabled]="!web3.connected || signingIn">sign in</button>
             <a *ngIf="!web3.connected" mat-raised-button href="https://metamask.io" target="_blank">try metamask to continue</a>
         </div>
-        <app-header *ngIf="User.signedIn && User.medao" [User]="User" [medao]="User.medao" [view]="redirect"></app-header>
-        <div *ngIf="User.account.signedIn && !User.medao" class="white-bg" style="border-radius: 49px; padding: 0px 16px 0px 24px;" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap.gt-xs="16px" fxFlex="66px">
+        <app-header *ngIf="User.signedIn && User.medao" class="margin" [medao]="User.medao" [view]="redirect" [diameter]="200"></app-header>
+        <div *ngIf="User.account.signedIn && !User.medao && !signingIn" class="white-bg" style="border-radius: 49px; padding: 0px 16px 0px 24px;" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap.gt-xs="16px" fxFlex="66px">
             <mat-form-field floatLabel="never">
                 <mat-label class="black">Enter your name...</mat-label>
                 <input matInput type="text" [(ngModel)]="name">

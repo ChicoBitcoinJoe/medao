@@ -71,8 +71,12 @@ button, a {
     color: white;
 }
 
-.grey-text {
+.dark-grey-text {
     color: rgba(0,0,0,0.5) !important;
+}
+
+.light-grey-text {
+    color: rgba(255,255,255,0.5) !important;
 }
 
 .mat-radio-outer-circle {
@@ -93,6 +97,11 @@ button, a {
 
 .centered {
     text-align: center;
+}
+
+.fixed {
+    position: fixed;
+    z-index: 9001;
 }
 
 .img-container {

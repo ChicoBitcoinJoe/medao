@@ -15,6 +15,7 @@ declare let web3: any;
 export class HomeComponent implements OnInit {
 
     web3 = web3;
+    signingIn: boolean = false;
 
     redirect = {
         router: this.router,
@@ -35,6 +36,15 @@ export class HomeComponent implements OnInit {
 
     }
 
-
+    signIn () {
+        this.signingIn = true;
+        this.User.signIn()
+        .then(() => {
+            this.signingIn = false;
+        })
+        .catch(err => {
+            this.signingIn = false;
+        })
+    }
 
 }

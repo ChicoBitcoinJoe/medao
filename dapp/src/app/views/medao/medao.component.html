@@ -1,14 +1,39 @@
-<div *ngIf="User && medao" fxLayout="column">
-    <app-toolbar [User]="User" fxLayout="column"></app-toolbar>
-    <app-header fxLayout="column" [medao]="medao" [User]="User"></app-header>
-    <div class="padding" ngStyle.gt-xs="margin: 0px 100px;" fxLayout="column">
-        <mat-form-field fxFlex>
-            <mat-select class="white" [(ngModel)]="selectedOption">
-                <mat-option *ngFor="let option of options" [value]="option">
-                    {{option}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-        <app-details *ngIf="selectedOption == 'Details'" class="white" fxLayout="column" [medao]="medao" [User]="User"></app-details>
+<div *ngIf="User && medao" fxLayout="column" fxFlexFill>
+    <app-header fxLayout="column" class="margin" [medao]="medao" [diameter]="200" fxFlex></app-header>
+    <div class="white padding" ngStyle.gt-xs="margin: 0px 16px;" ngStyle.gt-sm="margin: 0px 100px;" fxLayout="column">
+        <p class="margin centered">
+            For over 5 years I have been working with Ethereum to build decentralized applications. The knowledge I have acquired gives me a unique point of view on how the world might change using these amazing radical technologies. Radical ideas need leaders to spread those ideas, and so I will continue to create a decentralized world with the many others who lead the way as well.
+        </p>
+        <div class="margin padding" fxLayout.lt-md="column" fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap.lt-md="48px">
+            <div fxLayout="row" fxLayoutAlign="space-around" fxFlex.gt-xs>
+                <div class="centered" fxLayout="column" fxLayoutGap="4px">
+                    <div class="white-text" style="font-weight: bold; font-size: 24px;">{{medao.funding.percent}}%</div>
+                    <div class="light-grey-text" style="font-size: 12px;">funded</div>
+                </div>
+                <div class="centered" fxLayout="column" fxLayoutGap="4px">
+                    <div class="white-text" style="font-weight: bold; font-size: 24px;">${{medao.funding.current}}</div>
+                    <div class="light-grey-text" style="font-size: 12px;">funding</div>
+                </div>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="space-around" fxFlex.gt-xs>
+                <div class="centered" fxLayout="column" fxLayoutGap="4px">
+                    <div class="white-text" style="font-weight: bold; font-size: 24px;">${{medao.wage.max | number: '1.2-2'}}</div>
+                    <div class="light-grey-text" style="font-size: 12px;">hourly wage</div>
+                </div>
+                <div class="centered" fxLayout="column" fxLayoutGap="4px">
+                    <div class="white-text" style="font-weight: bold; font-size: 24px;">${{medao.wage.max | number: '1.2-2'}}</div>
+                    <div class="light-grey-text" style="font-size: 12px;">hourly wage</div>
+                </div>
+
+            </div>
+        </div>
+        
+        <h2>Financial Details</h2>
+        <app-details class="white" fxLayout="column" [medao]="medao" [User]="User"></app-details>
+
+        <span fxFlex="32px"></span>
+
+        <h2>Contract Agreement</h2>
+        <app-contract class="white" fxLayout="column"></app-contract>
     </div>
 </div>
