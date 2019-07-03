@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
 import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer } from "@angular/platform-browser";
-import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
 
 import { Web3Service } from './services/web3/web3.service';
-import { UserService } from './services/user/user.service';
 import { DaiService } from './services/dai/dai.service';
 import { MedaoService } from './services/medao/medao.service';
+import { UserService } from './services/user/user.service';
 
 declare let web3: any;
 
@@ -25,41 +24,34 @@ export class AppComponent {
     constructor (
         private matIconRegistry: MatIconRegistry,
         private domSanitizer: DomSanitizer,
-        private router: Router,
         public Web3: Web3Service,
         public Dai: DaiService,
-        public User: UserService,
         public Medao: MedaoService,
+        public User: UserService,
     ) {
-        this.initialize()
+        this.Web3.initialize(this.supportedNetworks)
+        .then(async initialized => {
+            if(initialized){
+                console.log(web3);
+                await this.Dai.initialize();
+                await this.Medao.initialize();
+                if(web3.currentAccount){
+                    console.log("Signed in to web3 as: ", web3.currentAccount);
+                    await this.User.signIn();
+                }
+
+                this.ready = true;
+                console.log('App ready');
+            }
+            else {
+                console.error(new Error("network is not supported"));
+            }
+        })
+        .catch(err => {
+            console.error(err);
+        })
+
         this.matIconRegistry.addSvgIcon("qrcode", this.domSanitizer.bypassSecurityTrustResourceUrl("./assets/qrcode.svg"));
-
-        this.subscription = this.router.events.subscribe( (event: Event) => {
-            if (event instanceof NavigationStart) {
-
-            }
-
-            if (event instanceof NavigationEnd) {
-                this.route = this.router.url.split('/')[1];
-            }
-
-            if (event instanceof NavigationError) {
-                console.log(event.error);
-            }
-        });
-    }
-
-    async initialize() {
-        let initialized = await this.Web3.initialize(this.supportedNetworks);
-        if(initialized){
-            this.Dai.initialize();
-            this.Medao.initialize();
-            this.ready = await this.User.initialize();
-            console.log('App ready', this.ready)
-        }
-        else {
-            console.error(new Error("network is not supported"));
-        }
     }
 
 }

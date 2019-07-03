@@ -11,6 +11,7 @@
   },
   "private": true,
   "dependencies": {
+    "3box": "^1.9.1",
     "@angular/animations": "~7.2.0",
     "@angular/cdk": "^7.3.7",
     "@angular/common": "~7.2.0",
@@ -22,10 +23,10 @@
     "@angular/platform-browser": "~7.2.0",
     "@angular/platform-browser-dynamic": "~7.2.0",
     "@angular/router": "~7.2.0",
-    "core-js": "^2.6.8",
+    "core-js": "^2.6.9",
     "hammerjs": "^2.0.8",
     "rxjs": "~6.3.3",
-    "tslib": "^1.9.0",
+    "tslib": "^1.10.0",
     "web3": "^1.0.0-beta.55",
     "zone.js": "~0.8.26"
   },
