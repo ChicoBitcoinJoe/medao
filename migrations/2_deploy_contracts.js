@@ -25,8 +25,8 @@ module.exports = function(deployer, network, accounts) {
     }
     else if(network == "kovan"){
         return deployer.deploy(MiniMeTokenFactory, {overwrite: false})
-        //.then(() => deployer.deploy(MeDao))
-        //.then(() => deployer.deploy(MeDaoFactory, MeDao.address, MiniMeTokenFactory.address))
+        .then(() => deployer.deploy(MeDao))
+        .then(() => deployer.deploy(MeDaoFactory, MeDao.address, MiniMeTokenFactory.address))
         .then(() => deployer.deploy(MeDaoRegistry, MeDaoFactory.address, Dai[network], Weth[network]));
     }
     else if(network == "test" || network == "develop"){

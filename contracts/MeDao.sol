@@ -14,6 +14,8 @@ contract MeDao is Owned, TokenController {
     int public birthTimestamp;
     uint public maxTokenSupply;
     uint public lastPayTimestamp;
+
+    address public identity;
     string public hash;
 
     constructor () public {
@@ -34,6 +36,7 @@ contract MeDao is Owned, TokenController {
         factory = msg.sender;
 
         owner = _owner;
+        identity = _owner;
         timeToken = _timeToken;
         reserveToken = _reserveToken;
         birthTimestamp = _birthTimestamp;
@@ -54,7 +57,7 @@ contract MeDao is Owned, TokenController {
     }
 
     function calculateWorkTime (uint elapsedSeconds) public pure returns (uint) {
-        return (elapsedSeconds * 1 ether * 5) / (7 * 8);
+        return (elapsedSeconds * 1 ether) * 40 / 168;
     }
 
     function pay () public onlyOwner {
@@ -67,38 +70,43 @@ contract MeDao is Owned, TokenController {
         emit Pay_event(fundedTime);
     }
 
-    function invest (uint reserveAmount) public {
+    function deposit (uint reserveAmount) public {
         uint availableSeconds = maxTokenSupply - timeToken.totalSupply();
         uint claimedTokens = calculateTokenClaim(reserveAmount);
         require(availableSeconds >= claimedTokens, "invalid reserve amount");
         require(reserveToken.transferFrom(msg.sender, address(this), reserveAmount), "failed to transfer");
         require(timeToken.generateTokens(msg.sender, claimedTokens), "failed to generate tokens");
-        emit Invest_event(msg.sender, reserveAmount, claimedTokens);
+        emit Deposit_event(msg.sender, reserveAmount, claimedTokens);
     }
 
-    function divest (uint tokenAmount) public {
+    function withdraw (uint tokenAmount) public {
         uint reserveClaim = calculateReserveClaim(tokenAmount);
         require(timeToken.destroyTokens(msg.sender, tokenAmount), "failed to destroy tokens");
         require(reserveToken.transfer(msg.sender, reserveClaim), "failed to transfer");
-        emit Divest_event(msg.sender, tokenAmount, reserveClaim);
+        emit Withdraw_event(msg.sender, tokenAmount, reserveClaim);
     }
 
     function burn (uint tokenAmount) public {
         require(timeToken.destroyTokens(msg.sender, tokenAmount), "failed to burn tokens");
-        maxTokenSupply -= tokenAmount;
         emit Burn_event(msg.sender, tokenAmount);
     }
 
     function setHash (string memory newHash) public onlyOwner {
         hash = newHash;
-        emit Update_event(newHash);
+        emit NewHash_event(newHash);
+    }
+
+    function setIdentity (address newIdentity) public onlyOwner {
+        identity = newIdentity;
+        emit NewIdentity_event(newIdentity);
     }
 
     event Pay_event (uint tokenAmount);
-    event Update_event (string newHash);
+    event Deposit_event (address msgSender, uint reserveAmount, uint tokenAmount);
+    event Withdraw_event (address msgSender, uint tokenAmount, uint reserveAmount);
     event Burn_event (address msgSender, uint tokenAmount);
-    event Invest_event (address msgSender, uint reserveAmount, uint tokenAmount);
-    event Divest_event (address msgSender, uint tokenAmount, uint reserveAmount);
+    event NewHash_event (string newHash);
+    event NewIdentity_event (address newIdentity);
 
 /// Token Controller Functions
 

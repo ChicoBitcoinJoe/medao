@@ -29945,7 +29945,7 @@
     }
   },
   "schemaVersion": "3.0.11",
-  "updatedAt": "2019-06-17T03:23:29.025Z",
+  "updatedAt": "2019-07-08T21:52:44.883Z",
   "devdoc": {
     "details": "This contract is used to generate clone contracts from a contract.  In solidity this is the way to create a contract from a contract of the  same class",
     "methods": {

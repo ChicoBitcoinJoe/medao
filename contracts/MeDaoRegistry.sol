@@ -79,6 +79,7 @@ contract MeDaoRegistry {
         uint reserveAmount
     ) public returns (MeDao medao) {
         uint payAmount = exchange.getPayAmount(payToken, dai, reserveAmount);
+        require(payAmount <= maxPayAmount);
         require(payToken.transferFrom(msg.sender, address(this), payAmount));
         require(payToken.approve(address(exchange), payAmount));
         exchange.buyAllAmount(dai, reserveAmount, payToken, payAmount);
