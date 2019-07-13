@@ -59,11 +59,11 @@ contract('MeDao', (accounts) => {
         assert(await MeDao.calculateTokenClaim(initialReserve) == initialTokens, "token claim incorrect");
     });
 
-    it('should invest in a medao', async () => {
-        let investAmount = initialReserve;
-        await ReserveToken.generateTokens(investor, investAmount);
-        await ReserveToken.approve(MeDao.address, investAmount, {from: investor});
-        let investTx = await MeDao.invest(investAmount, {from: investor});
+    it('should deposit reserve currency in return for tokens', async () => {
+        let depositAmount = initialReserve;
+        await ReserveToken.generateTokens(investor, depositAmount);
+        await ReserveToken.approve(MeDao.address, depositAmount, {from: investor});
+        let investTx = await MeDao.deposit(depositAmount, {from: investor});
 
         assert(await ReserveToken.balanceOf(MeDao.address) == initialReserve*2, "reserve balance incorrect");
         assert(await TimeToken.balanceOf(investor) == initialTokens, "reserve balance incorrect");
@@ -72,9 +72,9 @@ contract('MeDao', (accounts) => {
         assert(await MeDao.calculateTokenClaim(initialReserve) == initialTokens, "token claim incorrect");
     });
 
-    it('should divest in a medao', async () => {
-        let divestAmount = initialTokens;
-        let divestTx = await MeDao.divest(divestAmount, {from: investor});
+    it('should withdraw reserve currency in return for tokens', async () => {
+        let withdrawAmount = initialTokens;
+        let divestTx = await MeDao.withdraw(withdrawAmount, {from: investor});
 
         assert(await ReserveToken.balanceOf(MeDao.address) == initialReserve, "reserve balance incorrect");
         assert(await TimeToken.balanceOf(investor) == '0', "token balance incorrect");
@@ -83,7 +83,7 @@ contract('MeDao', (accounts) => {
         assert(await MeDao.calculateTokenClaim(initialReserve) == initialTokens, "token claim incorrect");
     });
 
-    it('should collect pay in a medao', async () => {
+    it('should pay tokens to the owner', async () => {
         await seconds(5);
         let txReceipt = await MeDao.pay({from: owner});
         //console.log(txReceipt.logs[0].args.tokenAmount.toString())

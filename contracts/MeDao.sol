@@ -4,6 +4,12 @@ import "./external/MiniMeToken.sol";
 import "./external/ERC20.sol";
 import "./external/Owned.sol";
 
+/**
+    The goal of this contract is to allow investing directly in the value of a person.
+    1. Investors mint time tokens up to a maximum based on the user's age
+    2. Each time token has a reserve backing to ensure a price floor on the value of the person's time
+    3. The medao owner can generate a set amount of tokens over time as compensation for work done
+**/
 contract MeDao is Owned, TokenController {
 
     address public factory;

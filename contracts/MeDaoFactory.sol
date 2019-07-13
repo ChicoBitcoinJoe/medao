@@ -25,6 +25,9 @@ contract MeDaoFactory is CloneFactory {
         uint tokenClaim,
         uint initialReserve
     ) public returns (address medao) {
+        require(initialReserve > 0);
+        require(tokenClaim > 0);
+        
         medao = createClone(blueprint);
 
         MiniMeToken timeToken = factory.createCloneToken(
