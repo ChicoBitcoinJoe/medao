@@ -13,6 +13,7 @@ import {
     MatCheckboxModule,
     MatDatepickerModule,
     MatDialogModule,
+    MatDividerModule,
     MatExpansionModule,
     MatFormFieldModule,
     MatGridListModule,
@@ -30,6 +31,9 @@ import {
     MatToolbarModule,
 } from '@angular/material';
 
+import { MarkdownToHtmlModule } from 'markdown-to-html-pipe';
+import { QRCodeModule } from 'angularx-qrcode';
+
 import { FromWeiPipe } from './pipes/from-wei/from-wei.pipe';
 import { ToDaiPipe } from './pipes/to-dai/to-dai.pipe';
 import { OrderByPipe } from './pipes/order-by/order-by.pipe';
@@ -37,15 +41,15 @@ import { TimePipe } from './pipes/time/time.pipe';
 
 import { HomeComponent } from './views/home/home.component';
 import { CreateComponent } from './views/create/create.component';
-import { MedaoComponent } from './views/medao/medao.component';
 import { HeaderComponent } from './components/header/header.component';
 import { DetailsComponent } from './components/details/details.component';
-import { ContractComponent } from './components/contract/contract.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
+import { NetworkComponent } from './views/network/network.component';
+import { ProfileComponent } from './views/profile/profile.component';
+import { EditComponent } from './views/edit/edit.component';
 
-import { EditDialog } from './components/header/header.component';
 import { TransferDialog } from './components/header/header.component';
-import { TradeDialog } from './components/header/header.component';
+import { QrcodeDialog } from './components/header/header.component';
 
 @NgModule({
   declarations: [
@@ -55,15 +59,15 @@ import { TradeDialog } from './components/header/header.component';
     OrderByPipe,
     HomeComponent,
     CreateComponent,
-    MedaoComponent,
     HeaderComponent,
     DetailsComponent,
-    ContractComponent,
     ToolbarComponent,
-    EditDialog,
     TransferDialog,
-    TradeDialog,
+    QrcodeDialog,
     TimePipe,
+    NetworkComponent,
+    ProfileComponent,
+    EditComponent,
   ],
   imports: [
     BrowserModule,
@@ -72,10 +76,12 @@ import { TradeDialog } from './components/header/header.component';
     FlexLayoutModule,
     FormsModule,
     HttpClientModule,
+    MarkdownToHtmlModule,
     MatButtonModule,
     MatCardModule,
     MatCheckboxModule,
     MatDatepickerModule,
+    MatDividerModule,
     MatIconModule,
     MatInputModule,
     MatMenuModule,
@@ -87,14 +93,14 @@ import { TradeDialog } from './components/header/header.component';
     MatSliderModule,
     MatSnackBarModule,
     MatToolbarModule,
+    QRCodeModule,
   ],
   providers: [
 
   ],
   entryComponents: [
-      EditDialog,
       TransferDialog,
-      TradeDialog,
+      QrcodeDialog,
   ],
   bootstrap: [
       AppComponent

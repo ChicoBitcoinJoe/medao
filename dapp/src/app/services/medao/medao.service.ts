@@ -55,6 +55,8 @@ export class MeDao {
     }
 
     async update () {
+        let owner = await this.methods.owner().call();
+        let identity = await this.methods.identity().call();
         let tokenAddress = await this.methods.timeToken().call();
         let token = await new web3.eth.Contract(MiniMeTokenArtifact.abi, tokenAddress);
         let controller = await token.methods.controller().call();
@@ -69,10 +71,9 @@ export class MeDao {
         let totalSupplyInHours =  totalSupplyInSeconds / 3600;
         let daiBalanceInWei = await this.Dai.getBalance(this.address);
         let daiBalance =  web3.utils.fromWei(daiBalanceInWei.toString(), 'ether');
-        let fundedPercent = Math.round(totalSupplyInHours / maxSupplyInHours);
+        let fundedPercent = totalSupplyInHours / maxSupplyInHours * 100;
         let hourlyWage = daiBalance / totalSupplyInHours;
         let currentWage =  hourlyWage * fundedPercent;
-        let owner = await this.methods.owner().call();
         let lastPayTimestampInSeconds = await this.methods.lastPayTimestamp().call();
         let lastPayTimestamp = new Date(lastPayTimestampInSeconds*1000);
         let timeElapsed = (new Date().getTime() - birthDate.getTime())/1000;
@@ -217,6 +218,36 @@ export class MedaoService {
         });
     }
 
+    createWithDai (
+        name,
+        birthTimestamp,
+        tokenClaim,
+        reserveAmount,
+        fromAddress
+    ) {
+        console.log(name);
+        console.log(birthTimestamp);
+        console.log(tokenClaim);
+        console.log(reserveAmount);
+        console.log(this.Dai.exchange.address);
+
+        this.Dai.methods.approve(this.registry.address, reserveAmount).send({
+            from: fromAddress,
+        })
+        .on('confirmation', (confirmations, txReceipt) => {
+            this.registry.methods.create(
+                name,
+                birthTimestamp,
+                tokenClaim,
+                reserveAmount,
+                this.Dai.exchange.address,
+            )
+            .send({
+                from: fromAddress
+            });
+        })
+    }
+
     async addressOf (account) {
         let medaoAddress = await this.registry.methods.registry(account).call();
         return medaoAddress;
@@ -235,6 +266,11 @@ export class MedaoService {
         });
     }
 
+    async getIdentity (medaoAddress) {
+        let medao = new web3.eth.Contract(MeDaoArtifact.abi, medaoAddress);
+        let identity = await medao.methods.identity().call();
+        return identity;
+    }
 
     newMedao = {
         name: null

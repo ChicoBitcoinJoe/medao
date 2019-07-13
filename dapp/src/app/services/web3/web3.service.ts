@@ -38,14 +38,15 @@ export class Web3Service {
         window.web3['ready'] = new Promise(async (resolve, reject) => {
             let networkName = await window.web3.eth.net.getNetworkType();
             let networkId = await window.web3.eth.net.getId();
-            console.log("Ethereum Network: " + networkName + " (id:" + networkId + ")");
+            if(!supportedNetworks.includes(networkId))
+                reject(new Error("invalid network id"));
+            else
+                console.log("Ethereum Network: " + networkName + " (id:" + networkId + ")");
 
-            let currentAccount = await this.getCurrentAccount();
-            window.web3['currentAccount'] = currentAccount;
+            window.web3['currentAccount'] = await this.getCurrentAccount();
             window.web3['network'] = {
                 name: networkName,
-                id: networkId,
-                valid: supportedNetworks.includes(networkId)
+                id: networkId
             };
 
             resolve(window.web3.network.valid);
@@ -55,11 +56,18 @@ export class Web3Service {
     }
 
     signIn () {
-        return new Promise(async (resolve, reject) => {
+        return new Promise<string>(async (resolve, reject) => {
+            if(!window.ethereum){
+                reject('ethereum object undefined');
+                return;
+            }
+
             let accounts = await window.ethereum.enable();
             if(accounts.length > 0) {
                 let account = window.web3.utils.toChecksumAddress(accounts[0]);
-                resolve(account);
+                window.web3['currentAccount'] = account;
+                this.currentAccount = account;
+                resolve(this.currentAccount);
             }
             else {
                 console.log("Not signed in")

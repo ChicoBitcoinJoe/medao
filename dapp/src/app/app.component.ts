@@ -3,9 +3,10 @@ import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer } from "@angular/platform-browser";
 
 import { Web3Service } from './services/web3/web3.service';
+import { UserService } from './services/user/user.service';
 import { DaiService } from './services/dai/dai.service';
 import { MedaoService } from './services/medao/medao.service';
-import { UserService } from './services/user/user.service';
+import { ProfileService, Profile } from './services/profile/profile.service';
 
 declare let web3: any;
 
@@ -18,8 +19,6 @@ export class AppComponent {
 
     ready: boolean = false;
     supportedNetworks = [42];
-    subscription: any;
-    route: string = null;
 
     constructor (
         private matIconRegistry: MatIconRegistry,
@@ -30,25 +29,21 @@ export class AppComponent {
         public User: UserService,
     ) {
         this.Web3.initialize(this.supportedNetworks)
-        .then(async initialized => {
-            if(initialized){
-                console.log(web3);
-                await this.Dai.initialize();
-                await this.Medao.initialize();
-                if(web3.currentAccount){
-                    console.log("Signed in to web3 as: ", web3.currentAccount);
-                    await this.User.signIn();
-                }
+        .then(async () => {
+            await this.Dai.initialize();
+            await this.Medao.initialize();
+            
+            if(web3.currentAccount)
+                await this.User.signIn();
+            else
+                this.Web3.watchForAccountChanges();
 
-                this.ready = true;
-                console.log('App ready');
-            }
-            else {
-                console.error(new Error("network is not supported"));
-            }
+            console.log('App ready');
+            this.ready = true;
         })
         .catch(err => {
             console.error(err);
+            this.ready = true;
         })
 
         this.matIconRegistry.addSvgIcon("qrcode", this.domSanitizer.bypassSecurityTrustResourceUrl("./assets/qrcode.svg"));

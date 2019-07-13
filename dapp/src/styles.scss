@@ -47,6 +47,10 @@ body {
      background-color: white;
 }
 
+.grey-bg {
+     background-color: grey !important;
+}
+
 button, a {
     border-radius: 18px !important;
 }
@@ -101,7 +105,7 @@ button, a {
 
 .fixed {
     position: fixed;
-    z-index: 9001;
+    z-index: 901;
 }
 
 .img-container {
@@ -115,7 +119,7 @@ button, a {
 }
 
 .border {
-    border: 1px solid white;
+    border: 1px solid black;
 }
 
 .borderLR {
@@ -157,21 +161,19 @@ h1, h2, h3, h4, h5, h6 {
     font-family: "Courier New";
 }
 
+/*
 .mat-button, .mat-flat-button, .mat-icon-button, .mat-stroked-button {
     color: white;
 }
 
 .mat-button[disabled][disabled] {
-    color: grey;
+color: grey;
 }
 
 .mat-flat-button.mat-accent, .mat-raised-button.mat-accent, .mat-fab.mat-accent, .mat-mini-fab.mat-accent {
-    background-color: #29383e !important;
+background-color: #29383e !important;
 }
-
-.mat-dialog-container {
-    background-color: #29383e;
-}
+*/
 
 .scrollable {
     overflow: auto;
@@ -197,15 +199,19 @@ h1, h2, h3, h4, h5, h6 {
     color: black !important;
 }
 
-.mat-checkbox-frame {
-    border-color: white;
+.mat-slide-toggle-thumb {
+    background-color: #ff4081;
 }
 
-.white .mat-select-value-text span {
-    font-size: 20px !important;
-    color: white !important;
+.mat-menu-panel {
+    margin-top: 8px;
+    border-radius: 18px !important;
 }
 
-.white .mat-select-arrow {
-    color: white;
+.cdk-overlay-pane {
+    max-width: 100vw !important;
+}
+
+.mat-dialog-container {
+    /* border-radius: 48px !important; */
 }

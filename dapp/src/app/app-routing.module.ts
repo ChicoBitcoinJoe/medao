@@ -3,7 +3,9 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { HomeComponent } from './views/home/home.component'
 import { CreateComponent } from './views/create/create.component'
-import { MedaoComponent } from './views/medao/medao.component'
+import { NetworkComponent } from './views/network/network.component'
+import { EditComponent } from './views/edit/edit.component'
+import { ProfileComponent } from './views/profile/profile.component'
 
 const routes: Routes = [
     {
@@ -15,8 +17,16 @@ const routes: Routes = [
         component: CreateComponent
     },
     {
-        path: 'medao/:address',
-        component: MedaoComponent
+        path: 'network',
+        component: NetworkComponent
+    },
+    {
+        path: 'edit',
+        component: EditComponent
+    },
+    {
+        path: 'profile/:address',
+        component: ProfileComponent
     },
     {
         path: '**',

@@ -1,0 +1,4 @@
+<div *ngIf="User.signedIn" class="scrollable" fxLayout="column" fxLayoutGap="16px">
+    <div *ngIf="User.network.length == 0" class="white centered">No one has been added to your network...</div>
+    <app-header *ngFor="let identity of User.network" fxLayout="column" class="margin" [identity]="identity" forward="true"></app-header>
+</div>

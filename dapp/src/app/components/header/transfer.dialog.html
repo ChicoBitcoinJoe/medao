@@ -1,44 +1,249 @@
-<div *ngIf="!paymentSelection" fxLayout="column" fxLayoutGap="32px">
-    <h3 mat-dialog-title>I would like to...</h3>
-    <mat-radio-group [(ngModel)]="paymentSelection" fxLayout="column" fxLayoutGap="32px">
-        <mat-radio-button [value]="medao.name">
-            Pay {{medao.name}}
-        </mat-radio-button>
-        <mat-radio-button [value]="'Dao'">
-            Pay the Dao
-        </mat-radio-button>
-        <mat-radio-button [value]="'Address'">
-            Pay an Ethereum Address
-        </mat-radio-button>
-    </mat-radio-group>
-    <button mat-button class="white" (click)="dialogRef.close()">cancel</button>
-</div>
-<div *ngIf="paymentSelection" fxLayout="column" fxLayoutGap="16px">
-    <h3 mat-dialog-title>Pay {{paymentSelection}}</h3>
-    <div *ngIf="paymentSelection == 'Address'" fxLayout="row">
-        <mat-form-field floatLabel="never" fxFlex>
-            <mat-label>Ethereum Address</mat-label>
-            <input matInput type="text" [(ngModel)]="customAddress"/>
-        </mat-form-field>
-    </div>
+<div style="position: relative;" fxLayout="column">
+    <button mat-icon-button style="position: absolute; top: -16px; right: -16px;" (click)="dialogRef.close()">
+        <mat-icon>close</mat-icon>
+    </button>
 
-    <div fxLayout="row">
-        <mat-form-field style="padding-right: 8px;" fxFlex="124px" fxFlex.sm="168px">
-            <input matInput style="text-align: right" type="number" min="0" step="1" [(ngModel)]="sendAmount"/>
-            <mat-hint *ngIf="selectedToken != 'time'">max {{user.balances[selectedToken] | fromWei: 'ether' | number: '1.2-5'}} {{selectedToken}}</mat-hint>
-            <mat-hint *ngIf="selectedToken == 'time'">max {{(user.balances[selectedToken] / 3600).toString() | fromWei: 'ether' | number: '1.2-5'}} hours</mat-hint>
-        </mat-form-field>
-        <mat-form-field fxFlex="60px">
-            <mat-select [(ngModel)]="selectedToken">
-                <mat-option *ngFor="let token of tokens" [value]="token" placeholder="token" [disabled]="paymentSelection == 'Dao' && token == 'ether'">
-                    {{token}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-    </div>
+    <div fxLayout.xs="column" fxLayout="row" fxFlex.gt-xs>
+        <div fxLayout="column" fxLayoutGap="16px" fxFlex.gt-xs>
+            <h2>Transfer {{medao.name}}'s Time</h2>
+            <mat-form-field>
+                <mat-label>Ethereum Address</mat-label>
+                <input matInput type="text" [(ngModel)]="toAddress"/>
+            </mat-form-field>
+            <div class="centered" fxLayout="row" fxLayoutGap="16px">
+                <mat-form-field fxFlex="72px">
+                    <mat-label>Hours</mat-label>
+                    <input matInput type="number" min="0" [(ngModel)]="hours" (ngModelChange)="updateDollarValue()">
+                </mat-form-field>
+                <mat-form-field fxFlex="72px">
+                    <mat-label>Minutes</mat-label>
+                    <input matInput type="number" min="0" [(ngModel)]="minutes" (ngModelChange)="updateDollarValue()">
+                </mat-form-field>
+                <mat-form-field fxFlex="72px">
+                    <mat-label>Seconds</mat-label>
+                    <input matInput type="number" min="0" [(ngModel)]="seconds" (ngModelChange)="updateDollarValue()">
+                </mat-form-field>
+            </div>
 
-    <div fxLayout="row" fxLayoutGap="16px">
-        <button *ngIf="paymentSelection" mat-button class="white" (click)="paymentSelection = null">back</button>
-        <button [disabled]="!valid()" mat-button (click)="pay()" [ngClass]="{'white': valid()}" fxFlex>pay</button>
+            <div>
+                available: {{User.profile.balances[medao.token.address].wei | fromWei: 'ether' | time}}
+            </div>
+
+            <span fxFlex.gt-xs></span>
+
+            <button mat-raised-button
+                class="secondary-bg white"
+                [ngClass]="{'grey-bg': !valid()}"
+                [disabled]="!valid()"
+                (click)="transfer()">
+                transfer ${{dollarValue | number: '1.2'}} worth of time
+            </button>
+        </div>
+
+        <div fxHide fxShow.gt-xs style="margin: 0px 32px; min-width: 1px; background-color: rgba(0,0,0,0.33)"></div>
+
+        <div fxHide fxShow.gt-xs fxLayout="column">
+            <h2>Your Network</h2>
+            <div class="scrollable" style="padding-right: 16px;" fxLayout="column" fxLayoutGap="16px" fxFlex>
+                <div *ngFor="let identity of User.network" style="border-radius: 28px; " [ngClass]="{'border': toAddress == identity.address}" (click)="toAddress = identity.address">
+                    <div class="white-bg cursor"
+                        style="height: 52px; border-radius: 26px; border: 1px solid rgba(0,0,0,0.33);"
+                        fxLayout="row"
+                        fxLayoutAlign="start center">
+                        <span fxFlex></span>
+                        <div class="black" style="padding: 0px 12px;" fxLayout="column">
+                            <span *ngIf="!identity.medao" style="font-size: 16px; height: 24px;">Anonymous</span>
+                            <span *ngIf="identity.medao" style="font-size: 16px; height: 24px;">{{identity.name}}</span>
+                            <span *ngIf="identity.medao" style="font-size: 12px; height: 16px; line-height: 12px; text-align: right;">
+                                <b>${{identity.medao.wage.max * (User.profile.balances[identity.medao.token.address].wei | fromWei: 'ether') / 3600 | number: '1.2-2'}}</b>
+                                &nbsp;({{User.profile.balances[identity.medao.token.address].wei | fromWei: 'ether' | time}})
+                            </span>
+                        </div>
+                        <div style="overflow: hidden; height: 40px; border-radius: 20px; margin-right: 8px;">
+                            <img *ngIf="User.profile.image" style="height: 100%;" [src]="User.profile.image">
+                            <div *ngIf="!User.profile.image" style="height: 100%; width: 40px;" class="secondary-bg white" fxLayoutAlign="center center">
+                                <mat-icon>person</mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngFor="let identity of User.network" style="border-radius: 28px; " [ngClass]="{'border': toAddress == identity.address}" (click)="toAddress = identity.address">
+                    <div class="white-bg cursor"
+                        style="height: 52px; border-radius: 26px; border: 1px solid rgba(0,0,0,0.33);"
+                        fxLayout="row"
+                        fxLayoutAlign="start center">
+                        <span fxFlex></span>
+                        <div class="black" style="padding: 0px 12px;" fxLayout="column">
+                            <span *ngIf="!identity.medao" style="font-size: 16px; height: 24px;">Anonymous</span>
+                            <span *ngIf="identity.medao" style="font-size: 16px; height: 24px;">{{identity.name}}</span>
+                            <span *ngIf="identity.medao" style="font-size: 12px; height: 16px; line-height: 12px; text-align: right;">
+                                <b>${{identity.medao.wage.max * (User.profile.balances[identity.medao.token.address].wei | fromWei: 'ether') / 3600 | number: '1.2-2'}}</b>
+                                &nbsp;({{User.profile.balances[identity.medao.token.address].wei | fromWei: 'ether' | time}})
+                            </span>
+                        </div>
+                        <div style="overflow: hidden; height: 40px; border-radius: 20px; margin-right: 8px;">
+                            <img *ngIf="User.profile.image" style="height: 100%;" [src]="User.profile.image">
+                            <div *ngIf="!User.profile.image" style="height: 100%; width: 40px;" class="secondary-bg white" fxLayoutAlign="center center">
+                                <mat-icon>person</mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngFor="let identity of User.network" style="border-radius: 28px; " [ngClass]="{'border': toAddress == identity.address}" (click)="toAddress = identity.address">
+                    <div class="white-bg cursor"
+                        style="height: 52px; border-radius: 26px; border: 1px solid rgba(0,0,0,0.33);"
+                        fxLayout="row"
+                        fxLayoutAlign="start center">
+                        <span fxFlex></span>
+                        <div class="black" style="padding: 0px 12px;" fxLayout="column">
+                            <span *ngIf="!identity.medao" style="font-size: 16px; height: 24px;">Anonymous</span>
+                            <span *ngIf="identity.medao" style="font-size: 16px; height: 24px;">{{identity.name}}</span>
+                            <span *ngIf="identity.medao" style="font-size: 12px; height: 16px; line-height: 12px; text-align: right;">
+                                <b>${{identity.medao.wage.max * (User.profile.balances[identity.medao.token.address].wei | fromWei: 'ether') / 3600 | number: '1.2-2'}}</b>
+                                &nbsp;({{User.profile.balances[identity.medao.token.address].wei | fromWei: 'ether' | time}})
+                            </span>
+                        </div>
+                        <div style="overflow: hidden; height: 40px; border-radius: 20px; margin-right: 8px;">
+                            <img *ngIf="User.profile.image" style="height: 100%;" [src]="User.profile.image">
+                            <div *ngIf="!User.profile.image" style="height: 100%; width: 40px;" class="secondary-bg white" fxLayoutAlign="center center">
+                                <mat-icon>person</mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngFor="let identity of User.network" style="border-radius: 28px; " [ngClass]="{'border': toAddress == identity.address}" (click)="toAddress = identity.address">
+                    <div class="white-bg cursor"
+                        style="height: 52px; border-radius: 26px; border: 1px solid rgba(0,0,0,0.33);"
+                        fxLayout="row"
+                        fxLayoutAlign="start center">
+                        <span fxFlex></span>
+                        <div class="black" style="padding: 0px 12px;" fxLayout="column">
+                            <span *ngIf="!identity.medao" style="font-size: 16px; height: 24px;">Anonymous</span>
+                            <span *ngIf="identity.medao" style="font-size: 16px; height: 24px;">{{identity.name}}</span>
+                            <span *ngIf="identity.medao" style="font-size: 12px; height: 16px; line-height: 12px; text-align: right;">
+                                <b>${{identity.medao.wage.max * (User.profile.balances[identity.medao.token.address].wei | fromWei: 'ether') / 3600 | number: '1.2-2'}}</b>
+                                &nbsp;({{User.profile.balances[identity.medao.token.address].wei | fromWei: 'ether' | time}})
+                            </span>
+                        </div>
+                        <div style="overflow: hidden; height: 40px; border-radius: 20px; margin-right: 8px;">
+                            <img *ngIf="User.profile.image" style="height: 100%;" [src]="User.profile.image">
+                            <div *ngIf="!User.profile.image" style="height: 100%; width: 40px;" class="secondary-bg white" fxLayoutAlign="center center">
+                                <mat-icon>person</mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngFor="let identity of User.network" style="border-radius: 28px; " [ngClass]="{'border': toAddress == identity.address}" (click)="toAddress = identity.address">
+                    <div class="white-bg cursor"
+                        style="height: 52px; border-radius: 26px; border: 1px solid rgba(0,0,0,0.33);"
+                        fxLayout="row"
+                        fxLayoutAlign="start center">
+                        <span fxFlex></span>
+                        <div class="black" style="padding: 0px 12px;" fxLayout="column">
+                            <span *ngIf="!identity.medao" style="font-size: 16px; height: 24px;">Anonymous</span>
+                            <span *ngIf="identity.medao" style="font-size: 16px; height: 24px;">{{identity.name}}</span>
+                            <span *ngIf="identity.medao" style="font-size: 12px; height: 16px; line-height: 12px; text-align: right;">
+                                <b>${{identity.medao.wage.max * (User.profile.balances[identity.medao.token.address].wei | fromWei: 'ether') / 3600 | number: '1.2-2'}}</b>
+                                &nbsp;({{User.profile.balances[identity.medao.token.address].wei | fromWei: 'ether' | time}})
+                            </span>
+                        </div>
+                        <div style="overflow: hidden; height: 40px; border-radius: 20px; margin-right: 8px;">
+                            <img *ngIf="User.profile.image" style="height: 100%;" [src]="User.profile.image">
+                            <div *ngIf="!User.profile.image" style="height: 100%; width: 40px;" class="secondary-bg white" fxLayoutAlign="center center">
+                                <mat-icon>person</mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngFor="let identity of User.network" style="border-radius: 28px; " [ngClass]="{'border': toAddress == identity.address}" (click)="toAddress = identity.address">
+                    <div class="white-bg cursor"
+                        style="height: 52px; border-radius: 26px; border: 1px solid rgba(0,0,0,0.33);"
+                        fxLayout="row"
+                        fxLayoutAlign="start center">
+                        <span fxFlex></span>
+                        <div class="black" style="padding: 0px 12px;" fxLayout="column">
+                            <span *ngIf="!identity.medao" style="font-size: 16px; height: 24px;">Anonymous</span>
+                            <span *ngIf="identity.medao" style="font-size: 16px; height: 24px;">{{identity.name}}</span>
+                            <span *ngIf="identity.medao" style="font-size: 12px; height: 16px; line-height: 12px; text-align: right;">
+                                <b>${{identity.medao.wage.max * (User.profile.balances[identity.medao.token.address].wei | fromWei: 'ether') / 3600 | number: '1.2-2'}}</b>
+                                &nbsp;({{User.profile.balances[identity.medao.token.address].wei | fromWei: 'ether' | time}})
+                            </span>
+                        </div>
+                        <div style="overflow: hidden; height: 40px; border-radius: 20px; margin-right: 8px;">
+                            <img *ngIf="User.profile.image" style="height: 100%;" [src]="User.profile.image">
+                            <div *ngIf="!User.profile.image" style="height: 100%; width: 40px;" class="secondary-bg white" fxLayoutAlign="center center">
+                                <mat-icon>person</mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngFor="let identity of User.network" style="border-radius: 28px; " [ngClass]="{'border': toAddress == identity.address}" (click)="toAddress = identity.address">
+                    <div class="white-bg cursor"
+                        style="height: 52px; border-radius: 26px; border: 1px solid rgba(0,0,0,0.33);"
+                        fxLayout="row"
+                        fxLayoutAlign="start center">
+                        <span fxFlex></span>
+                        <div class="black" style="padding: 0px 12px;" fxLayout="column">
+                            <span *ngIf="!identity.medao" style="font-size: 16px; height: 24px;">Anonymous</span>
+                            <span *ngIf="identity.medao" style="font-size: 16px; height: 24px;">{{identity.name}}</span>
+                            <span *ngIf="identity.medao" style="font-size: 12px; height: 16px; line-height: 12px; text-align: right;">
+                                <b>${{identity.medao.wage.max * (User.profile.balances[identity.medao.token.address].wei | fromWei: 'ether') / 3600 | number: '1.2-2'}}</b>
+                                &nbsp;({{User.profile.balances[identity.medao.token.address].wei | fromWei: 'ether' | time}})
+                            </span>
+                        </div>
+                        <div style="overflow: hidden; height: 40px; border-radius: 20px; margin-right: 8px;">
+                            <img *ngIf="User.profile.image" style="height: 100%;" [src]="User.profile.image">
+                            <div *ngIf="!User.profile.image" style="height: 100%; width: 40px;" class="secondary-bg white" fxLayoutAlign="center center">
+                                <mat-icon>person</mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngFor="let identity of User.network" style="border-radius: 28px; " [ngClass]="{'border': toAddress == identity.address}" (click)="toAddress = identity.address">
+                    <div class="white-bg cursor"
+                        style="height: 52px; border-radius: 26px; border: 1px solid rgba(0,0,0,0.33);"
+                        fxLayout="row"
+                        fxLayoutAlign="start center">
+                        <span fxFlex></span>
+                        <div class="black" style="padding: 0px 12px;" fxLayout="column">
+                            <span *ngIf="!identity.medao" style="font-size: 16px; height: 24px;">Anonymous</span>
+                            <span *ngIf="identity.medao" style="font-size: 16px; height: 24px;">{{identity.name}}</span>
+                            <span *ngIf="identity.medao" style="font-size: 12px; height: 16px; line-height: 12px; text-align: right;">
+                                <b>${{identity.medao.wage.max * (User.profile.balances[identity.medao.token.address].wei | fromWei: 'ether') / 3600 | number: '1.2-2'}}</b>
+                                &nbsp;({{User.profile.balances[identity.medao.token.address].wei | fromWei: 'ether' | time}})
+                            </span>
+                        </div>
+                        <div style="overflow: hidden; height: 40px; border-radius: 20px; margin-right: 8px;">
+                            <img *ngIf="User.profile.image" style="height: 100%;" [src]="User.profile.image">
+                            <div *ngIf="!User.profile.image" style="height: 100%; width: 40px;" class="secondary-bg white" fxLayoutAlign="center center">
+                                <mat-icon>person</mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngFor="let identity of User.network" style="border-radius: 28px; " [ngClass]="{'border': toAddress == identity.address}" (click)="toAddress = identity.address">
+                    <div class="white-bg cursor"
+                        style="height: 52px; border-radius: 26px; border: 1px solid rgba(0,0,0,0.33);"
+                        fxLayout="row"
+                        fxLayoutAlign="start center">
+                        <span fxFlex></span>
+                        <div class="black" style="padding: 0px 12px;" fxLayout="column">
+                            <span *ngIf="!identity.medao" style="font-size: 16px; height: 24px;">Anonymous</span>
+                            <span *ngIf="identity.medao" style="font-size: 16px; height: 24px;">{{identity.name}}</span>
+                            <span *ngIf="identity.medao" style="font-size: 12px; height: 16px; line-height: 12px; text-align: right;">
+                                <b>${{identity.medao.wage.max * (User.profile.balances[identity.medao.token.address].wei | fromWei: 'ether') / 3600 | number: '1.2-2'}}</b>
+                                &nbsp;({{User.profile.balances[identity.medao.token.address].wei | fromWei: 'ether' | time}})
+                            </span>
+                        </div>
+                        <div style="overflow: hidden; height: 40px; border-radius: 20px; margin-right: 8px;">
+                            <img *ngIf="User.profile.image" style="height: 100%;" [src]="User.profile.image">
+                            <div *ngIf="!User.profile.image" style="height: 100%; width: 40px;" class="secondary-bg white" fxLayoutAlign="center center">
+                                <mat-icon>person</mat-icon>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

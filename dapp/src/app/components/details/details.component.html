@@ -2,27 +2,20 @@
     <div>Last Paycheck <span fxFlex></span> {{medao.lastPaycheck | date: 'LLLL dd, yyyy'}}</div>
     <div>Birth Date <span fxFlex></span> {{medao.birthDate | date: 'LLLL dd, yyyy'}}</div>
     <div>
-        Funding
-        <span fxFlex></span>
-        ({{medao.funding.percent}}%)
-        <span fxFlex="16px"></span>
-        ${{ medao.funding.current | number: '1.0-2'}}/{{medao.funding.max | number: '1.0-0'}}
-    </div>
-    <div>
-        Salary
-        <span fxFlex></span>
-        ${{medao.salary.current | number: '1.0-0'}}/{{medao.salary.max | number: '1.0-0'}}
-    </div>
-    <div>
         Hourly Wage
         <span fxFlex></span>
         ${{medao.wage.current | number: '1.2-2'}}/{{medao.wage.max | number: '1.2-2'}}
     </div>
     <div>
+        Approximate Salary
+        <span fxFlex></span>
+        ${{medao.salary.current | number: '1.0-0'}}/{{medao.salary.max | number: '1.0-0'}}
+    </div>
+    <div>
         Total Supply
         <span fxFlex></span>
-        <div *ngIf="medao.supply.current > 1">${{medao.supply.current | number: '1.0-0'}}</div>
-        <div *ngIf="medao.supply.current <= 1">${{medao.supply.current | number: '1.0-2'}}</div>
+        <div *ngIf="medao.supply.current > 1">{{medao.supply.current | number: '1.0-0'}}</div>
+        <div *ngIf="medao.supply.current <= 1">{{medao.supply.current | number: '1.0-2'}}</div>
         /{{medao.supply.max | number: '1.0-0'}}
         <span style="padding-left: 2px">h</span>
     </div>

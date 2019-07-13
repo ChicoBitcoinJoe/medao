@@ -5,6 +5,7 @@ import { MatSnackBar } from '@angular/material';
 import { Web3Service } from '../../services/web3/web3.service';
 import { DaiService } from '../../services/dai/dai.service';
 import { UserService } from '../../services/user/user.service';
+import { ProfileService, Profile } from '../../services/profile/profile.service';
 import { MedaoService } from '../../services/medao/medao.service';
 
 declare let web3: any;
@@ -16,7 +17,9 @@ declare let web3: any;
 })
 export class CreateComponent implements OnInit {
 
-    tokens =  ['ether', 'dai', 'weth'];
+    user: Profile;
+
+    tokens =  ['ether', 'dai'];
     paymentToken = 'ether';
     maxDate: Date = new Date();
 
@@ -50,36 +53,40 @@ export class CreateComponent implements OnInit {
         public Web3: Web3Service,
         public Dai: DaiService,
         public User: UserService,
+        public Profile: ProfileService,
         public Medao: MedaoService,
     ) { }
 
-    ngOnInit() {
+    async ngOnInit() {
         this.medao.name = this.Medao.newMedao.name;
+        if(web3.currentAccount){
+            let user = await this.Profile.get(web3.currentAccount);
+            this.user = user;
+        }
     }
 
     async updateView () {
         let now = new Date().getTime()/1000;
         let birthTimestamp = new Date(this.medao.date).getTime()/1000;
         let age = (now - birthTimestamp) / (60*60*24*365.25);
-        this.medao.maxFunding = this.medao.wage * 8*365.25 * age;
+        this.medao.maxFunding = this.medao.wage * 40 * 52 * age;
         this.medao.requiredFunding = this.medao.maxFunding * this.medao.percentFunded / 100;
-        this.medao.maxSalary = this.medao.wage * 8*365.25;
+        this.medao.maxSalary = this.medao.maxFunding / age;
         this.medao.expectedSalary = this.medao.maxSalary * this.medao.percentFunded / 100;
         this.medao.expectedWage = this.medao.wage * this.medao.percentFunded / 100;
 
         if(this.medao.seed > 0){
-            if(this.paymentToken != 'dai'){
-                let buyAmount = web3.utils.toWei(this.medao.seed.toString(), 'ether');
+            if(this.paymentToken == 'ether'){
+                let seedAmount = this.medao.seed / this.Dai.price.eth;
+                let buyAmount = web3.utils.toWei(seedAmount.toString(), 'ether');
+                console.log(buyAmount)
                 let payAmountInWei = await this.Dai.exchange.methods.getPayAmount(this.Dai.weth.address, this.Dai.address, buyAmount).call();
-                this.medao.maxPayAmount = payAmountInWei.mul(40).div(10).toString();
+                this.medao.maxPayAmount = payAmountInWei.mul(11).div(10).toString();
                 this.medao.reserveAmount = buyAmount;
-                //console.log(payAmountInWei.mul(15).div(10).toString());
-                if(this.paymentToken == 'ether'){
-                    this.medao.tx.value = this.medao.maxPayAmount;//.mul(15).div(10).toString();
-                }
-                else if (this.paymentToken == 'weth'){
-                    this.medao.tx.value = 0;
-                }
+                this.medao.tx.value = this.medao.maxPayAmount;
+            }
+            else if(this.paymentToken == 'dai'){
+                this.medao.reserveAmount = web3.utils.toWei(this.medao.seed.toString(), 'ether');
             }
         }
     }
@@ -92,6 +99,7 @@ export class CreateComponent implements OnInit {
         var tokenClaimInHours = this.medao.seed / this.medao.wage;
         var tokenClaimInSeconds = Math.floor(tokenClaimInHours * 3600);
         this.medao.tokenClaim = web3.utils.toWei(tokenClaimInSeconds.toString(), 'ether');
+
         if(this.paymentToken == 'ether'){
             this.medao.tx.promise = this.Medao.createWithEther(
                 this.medao.name,
@@ -99,14 +107,17 @@ export class CreateComponent implements OnInit {
                 this.medao.tokenClaim,
                 this.medao.maxPayAmount,
                 this.medao.reserveAmount,
-                this.User.account.address
+                this.user.address
             );
         }
-        else if(this.paymentToken == 'weth'){
-
-        }
-        else if(this.paymentToken == 'dai'){
-
+        else if (this.paymentToken == 'dai'){
+            this.medao.tx.promise = this.Medao.createWithDai(
+                this.medao.name,
+                this.medao.birthTimestamp,
+                this.medao.tokenClaim,
+                this.medao.reserveAmount,
+                this.user.address
+            );
         }
 
         this.medao.tx.promise
@@ -126,7 +137,7 @@ export class CreateComponent implements OnInit {
             if(confirmation == 1) {
                 console.log(confirmation)
                 console.log(txReceipt)
-                this.Medao.addressOf(this.User.account.address)
+                this.Medao.addressOf(this.user.address)
                 .then(medaoAddress => {
                     let snackBarRef = this.snackbar.open('MeDao deployed!', 'view', {
                         duration: 10000,
@@ -148,11 +159,16 @@ export class CreateComponent implements OnInit {
     valid () {
         if(!this.medao.name) return false;
         if(!this.medao.date) return false;
-        if(!this.medao.wage && this.medao.wage > 0) return false;
-        if(!this.medao.seed && this.medao.wage > 0) return false;
-        if(this.User.account.balance) {
-            var daiBalance = this.Dai.fromWei(this.User.account.balance);
+        if(!this.medao.wage || this.medao.wage <= 0) return false;
+        if(!this.medao.seed || this.medao.wage <= 0) return false;
+        if(this.paymentToken == 'dai'){
+            var daiBalance = web3.utils.fromWei(this.user.balances.dai);
             if(this.medao.seed >= daiBalance) return false;
+
+        }
+        else if (this.paymentToken == 'ether') {
+            var etherBalance = this.Dai.fromWei(this.user.balances.ether);
+            if(this.medao.seed >= etherBalance) return false;
         }
         return true;
     }

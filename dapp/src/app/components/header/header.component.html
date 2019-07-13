@@ -1,71 +1,88 @@
 <mat-card ngStyle.gt-xs="border-radius: 136px;" ngStyle.xs="border-radius: 40px;" fxLayout.xs="column" fxLayout="row" fxLayoutAlign="center center" fxLayoutAlign.xs="start center">
     <span fxFlex.xs="16px"></span>
-    <div style="overflow: hidden;" [style.border-radius]="diameter/2 + 'px'" [style.height]="diameter + 'px'" [style.width]="diameter + 'px'" fxLayout="column" fxLayoutAlign="center center">
-        <img style="width: 100%;" src="./assets/profile-picture.jpeg">
+    <div style="overflow: hidden; border-radius: 100px; height: 200px; width: 200px" fxLayout="column" fxLayoutAlign="center center">
+        <mat-icon *ngIf="!identity.image" class="secondary-bg white" style="width: 100%; height: 100%; font-size: 200px;">person</mat-icon>
+        <img *ngIf="identity.image" style="width: 100%;" [src]="identity.image">
     </div>
     <div
-        [style.border-top-right-radius]="diameter/2 + 'px'"
-        [style.border-bottom-right-radius]="diameter/2 + 'px'"
+        style="border-top-right-radius: 100px; border-bottom-right-radius: 100px"
         ngStyle.gt-xs="padding-right: 32px"
         fxLayout="column"
         fxFlex.gt-xs>
-        <div
-            fxLayout="column"
-            fxLayoutAlign.xs="start center"
-            fxLayoutGap="16px"
-            fxFlex>
-            <h1 class="dark-text"
-                ngClass.xs="centered"
-                ngStyle.xs="font-size: 24px"
-                ngStyle.sm="font-size: 28px"
-                ngStyle.md="font-size: 32px">
-                Joseph Brian Reed
-            </h1>
+        <div style="min-height: 200px !important;">
+            <div fxLayout="column"
+                fxLayoutAlign.xs="start center"
+                fxLayoutGap="16px"
+                fxFlex>
+                <h1 class="dark-text"
+                    ngClass.xs="centered"
+                    ngStyle.xs="font-size: 24px"
+                    ngStyle.sm="font-size: 28px"
+                    ngStyle.md="font-size: 32px">
+                    {{identity.name}}
+                </h1>
 
-            <div class="dark-text" ngClass.xs="centered" style="padding-left: 16px; font-size: 18px;" ngStyle.xs="padding-left: 0px" fxFlex>
-                Founder and CEO of MeDao / Co-founder and CEO of the Everchain Project.
-            </div>
+                <div class="dark-text" ngClass.xs="centered" style="padding-left: 16px; font-size: 18px;" ngStyle.xs="padding-left: 0px" fxFlex>
+                    {{identity.title}}
+                </div>
 
-            <div *ngIf="view" ngClass.xs="centered" fxLayout="column" fxLayoutGap="16px" >
-                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center">
+                <div ngClass.xs="centered" fxLayout="column" fxLayoutGap="16px" >
                     <b *ngIf="!User.signedIn">&nbsp;</b>
-                    <b *ngIf="User.signedIn" style="padding: 0px 16px">
-                        balance: ${{medao.wage.max * (User.balances[medao.token.address] | fromWei: 'ether') / 3600 | number: '1.2-2'}}
-                    </b>
-                    <small *ngIf="User.signedIn" >({{(User.balances[medao.token.address] | fromWei: 'ether') / 3600 | number: '1.2-5'}} hours)</small>
-                </div>
-                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center">
-                    <button mat-raised-button color="primary" (click)="view.go()">view</button>
-                </div>
-            </div>
-            <div *ngIf="!view" ngClass.xs="centered" fxLayout="column" fxLayoutGap="16px">
-                <div fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center">
-                    <b *ngIf="!User.signedIn">&nbsp;</b>
-                    <b *ngIf="User.signedIn" style="padding-right: 16px" ngStyle.gt-xs="padding-left: 16px">
-                        balance: ${{medao.wage.max * (User.balances[medao.token.address] | fromWei: 'ether') / 3600 | number: '1.2-2'}}
-                    </b>
-                    <small *ngIf="User.signedIn">({{(User.balances[medao.token.address] | fromWei: 'ether') | time }})</small>
-                </div>
-                <div fxLayout="row" fxLayoutGap="16px">
-                    <div>
-                        <button *ngIf="User.address == medao.owner" mat-raised-button color="primary" [disabled]="!User.signedIn">collect</button>
-                        <span *ngIf="User.address != medao.owner">
-                            <button mat-raised-button color="primary" *ngIf="!User.isFollowing(medao.address)" (click)="User.follow(medao.address)" [disabled]="!User.signedIn">connect</button>
-                            <button mat-raised-button color="primary" *ngIf="User.isFollowing(medao.address)">connected</button>
-                        </span>
+                    <div *ngIf="User.signedIn && User.profile.balances[identity.medao.token.address]" fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center">
+                        <b style="padding-right: 16px" ngStyle.gt-xs="padding-left: 16px">
+                            balance: ${{identity.medao.wage.max * (User.profile.balances[identity.medao.token.address].wei | fromWei: 'ether') / 3600 | number: '1.2-2'}}
+                        </b>
+                        <small>({{(User.profile.balances[identity.medao.token.address].wei | fromWei: 'ether') | time }})</small>
                     </div>
-
-                    <div>
-                        <button mat-stroked-button [ngClass]="{'black': User.signedIn}" [disabled]="!User.signedIn" [matMenuTriggerFor]="moreMenu">
-                            more... <mat-icon fxHide.sm>arrow_drop_down</mat-icon>
-                        </button>
-                        <mat-menu #moreMenu="matMenu">
-                            <button mat-menu-item *ngIf="User.address != medao.owner">message</button>
-                            <button mat-menu-item (click)="openTransferDialog()">transfer</button>
-                            <button mat-menu-item (click)="openTradeDialog()">buy/sell</button>
-                            <button mat-menu-item *ngIf="User.isFollowing(medao.address)" (click)="User.unfollow(medao.address)">unfollow</button>
-                            <button mat-menu-item *ngIf="User.address == medao.owner" (click)="openEditDialog()">edit profile</button>
-                        </mat-menu>
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center" fxLayoutGap="16px">
+                        <div *ngIf="!User.signedIn" fxLayoutGap="16px">
+                            <a mat-raised-button *ngIf="identity.link" class="secondary-bg white" [href]="identity.link" target="_blank">social</a>
+                        </div>
+                        <div *ngIf="User.signedIn">
+                            <button *ngIf="User.address == identity.medao.owner" mat-raised-button color="primary" [ngClass]="{'secondary-bg': User.signedIn}" [disabled]="!User.signedIn">collect</button>
+                            <span *ngIf="User.address != identity.medao.owner">
+                                <button *ngIf="!User.profile.isFollowing(identity.medao.address) && !forward"
+                                    mat-raised-button
+                                    color="primary"
+                                    (click)="User.profile.follow(identity.medao.address)"
+                                    [ngClass]="{'secondary-bg': User.signedIn}"
+                                    [disabled]="!User.signedIn">
+                                    follow
+                                </button>
+                                <button mat-raised-button *ngIf="!forward && User.profile.isFollowing(identity.medao.address)" class="secondary-bg white" disabled="true">
+                                    following
+                                </button>
+                                <button mat-raised-button *ngIf="forward" class="secondary-bg white" (click)="identity.view()">
+                                    view
+                                </button>
+                            </span>
+                        </div>
+                        <div>
+                            <button mat-stroked-button class="black" [matMenuTriggerFor]="moreMenu">
+                                more... <mat-icon>arrow_drop_down</mat-icon>
+                            </button>
+                            <mat-menu #moreMenu="matMenu">
+                                <a mat-menu-item
+                                    *ngIf="forward && User.signedIn && User.address != identity.medao.owner && !User.profile.isFollowing(identity.medao.address)"
+                                    [disabled]="!User.signedIn"
+                                    (click)="User.profile.follow(identity.medao.address)">
+                                    follow
+                                </a>
+                                <a mat-menu-item *ngIf="identity.link && User.signedIn" [href]="identity.link" target="_blank">external profile</a>
+                                <a mat-menu-item *ngIf="identity.email" [href]="'mailto:' + identity.email" target="_blank">send email</a>
+                                <a mat-menu-item [disabled]="!User.signedIn" (click)="openTransferDialog()">transfer time</a>
+                                <a mat-menu-item [disabled]="!User.signedIn" (click)="openQrcodeDialog()" fxLayout="row" fxLayoutAlign="start center">
+                                    pay with dai
+                                    <span fxFlex="16px"></span>
+                                    <mat-icon svgIcon="qrcode"></mat-icon>
+                                </a>
+                                <a mat-menu-item
+                                    *ngIf="User.signedIn && User.profile.isFollowing(identity.medao.address)"
+                                    (click)="User.profile.unfollow(identity.medao.address)">
+                                    unfollow
+                                </a>
+                            </mat-menu>
+                        </div>
                     </div>
                 </div>
             </div>

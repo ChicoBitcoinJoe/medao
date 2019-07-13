@@ -2,22 +2,26 @@
     <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="16px">
         <h1 class="cursor no-margin white" style="font-size: 48px;" routerLink="['/home']">MeDao</h1>
         <h4 class="centered padding no-margin" style="color: rgba(255,255,255,0.5)">Unleash your financial identity.</h4>
-        <div *ngIf="!User.account.signedIn" class="padding">
-            <button *ngIf="web3.connected" mat-raised-button (click)="signIn()" [disabled]="!web3.connected || signingIn">sign in</button>
-            <a *ngIf="!web3.connected" mat-raised-button href="https://metamask.io" target="_blank">try metamask to continue</a>
-        </div>
-        <app-header *ngIf="User.signedIn && User.medao" class="margin" [medao]="User.medao" [view]="redirect" [diameter]="200"></app-header>
-        <div *ngIf="User.account.signedIn && !User.medao && !signingIn" class="white-bg" style="border-radius: 49px; padding: 0px 16px 0px 24px;" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap.gt-xs="16px" fxFlex="66px">
-            <mat-form-field floatLabel="never">
-                <mat-label class="black">Enter your name...</mat-label>
-                <input matInput type="text" [(ngModel)]="name">
-            </mat-form-field>
-
-            <div fxLayout="column">
-                <button mat-raised-button color="primary" style="margin-bottom: 4px;" (click)="Medao.createWizard(name)">get started</button>
+        <a *ngIf="!web3.connected" mat-raised-button href="https://metamask.io" target="_blank">try metamask to continue</a>
+        <button mat-raised-button
+            *ngIf="web3.connected && !User.signedIn"
+            (click)="User.signIn()"
+            [disabled]="!web3.connected">
+            sign in
+        </button>
+        <div *ngIf="User.signedIn && !User.profile.medao">
+            <div class="white-bg" style="border-radius: 50px; padding: 0px 16px 0px 24px;" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+                <mat-form-field floatLabel="never" fxFlex.xs="128px">
+                    <mat-label class="black">Enter your name...</mat-label>
+                    <input matInput type="text" [(ngModel)]="name">
+                </mat-form-field>
+                <div fxLayout="column">
+                    <button mat-raised-button color="primary" style="margin-bottom: 4px;" (click)="MeDao.createWizard(name)">get started</button>
+                </div>
             </div>
         </div>
     </div>
+    <div fxFlex="64px"></div>
     <div class="white" fxLayout="column" fxLayout.gt-sm="row">
         <div class="padding" fxLayout="column" fxFlex.gt-sm="33">
             <h3>How does it work?</h3>
@@ -39,80 +43,3 @@
         </div>
     </div>
 </div>
-
-<!--
-<div fxHide.gt-xs fxFlexFill fxLayout="column" fxFlex>
-    <app-left-nav [Web3]="Web3" [User]="User"></app-left-nav>
-    <div fxLayout="column">
-        <div class="padding" fxLayout="column">
-            <h3>How does it work?</h3>
-            <p>
-                Having a MeDao makes you an employee of the world. Investors pool money together from which you (the employee) withdraw a salary for time worked. As value is returned to investors, the value of your time will go up.
-            </p>
-        </div>
-        <div class="padding" fxLayout="column">
-            <h3>Is it safe?</h3>
-            <p>
-                A MeDao has built in properties to protect the funds of each investor. Downside potential is something that can be calculated down to the penny. For example, if you invest $100 into a 33 year old employee, in exactly one year your investment will still be worth $97 even if no value is created by the employee.
-            </p>
-        </div>
-        <div class="padding" fxLayout="column">
-            <h3>Third Bullet Point</h3>
-            <p>
-                To do
-            </p>
-        </div>
-    </div>
-</div>
-
-<div fxHide fxShow.sm fxLayout="row" fxLayoutGap="32px" fxFlex>
-    <div style="border-right: 1px solid white; position: relative;" fxLayout="column" fxFlex="320px">
-        <app-left-nav class="borderLR" style="position: fixed; width: 320px;" [Web3]="Web3" [User]="User" fxFlex></app-left-nav>
-    </div>
-    <div class="scrollable" style="border-left: 1px solid white;" fxFlex>
-        <div class="padding">
-            <h3>How does it work?</h3>
-            <p>
-                Having a MeDao makes you an employee of the world. Investors pool money together from which you (the employee) withdraw a salary for time worked. As value is returned to investors, the value of your time will go up.
-            </p>
-        </div>
-        <div class="padding">
-            <h3>Is it safe?</h3>
-            <p>
-                A MeDao has built in properties to protect the funds of each investor. Downside potential is something that can be calculated down to the penny. For example, if you invest $100 into a 33 year old employee, in exactly one year your investment will still be worth $97 even if no value is created by the employee.
-            </p>
-        </div>
-        <div class="padding">
-            <h3>Third Bullet Point</h3>
-            <p>
-                To do
-            </p>
-        </div>
-    </div>
-</div>
-
-<div fxHide fxShow.gt-sm fxLayout="column" fxFlex>
-    <div class="borderLR scrollable" fxFlex>
-        <div fxLayout="column">
-            <div class="padding" fxLayout="column">
-                <h3>How does it work?</h3>
-                <p>
-                    Having a MeDao makes you an employee of the world. Investors pool money together from which you (the employee) withdraw a salary for time worked. As value is returned to investors, the value of your time will go up.
-                </p>
-            </div>
-            <div class="padding" fxLayout="column">
-                <h3>Is it safe?</h3>
-                <p>
-                    A MeDao has built in properties to protect the funds of each investor. Downside potential is something that can be calculated down to the penny. For example, if you invest $100 into a 33 year old employee, in exactly one year your investment will still be worth $97 even if no value is created by the employee.
-                </p>
-            </div>
-            <div class="padding" fxLayout="column">
-                <h3>Third Bullet Point</h3>
-                <p>
-                    To do
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
--->

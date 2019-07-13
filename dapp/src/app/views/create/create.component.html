@@ -1,18 +1,20 @@
-<div *ngIf="medao"fxLayout="column" fxLayoutGap="32px" fxFlex>
-    <span fxFlex="76px"></span>
+<div fxLayout="column" fxLayoutGap="32px" fxFlex>
     <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="16px">
         <h1 class="cursor no-margin white" style="font-size: 48px;" routerLink="['/home']">MeDao</h1>
         <h4 class="centered padding no-margin" style="color: rgba(255,255,255,0.5)">Unleash your financial identity.</h4>
     </div>
-    <div ngStyle.xs="width: 100%;" fxLayout="column" fxLayout.gt-sm="row">
-        <mat-card class="margin padding" fxLayout="column" fxFlex.gt-sm="50">
+    <div *ngIf="User.profile && User.profile.medao" class="centered white" fxLayout="column">
+        MeDao already created!
+    </div>
+    <div *ngIf="User.profile && !User.profile.medao" ngStyle.xs="width: 100%;" fxLayout="column" fxLayout.gt-sm="row">
+        <mat-card class="margin padding" fxLayout="column" fxFlex.gt-sm="50" style="max-width: 100%">
             <h3 class="black centered">Create your Dao</h3>
             <mat-form-field>
                 <mat-label>Name</mat-label>
                 <input matInput
                     type="text"
                     [(ngModel)]="medao.name"
-                    [disabled]="!User.account.signedIn || medao.tx.promise">
+                    [disabled]="!User.signedIn || medao.tx.promise">
             </mat-form-field>
             <mat-form-field>
                 <mat-label>Birth Date</mat-label>
@@ -21,7 +23,7 @@
                     [matDatepicker]="myDatepicker"
                     [(ngModel)]="medao.date"
                     (ngModelChange)="updateView()"
-                    [disabled]="!User.account.signedIn || medao.tx.promise">
+                    [disabled]="!User.signedIn || medao.tx.promise">
                 <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
                 <mat-datepicker #myDatepicker></mat-datepicker>
             </mat-form-field>
@@ -33,44 +35,51 @@
                     min="0.01"
                     [(ngModel)]="medao.wage"
                     (ngModelChange)="updateView()"
-                    [disabled]="!User.account.signedIn || medao.tx.promise">
-                <span style="padding: 0px 7px;" matSuffix>$</span>
+                    [disabled]="!User.signedIn || medao.tx.promise">
+                <span style="padding: 0px 7px; color: grey;" matSuffix>$</span>
             </mat-form-field>
             <div fxLayout="row">
-                <mat-form-field fxFlex.xs="120px" fxFlex>
+                <mat-form-field fxFlex.xs="104px" fxFlex>
                     <mat-label>Seed funds</mat-label>
                     <input matInput
                         type="number"
                         step="0.01"
                         min="0.01"
-                        max="{{User.balances[paymentToken] | toDai | number:'1.2-2'}}"
+                        max="{{User.profile.balances[paymentToken] | toDai | number:'1.2-2'}}"
                         [(ngModel)]="medao.seed"
                         (ngModelChange)="updateView()"
-                        [disabled]="!User.account.signedIn || medao.tx.promise">
-                    <span style="padding: 0px 7px;" matSuffix>$</span>
+                        [disabled]="!User.signedIn || medao.tx.promise">
+                    <span style="padding: 0px 7px; color: grey;" matSuffix>$</span>
                     <mat-hint>
                         <span *ngIf="paymentToken == 'dai'">
-                            available: ${{User.balances[paymentToken] | number: '1.2-5'}}
+                            available: ${{User.profile.balances.dai | fromWei: 'ether' | number: '1.2-2'}}
                         </span>
-                        <span *ngIf="paymentToken != 'dai'">
-                            available: ${{medao.maxPayAmount | toDai | number: '1.2-2'}}/{{User.balances[paymentToken] | toDai | number: '1.2-5'}}
+                        <span *ngIf="paymentToken == 'ether'">
+                            available: ${{User.profile.balances.ether | toDai | number: '1.2-2'}}
                         </span>
                     </mat-hint>
                 </mat-form-field>
                 <div fxLayout="row" fxFlex="136px">
-                    <span style="padding: 0px 4px; margin-top: 19px;">payed in</span>
+                    <span style="padding: 0px 4px; margin-top: 20px;">payed in</span>
                     <mat-form-field fxFlex="64px">
-                        <mat-select [(ngModel)]="paymentToken" [disabled]="!User.account.signedIn || medao.tx.promise">
-                            <mat-option *ngFor="let token of tokens" [value]="token" [disabled]="['dai','weth'].includes(token)">
+                        <mat-select [(ngModel)]="paymentToken"  (ngModelChange)="updateView()"  [disabled]="!User.signedIn || medao.tx.promise">
+                            <mat-option *ngFor="let token of tokens" [value]="token">
                                 {{token}}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
                 </div>
+                <div fxFlex.xs="16px"></div>
             </div>
         </mat-card>
-        <div class="margin padding white" fxLayout="column" fxLayoutGap="16px" fxFlex.gt-sm="50">
-            <div class="padding margin" style="background-color: white; max-width: 100%; border-radius: 40px;" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8px" fxFlex="66px">
+        <div class="padding white" fxLayout="column" fxLayoutGap="16px" fxFlex.gt-sm="50">
+            <small class="padding centered white">
+                Use the slider to calculate your salary at different funding levels
+                <br>
+                <br>
+                As you fill out the form information about your MeDao will show below.
+            </small>
+            <div class="padding" style="background-color: white; max-width: 100%; border-radius: 40px;" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8px" fxFlex="66px">
                 <mat-slider fxFlex
                     [max]="100"
                     [min]="0"
@@ -80,190 +89,13 @@
                 </mat-slider>
                 <b class="dark-text centered">{{medao.percentFunded}}% funded</b>
             </div>
-            <small class="padding centered white">
-                Use the slider to calculate your salary at different funding levels
-                <br>
-                <br>
-                As you fill out the form information about your MeDao will show below.
-            </small>
-            <div>Funding: <span fxFlex></span> ${{medao.requiredFunding | number: '1.0-0'}}/{{medao.maxFunding | number: '1.0-0'}}</div>
-            <div>Salary: <span fxFlex></span> ${{medao.expectedSalary | number: '1.0-0'}}/{{medao.maxSalary | number: '1.0-0'}}</div>
-            <div>Wage: <span fxFlex></span> ${{medao.expectedWage | number: '1.2-2'}}/{{medao.wage | number: '1.2-2'}}</div>
-            <div>Invested Time: <span fxFlex></span> {{medao.seed / medao.wage| number: '1.1-2'}} hours</div>
+            <div>Required Funding: <span fxFlex></span> ${{medao.requiredFunding | number: '1.0-0'}}/{{medao.maxFunding | number: '1.0-0'}}</div>
+            <div>Approximate Salary: <span fxFlex></span> ${{medao.expectedSalary | number: '1.0-0'}}/{{medao.maxSalary | number: '1.0-0'}}</div>
+            <div>Approximate Wage: <span fxFlex></span> ${{medao.expectedWage | number: '1.2-2'}}/{{medao.wage | number: '1.2-2'}}</div>
+            <div>Starting Balance: <span fxFlex></span> {{medao.seed / medao.wage| number: '1.1-2'}} hours</div>
             <span fxFlex="16px"></span>
             <button mat-raised-button (click)="submit()" [disabled]="!valid() || medao.tx.promise">submit</button>
             <span fxFlex="16px"></span>
-        </div>
-    </div>
-</div>
-
-<!-- mobile view -->
-<div *ngIf fxShow fxHide.gt-sm fxLayout="column" fxFlexFill>
-    <div class="secondary-bg padding" style="border-bottom: 1px solid white;" fxLayout="column" fxLayoutAlign="center center">
-        <mat-toolbar class="secondary-bg"></mat-toolbar>
-        <h1 class="cursor no-margin" style="font-size: 48px;" routerLink="['/home']">MeDao</h1>
-        <h4 class="centered padding no-margin" style="color: rgba(255,255,255,0.5)">
-            Unleash your financial identity.
-        </h4>
-    </div>
-    <div class="padding" fxLayout="column" fxFlex>
-        <h3 class="centered">Create your MeDao</h3>
-        <mat-form-field>
-            <mat-label>Name</mat-label>
-            <input matInput type="text" [(ngModel)]="medao.name" [disabled]="!User.account.signedIn || medao.tx.promise">
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>Birth Date</mat-label>
-            <input matInput [max]="medao.maxDate" [matDatepicker]="myDatepicker1" [(ngModel)]="medao.date" (ngModelChange)="updateView()" [disabled]="!User.account.signedIn || medao.tx.promise">
-            <mat-datepicker-toggle matSuffix [for]="myDatepicker1"></mat-datepicker-toggle>
-            <mat-datepicker #myDatepicker></mat-datepicker>
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>Hourly Wage</mat-label>
-            <input matInput type="number" step="0.01" min="0.01" [(ngModel)]="medao.wage" (ngModelChange)="updateView()" [disabled]="!User.account.signedIn || medao.tx.promise">
-            <span style="padding: 0px 7px;" matSuffix>$</span>
-        </mat-form-field>
-        <div fxLayout="row">
-            <div fxLayout="row" style="overflow: hidden" fxFlex>
-                <mat-form-field style="min-width: 0px" fxFlex>
-                    <mat-label>Seed funds</mat-label>
-                    <input matInput type="number" step="0.01" min="0.01" max="{{User.balances[paymentToken] | toDai | number:'1.2-2'}}" [(ngModel)]="medao.seed" (ngModelChange)="updateView()" [disabled]="!User.account.signedIn || medao.tx.promise">
-                    <span style="padding: 0px 7px;" matSuffix>$</span>
-                    <mat-hint>
-                        <span *ngIf="paymentToken == 'dai'">
-                            available: ${{User.balances[paymentToken] | number: '1.2-5'}}
-                        </span>
-                        <span *ngIf="paymentToken != 'dai'">
-                            available: ${{medao.maxPayAmount | toDai | number: '1.2-2'}}/{{User.balances[paymentToken] | toDai | number: '1.2-5'}}
-                        </span>
-                    </mat-hint>
-                </mat-form-field>
-            </div>
-            <div fxLayout="row" fxFlex="136px">
-                <span style="padding: 0px 4px; margin-top: 19px;">payed in</span>
-                <mat-form-field fxFlex="64px">
-                    <mat-select [(ngModel)]="paymentToken" [disabled]="!User.account.signedIn || medao.tx.promise">
-                        <mat-option *ngFor="let token of tokens" [value]="token" [disabled]="['dai','weth'].includes(token)">
-                            {{token}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-        </div>
-
-    </div>
-    <div fxLayout="column" fxFlex>
-
-        <div class="padding" style="background-color: white;" fxLayout="row">
-            <mat-slider fxFlex
-                [max]="100"
-                [min]="0"
-                [step]="1"
-                [(ngModel)]="medao.percentFunded"
-                (ngModelChange)="updateView()">
-            </mat-slider>
-            <b class="dark-text centered">{{medao.percentFunded}}%</b>
-        </div>
-        <div fxFlex="32px"></div>
-        <div *ngIf="medao.expectedSalary && medao.wage" class="padding" fxLayout="column" fxLayoutGap="16px">
-            <div>Funding: <span fxFlex></span> ${{medao.requiredFunding | number: '1.0-0'}}/{{medao.maxFunding | number: '1.0-0'}}</div>
-            <div>Salary: <span fxFlex></span> ${{medao.expectedSalary | number: '1.0-0'}}/{{medao.maxSalary | number: '1.0-0'}}</div>
-            <div>Wage: <span fxFlex></span> ${{medao.expectedWage | number: '1.2-2'}}/{{medao.wage | number: '1.2-2'}}</div>
-            <div>Invested Time: <span fxFlex></span> {{medao.seed / medao.wage| number: '1.1-2'}} hours</div>
-        </div>
-    </div>
-    <button mat-button (click)="submit()" [disabled]="!valid() || medao.tx.promise">
-        <span [class.grey-text]="!valid() || medao.tx.promise">submit</span>
-    </button>
-    <span fxFlex="16px"></span>
-</div>
-
-<!-- desktop view -->
-<div *ngIf fxLayout="column" fxFlexFill>
-    <div class="secondary-bg padding" style="border-bottom: 1px solid white;" fxLayout="column" fxLayoutAlign="center center">
-        <mat-toolbar class="secondary-bg"></mat-toolbar>
-        <h1 class="cursor no-margin" style="font-size: 48px;" routerLink="['/home']">MeDao</h1>
-        <h4 class="centered padding no-margin" style="color: rgba(255,255,255,0.5)">
-            Unleash your financial identity.
-        </h4>
-    </div>
-    <div fxLayout="row" fxFlex>
-        <div fxLayout="row" fxFlex="50">
-            <div class="padding" fxLayout="column" fxFlex>
-                <h3 class="centered">Create your MeDao</h3>
-                <mat-form-field>
-                    <mat-label>Name</mat-label>
-                    <input matInput type="text" [(ngModel)]="medao.name" [disabled]="!User.account.signedIn || medao.tx.promise">
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-label>Birth Date</mat-label>
-                    <input matInput [max]="medao.maxDate" [matDatepicker]="myDatepicker" [(ngModel)]="medao.date" (ngModelChange)="updateView()" [disabled]="!User.account.signedIn || medao.tx.promise">
-                    <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
-                    <mat-datepicker #myDatepicker></mat-datepicker>
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-label>Hourly Wage</mat-label>
-                    <input matInput type="number" step="0.01" min="0.01" [(ngModel)]="medao.wage" (ngModelChange)="updateView()" [disabled]="!User.account.signedIn || medao.tx.promise">
-                    <span style="padding: 0px 7px;" matSuffix>$</span>
-                </mat-form-field>
-                <div fxLayout="row">
-                    <mat-form-field fxFlex>
-                        <mat-label>Seed funds</mat-label>
-                        <input matInput type="number" step="0.01" min="0.01" max="{{User.balances[paymentToken] | toDai | number:'1.2-5'}}" [(ngModel)]="medao.seed" (ngModelChange)="updateView()" [disabled]="!User.account.signedIn || medao.tx.promise">
-                        <span style="padding: 0px 7px;" matSuffix>$</span>
-                        <mat-hint>
-                            <span *ngIf="paymentToken == 'dai'">
-                                available: ${{User.balances[paymentToken] | number: '1.2-5'}}
-                            </span>
-                            <span *ngIf="paymentToken != 'dai'">
-                                available: ${{medao.maxPayAmount | toDai | number: '1.2-2'}}/{{User.balances[paymentToken] | toDai | number: '1.2-5'}}
-                            </span>
-                        </mat-hint>
-                    </mat-form-field>
-                    <div fxLayout="row" fxFlex="136px">
-                        <span style="padding: 0px 4px; margin-top: 19px;">payed in</span>
-                        <mat-form-field fxFlex="64px">
-                            <mat-select [(ngModel)]="paymentToken" [disabled]="!User.account.signedIn || medao.tx.promise">
-                                <mat-option *ngFor="let token of tokens" [value]="token">
-                                    {{token}}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
-                </div>
-                <span fxFlex="16px"></span>
-                <button mat-button (click)="submit()" [disabled]="!valid() || medao.tx.promise">
-                    <span [class.grey-text]="!valid() || medao.tx.promise">submit</span>
-                </button>
-            </div>
-        </div>
-        <div fxLayout="row" fxFlex="50">
-            <div class="padding" style="background-color: white;" fxLayout="column" fxLayoutAlign="start center">
-                <mat-slider fxFlex
-                    [max]="100"
-                    [min]="0"
-                    [step]="1"
-                    [(ngModel)]="medao.percentFunded"
-                    (ngModelChange)="updateView()"
-                    [vertical]="true">
-                </mat-slider>
-                <b class="dark-text centered">{{medao.percentFunded}}%</b>
-            </div>
-            <div fxLayout="column" fxFlex>
-                <small class="padding centered">
-                    As you fill out the form information about your MeDao will show here.
-                    <br>
-                    <br>
-                    Use the slider to calculate your salary at different funding levels
-                </small>
-                <div fxFlex="32px"></div>
-                <div *ngIf="medao.expectedSalary && medao.wage" class="padding" fxLayout="column" fxLayoutGap="16px">
-                    <div>Funding: <span fxFlex></span> ${{medao.requiredFunding | number: '1.0-0'}}/{{medao.maxFunding | number: '1.0-0'}}</div>
-                    <div>Salary: <span fxFlex></span> ${{medao.expectedSalary | number: '1.0-0'}}/{{medao.maxSalary | number: '1.0-0'}}</div>
-                    <div>Wage: <span fxFlex></span> ${{medao.expectedWage | number: '1.2-2'}}/{{medao.wage | number: '1.2-2'}}</div>
-                    <div>Invested Time: <span fxFlex></span> {{medao.seed / medao.wage| number: '1.1-2'}} hours</div>
-                </div>
-            </div>
         </div>
     </div>
 </div>

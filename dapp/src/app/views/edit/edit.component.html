@@ -1,0 +1,62 @@
+<div *ngIf="User.signedIn" class="padding" fxLayout="column" fxLayoutGap="16px">
+    <mat-card style="padding: 16px; border-top-right-radius: 120px; border-top-left-radius: 120px;" fxLayout="column" fxLayout.gt-xs="row" fxLayoutAlign.xs="start center" fxLayoutAlign.gt-xs="start end" fxLayoutGap.gt-xs="16px">
+        <div style="overflow: hidden; height: 200px; width: 200px; border-radius: 100px;">
+            <img *ngIf="User.profile.image" style="height: 100%;" [src]="User.profile.image">
+            <div *ngIf="!User.profile.image" style="height: 100%;" class="secondary-bg" fxLayoutAlign="center center">
+                <mat-icon class="white" style="height: 164px; width: 164px; font-size: 164px;">person</mat-icon>
+            </div>
+        </div>
+        <div fxLayout="column" fxFlex.gt-xs>
+            <h1 ngClass.xs="centered" *ngIf="!User.profile.name">Anonymous</h1>
+            <h1 ngClass.xs="centered" *ngIf="User.profile.name">{{User.profile.name}}</h1>
+            <mat-form-field fxFlex.gt-xs>
+                <input matInput placeholder="Profile Image Link" [(ngModel)]="image">
+            </mat-form-field>
+            <div fxLayout.xs="column" fxLayout="row" fxLayoutAlign.gt-xs="end end">
+                <button mat-raised-button class="secondary-bg white" (click)="User.profile.updateImage(image)">update</button>
+            </div>
+        </div>
+    </mat-card>
+
+    <mat-card fxLayout="column" fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="start center" fxLayoutGap.gt-xs="16px">
+        <mat-form-field fxFlex.gt-xs>
+            <input matInput placeholder="Email" [(ngModel)]="email">
+        </mat-form-field>
+        <button mat-raised-button [ngClass]="{'secondary-bg white': User.profile.validEmail(email)}" (click)="User.profile.updateEmail(email)" [disabled]="!User.profile.validEmail(email)">update</button>
+    </mat-card>
+
+    <mat-card fxLayout="column" fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="start center" fxLayoutGap.gt-xs="16px">
+        <mat-form-field fxFlex.gt-xs>
+            <input matInput placeholder="Public Profile Link" [(ngModel)]="link">
+        </mat-form-field>
+        <button mat-raised-button class="secondary-bg white" (click)="User.profile.updateProfileLink(link)">update</button>
+    </mat-card>
+
+    <mat-card fxLayout="column" fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="start center" fxLayoutGap.gt-xs="16px">
+        <mat-form-field fxFlex.gt-xs>
+            <input matInput placeholder="Title" [(ngModel)]="title">
+        </mat-form-field>
+        <button mat-raised-button class="secondary-bg white" (click)="User.profile.updateTitle(title)">update</button>
+    </mat-card>
+
+    <mat-card fxLayout="column" fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="start end" fxLayoutGap.gt-xs="16px">
+        <mat-form-field fxFlex.gt-xs>
+            <textarea matInput placeholder="About" rows="5" [(ngModel)]="about"></textarea>
+        </mat-form-field>
+        <div fxLayout="column">
+            <button mat-raised-button class="secondary-bg white" (click)="User.profile.updateAbout(about)">update</button>
+            <span fxFlex.gt-xs="16px"></span>
+        </div>
+    </mat-card>
+
+    <mat-card fxLayout="column" fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="start end" fxLayoutGap.gt-xs="16px">
+        <mat-form-field fxFlex.gt-xs>
+            <textarea matInput placeholder="Contract Agreement" rows="10" [(ngModel)]="contract"></textarea>
+            <mat-hint>markdown enabled</mat-hint>
+        </mat-form-field>
+        <div fxLayout="column">
+            <button mat-raised-button class="secondary-bg white" (click)="User.profile.updateContract(contract)">update</button>
+            <span fxFlex.gt-xs="16px"></span>
+        </div>
+    </mat-card>
+</div>
