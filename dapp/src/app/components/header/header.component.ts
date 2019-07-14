@@ -50,15 +50,28 @@ export class HeaderComponent implements OnInit {
 
     openTransferDialog () {
         const dialogRef = this.dialog.open(TransferDialog, {
-            //width: '100vw',
-            //height: '100vh',
+            width: '100vw',
+            height: '100vh',
             data: {
                identity: this.identity,
             }
         });
 
-        dialogRef.afterClosed().subscribe(async result => {
+        dialogRef.afterClosed().subscribe(async tx => {
+            if(!tx) return;
 
+            tx.on('transactionHash', txHash => {
+                console.log(txHash);
+            })
+            .on('confirmation', (confirmations, txReceipt) => {
+                if(confirmations == 1){
+                    console.log(txReceipt)
+                    this.User.profile.updateTokenBalance(this.identity.medao.token);
+                }
+            })
+            .catch(err => {
+                console.error(err);
+            })
         });
     }
 
@@ -110,22 +123,12 @@ export class TransferDialog {
     }
 
     transfer () {
-        this.identity.medao.token.methods.transfer(this.toAddress, this.sendAmount)
+        var tx = this.identity.medao.token.methods.transfer(this.toAddress, this.sendAmount)
         .send({
             from: web3.currentAccount
-        })
-        .on('transactionHash', txHash => {
-            console.log(txHash);
-        })
-        .on('confirmation', (confirmations, txReceipt) => {
-            if(confirmations == 1){
-                console.log(txReceipt)
-                this.User.profile.updateTokenBalance(this.identity.medao.token);
-            }
-        })
-        .catch(err => {
-            console.error(err);
-        })
+        });
+
+        this.dialogRef.close(tx)
     }
 
     valid () {
@@ -135,78 +138,6 @@ export class TransferDialog {
         if(!web3.utils.isAddress(this.toAddress)) return false;
         return true;
     }
-
-    /*
-        async pay() {
-            let address;
-            if(this.paymentSelection == this.medao.name){
-                address = this.medao.owner;
-            }
-            else if(this.paymentSelection == 'Dao'){
-                address = this.medao.address;
-            }
-            else if(this.paymentSelection == 'Address'){
-                address = this.toAddress;
-            }
-
-            let txPromise = null;
-            if(this.selectedToken == 'ether'){
-                let sendAmount = web3.utils.toWei(this.sendAmount.toString(), 'ether');
-                if(address == this.medao.address){
-                    // convert to dai then send to dao
-                }
-                else {
-                    txPromise = web3.eth.sendTransaction({
-                        from: this.User.address,
-                        to: address,
-                        value: sendAmount
-                    });
-                }
-            }
-            else if(this.selectedToken == 'dai'){
-                let sendAmount = web3.utils.toWei(this.sendAmount.toString(), 'ether');
-                txPromise = this.Dai.methods.transfer(
-                    address,
-                    sendAmount
-                )
-                .send({
-                    from: this.User.address
-                });
-            }
-            else if(this.selectedToken == 'time'){
-                let sendAmount = web3.utils.toWei((this.sendAmount * 3600).toString(), 'ether');
-                if(address == this.medao.address){
-                    txPromise = this.medao.methods.burn(sendAmount)
-                    .send({
-                        from: this.User.address
-                    });
-                }
-                else {
-                    txPromise = this.medao.token.methods.transfer(
-                        address,
-                        sendAmount
-                    )
-                    .send({
-                        from: this.User.address
-                    });
-                }
-            }
-
-            let tx = await txPromise;
-            tx.on('transactionHash', txHash => {
-                console.log(txHash);
-            })
-            .on('confirmation', (confirmations, txReceipt) => {
-                if(confirmations == 1){
-                    console.log(txReceipt);
-                    this.medao.update();
-                }
-            })
-            .catch(err => {
-                console.error(err)
-            });
-        }
-    */
 
 }
 
