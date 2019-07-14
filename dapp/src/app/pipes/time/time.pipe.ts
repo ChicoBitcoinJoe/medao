@@ -10,6 +10,7 @@ export class TimePipe implements PipeTransform {
         seconds -= hours*3600;
         let minutes = Math.floor(seconds / 60);
         seconds -= minutes*60;
+        seconds = Math.floor(seconds);
         return hours + 'h ' + minutes + 'm ' + seconds + 's';
     }
 
