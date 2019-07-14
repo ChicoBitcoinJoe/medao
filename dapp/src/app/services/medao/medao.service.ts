@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+
 import { DaiService } from '../../services/dai/dai.service';
 
 declare let web3: any;
@@ -7,6 +7,7 @@ declare let require: any;
 
 let MiniMeTokenArtifact = require('../../../contracts/MiniMeToken.json');
 let MeDaoArtifact = require('../../../contracts/MeDao.json');
+let MeDaoFactoryArtifact = require('../../../contracts/MeDaoFactory.json');
 let MeDaoRegistryArtifact = require('../../../contracts/MeDaoRegistry.json');
 let ERC20Artifact = require('../../../contracts/ERC20.json');
 
@@ -49,9 +50,11 @@ export class MeDao {
         public Dai: DaiService,
         public address: string,
     ) {
-        this.instance = new web3.eth.Contract(MeDaoArtifact.abi, address);
-        this.methods = this.instance.methods;
-        this.update();
+        if(address){
+            this.instance = new web3.eth.Contract(MeDaoArtifact.abi, address);
+            this.methods = this.instance.methods;
+            this.update();
+        }
     }
 
     async update () {
@@ -133,18 +136,18 @@ export class MeDao {
 })
 export class MedaoService {
 
-    private ready: Promise<any>;
-
     registry;
+    factory;
     exchange;
 
     constructor(
-        private router: Router,
         public Dai: DaiService,
     ) {}
 
     async initialize () {
-        var registry = await MeDaoRegistryArtifact.networks[web3.network.id].address;
+        var factory = MeDaoFactoryArtifact.networks[web3.network.id].address;
+        this.factory = new web3.eth.Contract(MeDaoFactoryArtifact.abi, factory);
+        var registry = MeDaoRegistryArtifact.networks[web3.network.id].address;
         this.registry = new web3.eth.Contract(MeDaoRegistryArtifact.abi, registry);
     }
 
@@ -270,15 +273,6 @@ export class MedaoService {
         let medao = new web3.eth.Contract(MeDaoArtifact.abi, medaoAddress);
         let identity = await medao.methods.identity().call();
         return identity;
-    }
-
-    newMedao = {
-        name: null
-    };
-
-    createWizard (name) {
-        this.newMedao.name = name;
-        this.router.navigate(['/create']);
     }
 
 }
