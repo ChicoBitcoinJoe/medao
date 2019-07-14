@@ -154,7 +154,7 @@ export class Profile {
     }
 
     async updateDaiBalance () {
-        let daiBalanceInWei = await web3.eth.getBalance(this.address);
+        let daiBalanceInWei = await this.Dai.methods.balanceOf(this.address).call();
         this.balances.dai = daiBalanceInWei.toString();
         return daiBalanceInWei;
     }
