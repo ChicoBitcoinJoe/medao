@@ -3,8 +3,7 @@
     <span fxFlex.xs="116px" fxFlex="156px"></span>
     <div fxLayout="row" fxLayoutAlign="center" fxFlex>
         <div fxLayout="column" style="max-width: 996px; width: 100%">
-            <div *ngIf="!ready" class=" centered white">loading...</div>
-            <router-outlet *ngIf="ready"></router-outlet>
+            <router-outlet></router-outlet>
         </div>
     </div>
 </div>

@@ -24,26 +24,24 @@ export class AppComponent {
         private matIconRegistry: MatIconRegistry,
         private domSanitizer: DomSanitizer,
         public Web3: Web3Service,
-        public Dai: DaiService,
-        public Medao: MedaoService,
+        public DaiService: DaiService,
+        public MedaoService: MedaoService,
         public User: UserService,
     ) {
         this.Web3.initialize(this.supportedNetworks)
         .then(async () => {
-            await this.Dai.initialize();
-            await this.Medao.initialize();
-            
+            this.DaiService.initialize();
+            this.MedaoService.initialize();
+
             if(web3.currentAccount)
                 await this.User.signIn();
             else
                 this.Web3.watchForAccountChanges();
 
             console.log('App ready');
-            this.ready = true;
         })
         .catch(err => {
             console.error(err);
-            this.ready = true;
         })
 
         this.matIconRegistry.addSvgIcon("qrcode", this.domSanitizer.bypassSecurityTrustResourceUrl("./assets/qrcode.svg"));
