@@ -9,8 +9,8 @@
             fxLayoutAlign="start center"
             [matMenuTriggerFor]="menu">
             <div class="black" style="padding: 0px 12px;" fxLayout="column">
-                <span *ngIf="!User.profile.medao" style="font-size: 16px; height: 32px;">Anonymous</span>
-                <span *ngIf="User.profile.medao" style="font-size: 16px; height: 32px;">{{User.profile.name}}</span>
+                <span *ngIf="!User.name" style="font-size: 16px; height: 32px;">Anonymous</span>
+                <span *ngIf="User.name" style="font-size: 16px; height: 32px;">{{User.name}}</span>
                 <span *ngIf="User.profile.medao" style="font-size: 12px; height: 16px; line-height: 12px; text-align: right;">
                     <b>${{User.profile.medao.wage.max * (User.profile.balances.time.wei | fromWei: 'ether') / 3600 | number: '1.2-2'}}</b>
                     &nbsp;({{User.profile.balances.time.wei | fromWei: 'ether' | time}})
@@ -26,7 +26,7 @@
         <mat-menu #menu="matMenu">
             <div fxLayout="column" fxLayoutAlign="start start">
                 <button mat-button (click)="User.profile.view()" *ngIf="User.profile.medao">my profile</button>
-                <button mat-button (click)="MeDao.createWizard(User.profile.name)" *ngIf="!User.profile.medao">create your dao</button>
+                <button mat-button (click)="User.createWizard(User.name)" *ngIf="!User.profile.medao">create your dao</button>
                 <button mat-button routerLink="/network">my network</button>
                 <button mat-button routerLink="/edit">edit profile</button>
             </div>

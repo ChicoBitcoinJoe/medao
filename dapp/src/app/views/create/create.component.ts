@@ -58,11 +58,9 @@ export class CreateComponent implements OnInit {
     ) { }
 
     async ngOnInit() {
-        this.medao.name = this.Medao.newMedao.name;
-        if(web3.currentAccount){
-            let user = await this.Profile.get(web3.currentAccount);
-            this.user = user;
-        }
+        let ready = await this.User.ready;
+        if(!this.User.signedIn || this.User.hasDao)
+            this.router.navigate(['/home']);
     }
 
     async updateView () {

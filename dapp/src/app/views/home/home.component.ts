@@ -13,14 +13,14 @@ declare let web3: any;
 export class HomeComponent implements OnInit {
 
     web3 = web3;
+    ready: boolean = false;
 
     constructor(
-        public MeDao: MedaoService,
         public User: UserService,
     ) { }
 
     async ngOnInit() {
-
+        this.ready = await this.User.ready;
     }
 
 }
