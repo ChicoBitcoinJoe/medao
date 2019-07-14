@@ -5,6 +5,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { Web3Service } from '../../services/web3/web3.service';
 import { ProfileService, Profile } from '../../services/profile/profile.service';
 import { MedaoService } from '../../services/medao/medao.service';
+import { DaiService } from '../../services/dai/dai.service';
 import { UserService } from '../../services/user/user.service';
 
 declare let web3: any;
@@ -47,6 +48,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
         public Profile: ProfileService,
         public User: UserService,
         public MeDao: MedaoService,
+        public Dai: DaiService,
     ) { }
 
     ngOnInit () {
@@ -81,7 +83,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
         if(web3.currentAccount){
             await this.User.profile.updateTokenBalance(this.identity.medao.token);
-            this.identity.medao.token.methods.allowance(this.User.address, this.identity.medao.address).call()
+            this.Dai.methods.allowance(this.User.address, this.identity.medao.address).call()
             .then(allowance => {
                 this.userAgreesToTerms = allowance.gt(0);
             })
@@ -106,10 +108,60 @@ export class ProfileComponent implements OnInit, OnDestroy {
         */
     }
 
+    validBuy () {
+        return true;
+    }
+
+    validSell () {
+        return true;
+    }
+
+    async buy () {
+        let amount = '0.01';
+        let amountInWei = web3.utils.toWei(amount, 'ether');
+        let expectedTimeInWei = await this.identity.medao.methods.calculateTokenClaim(amountInWei).call();
+        let expectedTime = web3.utils.fromWei(expectedTimeInWei.toString(), 'ether');
+        console.log(expectedTime);
+
+        this.identity.medao.methods.deposit(amountInWei)
+        .send({
+            from: web3.currentAccount
+        })
+        .on('confirmation', (confirmations, txReceipt) => {
+            if(confirmations == 1){
+                console.log(txReceipt);
+                this.User.profile.updateTokenBalance(this.identity.medao.token);
+                this.User.profile.updateDaiBalance();
+                this.identity.medao.update();
+            }
+        })
+    }
+
+    async sell () {
+        let amount = '0.01';
+        let amountInWei = web3.utils.toWei(amount, 'ether');
+        let expectedTimeInWei = await this.identity.medao.methods.calculateTokenClaim(amountInWei).call();
+        let expectedTime = web3.utils.fromWei(expectedTimeInWei.toString(), 'ether');
+        console.log(expectedTime);
+
+        this.identity.medao.methods.withdraw(expectedTimeInWei)
+        .send({
+            from: web3.currentAccount
+        })
+        .on('confirmation', (confirmations, txReceipt) => {
+            if(confirmations == 1){
+                console.log(txReceipt);
+                this.User.profile.updateTokenBalance(this.identity.medao.token);
+                this.User.profile.updateDaiBalance();
+                this.identity.medao.update();
+            }
+        })
+    }
+
     enableDaiTrading(): void {
         this.approvalPending = true;
         this.userAgreesToTerms = true;
-        this.identity.medao.token.methods.approve(this.identity.medao.address, web3.utils.maxUintValue)
+        this.Dai.methods.approve(this.identity.medao.address, web3.utils.maxUintValue)
         .send({
             from: this.User.address
         })
@@ -117,7 +169,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             console.log(txHash);
         })
         .on('confirmation', (confirmations, txReceipt) => {
-            this.identity.medao.token.methods.allowance(this.User.address, this.identity.medao.address).call()
+            this.Dai.methods.allowance(this.User.address, this.identity.medao.address).call()
             .then(allowance => {
                 this.approvalPending = false;
                 this.userAgreesToTerms = allowance.gt(0);
