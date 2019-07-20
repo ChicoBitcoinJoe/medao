@@ -11,7 +11,7 @@
   },
   "private": true,
   "dependencies": {
-    "3box": "^1.9.1",
+    "3box": "^1.10.0",
     "@angular/animations": "~7.2.0",
     "@angular/cdk": "^7.3.7",
     "@angular/common": "~7.2.0",
