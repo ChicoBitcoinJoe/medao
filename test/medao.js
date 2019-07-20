@@ -2,7 +2,6 @@
 const MeDaoArtifact = artifacts.require("MeDao");
 const MeDaoFactoryArtifact = artifacts.require("MeDaoFactory");
 const MiniMeTokenArtifact = artifacts.require("MiniMeToken");
-const MiniMeTokenFactoryArtifact = artifacts.require("MiniMeTokenFactory");
 
 contract('MeDao', (accounts) => {
 
@@ -23,15 +22,13 @@ contract('MeDao', (accounts) => {
     let investor = accounts[2];
 
     it('should check if medao deployed correctly', async () => {
-        TokenFactory = await MiniMeTokenFactoryArtifact.deployed();
         MeDaoFactory = await MeDaoFactoryArtifact.deployed();
-        ReserveToken = await createToken('Dummy Reserve Token','drt');
-
+        let reserveTokenAddress = await MeDaoFactory.dai();
+        ReserveToken = new MiniMeTokenArtifact(reserveTokenAddress);
         await ReserveToken.generateTokens(owner, initialReserve);
         await ReserveToken.approve(MeDaoFactory.address, initialReserve, {from: owner});
+
         let medaoTx = await MeDaoFactory.create(
-            owner,
-            ReserveToken.address,
             name,
             birthTimestamp,
             initialTokens,
