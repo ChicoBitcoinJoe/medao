@@ -6,29 +6,30 @@ import "./MeDao.sol";
 contract MeDaoFactory is CloneFactory {
 
     address public blueprint;
+    ERC20 public dai;
     MiniMeTokenFactory factory;
+
     mapping (address => bool) public created;
+    mapping (address => MeDao) public registry;
 
     constructor (
         address _blueprint,
+        ERC20 _dai,
         MiniMeTokenFactory _factory
     ) public {
         blueprint = _blueprint;
+        dai = _dai;
         factory = _factory;
     }
 
     function create (
-        address owner,
-        ERC20 reserveToken,
         string memory name,
         int birthTimestamp,
         uint tokenClaim,
         uint initialReserve
-    ) public returns (address medao) {
+    ) public returns (MeDao medao) {
         require(initialReserve > 0);
         require(tokenClaim > 0);
-        
-        medao = createClone(blueprint);
 
         MiniMeToken timeToken = factory.createCloneToken(
             address(0x0),
@@ -39,12 +40,22 @@ contract MeDaoFactory is CloneFactory {
             true
         );
 
-        timeToken.changeController(medao);
-        require(reserveToken.transferFrom(msg.sender, medao, initialReserve));
-        MeDao(medao).initialize(owner, timeToken, reserveToken, birthTimestamp, tokenClaim);
-        created[medao] = true;
-        emit Create_event(medao, owner, timeToken, reserveToken, birthTimestamp);
+        medao = MeDao(createClone(blueprint));
+        created[address(medao)] = true;
+        timeToken.changeController(address(medao));
+        require(dai.transferFrom(msg.sender, address(medao), initialReserve));
+        medao.initialize(msg.sender, timeToken, dai, birthTimestamp, tokenClaim);
+
+        register(medao);
     }
 
-    event Create_event (address medao, address owner, MiniMeToken timeToken, ERC20 reserveToken, int birthTimestamp);
+    function register (MeDao medao) public {
+        require(created[address(medao)], 'invalid medao');
+        require(medao.identity() == msg.sender, 'invalid caller');
+
+        registry[msg.sender] = medao;
+        emit Register_event(msg.sender, medao);
+    }
+
+    event Register_event (address indexed owner, MeDao medao);
 }
