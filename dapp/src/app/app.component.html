@@ -1,6 +1,10 @@
 <div fxLayout="column" fxFlexFill>
-    <app-toolbar class="fixed" style="width: 100%;" [User]="User" fxLayout="column" fxFlex="80px"></app-toolbar>
-    <span fxFlex.xs="116px" fxFlex="156px"></span>
+    <mat-toolbar class="primary-bg white fixed" style="width: 100%;" fxLayoutGap="8px" fxFlex="80px">
+        <span class="cursor white-text" routerLink="['/home']">MeDao</span>
+        <span fxFlex></span>
+        <app-profile-widget *ngIf="App.user" [user]="App.user"></app-profile-widget>
+    </mat-toolbar>
+    <span fxFlex="80px"></span>
     <div fxLayout="row" fxLayoutAlign="center" fxFlex>
         <div fxLayout="column" style="max-width: 996px; width: 100%">
             <router-outlet></router-outlet>

@@ -1,0 +1,39 @@
+<div class="white-bg cursor"
+    style="height: 52px; border-radius: 26px; border: 6px solid white"
+    fxLayout="row"
+    fxLayoutAlign="start center"
+    [matMenuTriggerFor]="menu">
+    <div class="black" style="padding: 0px 12px;" fxLayout="column">
+        <span *ngIf="!user.name" style="font-size: 16px; height: 32px;">Anonymous</span>
+        <span *ngIf="user.name" style="font-size: 16px; height: 32px;">{{user.name}}</span>
+        <span *ngIf="user.balances.seconds > 0" style="font-size: 12px; height: 16px; line-height: 12px; text-align: right;">
+            <b>${{user.medao.wage.max * (user.balances.time.wei | fromWei: 'ether') / 3600 | number: '1.2-2'}}</b>
+            &nbsp;({{user.balances.time.wei | fromWei: 'ether' | time}})
+        </span>
+    </div>
+    <div style="overflow: hidden; height: 40px; border-radius: 20px;">
+        <img *ngIf="user.image" style="height: 100%;" [src]="user.image">
+        <div *ngIf="!user.image" style="height: 100%; width: 40px;" class="secondary-bg" fxLayoutAlign="center center">
+            <mat-icon>person</mat-icon>
+        </div>
+    </div>
+</div>
+<mat-menu #menu="matMenu" fxLayout="column">
+    <div *ngIf="!user.signedIn" fxLayout="column" fxLayoutAlign="start start">
+        <button mat-button [disabled]="user.signingIn" (click)="user.signIn()" fxLayoutAlign="start start">
+            <span *ngIf="!user.signingIn">sign in</span>
+            <span *ngIf="user.signingIn">signing in</span>
+        </button>
+    </div>
+    <div *ngIf="user.signedIn" fxLayout="column" fxLayoutAlign="start start">
+        <div *ngIf="!user.hasDao" fxLayout="column" fxLayoutAlign="start start">
+            <button mat-button routerLink="/create" *ngIf="!user.medao.address">create your dao</button>
+            <button mat-button routerLink="/deploy" *ngIf="user.medao.deploying">my profile</button>
+        </div>
+        <div *ngIf="user.hasDao" fxLayout="column" fxLayoutAlign="start start">
+            <button mat-button (click)="user.view()">my profile</button>
+        </div>
+        <button mat-button routerLink="/network">my network</button>
+        <button mat-button routerLink="/edit">edit profile</button>
+    </div>
+</mat-menu>
