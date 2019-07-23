@@ -1,12 +1,9 @@
 import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { Router, Event, NavigationStart, NavigationEnd, NavigationError } from '@angular/router';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-import { Web3Service } from '../../services/web3/web3.service';
 import { ProfileService, Profile } from '../../services/profile/profile.service';
 import { MedaoService } from '../../services/medao/medao.service';
-import { DaiService } from '../../services/dai/dai.service';
-import { UserService } from '../../services/user/user.service';
+import { AppService } from '../../services/app/app.service';
 
 declare let web3: any;
 
@@ -17,14 +14,11 @@ declare let web3: any;
 })
 export class ProfileComponent implements OnInit, OnDestroy {
 
-    user: Profile;
+    ready: boolean = false;
+
     identity: Profile;
 
     subscription;
-    /*
-    profile;
-    medao;
-    */
 
     amount: number = 0;
     paymentToken: string = 'ether';
@@ -42,16 +36,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
     options = ['Details','Contract']; // ['Activity','Posts']
 
     constructor(
-        public dialog: MatDialog,
         private router: Router,
-        public Web3: Web3Service,
+        public App: AppService,
         public Profile: ProfileService,
-        public User: UserService,
         public MeDao: MedaoService,
-        public Dai: DaiService,
     ) { }
 
-    ngOnInit () {
+    async ngOnInit () {
+        await this.App.ready;
+
         this.initialize();
 
         this.subscription = this.router.events.subscribe( (event: Event) => {
@@ -75,19 +68,20 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     async initialize () {
         let medaoAddress = this.router.url.split('/')[2];
-        let identity = await this.MeDao.getIdentity(medaoAddress);
-        this.identity = await this.Profile.get(identity);
-
-        console.log(this.identity);
-        console.log(this.User);
-
-        if(web3.currentAccount){
-            await this.User.profile.updateTokenBalance(this.identity.medao.token);
-            this.Dai.methods.allowance(this.User.address, this.identity.medao.address).call()
+        let account = await this.MeDao.getIdentity(medaoAddress);
+        this.identity = await this.Profile.get(account);
+        console.log("identity", this.identity);
+        this.ready = true;
+/*
+        let ready = await this.App.user.ready;
+        if(ready){
+            await this.App.user.updateTokenBalance(this.identity.medao.token);
+            this.Dai.methods.allowance(this.App.user.address, this.identity.medao.address).call()
             .then(allowance => {
                 this.userAgreesToTerms = allowance.gt(0);
             })
         }
+*/
     }
 
     updateTimeValues () {
@@ -125,13 +119,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
         this.identity.medao.methods.deposit(amountInWei)
         .send({
-            from: web3.currentAccount
+            from: web3.account
         })
         .on('confirmation', (confirmations, txReceipt) => {
             if(confirmations == 1){
                 console.log(txReceipt);
-                this.User.profile.updateTokenBalance(this.identity.medao.token);
-                this.User.profile.updateDaiBalance();
+                this.App.user.updateTimeBalance(this.identity.medao.token);
+                //this.App.user.updateDaiBalance();
                 this.identity.medao.update();
             }
         })
@@ -146,13 +140,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
         this.identity.medao.methods.withdraw(expectedTimeInWei)
         .send({
-            from: web3.currentAccount
+            from: web3.account
         })
         .on('confirmation', (confirmations, txReceipt) => {
             if(confirmations == 1){
                 console.log(txReceipt);
-                this.User.profile.updateTokenBalance(this.identity.medao.token);
-                this.User.profile.updateDaiBalance();
+                this.App.user.updateTimeBalance(this.identity.medao.token);
+                //this.App.user.updateDaiBalance();
                 this.identity.medao.update();
             }
         })
@@ -161,15 +155,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
     enableDaiTrading(): void {
         this.approvalPending = true;
         this.userAgreesToTerms = true;
-        this.Dai.methods.approve(this.identity.medao.address, web3.utils.maxUintValue)
+        this.MeDao.dai.methods.approve(this.identity.medao.address, web3.utils.maxUintValue)
         .send({
-            from: this.User.address
+            from: this.App.user.address
         })
         .on('transactionHash', txHash => {
             console.log(txHash);
         })
         .on('confirmation', (confirmations, txReceipt) => {
-            this.Dai.methods.allowance(this.User.address, this.identity.medao.address).call()
+            this.MeDao.dai.methods.allowance(this.App.user.address, this.identity.medao.address).call()
             .then(allowance => {
                 this.approvalPending = false;
                 this.userAgreesToTerms = allowance.gt(0);

@@ -7,47 +7,45 @@
             Unleash your financial identity.
         </h4>
     </div>
-    <div *ngIf="!ready" fxFlex="65.5px"></div>
-    <div *ngIf="ready"
-        fxLayout="column"
-        fxLayoutAlign="center center"
-        fxLayoutGap="16px"
-        fxFlex="65.5px">
-        <a *ngIf="!web3.connected"
-            mat-raised-button
+
+    <div *ngIf="!web3.connected" fxLayout="column" fxLayoutAlign="center center" fxFlex="65.5px">
+        <a mat-raised-button
             href="https://metamask.io"
             target="_blank">
             try metamask to continue
         </a>
-        <button mat-raised-button
-            *ngIf="web3.connected && !User.signedIn"
-            (click)="User.signIn()"
-            [disabled]="!web3.connected">
-            sign in
-        </button>
-        <div *ngIf="User.hasDao" fxFlex="65.5px">
-            Welcome back, {{User.name}}.
-        </div>
-        <div *ngIf="!User.hasDao"
-            class="white-bg"
-            style="border-radius: 50px; padding: 0px 16px 0px 24px;"
-            fxLayout="row"
-            fxLayoutAlign="start center"
-            fxLayoutGap="16px">
-            <mat-form-field floatLabel="never" fxFlex.xs="128px">
-                <mat-label class="black">Enter your name...</mat-label>
-                <input matInput type="text" [(ngModel)]="name">
-            </mat-form-field>
-            <div fxLayout="column">
-                <button mat-raised-button
-                    color="primary"
-                    style="margin-bottom: 4px;"
-                    (click)="User.createWizard(name)">
-                    get started
+    </div>
+    <div *ngIf="web3.connected" fxFlex="65.5px">
+        <div *ngIf="!App.signedIn">
+            <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="16px">
+                <button mat-raised-button (click)="App.signIn()" [disabled]="!web3.connected || App.signingIn">
+                    <div *ngIf="!App.signingIn">sign in</div>
+                    <div *ngIf="App.signingIn">signing in</div>
                 </button>
             </div>
         </div>
+        <div *ngIf="App.signedIn" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="16px">
+            <h3 class="white padding centered" *ngIf="App.user" fxFlex="65.5px">
+                Welcome back, {{App.user.name}}.
+            </h3>
+            <div *ngIf="!App.user.medao && !App.signingIn" class="white-bg" style="border-radius: 50px; padding: 0px 16px 0px 24px;" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
+                <mat-form-field floatLabel="never" fxFlex.xs="128px">
+                    <mat-label class="black">Enter your name...</mat-label>
+                    <input matInput type="text" [(ngModel)]="App.user.name" [disabled]="App.user.deploying">
+                </mat-form-field>
+                <div fxLayout="column">
+                    <button mat-raised-button
+                        color="primary"
+                        style="margin-bottom: 4px;"
+                        (click)="App.user.view()"
+                        [disabled]="App.user.deploying">
+                        get started
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
+
     <div class="white" fxLayout="column" fxLayout.gt-sm="row">
         <div class="padding" fxLayout="column" fxFlex.gt-sm="33">
             <h3>How does it work?</h3>

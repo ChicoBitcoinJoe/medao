@@ -67,6 +67,10 @@ button, a {
     color: rgba(0,0,0,0.87) !important;
 }
 
+.red {
+    color: red;
+}
+
 .dark-text {
     color: rgba(0,0,0,0.87);
 }
@@ -197,10 +201,6 @@ background-color: #29383e !important;
 
 .mat-calendar-period-button .mat-button-wrapper {
     color: black !important;
-}
-
-.mat-slide-toggle-thumb {
-    background-color: #ff4081;
 }
 
 .mat-menu-panel {

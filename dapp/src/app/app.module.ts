@@ -35,7 +35,6 @@ import { MarkdownToHtmlModule } from 'markdown-to-html-pipe';
 import { QRCodeModule } from 'angularx-qrcode';
 
 import { FromWeiPipe } from './pipes/from-wei/from-wei.pipe';
-import { ToDaiPipe } from './pipes/to-dai/to-dai.pipe';
 import { OrderByPipe } from './pipes/order-by/order-by.pipe';
 import { TimePipe } from './pipes/time/time.pipe';
 
@@ -43,31 +42,32 @@ import { HomeComponent } from './views/home/home.component';
 import { CreateComponent } from './views/create/create.component';
 import { HeaderComponent } from './components/header/header.component';
 import { DetailsComponent } from './components/details/details.component';
-import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { NetworkComponent } from './views/network/network.component';
 import { ProfileComponent } from './views/profile/profile.component';
 import { EditComponent } from './views/edit/edit.component';
 
 import { TransferDialog } from './components/header/header.component';
 import { QrcodeDialog } from './components/header/header.component';
+import { DeployComponent } from './views/deploy/deploy.component';
+import { ProfileWidgetComponent } from './components/profile-widget/profile-widget.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     FromWeiPipe,
-    ToDaiPipe,
     OrderByPipe,
     HomeComponent,
     CreateComponent,
     HeaderComponent,
     DetailsComponent,
-    ToolbarComponent,
     TransferDialog,
     QrcodeDialog,
     TimePipe,
     NetworkComponent,
     ProfileComponent,
     EditComponent,
+    DeployComponent,
+    ProfileWidgetComponent,
   ],
   imports: [
     BrowserModule,

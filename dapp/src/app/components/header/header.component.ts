@@ -1,14 +1,14 @@
 import { Component, OnInit, Input, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-import { DaiService } from '../../services/dai/dai.service';
+import { AppService } from '../../services/app/app.service';
 import { Profile } from '../../services/profile/profile.service';
-import { UserService } from '../../services/user/user.service';
 
 declare let web3: any;
 
 export interface DialogData {
-    identity: any;
+    identity: Profile,
+    user: Profile
 }
 
 @Component({
@@ -18,20 +18,25 @@ export interface DialogData {
 })
 export class HeaderComponent implements OnInit {
 
+    @Input() App: AppService;
     @Input() identity: Profile;
-    @Input() forward: boolean;
+    @Input() view: boolean;
 
     constructor(
         public dialog: MatDialog,
-        public Dai: DaiService,
-        public User: UserService,
     ) { }
 
     async ngOnInit() {
+        /*
         if(!this.User.signedIn)
             this.User.watch(this.identity);
         else
-            await this.User.profile.updateTokenBalance(this.identity.medao.token);
+            await this.App.user.updateTokenBalance(this.identity.medao.token);
+        */
+    }
+
+    now () {
+        return Math.floor(new Date().getTime()/1000);
     }
 
     openQrcodeDialog () {
@@ -66,7 +71,7 @@ export class HeaderComponent implements OnInit {
             .on('confirmation', (confirmations, txReceipt) => {
                 if(confirmations == 1){
                     console.log(txReceipt)
-                    this.User.profile.updateTokenBalance(this.identity.medao.token);
+                    this.App.user.updateTimeBalance(this.identity.medao.token);
                 }
             })
             .catch(err => {
@@ -83,7 +88,8 @@ export class HeaderComponent implements OnInit {
 })
 export class TransferDialog {
 
-    identity;
+    identity: Profile;
+    user: Profile;
     medao;
 
     hours: number = 0;
@@ -104,10 +110,10 @@ export class TransferDialog {
 
     constructor(
         public dialogRef: MatDialogRef<TransferDialog>,
-        @Inject(MAT_DIALOG_DATA) public data: DialogData,
-        public User: UserService
+        @Inject(MAT_DIALOG_DATA) public data: DialogData
     ) {
         this.identity = data.identity;
+        this.user = data.user;
         this.medao = data.identity.medao;
     }
 
@@ -125,7 +131,7 @@ export class TransferDialog {
     transfer () {
         var tx = this.identity.medao.token.methods.transfer(this.toAddress, this.sendAmount)
         .send({
-            from: web3.currentAccount
+            from: web3.account
         });
 
         this.dialogRef.close(tx)

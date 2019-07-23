@@ -1,0 +1,196 @@
+<div *ngIf="identity" fxLayout="column" fxFlexFill>
+    <mat-card class="margin" ngStyle.gt-xs="border-radius: 136px;" ngStyle.xs="border-radius: 40px;" fxLayout.xs="column" fxLayout="row" fxLayoutAlign="center center" fxLayoutAlign.xs="start center">
+        <span fxFlex.xs="16px"></span>
+        <div style="overflow: hidden; border-radius: 100px; height: 200px; width: 200px" fxLayout="column" fxLayoutAlign="center center">
+            <mat-icon *ngIf="!identity.image" class="secondary-bg white" style="width: 100%; height: 100%; font-size: 200px;">person</mat-icon>
+            <img *ngIf="identity.image" style="width: 100%;" [src]="identity.image">
+        </div>
+        <div
+            style="border-top-right-radius: 100px; border-bottom-right-radius: 100px"
+            ngStyle.gt-xs="padding-right: 32px"
+            fxLayout="column"
+            fxFlex.gt-xs>
+            <div style="min-height: 200px !important;">
+                <div fxLayout="column"
+                    fxLayoutAlign.xs="start center"
+                    fxLayoutGap="16px"
+                    fxFlex>
+                    <h1 class="dark-text"
+                        ngClass.xs="centered"
+                        ngStyle.xs="font-size: 24px"
+                        ngStyle.sm="font-size: 28px"
+                        ngStyle.md="font-size: 32px">
+                        {{identity.name}}
+                    </h1>
+
+                    <div class="dark-text" ngClass.xs="centered" style="padding-left: 16px; font-size: 18px;" ngStyle.xs="padding-left: 0px" fxFlex>
+                        {{identity.title}}
+                    </div>
+
+                    <div ngClass.xs="centered" fxLayout="column" fxLayoutGap="16px" >
+                        <b *ngIf="!App.user.signedIn">&nbsp;</b>
+                        <div *ngIf="App.user.signedIn">
+                            <div *ngIf="App.user.balances.time" fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center">
+                                <b style="padding-right: 16px" ngStyle.gt-xs="padding-left: 16px">
+                                    balance: ${{identity.medao.wage.max * (App.user.balances.time.wei | fromWei: 'ether') / 3600 | number: '1.2-2'}}
+                                </b>
+                                <small>({{(App.user.balances.time.wei | fromWei: 'ether') | time }})</small>
+                            </div>
+                        </div>
+                        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center" fxLayoutGap="16px">
+                            <div *ngIf="!App.user.signedIn" fxLayoutGap="16px">
+                                <a mat-raised-button *ngIf="identity.link" class="secondary-bg white" [href]="identity.link" target="_blank">social</a>
+                            </div>
+                            <div *ngIf="App.user.signedIn">
+                                <button mat-raised-button
+                                    class="secondary-bg white"
+                                    [disabled]="true">
+                                    collect
+                                </button>
+                            </div>
+                            <div>
+                                <button mat-stroked-button class="black" [matMenuTriggerFor]="moreMenu">
+                                    more... <mat-icon>arrow_drop_down</mat-icon>
+                                </button>
+                                <mat-menu #moreMenu="matMenu">
+                                    <a mat-menu-item *ngIf="identity.link && App.user.signedIn" [href]="identity.link" target="_blank">external profile</a>
+                                    <a mat-menu-item *ngIf="identity.email" [href]="'mailto:' + identity.email" target="_blank">send email</a>
+                                    <a mat-menu-item [disabled]="true" (click)="null">transfer time</a>
+                                    <a mat-menu-item [disabled]="true" (click)="null" fxLayout="row" fxLayoutAlign="start center">
+                                        pay with dai
+                                        <span fxFlex="16px"></span>
+                                        <mat-icon svgIcon="qrcode"></mat-icon>
+                                    </a>
+                                </mat-menu>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-card>
+
+    <div class="white padding" ngStyle.gt-xs="margin: 0px 16px;" ngStyle.gt-sm="margin: 0px 100px;" fxLayout="column">
+
+        <app-details class="white" fxLayout="column" [identity]="identity"></app-details>
+
+        <span fxFlex="64px"></span>
+
+        <mat-card style="overflow: hidden; padding: 32px;" ngStyle.gt-xs="padding: 64px;">
+            <h2>Contract Agreement</h2>
+            <div *ngIf="!identity.contract">No contract set.</div>
+            <div *ngIf="identity.contract" [innerHTML]="identity.contract | MarkdownToHtml"></div>
+        </mat-card>
+
+        <span fxFlex="16px"></span>
+
+        <mat-card *ngIf="App.user.signedIn" style="padding: 32px;" ngStyle.gt-xs="padding: 64px;" fxLayout="column">
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <h2>Trade</h2>
+                <span fxFlex></span>
+                Buy &nbsp; <mat-slide-toggle class="pink-slider" [(ngModel)]="selling">Sell</mat-slide-toggle>
+            </div>
+
+            <div *ngIf="!selling" style="padding: 32px 0px;" fxLayout="column" fxLayout.gt-sm="row" fxLayoutAlign="center center">
+                <div fxLayout="row" fxLayoutAlign="center center">
+                    <mat-form-field fxFlex="104px">
+                        <mat-label>Dai Amount</mat-label>
+                        <input matInput
+                        type="number"
+                        step="0.01"
+                        min="0.01"
+                        [(ngModel)]="amount"
+                        (ngModelChange)="updateTimeValues()">
+                        <span style="padding: 0px 7px; color: grey;" matSuffix>$</span>
+                        <mat-hint>max: ${{App.user.balances.dai | fromWei: 'ether' | number: '1.2-2'}}</mat-hint>
+                    </mat-form-field>
+                </div>
+
+                <div class="margin padding centered" fxLayoutAlign="center">
+                    <mat-icon fxShow fxHide.lt-md>arrow_forward</mat-icon>
+                    <mat-icon fxShow fxHide.gt-sm>arrow_downward</mat-icon>
+                </div>
+
+                <div fxLayout="row" fxLayoutGap="16px">
+                    <mat-form-field fxFlex="72px">
+                        <mat-label>Hours</mat-label>
+                        <input matInput type="number" [(ngModel)]="hours" (ngModelChange)="updateDollarValue()">
+                    </mat-form-field>
+                    <mat-form-field fxFlex="72px">
+                        <mat-label>Minutes</mat-label>
+                        <input matInput type="number" [(ngModel)]="minutes" (ngModelChange)="updateDollarValue()">
+                    </mat-form-field>
+                    <mat-form-field fxFlex="72px">
+                        <mat-label>Seconds</mat-label>
+                        <input matInput type="number" [(ngModel)]="seconds" (ngModelChange)="updateDollarValue()">
+                    </mat-form-field>
+                </div>
+            </div>
+            <div *ngIf="selling" style="padding: 32px 0px;" fxLayout="column" fxLayout.gt-sm="row" fxLayoutAlign="center center">
+                <div style="position: relative;" fxLayout="column">
+                    <div fxLayout="row" fxLayoutGap="16px">
+                        <mat-form-field fxFlex="72px">
+                            <mat-label>Hours</mat-label>
+                            <input matInput type="number" [(ngModel)]="hours" (ngModelChange)="updateDollarValue()">
+                        </mat-form-field>
+                        <mat-form-field fxFlex="72px">
+                            <mat-label>Minutes</mat-label>
+                            <input matInput type="number" [(ngModel)]="minutes" (ngModelChange)="updateDollarValue()">
+                        </mat-form-field>
+                        <mat-form-field fxFlex="72px">
+                            <mat-label>Seconds</mat-label>
+                            <input matInput type="number" [(ngModel)]="seconds" (ngModelChange)="updateDollarValue()">
+                        </mat-form-field>
+                    </div>
+                    <small style="position: absolute; bottom: 0px; color: rgba(0,0,0,0.54);" *ngIf="selling && App.user.balances.time" class="centered">
+                        max: {{App.user.balances.time.wei | fromWei: 'ether' | time}}
+                    </small>
+                </div>
+
+                <div class="margin padding centered" fxLayoutAlign="center">
+                    <mat-icon fxShow fxHide.lt-md>arrow_forward</mat-icon>
+                    <mat-icon fxShow fxHide.gt-sm>arrow_downward</mat-icon>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign.lt-md="center center">
+                    <mat-form-field fxFlex="104px">
+                        <mat-label>Dai Amount</mat-label>
+                        <input matInput
+                        type="number"
+                        step="0.01"
+                        min="0.01"
+                        [(ngModel)]="amount"
+                        (ngModelChange)="updateTimeValues()">
+                        <span style="padding: 0px 7px; color: grey;" matSuffix>$</span>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div style="padding: 16px 0px;">
+                Click the box below to indicate that you have read, understand, and agree to the terms set by {{identity.name}}
+                <div style="padding: 16px 0px;">
+                    <mat-checkbox [disabled]="true">
+                        I understand and agree.
+                    </mat-checkbox>
+                </div>
+            </div>
+
+            <button mat-raised-button
+                class="secondary-bg white"
+                [ngClass]="{'grey-bg': !userAgreesToTerms || !validBuy()}"
+                *ngIf="!selling"
+                [disabled]="true"
+                (click)="buy()">
+                Buy
+            </button>
+            <button mat-raised-button
+                class="secondary-bg white"
+                [ngClass]="{'grey-bg': !userAgreesToTerms || !validSell()}"
+                *ngIf="selling"
+                [disabled]="true"
+                (click)="sell()">
+                Sell
+            </button>
+        </mat-card>
+    </div>
+</div>

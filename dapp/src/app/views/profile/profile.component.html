@@ -1,50 +1,18 @@
-<div *ngIf="User && identity" fxLayout="column" fxFlexFill>
-    <app-header fxLayout="column" class="margin" [identity]="identity"></app-header>
-    <div class="white padding" ngStyle.gt-xs="margin: 0px 16px;" ngStyle.gt-sm="margin: 0px 100px;" fxLayout="column">
-        <p class="margin centered">
-            {{identity.about}}
-        </p>
-        <div class="margin padding" fxLayout.lt-md="column" fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap.lt-md="48px">
-            <div fxLayout="row" fxLayoutAlign="space-around" fxFlex.gt-xs>
-                <div class="centered" fxLayout="column" fxLayoutGap="4px">
-                    <div class="white-text" style="font-weight: bold; font-size: 24px;">{{identity.medao.funding.percent | number: '1.0'}}%</div>
-                    <div class="light-grey-text" style="font-size: 12px;">funded</div>
-                </div>
-                <div class="centered" fxLayout="column" fxLayoutGap="4px">
-                    <div class="white-text" style="font-weight: bold; font-size: 24px;">${{identity.medao.funding.current | number: '1.2-2'}}</div>
-                    <div class="light-grey-text" style="font-size: 12px;">funding</div>
-                </div>
-            </div>
-            <div fxLayout="row" fxLayoutAlign="space-around" fxFlex.gt-xs>
-                <div class="centered" fxLayout="column" fxLayoutGap="4px">
-                    <div class="white-text" style="font-weight: bold; font-size: 24px;">${{identity.medao.funding.max | number: '1.0-0'}}</div>
-                    <div class="light-grey-text" style="font-size: 12px;">max funding</div>
-                </div>
-                <div class="centered" fxLayout="column" fxLayoutGap="4px">
-                    <div class="white-text" style="font-weight: bold; font-size: 24px;">${{identity.medao.wage.max | number: '1.2-2'}}</div>
-                    <div class="light-grey-text" style="font-size: 12px;">hourly wage</div>
-                </div>
-            </div>
-        </div>
+<div *ngIf="ready" fxLayout="column" fxFlexFill>
 
-        <h2>Details</h2>
-        <app-details class="white" fxLayout="column" [medao]="identity.medao"></app-details>
+    <app-header fxLayout="column" class="margin" [App]="App" [identity]="identity"></app-header>
 
-        <span fxFlex="64px"></span>
+    <div class="white padding" fxLayout="column">
 
-        <mat-card style="overflow: hidden; padding: 32px;" ngStyle.gt-xs="padding: 64px;">
-            <h2>Contract Agreement</h2>
-            <div *ngIf="!identity.contract">No contract set.</div>
-            <div *ngIf="identity.contract" [innerHTML]="identity.contract | MarkdownToHtml"></div>
-        </mat-card>
+        <app-details class="white" fxLayout="column" [identity]="identity"></app-details>
 
         <span fxFlex="16px"></span>
 
-        <mat-card *ngIf="User.profile" style="padding: 32px;" ngStyle.gt-xs="padding: 64px;" fxLayout="column">
+        <mat-card *ngIf="App.user" style="padding: 32px;" ngStyle.gt-xs="padding: 64px;" fxLayout="column">
             <div fxLayout="row" fxLayoutAlign="start center">
                 <h2>Trade</h2>
                 <span fxFlex></span>
-                Buy &nbsp; <mat-slide-toggle [(ngModel)]="selling">Sell</mat-slide-toggle>
+                Buy &nbsp; <mat-slide-toggle class="pink-slider" [(ngModel)]="selling">Sell</mat-slide-toggle>
             </div>
 
             <div *ngIf="!selling" style="padding: 32px 0px;" fxLayout="column" fxLayout.gt-sm="row" fxLayoutAlign="center center">
@@ -58,7 +26,7 @@
                         [(ngModel)]="amount"
                         (ngModelChange)="updateTimeValues()">
                         <span style="padding: 0px 7px; color: grey;" matSuffix>$</span>
-                        <mat-hint>max: ${{User.profile.balances.dai | fromWei: 'ether' | number: '1.2-2'}}</mat-hint>
+                        <mat-hint>max: ${{App.user.balances.dai | fromWei: 'ether' | number: '1.2-2'}}</mat-hint>
                     </mat-form-field>
                 </div>
 
@@ -98,8 +66,8 @@
                             <input matInput type="number" [(ngModel)]="seconds" (ngModelChange)="updateDollarValue()">
                         </mat-form-field>
                     </div>
-                    <small style="position: absolute; bottom: 0px; color: rgba(0,0,0,0.54);" *ngIf="selling && User.profile.balances[identity.medao.token.address]" class="centered">
-                        max: {{User.profile.balances[identity.medao.token.address].wei | fromWei: 'ether' | time}}
+                    <small style="position: absolute; bottom: 0px; color: rgba(0,0,0,0.54);" *ngIf="selling && App.user.balances[identity.medao.token.address]" class="centered">
+                        max: {{App.user.balances[identity.medao.token.address].wei | fromWei: 'ether' | time}}
                     </small>
                 </div>
 

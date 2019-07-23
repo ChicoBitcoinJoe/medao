@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { UserService } from '../../services/user/user.service';
+import { AppService } from '../../services/app/app.service';
 
 export interface DialogData {
     Dai: any;
@@ -22,16 +22,19 @@ export class EditComponent implements OnInit {
     contract: string;
 
     constructor(
-        public User: UserService
+        public App: AppService
     ) { }
 
-    ngOnInit() {
-        this.email =  this.User.profile.email;
-        this.link =  this.User.profile.link;
-        this.image =  this.User.profile.image;
-        this.title =  this.User.profile.title;
-        this.about =  this.User.profile.about;
-        this.contract =  this.User.profile.contract;
+    async ngOnInit() {
+        await this.App.ready;
+        await this.App.user.ready;
+
+        this.email =  this.App.user.email;
+        this.link =  this.App.user.link;
+        this.image =  this.App.user.image;
+        this.title =  this.App.user.title;
+        this.about =  this.App.user.about;
+        this.contract =  this.App.user.contract;
     }
 
 }

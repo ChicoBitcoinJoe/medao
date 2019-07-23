@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { UserService } from '../../services/user/user.service';
+import { AppService } from '../../services/app/app.service';
 
 @Component({
   selector: 'app-network',
@@ -10,7 +10,7 @@ import { UserService } from '../../services/user/user.service';
 export class NetworkComponent implements OnInit {
 
     constructor(
-        public User: UserService,
+        public App: AppService,
     ) { }
 
     ngOnInit() {

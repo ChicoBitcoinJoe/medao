@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { HomeComponent } from './views/home/home.component'
 import { CreateComponent } from './views/create/create.component'
+import { DeployComponent } from './views/deploy/deploy.component'
 import { NetworkComponent } from './views/network/network.component'
 import { EditComponent } from './views/edit/edit.component'
 import { ProfileComponent } from './views/profile/profile.component'
@@ -13,7 +14,7 @@ const routes: Routes = [
         component: HomeComponent
     },
     {
-        path: 'create',
+        path: 'register',
         component: CreateComponent
     },
     {
@@ -23,6 +24,10 @@ const routes: Routes = [
     {
         path: 'edit',
         component: EditComponent
+    },
+    {
+        path: 'deploy',
+        component: DeployComponent
     },
     {
         path: 'profile/:address',

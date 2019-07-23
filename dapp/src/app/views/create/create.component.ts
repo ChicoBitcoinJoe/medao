@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
+//import { MatSnackBar } from '@angular/material';
 
 import { Web3Service } from '../../services/web3/web3.service';
-import { DaiService } from '../../services/dai/dai.service';
-import { UserService } from '../../services/user/user.service';
-import { ProfileService, Profile } from '../../services/profile/profile.service';
-import { MedaoService } from '../../services/medao/medao.service';
+import { MedaoService, MeDao } from '../../services/medao/medao.service';
+import { Profile } from '../../services/profile/profile.service';
+import { AppService } from '../../services/app/app.service';
 
 declare let web3: any;
 
@@ -17,78 +16,136 @@ declare let web3: any;
 })
 export class CreateComponent implements OnInit {
 
+    web3 = web3;
     user: Profile;
+    medao: MeDao;
 
-    tokens =  ['ether', 'dai'];
-    paymentToken = 'ether';
+    toggleDaiAllowance: boolean = false;
+    allowSubmit: boolean = false;
     maxDate: Date = new Date();
-
-    medao = {
-        /* user input */
-        name: null,
-        date: null,
-        wage: null,
-        seed: null,
-        /* calculated */
-        birthTimestamp: null,
-        tokenClaim: null,
-        maxFunding: null,
-        expectedWage: null,
-        expectedSalary: null,
-        percentFunded: 50,
-        maxSalary: null,
-        requiredFunding: null,
-        maxPayAmount: null,
-        reserveAmount: null,
-        tx: {
-            promise: null,
-            hash: null,
-            value: null,
-        },
-    }
+    currentFunding: number = 0;
 
     constructor(
         private router: Router,
-        private snackbar: MatSnackBar,
         public Web3: Web3Service,
-        public Dai: DaiService,
-        public User: UserService,
-        public Profile: ProfileService,
-        public Medao: MedaoService,
+        public App: AppService,
+        public MedaoService: MedaoService,
     ) { }
 
     async ngOnInit() {
-        let ready = await this.User.ready;
-        if(!this.User.signedIn || this.User.hasDao)
-            this.router.navigate(['/home']);
-    }
-
-    async updateView () {
-        let now = new Date().getTime()/1000;
-        let birthTimestamp = new Date(this.medao.date).getTime()/1000;
-        let age = (now - birthTimestamp) / (60*60*24*365.25);
-        this.medao.maxFunding = this.medao.wage * 40 * 52 * age;
-        this.medao.requiredFunding = this.medao.maxFunding * this.medao.percentFunded / 100;
-        this.medao.maxSalary = this.medao.maxFunding / age;
-        this.medao.expectedSalary = this.medao.maxSalary * this.medao.percentFunded / 100;
-        this.medao.expectedWage = this.medao.wage * this.medao.percentFunded / 100;
-
-        if(this.medao.seed > 0){
-            if(this.paymentToken == 'ether'){
-                let seedAmount = this.medao.seed / this.Dai.price.eth;
-                let buyAmount = web3.utils.toWei(seedAmount.toString(), 'ether');
-                console.log(buyAmount)
-                let payAmountInWei = await this.Dai.exchange.methods.getPayAmount(this.Dai.weth.address, this.Dai.address, buyAmount).call();
-                this.medao.maxPayAmount = payAmountInWei.mul(11).div(10).toString();
-                this.medao.reserveAmount = buyAmount;
-                this.medao.tx.value = this.medao.maxPayAmount;
+        let ready = await this.App.ready;
+        if(ready){
+            this.user = await this.App.user;
+            if(!this.user){
+                this.router.navigate(['/home']);
+                return;
             }
-            else if(this.paymentToken == 'dai'){
-                this.medao.reserveAmount = web3.utils.toWei(this.medao.seed.toString(), 'ether');
+
+            if(this.user.medao){
+                this.user.view();
+                return;
             }
+            else {
+                this.medao = this.user.medao;
+                this.medao.name = "Joseph Brian Reed";
+                this.medao.birth.date = new Date("12/23/1989");
+                this.medao.wage.max = 0.01;
+                this.medao.wage.current = 0;
+                this.medao.funding.max = 0;
+                this.medao.funding.current = 1;
+                this.medao.funding.percent = 50;
+                // this.medao.calculate();
+                this.updateName();
+                this.updateBirthDate();
+                this.updateBalance();
+            }
+        }
+        else {
+
         }
     }
 
+    updateName () {
+        this.user.name = this.medao.name;
+    }
+
+    updateBirthDate () {
+        let now = new Date().getTime()/1000;
+        let birthTimestamp = this.medao.birth.date.getTime()/1000;
+        this.medao.birth.timestamp = birthTimestamp;
+        this.medao.age = (now - birthTimestamp) / (60*60*24*365.25);
+
+        this.updateFunding();
+        this.updatePercent();
+    }
+
+    updateBalance () {
+        if(!this.medao.funding.current || !this.medao.wage.max) return;
+
+        let startingBalance = this.medao.funding.current / this.medao.wage.max;
+        let seconds = startingBalance * 3600;
+        this.user.balances.time.seconds = seconds;
+        this.user.balances.time.wei = web3.utils.toWei(seconds.toString(), 'ether').toString();
+        let hours = Math.floor(seconds / 3600);
+        seconds -= hours * 3600;
+        let minutes = Math.floor(seconds / 60);
+        seconds -= minutes*60;
+        this.user.balances.time.h = hours;
+        this.user.balances.time.m = minutes;
+        this.user.balances.time.s = seconds;
+
+        this.updateFunding();
+        this.updatePercent();
+    }
+
+    updatePercent () {
+        this.currentFunding = this.medao.funding.max * this.medao.funding.percent / 100;
+        this.medao.salary.current = this.medao.salary.max * this.medao.funding.percent / 100;
+        this.medao.wage.current = this.medao.wage.max * this.medao.funding.percent / 100;
+    }
+
+    updateFunding () {
+        this.medao.funding.max = this.medao.wage.max * 40 * 52 * this.medao.age;
+        this.medao.salary.max = this.medao.funding.max / this.medao.age;
+    }
+
+    enableDaiAllowance () {
+        let seedAmountInWei = web3.utils.toWei(this.medao.funding.current.toString(), 'ether');
+        this.MedaoService.dai.methods.approve(this.MedaoService.factory.address, seedAmountInWei)
+        .send({
+            from: web3.account
+        })
+        .on('transactionHash', txHash => {
+            this.allowSubmit = true;
+        })
+        .catch(err => {
+            console.error(err);
+            this.allowSubmit = false;
+            this.toggleDaiAllowance = false;
+        })
+    }
+
+    valid () {
+        if(!this.medao.name) return false;
+        if(!this.medao.birth.date) return false;
+        if(this.medao.wage.max <= 0) return false;
+        if(this.medao.funding.current <= 0) return false;
+
+        var daiBalance = web3.utils.fromWei(this.user.balances.dai.toString(), 'ether');
+        if(this.medao.funding.current > daiBalance) return false;
+
+        return true;
+    }
+
+    async submit () {
+        this.medao.funding.percent = this.medao.funding.current / this.medao.funding.max * 100;
+        this.updatePercent();
+
+        await this.user.register();
+        this.router.navigate(['/deploy']);
+    }
+
+/*
     submit () {
         console.log(this.medao);
         if(!this.valid()) return;
@@ -141,7 +198,7 @@ export class CreateComponent implements OnInit {
                         duration: 10000,
                     });
 
-                    this.User.signIn();
+                    this.user.signIn();
                     snackBarRef.onAction().subscribe(() => {
                         this.router.navigate(['/medao', medaoAddress]);
                     });
@@ -153,22 +210,6 @@ export class CreateComponent implements OnInit {
             this.medao.tx.promise = null;
         });
     }
-
-    valid () {
-        if(!this.medao.name) return false;
-        if(!this.medao.date) return false;
-        if(!this.medao.wage || this.medao.wage <= 0) return false;
-        if(!this.medao.seed || this.medao.wage <= 0) return false;
-        if(this.paymentToken == 'dai'){
-            var daiBalance = web3.utils.fromWei(this.user.balances.dai);
-            if(this.medao.seed >= daiBalance) return false;
-
-        }
-        else if (this.paymentToken == 'ether') {
-            var etherBalance = this.Dai.fromWei(this.user.balances.ether);
-            if(this.medao.seed >= etherBalance) return false;
-        }
-        return true;
-    }
+*/
 
 }

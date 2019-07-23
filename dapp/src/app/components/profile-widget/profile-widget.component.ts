@@ -7,7 +7,7 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class ProfileWidgetComponent implements OnInit {
 
-    @Input() user;
+    @Input() App;
 
     constructor () { }
 

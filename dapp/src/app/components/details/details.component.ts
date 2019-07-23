@@ -7,9 +7,8 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 export class DetailsComponent implements OnInit {
 
-    @Input() User;
-    @Input() medao;
-    
+    @Input() identity;
+
     constructor() { }
 
     ngOnInit() {

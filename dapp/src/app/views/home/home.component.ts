@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
 import { MedaoService } from '../../services/medao/medao.service';
-import { UserService } from '../../services/user/user.service';
+import { AppService } from '../../services/app/app.service';
+import { Profile } from '../../services/profile/profile.service';
 
 declare let web3: any;
 
@@ -13,14 +14,17 @@ declare let web3: any;
 export class HomeComponent implements OnInit {
 
     web3 = web3;
-    ready: boolean = false;
+
+    user: Profile;
 
     constructor(
-        public User: UserService,
-    ) { }
+        public App: AppService,
+    ) {
+        //this.user = App.user;
+    }
 
     async ngOnInit() {
-        this.ready = await this.User.ready;
+
     }
 
 }
