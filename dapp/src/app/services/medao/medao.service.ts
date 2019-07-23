@@ -1,28 +1,39 @@
 import { Injectable } from '@angular/core';
 
-import { DaiService } from '../../services/dai/dai.service';
-
 declare let web3: any;
 declare let require: any;
 
 let MiniMeTokenArtifact = require('../../../contracts/MiniMeToken.json');
 let MeDaoArtifact = require('../../../contracts/MeDao.json');
 let MeDaoFactoryArtifact = require('../../../contracts/MeDaoFactory.json');
-let MeDaoRegistryArtifact = require('../../../contracts/MeDaoRegistry.json');
 let ERC20Artifact = require('../../../contracts/ERC20.json');
+
+let Dai = {
+    '1': "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359",
+    '42': "0xc4375b7de8af5a38a93548eb8453a498222c4ff2"
+}
 
 export class MeDao {
 
-    title: string = "Cofounder and CEO of Everchain";
-
+    address: string;
     instance: any;
     methods: any;
     token: any;
     owner: string;
+    identity: string;
     name: string;
+    title: string;
     age: number;
-    birthDate: Date;
-    lastPaycheck: Date;
+
+    paycheck = {
+        date: null,
+        timestamp: null
+    }
+
+    birth = {
+        date: null,
+        timestamp: null,
+    }
 
     wage = {
         current: null,
@@ -46,62 +57,84 @@ export class MeDao {
         percent: null
     };
 
+    public currency: any;
+
     constructor (
-        public Dai: DaiService,
-        public address: string,
-    ) {
-        if(address){
-            this.instance = new web3.eth.Contract(MeDaoArtifact.abi, address);
-            this.methods = this.instance.methods;
-            this.update();
-        }
+        public dai: any,
+        public factory: any,
+    ) { }
+
+    deploy (tokenClaim) {
+        if(this.address) return;
+
+        console.log(this.factory);
+        console.log(this.name);
+        console.log(this.birth.timestamp);
+        console.log(tokenClaim);
+        console.log(web3.utils.toWei(this.funding.current.toString(), 'ether'));
+
+        return this.factory.methods.create(
+            this.name,
+            this.birth.timestamp,
+            tokenClaim,
+            web3.utils.toWei(this.funding.current.toString(), 'ether')
+        )
+        .send({
+            from: web3.account
+        })
+    }
+
+    async setIdentity (account) {
+        this.identity = account;
+        let medaoAddress = await this.factory.methods.registry(account).call();
+        if(medaoAddress == web3.utils.nullAddress) return;
+
+        await this.set(medaoAddress);
+    }
+
+    async set (address) {
+        this.address = address;
+        this.instance = new web3.eth.Contract(MeDaoArtifact.abi, this.address);
+        this.methods = this.instance.methods;
+        let tokenAddress = await this.methods.timeToken().call();
+        this.token = await new web3.eth.Contract(MiniMeTokenArtifact.abi, tokenAddress);
+        this.name = await this.token.methods.name.call();
+        this.birth.timestamp = (await this.methods.birthTimestamp().call()).toNumber();
+        this.birth.date = new Date(this.birth.timestamp * 1000);
+
+        return await this.update();
     }
 
     async update () {
-        let owner = await this.methods.owner().call();
-        let identity = await this.methods.identity().call();
-        let tokenAddress = await this.methods.timeToken().call();
-        let token = await new web3.eth.Contract(MiniMeTokenArtifact.abi, tokenAddress);
-        let controller = await token.methods.controller().call();
-        let transfersEnabled = await token.methods.transfersEnabled().call();
-        let name = await token.methods.name.call();
+        this.identity = await this.methods.identity().call();
+        this.owner = await this.methods.owner().call();
+        this.paycheck.timestamp = await this.methods.lastPayTimestamp().call();
+        this.paycheck.date = new Date(this.paycheck.timestamp*1000);
+
         let maxSupplyInWei = await this.methods.maxTokenSupply().call();
         let maxSupplyInHours = web3.utils.fromWei(maxSupplyInWei.toString(),'ether') / 3600;
-        let birthTimestamp = await this.methods.birthTimestamp().call();
-        let birthDate = new Date(birthTimestamp*1000);
-        let totalSupplyInWei = await token.methods.totalSupply().call();
+        let totalSupplyInWei = await this.token.methods.totalSupply().call();
         let totalSupplyInSeconds =  web3.utils.fromWei(totalSupplyInWei.toString(), 'ether');
         let totalSupplyInHours =  totalSupplyInSeconds / 3600;
-        let daiBalanceInWei = await this.Dai.getBalance(this.address);
+        let daiBalanceInWei = await this.dai.methods.balanceOf(this.address).call();
         let daiBalance =  web3.utils.fromWei(daiBalanceInWei.toString(), 'ether');
-        let fundedPercent = totalSupplyInHours / maxSupplyInHours * 100;
-        let hourlyWage = daiBalance / totalSupplyInHours;
-        let currentWage =  hourlyWage * fundedPercent;
-        let lastPayTimestampInSeconds = await this.methods.lastPayTimestamp().call();
-        let lastPayTimestamp = new Date(lastPayTimestampInSeconds*1000);
-        let timeElapsed = (new Date().getTime() - birthDate.getTime())/1000;
-        let oneYear = 60*60*24*365.25;
-        let age = timeElapsed/oneYear;
+        let hourlyWageInWei = await this.methods.calculateReserveClaim(web3.utils.toWei('3600','ether')).call();
+        let hourlyWage = web3.utils.fromWei(hourlyWageInWei.toString(), 'ether') / 3600;
         let maxFunding = hourlyWage * maxSupplyInHours;
-        let maxSalary = hourlyWage * 40 * 52;
-        let currentSalary = maxSalary * fundedPercent / 100;
-
-        this.owner = owner;
-        this.token = token;
-        this.name = name;
-        this.age = age;
+        let now = (new Date()).getTime() / 1000;
+        let oneYear = 60*60*24*365.25;
+        let timeElapsed = now - this.birth.timestamp;
+        this.age = timeElapsed / oneYear;
+        this.supply.inflation = 1 / this.age;
         this.funding.current = daiBalance;
-        this.funding.max = maxFunding;
-        this.funding.percent = fundedPercent;
-        this.wage.current = currentWage;
-        this.wage.max = hourlyWage;
-        this.birthDate = birthDate;
-        this.lastPaycheck = lastPayTimestamp;
-        this.salary.current = currentSalary;
-        this.salary.max = maxSalary;
-        this.supply.current = totalSupplyInHours;
+        this.funding.percent = totalSupplyInHours / maxSupplyInHours;
+        this.funding.max = daiBalance / this.funding.percent;
+        this.salary.max = this.funding.current * this.supply.inflation;
+        this.salary.current = this.salary.max * this.funding.percent;
         this.supply.max = maxSupplyInHours;
-        this.supply.inflation = 1 / age;
+        this.supply.current = totalSupplyInHours;
+        this.wage.max = hourlyWage;
+        this.wage.current = hourlyWage * this.funding.percent;
     }
 
     collect () {
@@ -136,137 +169,51 @@ export class MeDao {
 })
 export class MedaoService {
 
-    registry;
+    ready;
     factory;
-    exchange;
+    dai;
 
-    constructor(
-        public Dai: DaiService,
-    ) {}
+    constructor () { }
 
-    async initialize () {
-        var factory = MeDaoFactoryArtifact.networks[web3.network.id].address;
+    initialize () {
+        let factory = MeDaoFactoryArtifact.networks[web3.network.id].address;
         this.factory = new web3.eth.Contract(MeDaoFactoryArtifact.abi, factory);
-        var registry = MeDaoRegistryArtifact.networks[web3.network.id].address;
-        this.registry = new web3.eth.Contract(MeDaoRegistryArtifact.abi, registry);
+        this.dai = new web3.eth.Contract(ERC20Artifact.abi, Dai[web3.network.id]);
     }
 
-    create (
-        name,
-        birthTimestamp,
-        tokenClaim,
-        paymentToken,
-        maxPayAmount,
-        minFillAmount,
-        valueInWei,
-        fromAddress
-    ) {
-        if(paymentToken == 'ether') {
-            console.log(name);
-            console.log(birthTimestamp);
-            console.log(tokenClaim);
-            console.log(this.Dai.exchange.address);
-            console.log(this.Dai.weth.address);
-            console.log(maxPayAmount);
-            console.log(minFillAmount);
-            console.log(valueInWei);
-
-            return this.registry.methods.create(
-                name,
-                birthTimestamp,
-                tokenClaim,
-                this.Dai.exchange.address,
-                this.Dai.weth.address,
-                maxPayAmount,
-                minFillAmount
-            )
-            .send({
-                from: fromAddress,
-                value: valueInWei
-            });
-        }
-        else if(paymentToken == 'dai') {
-
-        }
-        else if(paymentToken == 'weth') {
-
-        }
-    }
-
-    createWithEther (
-        name,
-        birthTimestamp,
-        tokenClaim,
-        maxPayAmount,
-        reserveAmount,
-        fromAddress
-    ) {
+/*
+    register (name, birthTimestamp, tokenClaim, reserveAmount) {
         console.log(name);
         console.log(birthTimestamp);
         console.log(tokenClaim);
-        console.log(maxPayAmount);
         console.log(reserveAmount);
-        console.log(this.Dai.exchange.address);
 
         return this.registry.methods.create(
             name,
             birthTimestamp,
             tokenClaim,
-            reserveAmount,
-            this.Dai.exchange.address,
+            reserveAmount
         )
         .send({
-            from: fromAddress,
-            value: maxPayAmount
+            from: web3.account
         });
     }
+*/
 
-    createWithDai (
-        name,
-        birthTimestamp,
-        tokenClaim,
-        reserveAmount,
-        fromAddress
-    ) {
-        console.log(name);
-        console.log(birthTimestamp);
-        console.log(tokenClaim);
-        console.log(reserveAmount);
-        console.log(this.Dai.exchange.address);
-
-        this.Dai.methods.approve(this.registry.address, reserveAmount).send({
-            from: fromAddress,
-        })
-        .on('confirmation', (confirmations, txReceipt) => {
-            this.registry.methods.create(
-                name,
-                birthTimestamp,
-                tokenClaim,
-                reserveAmount,
-                this.Dai.exchange.address,
-            )
-            .send({
-                from: fromAddress
-            });
-        })
+    new () {
+        return new MeDao(this.dai, this.factory);
     }
 
-    async addressOf (account) {
-        let medaoAddress = await this.registry.methods.registry(account).call();
-        return medaoAddress;
+    async at (medaoAddress):Promise<MeDao> {
+        let medao = this.new();
+        await medao.set(medaoAddress);
+        return medao;
     }
 
-    at (medaoAddress) {
-        return new Promise(async (resolve, reject) => {
-            if(medaoAddress == web3.utils.nullAddress){
-                resolve(null);
-            }
-            else {
-                let medao = new MeDao(this.Dai, medaoAddress);
-                await medao.update();
-                resolve(medao);
-            }
-        });
+    async of (account):Promise<MeDao> {
+        let medaoAddress = await this.factory.methods.registry(account).call();
+        if(medaoAddress == web3.utils.nullAddress) return null;
+        return this.at(medaoAddress);
     }
 
     async getIdentity (medaoAddress) {
