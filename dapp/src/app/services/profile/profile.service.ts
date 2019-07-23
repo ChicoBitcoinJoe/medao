@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Web3Service } from '../../services/web3/web3.service';
-import { MedaoService } from '../../services/medao/medao.service';
-import { DaiService } from '../../services/dai/dai.service';
+import { MedaoService, MeDao } from '../../services/medao/medao.service';
 
 declare let web3: any;
 declare let require: any;
@@ -11,18 +10,31 @@ const Box = require('3box');
 
 export class Profile {
 
-    signedIn: boolean = false;
+    ready: Promise<Profile>;
+    dai: any = null;
+    medao: MeDao = null;
 
-    name: string;
-    email: string;
-    link: string;
-    image: string;
-    title: string;
-    about: string;
-    contract: string;
+    address: string;
+
+    deployPromise: any;
+    deploying: boolean = false;
+    collectingPaycheck: boolean = false;
+
+    data: any = null;
+    space: any = null;
+
+    name: string = null;
+    email: string = null;
+    link: string = null;
+    image: string = null;
+    title: string = null;
+    about: string = null;
+    contract: string = null;
     network = [];
-    medao: any = null;
+    watching = {};
+
     balances = {
+        paycheck: 0,
         ether: 0,
         dai: 0,
         time: {
@@ -35,56 +47,94 @@ export class Profile {
     };
 
     constructor (
-        public address: string,
-        public data: any,
-        public Dai: DaiService,
-        public MeDao: MedaoService,
+        private Web3: Web3Service,
+        private Box: any,
         private router: Router,
-    ) { }
+        public MeDao: MedaoService,
+    ) {
+        this.dai = this.MeDao.dai;
+    }
 
-    async initialize () {
-        this.signedIn = web3.currentAccount == this.address;
-        this.network = await this.getNetwork();
+    async initialize (address) {
+        this.address = address;
+        this.medao = await this.MeDao.of(this.address);
+        this.data = await this.Box.openBox(this.address, web3.givenProvider);
+        this.space = await this.data.openSpace('medao');
+        this.update();
+        this.data.onSyncDone(async () => {
+            this.network = await this.getNetwork();
+            this.update();
+        });
+    }
+
+    async update () {
         this.email = await this.data.public.get('email');
         this.link = await this.data.public.get('link');
         this.image = await this.data.public.get('image');
         this.title = await this.data.public.get('title');
         this.about = await this.data.public.get('about');
         this.contract = await this.data.public.get('contract');
+        this.updateDaiBalance();
+        this.watch(this.MeDao.dai, (event) => {
+            this.updateDaiBalance();
+        });
 
-        let medaoAddress = await this.data.public.get('address');
-        if(!medaoAddress){
-            medaoAddress = await this.MeDao.registry.methods.registry(this.address).call();
-            if(medaoAddress != web3.utils.nullAddress)
-                this.data.public.set('address', medaoAddress);
-            else
-                medaoAddress = null;
-        }
-
-        if(medaoAddress){
-            this.medao = await this.MeDao.at(medaoAddress);
+        if(this.medao){
             this.name = this.medao.name;
-            await this.updateTimeBalance();
+            this.medao.update();
+            this.updateTimeBalance(this.medao.token);
+            this.watch(this.medao.token, (event) => {
+                this.updateTimeBalance(this.medao.token);
+            });
+            this.balances.time = await this.getBalance(this.address)
+            this.calculatePaycheck();
         }
+    }
 
-        await this.updateEtherBalance();
-        await this.updateDaiBalance();
+    register () {
+        this.deployPromise = this.medao.deploy(this.balances.time.wei);
+        this.deployPromise.on('transactionHash', txHash => {
+            this.deploying = true;
+            this.view();
+        })
+        .on('confirmation', async (confirmations, txReceipt) => {
+            if(confirmations == 1){
+                console.log(txReceipt);
+                await this.initialize(web3.account);
+                this.update();
+            }
+        })
+        .catch(err => {
+            console.error(err);
+        })
+        .finally(() => {
+            this.deploying = false;
+        });
 
-        return;
+        return this.deployPromise;
     }
 
     view () {
-        this.router.navigateByUrl('/profile/' + this.medao.address);
+        if(this.medao)
+            this.router.navigateByUrl('/profile/' + this.medao.address);
+        else {
+            if(!this.deploying)
+                this.router.navigate(['/register']);
+            else
+                this.router.navigate(['/deploy']);
+        }
     }
 
     async getNetwork () {
         let network = await this.data.public.get('network');
         if(!network){
-            network = '[]';
-            this.data.public.set('network', network);
+            network = [];
+            this.data.onSyncDone(async () => {
+                this.data.public.set('network', network);
+            });
         }
 
-        return JSON.parse(network);
+        return network;
     }
 
     follow (medaoAddress) {
@@ -106,57 +156,6 @@ export class Profile {
 
     isFollowing (medaoAddress) {
         return this.network.includes(medaoAddress);
-    }
-
-    async updateTokenBalance (token) {
-        let timeBalanceInWei = await token.methods.balanceOf(this.address).call();
-        this.balances[token.address] = {
-            wei: 0,
-            seconds: 0,
-            h: 0,
-            m: 0,
-            s: 0,
-        };
-
-        this.balances[token.address].wei = timeBalanceInWei.toString();
-        let seconds = web3.utils.fromWei(this.balances[token.address].wei, 'ether');
-        this.balances[token.address].seconds = seconds.toString();
-        let hours = Math.floor(seconds / 3600);
-        seconds -= hours*3600;
-        let minutes = Math.floor(seconds / 60);
-        seconds -= minutes*60;
-        this.balances[token.address].h = hours;
-        this.balances[token.address].m = minutes;
-        this.balances[token.address].s = seconds;
-        return;
-    }
-
-    async updateTimeBalance () {
-        let timeBalanceInWei = await this.medao.token.methods.balanceOf(this.address).call();
-        this.balances.time.wei = timeBalanceInWei.toString();
-        let seconds = web3.utils.fromWei(this.balances.time.wei, 'ether');
-        this.balances.time.seconds = seconds.toString();
-        let hours = Math.floor(seconds / 3600);
-        seconds -= hours*3600;
-        let minutes = Math.floor(seconds / 60);
-        seconds -= minutes*60;
-        this.balances.time.h = hours;
-        this.balances.time.m = minutes;
-        this.balances.time.s = seconds;
-        this.balances[this.medao.token.address] = this.balances.time;
-        return;
-    }
-
-    async updateEtherBalance () {
-        let etherBalanceInWei = await web3.eth.getBalance(this.address);
-        this.balances.ether = etherBalanceInWei.toString();
-        return etherBalanceInWei;
-    }
-
-    async updateDaiBalance () {
-        let daiBalanceInWei = await this.Dai.methods.balanceOf(this.address).call();
-        this.balances.dai = daiBalanceInWei.toString();
-        return daiBalanceInWei;
     }
 
     updateEmail (email) {
@@ -214,6 +213,96 @@ export class Profile {
         return re.test(email);
     }
 
+    async updateDaiBalance () {
+        let balance = await this.MeDao.dai.methods.balanceOf(this.address).call();
+        this.balances.dai = balance.toString();
+    }
+
+    async updateTimeBalance (token) {
+        let timeObject = await this.getTimeBalance(this.address, token);
+        this.balances[token.address] = timeObject;
+    }
+
+    async getBalance (address) {
+        return await this.getTimeBalance(address, this.medao.token);
+    }
+
+    private async getTimeBalance (address, token) {
+        if(!this.medao) {
+            return {
+                wei: '0',
+                value: 0,
+                seconds: 0,
+                h: 0,
+                m: 0,
+                s: 0.
+            }
+        }
+
+        let balanceInWei = await token.methods.balanceOf(address).call();
+        let value = await this.medao.methods.calculateReserveClaim(balanceInWei).call();
+        value = web3.utils.fromWei(value.toString(), 'ether');
+        let balanceInSeconds = web3.utils.fromWei(balanceInWei.toString(), 'ether').toString();
+        let seconds = balanceInSeconds;
+        let hours = Math.floor(seconds / 3600);
+        seconds -= hours*3600;
+        let minutes = Math.floor(seconds / 60);
+        seconds -= minutes*60;
+        return {
+            wei: balanceInWei,
+            value: value,
+            seconds: balanceInSeconds,
+            h: hours,
+            m: minutes,
+            s: seconds
+        }
+    }
+
+    watch (token, callback) {
+        if(this.watching[token.address]) return;
+
+        this.watching[token.address] = {
+            to: token.events.Transfer({
+                fromBlock: 'latest',
+                filter: {to: [this.address]},
+            }),
+            from: token.events.Transfer({
+                fromBlock: 'latest',
+                filter: {from: [this.address]},
+            }),
+        };
+
+        this.watching[token.address].to.on('data', callback);
+        this.watching[token.address].from.on('data', callback);
+    }
+
+    async calculatePaycheck () {
+        if(!this.medao) return '0';
+
+        let now = new Date().getTime()/1000;
+        let elapsedSeconds = Math.floor((now - this.medao.paycheck.timestamp) * this.medao.funding.percent);
+        let workTimeInWei = await this.medao.methods.calculateWorkTime(elapsedSeconds).call();
+        let seconds = web3.utils.fromWei(workTimeInWei.toString(), 'ether');
+        this.balances.paycheck = seconds;
+    }
+
+    collectPaycheck () {
+        this.collectingPaycheck = true;
+        this.medao.methods.pay().send({
+            from: web3.account
+        })
+        .on('confirmation', async (confirmations, txReceipt) => {
+            if(confirmations == 1){
+                await this.update();
+            }
+        })
+        .catch(err => {
+            console.error(err);
+        })
+        .finally(() => {
+            this.collectingPaycheck = false;
+        })
+    }
 }
 
 @Injectable({
@@ -226,29 +315,23 @@ export class ProfileService {
     constructor(
         private router: Router,
         public Web3: Web3Service,
-        public Dai: DaiService,
-        public MeDao: MedaoService,
+        public MedaoService: MedaoService
     ) { }
+
+    new () {
+        return new Profile(this.Web3, Box, this.router, this.MedaoService);
+    }
 
     async get (account) {
         if(!this.profiles[account]){
-            let userData:any = await this.getBox(account);
-            let medaoData = await userData.openSpace('medao');
-            let profile = new Profile(account, medaoData, this.Dai, this.MeDao, this.router);
-            await profile.initialize();
+            let profile = this.new();
+            await profile.initialize(account);
             this.profiles[account] = profile;
+        } else {
+            await this.profiles[account].update();
         }
 
         return this.profiles[account];
-    }
-
-    private getBox (account) {
-        return new Promise(async (resolve, reject) => {
-            let box = await Box.openBox(account, web3.givenProvider)
-            box.onSyncDone(async () => {
-                resolve(box);
-            });
-        });
     }
 
 }
