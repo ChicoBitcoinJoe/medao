@@ -9,9 +9,11 @@ const Web3 = require('web3');
 })
 export class Web3Service {
 
-    public currentAccount: string = null;
+    public account: string = null;
     private watching: string = null;
     private interval: any = null;
+
+    public ready: Promise<boolean>;
 
     constructor () {
         if (window.ethereum) { // Modern dapp browsers...
@@ -31,19 +33,20 @@ export class Web3Service {
             window.web3.utils['nullAddress'] = '0x0000000000000000000000000000000000000000';
             let maxInHex = window.web3.utils.toTwosComplement('-1');
             window.web3.utils['maxUintValue'] = window.web3.utils.hexToNumberString(maxInHex).toString();
+            window.web3['signIn'] = this.signIn;
         }
     }
 
     async initialize (supportedNetworks) {
+        if(window.web3['ready']) return window.web3['ready'];
+
         window.web3['ready'] = new Promise(async (resolve, reject) => {
             let networkName = await window.web3.eth.net.getNetworkType();
             let networkId = await window.web3.eth.net.getId();
             if(!supportedNetworks.includes(networkId))
                 reject(new Error("invalid network id"));
-            else
-                console.log("Ethereum Network: " + networkName + " (id:" + networkId + ")");
 
-            window.web3['currentAccount'] = await this.getCurrentAccount();
+            window.web3['account'] = await this.getCurrentAccount();
             window.web3['network'] = {
                 name: networkName,
                 id: networkId
@@ -62,16 +65,25 @@ export class Web3Service {
                 return;
             }
 
-            let accounts = await window.ethereum.enable();
-            if(accounts.length > 0) {
-                let account = window.web3.utils.toChecksumAddress(accounts[0]);
-                window.web3['currentAccount'] = account;
-                this.currentAccount = account;
-                resolve(this.currentAccount);
+            try {
+                let accounts = await window.ethereum.enable();
+                if(accounts.length > 0) {
+                    let account = window.web3.utils.toChecksumAddress(accounts[0]);
+                    window.web3['account'] = account;
+                    this.account = account;
+                    if(this.interval)
+                        this.watchForAccountChanges();
+
+                    resolve(this.account);
+                }
+                else {
+                    console.log('8');
+                    console.log("Not signed in")
+                    reject(new Error("User denied account access."));
+                }
             }
-            else {
-                console.log("Not signed in")
-                reject(new Error("User denied account access."));
+            catch (err) {
+                reject(err);
             }
         });
     }
@@ -106,19 +118,20 @@ export class Web3Service {
     }
 
     async watchForAccountChanges(){
-        let currentAccount = await this.getCurrentAccount();
-        this.watching = currentAccount;
+        let account = await this.getCurrentAccount();
+        this.watching = account;
+        //console.log('watching',account);
         if(this.interval)
             clearInterval(this.interval);
 
         this.interval = setInterval(async () => {
-            let currentAccount = await this.getCurrentAccount();
-            // console.log(this.watching, currentAccount)
-            if(this.watching && this.watching != currentAccount)
+            let account = await this.getCurrentAccount();
+            // console.log(this.watching, account)
+            if(this.watching && this.watching != account)
                 location.reload();
         }, 250);
 
-        return currentAccount;
+        return account;
     }
 
 }
