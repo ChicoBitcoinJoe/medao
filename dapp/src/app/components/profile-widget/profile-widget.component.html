@@ -15,7 +15,7 @@
     </div>
     <div *ngIf="App.user" class="black" style="padding: 0px 12px;" fxLayout="column">
         <span *ngIf="!App.user.name" style="font-size: 16px; height: 32px;">Anonymous</span>
-        <span *ngIf="App.user.name" style="max-width: 134px; overflow: hidden; text-overflow: ellipsis; font-size: 16px; height: 32px;">{{App.user.name}}</span>
+        <span *ngIf="App.user.name" ngStyle.xs="max-width: 134px;" style="overflow: hidden; text-overflow: ellipsis; font-size: 16px; height: 32px;">{{App.user.name}}</span>
         <span *ngIf="App.user.balances.time.seconds > 0" style="font-size: 12px; height: 16px; line-height: 12px; text-align: right;">
             <b>${{App.user.balances.time.value | number: '1.2-2'}}</b>
             &nbsp;({{App.user.balances.time.seconds | time}})
