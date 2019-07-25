@@ -1,66 +1,61 @@
-<div fxLayout="column" fxLayoutGap="16px" fxFlex>
+<div ngStyle.gt-sm="padding: 0px 100px;" ngStyle.sm="padding: 0px 50px;" fxLayout="column" fxLayoutGap="16px">
 
-    <p class="centered" ngStyle.gt-sm="padding: 0px 100px;" ngStyle.sm="padding: 0px 50px;">
+    <p class="centered padding margin">
         {{identity.about}}
     </p>
 
-    <div class="margin padding" fxLayout="row" fxLayoutAlign="space-around" fxLayoutGap.lt-md="36px">
+    <div class="padding margin" fxLayout="row" fxLayoutAlign="space-around" fxLayoutGap.lt-md="36px">
         <div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="space-around" fxFlex.gt-xs fxLayoutGap.lt-md="36px">
             <div class="centered" fxLayout="column" fxLayoutGap="4px">
-                <div class="white-text" style="font-weight: bold; font-size: 24px;">${{identity.medao.funding.current | number: '1.2-2'}}</div>
+                <div class="white-text" style="font-weight: bold; font-size: 24px;">${{identity.funding.current.value | number: '1.2-2'}}</div>
                 <div class="light-grey-text" style="font-size: 12px;">raised</div>
             </div>
             <div class="centered" fxLayout="column" fxLayoutGap="4px">
-                <div class="white-text" style="font-weight: bold; font-size: 24px;">${{identity.medao.funding.max | number: '1.2-2'}}</div>
+                <div class="white-text" style="font-weight: bold; font-size: 24px;">${{identity.funding.max.value | number: '1.2-2'}}</div>
                 <div class="light-grey-text" style="font-size: 12px;">goal</div>
             </div>
         </div>
         <div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="space-around" fxFlex.gt-xs fxLayoutGap.lt-md="36px">
             <div class="centered" fxLayout="column" fxLayoutGap="4px">
-                <div class="white-text" style="font-weight: bold; font-size: 24px;">{{identity.medao.funding.percent * 100 | number: '1.2-2'}}%</div>
+                <div class="white-text" style="font-weight: bold; font-size: 24px;">{{identity.funding.percent * 100 | number: '1.2-2'}}%</div>
                 <div class="light-grey-text" style="font-size: 12px;">funded</div>
             </div>
             <div class="centered" fxLayout="column" fxLayoutGap="4px">
-                <div class="white-text" style="font-weight: bold; font-size: 24px;">${{identity.medao.wage.max | number: '1.2-2'}}</div>
+                <div class="white-text" style="font-weight: bold; font-size: 24px;">${{identity.wage.max.value | number: '1.2-2'}}</div>
                 <div class="light-grey-text" style="font-size: 12px;">wage</div>
             </div>
         </div>
     </div>
 
-    <div ngStyle.gt-sm="padding: 0px 100px;" ngStyle.sm="padding: 0px 50px;" fxLayout="column" fxLayoutGap="16px">
-        <h2>Details</h2>
-        <div>Last Paycheck <span fxFlex></span> {{identity.medao.paycheck.date | date: 'LLLL dd, yyyy'}}</div>
-        <div>Birth Date <span fxFlex></span> {{identity.medao.birth.date | date: 'LLLL dd, yyyy'}}</div>
-        <div>
-            Hourly Wage
-            <span fxFlex></span>
-            ${{identity.medao.wage.current | number: '1.2-2'}}/{{identity.medao.wage.max | number: '1.2-2'}}
-        </div>
-        <div>
-            Approximate Salary
-            <span fxFlex></span>
-            ${{identity.medao.salary.current | number: '1.2-2'}}/{{identity.medao.salary.max | number: '1.2-2'}}
-        </div>
-        <div>
-            Total Supply
-            <span fxFlex></span>
-            <div *ngIf="identity.medao.supply.current > 1">{{identity.medao.supply.current | number: '1.0-0'}}</div>
-            <div *ngIf="identity.medao.supply.current <= 1">{{identity.medao.supply.current | number: '1.0-2'}}</div>
-            /{{identity.medao.supply.max | number: '1.0-0'}}
-            <span style="padding-left: 2px">h</span>
-        </div>
-        <div>
-            Max Annual Inflation
-            <span fxFlex></span>
-            {{identity.medao.supply.inflation * 100 | number: '1.0-2'}}%
+    <div class="padding" fxLayout="row" fxLayoutAlign="center">
+        <div fxLayout="column" fxLayoutGap="16px" fxFlex.lt-md fxFlex="80">
+            <h2>Details</h2>
+            <div>Birth Date <span fxFlex></span> {{identity.birth.date | date: 'LLLL dd, yyyy'}}</div>
+            <div>Last Paycheck <span fxFlex></span> {{identity.paycheck.date | date: 'LLLL dd, yyyy'}}</div>
+            <div>
+                Hourly Wage
+                <span fxFlex></span>
+                ${{identity.wage.current.value | number: '1.2-2'}}/{{identity.wage.max.value | number: '1.2-2'}}
+            </div>
+            <div>
+                Approximate Salary
+                <span fxFlex></span>
+                ${{identity.salary.current.value | number: '1.2-2'}}/{{identity.salary.max.value | number: '1.2-2'}}
+            </div>
+            <div>
+                Total Supply
+                <span fxFlex></span>
+                <div *ngIf="identity.supply.current.value > 1">{{identity.supply.current.value | number: '1.0-0'}}</div>
+                <div *ngIf="identity.supply.current.value <= 1">{{identity.supply.current.value | number: '1.0-2'}}</div>
+                /{{identity.supply.max.value | number: '1.0-0'}}
+                <span style="padding-left: 2px">h</span>
+            </div>
+            <div>
+                Max Annual Inflation
+                <span fxFlex></span>
+                {{identity.supply.inflation * 100 | number: '1.0-2'}}%
+            </div>
         </div>
     </div>
 
-    <span fxFlex="64px"></span>
-
-    <mat-card style="overflow: hidden; padding: 32px;" ngStyle.gt-xs="padding: 64px;">
-        <h2>Contract Agreement</h2>
-        <div *ngIf="!identity.contract">No contract set.</div>
-        <div *ngIf="identity.contract" [innerHTML]="identity.contract | MarkdownToHtml"></div>
-    </mat-card>
 </div>

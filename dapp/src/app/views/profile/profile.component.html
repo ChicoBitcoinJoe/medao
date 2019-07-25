@@ -1,14 +1,23 @@
-<div *ngIf="ready" fxLayout="column" fxFlexFill>
+<div *ngIf="ready" fxLayout="column" fxLayoutGap="32px" fxFlexFill>
 
-    <app-header fxLayout="column" class="margin" [App]="App" [identity]="identity"></app-header>
+    <app-header class="margin" fxLayout="column" [App]="App" [identity]="identity"></app-header>
+    <app-details class="white" fxLayout="column" [identity]="identity"></app-details>
 
-    <div class="white padding" fxLayout="column">
-
-        <app-details class="white" fxLayout="column" [identity]="identity"></app-details>
-
-        <span fxFlex="16px"></span>
-
-        <mat-card *ngIf="App.user" style="padding: 32px;" ngStyle.gt-xs="padding: 64px;" fxLayout="column">
+    <div class="white" fxLayout="column" fxLayoutGap="8px">
+        <mat-card class="margin" style="padding: 32px;" ngStyle.gt-xs="padding: 64px;">
+            <h2>Contract Agreement</h2>
+            <div *ngIf="!identity.contract">No contract agreement set. Funds sent to this contract should be considered a DONATION with no expectation of return.</div>
+            <div *ngIf="identity.contract" style="overflow: hidden; word-break: break-word;" [innerHTML]="identity.contract | MarkdownToHtml"></div>
+            <div *ngIf="App.signedIn"  style="padding: 32px 0px;" fxLayout="row">
+                <mat-checkbox
+                    [(ngModel)]="userAgreesToTerms"
+                    [disabled]="userAgreesToTerms"
+                    (ngModelChange)="enableDaiTrading()">
+                </mat-checkbox>
+                <b style="padding: 16px; padding-top: 3px;">Check this box to indicate that you have read, understand, and agree to the terms set by {{identity.name}}</b>
+            </div>
+        </mat-card>
+        <mat-card class="margin" style="padding: 32px;" ngStyle.gt-xs="padding: 64px;" fxLayout="column">
             <div fxLayout="row" fxLayoutAlign="start center">
                 <h2>Trade</h2>
                 <span fxFlex></span>
@@ -23,10 +32,10 @@
                         type="number"
                         step="0.01"
                         min="0.01"
-                        [(ngModel)]="amount"
+                        [(ngModel)]="daiAmount"
                         (ngModelChange)="updateTimeValues()">
                         <span style="padding: 0px 7px; color: grey;" matSuffix>$</span>
-                        <mat-hint>max: ${{App.user.balances.dai | fromWei: 'ether' | number: '1.2-2'}}</mat-hint>
+                        <mat-hint *ngIf="App.user">max: ${{App.user.balances.dai.value | number: '1.2-2'}}</mat-hint>
                     </mat-form-field>
                 </div>
 
@@ -38,15 +47,15 @@
                 <div fxLayout="row" fxLayoutGap="16px">
                     <mat-form-field fxFlex="72px">
                         <mat-label>Hours</mat-label>
-                        <input matInput type="number" [(ngModel)]="hours" (ngModelChange)="updateDollarValue()">
+                        <input matInput type="number" [(ngModel)]="hours" (ngModelChange)="updateDaiAmount()">
                     </mat-form-field>
                     <mat-form-field fxFlex="72px">
                         <mat-label>Minutes</mat-label>
-                        <input matInput type="number" [(ngModel)]="minutes" (ngModelChange)="updateDollarValue()">
+                        <input matInput type="number" [(ngModel)]="minutes" (ngModelChange)="updateDaiAmount()">
                     </mat-form-field>
                     <mat-form-field fxFlex="72px">
                         <mat-label>Seconds</mat-label>
-                        <input matInput type="number" [(ngModel)]="seconds" (ngModelChange)="updateDollarValue()">
+                        <input matInput type="number" [(ngModel)]="seconds" (ngModelChange)="updateDaiAmount()">
                     </mat-form-field>
                 </div>
             </div>
@@ -55,19 +64,19 @@
                     <div fxLayout="row" fxLayoutGap="16px">
                         <mat-form-field fxFlex="72px">
                             <mat-label>Hours</mat-label>
-                            <input matInput type="number" [(ngModel)]="hours" (ngModelChange)="updateDollarValue()">
+                            <input matInput type="number" [(ngModel)]="hours" (ngModelChange)="updateDaiAmount()">
                         </mat-form-field>
                         <mat-form-field fxFlex="72px">
                             <mat-label>Minutes</mat-label>
-                            <input matInput type="number" [(ngModel)]="minutes" (ngModelChange)="updateDollarValue()">
+                            <input matInput type="number" [(ngModel)]="minutes" (ngModelChange)="updateDaiAmount()">
                         </mat-form-field>
                         <mat-form-field fxFlex="72px">
                             <mat-label>Seconds</mat-label>
-                            <input matInput type="number" [(ngModel)]="seconds" (ngModelChange)="updateDollarValue()">
+                            <input matInput type="number" [(ngModel)]="seconds" (ngModelChange)="updateDaiAmount()">
                         </mat-form-field>
                     </div>
-                    <small style="position: absolute; bottom: 0px; color: rgba(0,0,0,0.54);" *ngIf="selling && App.user.balances[identity.medao.token.address]" class="centered">
-                        max: {{App.user.balances[identity.medao.token.address].wei | fromWei: 'ether' | time}}
+                    <small *ngIf="App.user && App.user.balances[identity.medao.address]" style="position: absolute; bottom: 0px; color: rgba(0,0,0,0.54);" class="centered">
+                        max: {{App.user.balances[identity.medao.address].seconds | time}}
                     </small>
                 </div>
 
@@ -83,38 +92,30 @@
                         type="number"
                         step="0.01"
                         min="0.01"
-                        [(ngModel)]="amount"
+                        [(ngModel)]="daiAmount"
                         (ngModelChange)="updateTimeValues()">
                         <span style="padding: 0px 7px; color: grey;" matSuffix>$</span>
                     </mat-form-field>
                 </div>
             </div>
 
-            <div style="padding: 16px 0px;">
-                Click the box below to indicate that you have read, understand, and agree to the terms set by {{identity.name}}
-                <div style="padding: 16px 0px;">
-                    <mat-checkbox
-                        [(ngModel)]="userAgreesToTerms"
-                        [disabled]="userAgreesToTerms"
-                        (ngModelChange)="enableDaiTrading()">
-                        I understand and agree.
-                    </mat-checkbox>
-                </div>
+            <div *ngIf="App.signedIn && !selling && !userAgreesToTerms" class="margin" style="color: red;">
+                *In order to buy you must first accept the contract agreement above!
             </div>
 
             <button mat-raised-button
+                *ngIf="!selling"
                 class="secondary-bg white"
                 [ngClass]="{'grey-bg': !userAgreesToTerms || !validBuy()}"
-                *ngIf="!selling"
                 [disabled]="!userAgreesToTerms || !validBuy()"
                 (click)="buy()">
                 Buy
             </button>
             <button mat-raised-button
-                class="secondary-bg white"
-                [ngClass]="{'grey-bg': !userAgreesToTerms || !validSell()}"
                 *ngIf="selling"
-                [disabled]="!userAgreesToTerms || !validSell()"
+                class="secondary-bg white"
+                [ngClass]="{'grey-bg': !validSell()}"
+                [disabled]="!validSell()"
                 (click)="sell()">
                 Sell
             </button>

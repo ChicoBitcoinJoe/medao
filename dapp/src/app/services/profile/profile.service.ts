@@ -1,29 +1,20 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 
-import { Web3Service } from '../../services/web3/web3.service';
 import { MedaoService, MeDao } from '../../services/medao/medao.service';
 
 declare let web3: any;
 declare let require: any;
+let MeDaoArtifact = require('../../../contracts/MeDao.json');
+let ERC20Artifact = require('../../../contracts/ERC20.json');
 const Box = require('3box');
 
 export class Profile {
 
-    ready: Promise<Profile>;
-    dai: any = null;
+    ready: Promise<boolean>;
+
     medao: MeDao = null;
-
-    address: string;
-
-    deployPromise: any;
-    deploying: boolean = false;
-    collectingPaycheck: boolean = false;
-
-    data: any = null;
-    space: any = null;
-
     name: string = null;
+    age: number = null;
     email: string = null;
     link: string = null;
     image: string = null;
@@ -31,13 +22,15 @@ export class Profile {
     about: string = null;
     contract: string = null;
     network = [];
-    watching = {};
 
     balances = {
-        paycheck: 0,
         ether: 0,
-        dai: 0,
+        dai: {
+            wei: '0',
+            value: 0.00
+        },
         time: {
+            value: null,
             wei: 0,
             seconds: 0,
             h: 0,
@@ -46,61 +39,150 @@ export class Profile {
         }
     };
 
+    paycheck = {
+        date: null,
+        timestamp: null,
+        collecting: false,
+        seconds: 0,
+        value: 0,
+    }
+
+    birth = {
+        date: null,
+        timestamp: null,
+    }
+
+    wage = {
+        current: {
+            wei: '0',
+            value: 0.00,
+        },
+        max: {
+            wei: '0',
+            value: 0.00,
+        },
+    };
+
+    salary = {
+        current: {
+            wei: '0',
+            value: 0.00,
+        },
+        max: {
+            wei: '0',
+            value: 0.00,
+        },
+    };
+
+    supply = {
+        current: {
+            wei: '0',
+            value: 0.00,
+        },
+        max: {
+            wei: '0',
+            value: 0.00,
+        },
+        inflation: 0,
+    };
+
+    funding = {
+        current: {
+            wei: '0',
+            value: 0.00,
+        },
+        max: {
+            wei: '0',
+            value: 0.00,
+        },
+        percent: 0
+    };
+
+    subscriptions = {};
+
     constructor (
-        private Web3: Web3Service,
-        private Box: any,
-        private router: Router,
+        public address: string,
         public MeDao: MedaoService,
+        public storage: {
+            public: any,
+            private: any,
+        },
     ) {
-        this.dai = this.MeDao.dai;
-    }
-
-    async initialize (address) {
-        this.address = address;
-        this.medao = await this.MeDao.of(this.address);
-        this.data = await this.Box.openBox(this.address, web3.givenProvider);
-        this.space = await this.data.openSpace('medao');
-        this.update();
-        this.data.onSyncDone(async () => {
+        this.ready = new Promise(async (resolve,reject) => {
+            this.email = await this.storage.public.get('email');
+            this.link = await this.storage.public.get('link');
+            this.image = await this.storage.public.get('image');
+            this.title = await this.storage.public.get('title');
+            this.about = await this.storage.public.get('about');
+            this.contract = await this.storage.public.get('contract');
             this.network = await this.getNetwork();
-            this.update();
-        });
+
+            this.watch(this.MeDao.dai, this.address, (event) => {
+                this.updateDaiBalance();
+            });
+
+            await this.setupDao();
+            await this.update();
+
+            resolve();
+        })
     }
 
-    async update () {
-        this.email = await this.data.public.get('email');
-        this.link = await this.data.public.get('link');
-        this.image = await this.data.public.get('image');
-        this.title = await this.data.public.get('title');
-        this.about = await this.data.public.get('about');
-        this.contract = await this.data.public.get('contract');
-        this.updateDaiBalance();
-        this.watch(this.MeDao.dai, (event) => {
-            this.updateDaiBalance();
-        });
-
+    private async setupDao () {
+        this.medao = await this.MeDao.of(this.address);
         if(this.medao){
-            this.name = this.medao.name;
-            this.medao.update();
-            this.updateTimeBalance(this.medao.token);
-            this.watch(this.medao.token, (event) => {
-                this.updateTimeBalance(this.medao.token);
+            this.name = await this.medao.getName();
+            this.birth.timestamp = await this.medao.methods.birthTimestamp().call();
+            this.birth.date = new Date(this.birth.timestamp*1000);
+
+            this.watch(this.medao.dai, this.medao.address, (event) => {
+                this.calculateFunding();
             });
-            this.balances.time = await this.getBalance(this.address)
-            this.calculatePaycheck();
+
+            this.watch(this.medao.token, this.address, (event) => {
+                this.updateTimeBalance();
+            });
+
+            setInterval(() => {
+                this.calculatePaycheck();
+            }, 1000)
+
+            await this.updateDao();
         }
     }
 
+    async update () {
+        await this.updateDaiBalance();
+    }
+
+    async updateDao () {
+        if(!this.medao) {
+            await this.setupDao();
+            if(!this.medao) return;
+        }
+
+        await this.updateTimeBalance();
+        await this.calculateAge();
+        await this.calculateSupply();
+        await this.calculateFunding();
+        await this.calculateSalary();
+        await this.calculateWage();
+        await this.calculatePaycheck();
+    }
+
+    register () {
+
+    }
+
+/*
     register () {
         this.deployPromise = this.medao.deploy(this.balances.time.wei);
         this.deployPromise.on('transactionHash', txHash => {
             this.deploying = true;
-            this.view();
         })
         .on('confirmation', async (confirmations, txReceipt) => {
             if(confirmations == 1){
                 console.log(txReceipt);
-                await this.initialize(web3.account);
                 this.update();
             }
         })
@@ -114,54 +196,54 @@ export class Profile {
         return this.deployPromise;
     }
 
-    view () {
-        if(this.medao)
-            this.router.navigateByUrl('/profile/' + this.medao.address);
-        else {
-            if(!this.deploying)
-                this.router.navigate(['/register']);
-            else
-                this.router.navigate(['/deploy']);
-        }
+    async userAgreesToTerms (profile:Profile) {
+        let allowance = await this.dai.methods.allowance(profile.address, this.medao.address).call();
+        return allowance.gt(0);
     }
 
+    enableDaiTrading (profile:Profile) {
+
+    }
+
+*/
+
     async getNetwork () {
-        let network = await this.data.public.get('network');
+        let network = JSON.parse(await this.storage.public.get('network'));
         if(!network){
             network = [];
-            this.data.onSyncDone(async () => {
-                this.data.public.set('network', network);
-            });
+            this.storage.public.set('network', JSON.stringify(network));
         }
 
         return network;
     }
 
-    follow (medaoAddress) {
-        console.log("following " + medaoAddress);
-        if(!this.isFollowing(medaoAddress)) {
-            this.network.push(medaoAddress);
-            this.data.public.set("network", JSON.stringify(this.network));
+    follow (profile:Profile) {
+        console.log("following " + profile.medao.address);
+        if(!this.isFollowing(profile)) {
+            this.network.push(profile.medao.address);
+            this.storage.public.set("network", JSON.stringify(this.network));
+            console.log(this.network)
         }
     }
 
-    unfollow (medaoAddress) {
-        console.log("unfollowing " + medaoAddress);
-        if(this.isFollowing(medaoAddress)) {
-            let i = this.network.indexOf(medaoAddress);
+    unfollow (profile:Profile) {
+        console.log("unfollowing " + profile.medao.address);
+        if(this.isFollowing(profile)) {
+            let i = this.network.indexOf(profile.medao.address);
             this.network.splice(i,1);
-            this.data.public.set("network", JSON.stringify(this.network));
+            this.storage.public.set("network", JSON.stringify(this.network));
+            console.log(this.network)
         }
     }
 
-    isFollowing (medaoAddress) {
-        return this.network.includes(medaoAddress);
+    isFollowing (profile:Profile) {
+        return this.network.includes(profile.medao.address);
     }
 
     updateEmail (email) {
         if(this.validEmail(email)){
             this.email = email;
-            this.data.public.set('email', email);
+            this.storage.public.set('email', email);
             console.log("Updated email: ", email);
         }
 
@@ -170,7 +252,7 @@ export class Profile {
 
     updateProfileLink (link) {
         this.link = link;
-        this.data.public.set('link', link);
+        this.storage.public.set('link', link);
         console.log("Updated profile link: ", link);
 
         return this.link;
@@ -178,7 +260,7 @@ export class Profile {
 
     updateImage (image) {
         this.image = image;
-        this.data.public.set('image', image);
+        this.storage.public.set('image', image);
         console.log("Updated profile image: ", image);
 
         return this.image;
@@ -186,7 +268,7 @@ export class Profile {
 
     updateTitle (title) {
         this.title = title;
-        this.data.public.set('title', title);
+        this.storage.public.set('title', title);
         console.log("Updated title: ", title);
 
         return this.title;
@@ -194,7 +276,7 @@ export class Profile {
 
     updateAbout (about) {
         this.about = about;
-        this.data.public.set('about', about);
+        this.storage.public.set('about', about);
         console.log("Updated about: ", about);
 
         return this.about;
@@ -202,7 +284,7 @@ export class Profile {
 
     updateContract (contract) {
         this.contract = contract;
-        this.data.public.set('contract', contract);
+        this.storage.public.set('contract', contract);
         console.log("Updated contract: ", contract);
 
         return this.contract;
@@ -213,24 +295,18 @@ export class Profile {
         return re.test(email);
     }
 
-    async updateDaiBalance () {
-        let balance = await this.MeDao.dai.methods.balanceOf(this.address).call();
-        this.balances.dai = balance.toString();
+    async balanceOf (profile) {
+        return await this.getTimeBalance(this.medao.token, profile.address);
     }
 
-    async updateTimeBalance (token) {
-        let timeObject = await this.getTimeBalance(this.address, token);
-        this.balances[token.address] = timeObject;
+    async setTimeBalance (profile:Profile) {
+        this.balances.time[profile.medao.address] = await profile.balanceOf(this);
     }
 
-    async getBalance (address) {
-        return await this.getTimeBalance(address, this.medao.token);
-    }
-
-    private async getTimeBalance (address, token) {
+    private async getTimeBalance (token, address) {
         if(!this.medao) {
             return {
-                wei: '0',
+                wei: 0,
                 value: 0,
                 seconds: 0,
                 h: 0,
@@ -258,51 +334,107 @@ export class Profile {
         }
     }
 
-    watch (token, callback) {
-        if(this.watching[token.address]) return;
+    async updateDaiBalance () {
+        let balance = await this.MeDao.dai.methods.balanceOf(this.address).call();
+        this.balances.dai.wei = balance;
+        this.balances.dai.value = web3.utils.fromWei(balance.toString(), 'ether');
+    }
 
-        this.watching[token.address] = {
-            to: token.events.Transfer({
-                fromBlock: 'latest',
-                filter: {to: [this.address]},
-            }),
-            from: token.events.Transfer({
-                fromBlock: 'latest',
-                filter: {from: [this.address]},
-            }),
-        };
+    async updateTimeBalance () {
+        this.balances.time = await this.balanceOf(this);
+        this.balances[this.medao.address] = this.balances.time;
+    }
 
-        this.watching[token.address].to.on('data', callback);
-        this.watching[token.address].from.on('data', callback);
+    watch (token, address, callback) {
+        token.events.Transfer({
+            fromBlock: 'latest',
+            filter: {to: [address]},
+        })
+        .on('data', callback);
+
+        token.events.Transfer({
+            fromBlock: 'latest',
+            filter: {from: [address]},
+        })
+        .on('data', callback);
+    }
+
+    async calculateAge () {
+        let now = new Date().getTime()/1000;
+        let oneYearInSeconds = 60*60*24*365.25;
+        this.age = (now - this.birth.timestamp) / oneYearInSeconds;
+    }
+
+    async calculateSupply () {
+        if(!this.medao) return;
+
+        this.supply.current.wei = await this.medao.token.methods.totalSupply().call()
+        this.supply.current.value = web3.utils.fromWei(this.supply.current.wei.toString(), 'ether') / 3600;
+        this.supply.max.wei = await this.medao.methods.maxTokenSupply().call()
+        this.supply.max.value = web3.utils.fromWei(this.supply.max.wei.toString(), 'ether') / 3600;
+        this.supply.inflation = 1 / this.age;
+    }
+
+    async calculateFunding () {
+        if(!this.medao) return;
+
+        this.funding.current.wei = await this.MeDao.dai.methods.balanceOf(this.medao.address).call();
+        this.funding.current.value = web3.utils.fromWei(this.funding.current.wei.toString(), 'ether');
+        this.funding.max.wei = await this.medao.methods.calculateReserveClaim(this.supply.max.wei).call();
+        this.funding.max.value = web3.utils.fromWei(this.funding.max.wei.toString(), 'ether');
+        this.funding.percent = this.funding.current.value / this.funding.max.value;
+    }
+
+    async calculateSalary () {
+        if(!this.medao) return;
+
+        this.salary.max.value = this.funding.max.value * this.supply.inflation;
+        this.salary.max.wei = web3.utils.toWei(this.salary.max.value.toString(), 'ether');
+        this.salary.current.value = this.funding.max.value * this.supply.inflation * this.funding.percent;
+        this.salary.current.wei = web3.utils.toWei(this.salary.current.value.toString(), 'ether');
+    }
+
+    async calculateWage () {
+        if(!this.medao) return;
+
+        let oneHour = web3.utils.toWei('3600', 'ether');
+        this.wage.max.wei = await this.medao.methods.calculateReserveClaim(oneHour.toString()).call();
+        this.wage.max.value = web3.utils.fromWei(this.wage.max.wei.toString(), 'ether');
+        this.wage.current.value = +((this.wage.max.value * this.funding.percent).toFixed(18));
+        this.wage.current.wei = web3.utils.toWei(this.wage.current.value.toString(), 'ether');
     }
 
     async calculatePaycheck () {
-        if(!this.medao) return '0';
+        if(!this.medao) return;
 
         let now = new Date().getTime()/1000;
-        let elapsedSeconds = Math.floor((now - this.medao.paycheck.timestamp) * this.medao.funding.percent);
+        this.paycheck.timestamp = await this.medao.methods.lastPayTimestamp().call();
+        this.paycheck.date = new Date(this.paycheck.timestamp * 1000);
+        let elapsedSeconds = Math.floor((now - this.paycheck.timestamp) * this.funding.percent);
         let workTimeInWei = await this.medao.methods.calculateWorkTime(elapsedSeconds).call();
         let seconds = web3.utils.fromWei(workTimeInWei.toString(), 'ether');
-        this.balances.paycheck = seconds;
+        this.paycheck.seconds = seconds;
+        this.paycheck.value = seconds / 3600 * this.wage.current.value;
     }
 
     collectPaycheck () {
-        this.collectingPaycheck = true;
+        this.paycheck.collecting = true;
         this.medao.methods.pay().send({
             from: web3.account
         })
         .on('confirmation', async (confirmations, txReceipt) => {
             if(confirmations == 1){
-                await this.update();
+                await this.updateDao();
             }
         })
         .catch(err => {
             console.error(err);
         })
         .finally(() => {
-            this.collectingPaycheck = false;
+            this.paycheck.collecting = false;
         })
     }
+
 }
 
 @Injectable({
@@ -313,25 +445,26 @@ export class ProfileService {
     profiles = {};
 
     constructor(
-        private router: Router,
-        public Web3: Web3Service,
-        public MedaoService: MedaoService
+        public MeDao: MedaoService
     ) { }
 
-    new () {
-        return new Profile(this.Web3, Box, this.router, this.MedaoService);
-    }
-
     async get (account) {
-        if(!this.profiles[account]){
-            let profile = this.new();
-            await profile.initialize(account);
-            this.profiles[account] = profile;
-        } else {
-            await this.profiles[account].update();
-        }
+        if(!this.profiles[account])
+            this.profiles[account] = await this.profile(account);
 
         return this.profiles[account];
+    }
+
+    private profile (account) {
+        return new Promise (async (resolve, reject) => {
+            let box = await Box.openBox(account, web3.givenProvider);
+            box.onSyncDone(async () => {
+                let storage = await box.openSpace('medao');
+                let profile = new Profile(account, this.MeDao, storage);
+                await profile.ready;
+                resolve(profile);
+            });
+        });
     }
 
 }

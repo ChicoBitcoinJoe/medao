@@ -34,16 +34,16 @@ export class DeployComponent implements OnInit, OnDestroy {
             // do nothing
         }
         else {
-            this.App.user.medao.paycheck.date = new Date();
-            this.App.user.medao.paycheck.timestamp = this.App.user.medao.paycheck.date.getTime()/1000;
-            this.App.user.medao.supply.current = this.App.user.balances.time.seconds / 3600;
-            this.App.user.medao.supply.max = this.App.user.medao.age * 52 * 40;
-            this.App.user.medao.supply.inflation = 1 / this.App.user.medao.age * 100;
+            this.App.user.paycheck.date = new Date();
+            this.App.user.paycheck.timestamp = this.App.user.paycheck.date.getTime()/1000;
+            this.App.user.supply.current.value = this.App.user.balances.time.seconds / 3600;
+            this.App.user.supply.max.value = this.App.user.age * 52 * 40;
+            this.App.user.supply.inflation = 1 / this.App.user.age * 100;
             this.identity = this.App.user;
 
-            if(!this.App.user.deployPromise) return;
+            if(!this.App.registering) return;
 
-            this.subscription = this.App.user.deployPromise.on('confirmation', async (confirmations, txReceipt) => {
+            this.subscription = this.App.tx.on('confirmation', async (confirmations, txReceipt) => {
                 if(confirmations == 1){
                     console.log(txReceipt)
                     await this.App.user.update();

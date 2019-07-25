@@ -27,12 +27,7 @@ export class HeaderComponent implements OnInit {
     ) { }
 
     async ngOnInit() {
-        /*
-        if(!this.User.signedIn)
-            this.User.watch(this.identity);
-        else
-            await this.App.user.updateTokenBalance(this.identity.medao.token);
-        */
+
     }
 
     now () {
@@ -71,7 +66,7 @@ export class HeaderComponent implements OnInit {
             .on('confirmation', (confirmations, txReceipt) => {
                 if(confirmations == 1){
                     console.log(txReceipt)
-                    this.App.user.updateTimeBalance(this.identity.medao.token);
+                    this.App.user.setTimeBalance(this.identity);
                 }
             })
             .catch(err => {
@@ -123,7 +118,7 @@ export class TransferDialog {
         totalSeconds += this.hours * 60 * 60;
         this.totalSeconds = totalSeconds;
         this.sendAmount = web3.utils.toWei(totalSeconds.toString(), 'ether');
-        let dollarValueInWei = await this.identity.medao.instance.methods.calculateReserveClaim(this.sendAmount.toString()).call();
+        let dollarValueInWei = await this.identity.medao.methods.calculateReserveClaim(this.sendAmount.toString()).call();
         this.dollarValue = web3.utils.fromWei(dollarValueInWei.toString(), 'ether');
         console.log(this.dollarValue)
     }

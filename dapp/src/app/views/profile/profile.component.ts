@@ -20,7 +20,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     subscription;
 
-    amount: number = 0;
+    daiAmount: number = 0;
     paymentToken: string = 'ether';
     hours: number = 0;
     minutes: number = 0;
@@ -72,89 +72,100 @@ export class ProfileComponent implements OnInit, OnDestroy {
         this.identity = await this.Profile.get(account);
         console.log("identity", this.identity);
         this.ready = true;
-/*
-        let ready = await this.App.user.ready;
-        if(ready){
-            await this.App.user.updateTokenBalance(this.identity.medao.token);
-            this.Dai.methods.allowance(this.App.user.address, this.identity.medao.address).call()
-            .then(allowance => {
-                this.userAgreesToTerms = allowance.gt(0);
-            })
-        }
-*/
     }
 
-    updateTimeValues () {
-        console.log('updating time values');
+    async updateTimeValues () {
+        if(!this.daiAmount)
+            this.daiAmount = 0;
+
+        let daiAmountInWei = web3.utils.toWei(this.daiAmount.toString(), 'ether');
+        let tokenClaim = await this.identity.medao.methods.calculateTokenClaim(daiAmountInWei).call();
+        let seconds = web3.utils.fromWei(tokenClaim.toString(), 'ether');
+        let hours = Math.floor(seconds / 3600);
+        seconds -= hours*3600;
+        let minutes = Math.floor(seconds / 60);
+        seconds -= minutes*60;
+        seconds = Math.floor(seconds);
+        this.seconds = seconds;
+        this.minutes = minutes;
+        this.hours = hours;
     }
 
-    updateDollarValue () {
-        console.log('updating dollar value');
-        /*
-        let totalSeconds = this.seconds;
-        totalSeconds += this.minutes * 60;
-        totalSeconds += this.hours * 60 * 60;
-        this.totalSeconds = totalSeconds;
-        this.sendAmount = web3.utils.toWei(totalSeconds.toString(), 'ether');
-        let dollarValueInWei = await this.identity.medao.instance.methods.calculateReserveClaim(this.sendAmount.toString()).call();
-        this.dollarValue = web3.utils.fromWei(dollarValueInWei.toString(), 'ether');
-        console.log(this.dollarValue)
-        */
+    async updateDaiAmount () {
+        let seconds = this.seconds + this.minutes * 60 + this.hours * 3600;
+        let secondsInWei = web3.utils.toWei(seconds.toString(), 'ether');
+        let daiAmountInWei = await this.identity.medao.methods.calculateReserveClaim(secondsInWei).call()
+        this.daiAmount = web3.utils.fromWei(daiAmountInWei.toString(), 'ether');
     }
 
     validBuy () {
+        if(!this.App.user) return false;
+        if(this.daiAmount > this.App.user.balances.dai.value) return false;
+
         return true;
     }
 
     validSell () {
+        if(!this.App.user) return false;
+
+        let seconds = this.seconds + this.minutes * 60 + this.hours * 3600;
+        if(seconds <= 0) return false;
+        if(seconds > this.App.user.balances[this.identity.medao.address].seconds)
+            return false;
+
         return true;
     }
 
     async buy () {
-        let amount = '0.01';
-        let amountInWei = web3.utils.toWei(amount, 'ether');
-        let expectedTimeInWei = await this.identity.medao.methods.calculateTokenClaim(amountInWei).call();
-        let expectedTime = web3.utils.fromWei(expectedTimeInWei.toString(), 'ether');
-        console.log(expectedTime);
-
-        this.identity.medao.methods.deposit(amountInWei)
+        let daiAmount = this.daiAmount.toString();
+        let daiAmountInWei = web3.utils.toWei(daiAmount, 'ether');
+        this.identity.medao.methods.deposit(daiAmountInWei)
         .send({
             from: web3.account
         })
         .on('confirmation', (confirmations, txReceipt) => {
             if(confirmations == 1){
                 console.log(txReceipt);
-                this.App.user.updateTimeBalance(this.identity.medao.token);
-                //this.App.user.updateDaiBalance();
-                this.identity.medao.update();
+                this.App.user.setTimeBalance(this.identity);
+                this.App.user.updateDaiBalance();
+                this.identity.updateDao();
+                this.hours = 0;
+                this.minutes = 0;
+                this.seconds = 0;
+                this.daiAmount = 0;
             }
         })
     }
 
     async sell () {
-        let amount = '0.01';
-        let amountInWei = web3.utils.toWei(amount, 'ether');
-        let expectedTimeInWei = await this.identity.medao.methods.calculateTokenClaim(amountInWei).call();
-        let expectedTime = web3.utils.fromWei(expectedTimeInWei.toString(), 'ether');
-        console.log(expectedTime);
-
-        this.identity.medao.methods.withdraw(expectedTimeInWei)
+        let seconds = this.seconds + this.minutes * 60 + this.hours * 3600;
+        let secondsInWei = web3.utils.toWei(seconds.toString(), 'ether');
+        this.identity.medao.methods.withdraw(secondsInWei)
         .send({
             from: web3.account
         })
         .on('confirmation', (confirmations, txReceipt) => {
             if(confirmations == 1){
                 console.log(txReceipt);
-                this.App.user.updateTimeBalance(this.identity.medao.token);
-                //this.App.user.updateDaiBalance();
-                this.identity.medao.update();
+                this.App.user.setTimeBalance(this.identity);
+                this.App.user.updateDaiBalance();
+                this.identity.updateDao();
+                this.hours = 0;
+                this.minutes = 0;
+                this.seconds = 0;
+                this.daiAmount = 0;
             }
         })
     }
 
-    enableDaiTrading(): void {
+    async enableDaiTrading() {
         this.approvalPending = true;
-        this.userAgreesToTerms = true;
+
+        let allowance = await this.MeDao.dai.methods.allowance(this.App.user.address, this.identity.medao.address).call();
+        console.log(allowance)
+        this.userAgreesToTerms = allowance.gt(0);
+        if(this.userAgreesToTerms) return true;
+
         this.MeDao.dai.methods.approve(this.identity.medao.address, web3.utils.maxUintValue)
         .send({
             from: this.App.user.address

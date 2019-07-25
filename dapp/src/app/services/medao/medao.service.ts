@@ -15,55 +15,29 @@ let Dai = {
 
 export class MeDao {
 
-    address: string;
-    instance: any;
+    ready: Promise<boolean>;
+
     methods: any;
     token: any;
-    owner: string;
-    identity: string;
-    name: string;
-    title: string;
-    age: number;
-
-    paycheck = {
-        date: null,
-        timestamp: null
-    }
-
-    birth = {
-        date: null,
-        timestamp: null,
-    }
-
-    wage = {
-        current: null,
-        max: null,
-    };
-
-    salary = {
-        current: null,
-        max: null
-    };
-
-    supply = {
-        current: null,
-        max: null,
-        inflation: null,
-    };
-
-    funding = {
-        current: null,
-        max: null,
-        percent: null
-    };
-
-    public currency: any;
 
     constructor (
-        public dai: any,
+        public address: string,
         public factory: any,
-    ) { }
+        public dai: any,
+    ) {
+        this.ready = new Promise (async (resolve, reject) => {
+            this.methods = new web3.eth.Contract(MeDaoArtifact.abi, this.address).methods;
+            let tokenAddress = await this.methods.timeToken().call();
+            this.token = new web3.eth.Contract(MiniMeTokenArtifact.abi, tokenAddress);
+            resolve(true);
+        })
+    }
 
+    async getName () {
+        return this.token.methods.name().call();
+    }
+
+/*
     deploy (tokenClaim) {
         if(this.address) return;
 
@@ -94,7 +68,7 @@ export class MeDao {
 
     async set (address) {
         this.address = address;
-        this.instance = new web3.eth.Contract(MeDaoArtifact.abi, this.address);
+
         this.methods = this.instance.methods;
         let tokenAddress = await this.methods.timeToken().call();
         this.token = await new web3.eth.Contract(MiniMeTokenArtifact.abi, tokenAddress);
@@ -161,6 +135,7 @@ export class MeDao {
 
         })
     }
+*/
 
 }
 
@@ -200,14 +175,11 @@ export class MedaoService {
     }
 */
 
-    new () {
-        return new MeDao(this.dai, this.factory);
-    }
-
-    async at (medaoAddress):Promise<MeDao> {
-        let medao = this.new();
-        await medao.set(medaoAddress);
+    async at (address):Promise<MeDao> {
+        let medao = new MeDao(address, this.factory, this.dai);
+        await medao.ready;
         return medao;
+
     }
 
     async of (account):Promise<MeDao> {

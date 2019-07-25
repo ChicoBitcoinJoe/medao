@@ -13,8 +13,8 @@ export class NetworkComponent implements OnInit {
         public App: AppService,
     ) { }
 
-    ngOnInit() {
-
+    async ngOnInit() {
+        await this.App.ready;
     }
 
 }

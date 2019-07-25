@@ -38,12 +38,12 @@
 
                 <div ngClass.xs="centered" fxLayout="column" fxLayoutGap="16px" >
                     <b *ngIf="!App.signedIn">&nbsp;</b>
-                    <div *ngIf="App.signedIn">
-                        <div *ngIf="App.user && App.user.balances[identity.medao.token.address]" fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center">
+                    <div *ngIf="App.signedIn && App.user">
+                        <div *ngIf="App.user.balances[identity.medao.address]" fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center">
                             <b style="padding-right: 16px" ngStyle.gt-xs="padding-left: 16px">
-                                balance: ${{App.user.balances[identity.medao.token.address].value | number: '1.2-2'}}
+                                balance: ${{App.user.balances[identity.medao.address].value | number: '1.2-2'}}
                             </b>
-                            <small>({{App.user.balances[identity.medao.token.address].seconds | time }})</small>
+                            <small>({{App.user.balances[identity.medao.address].seconds | time }})</small>
                         </div>
                     </div>
                     <div fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center" fxLayoutGap="16px">
@@ -59,25 +59,27 @@
                                 </span>
                             </a>
                         </div>
-                        <div *ngIf="App.user">
-                            <button *ngIf="App.user.address == identity.medao.owner"
+                        <div *ngIf="App.user" (mouseover)="hovered = true;" (mouseleave)="hovered = false;">
+                            <button *ngIf="App.user.address == identity.address"
                                 mat-raised-button
                                 class="white"
-                                [ngClass]="{'secondary-bg': !App.user.collectingPaycheck}"
-                                [disabled]="App.user.collectingPaycheck"
+                                [ngClass]="{'secondary-bg': !App.user.paycheck.collecting}"
+                                [disabled]="App.user.paycheck.collecting"
                                 (click)="App.user.collectPaycheck()">
-                                collect {{App.user.balances.paycheck | time }}
+                                collect
+                                <span *ngIf="!hovered">{{App.user.paycheck.seconds | time }}</span>
+                                <span *ngIf="hovered" class="centered" style="margin: 0px 12px;">${{App.user.paycheck.value | number: '1.2-2'}}</span>
                             </button>
-                            <span *ngIf="App.user.address != identity.medao.owner">
-                                <button *ngIf="!App.user.isFollowing(identity.medao.address) && !view"
+                            <span *ngIf="App.user.address != identity.address">
+                                <button *ngIf="!App.user.isFollowing(identity) && !view"
                                     mat-raised-button
                                     color="primary"
-                                    (click)="App.user.follow(identity.medao.address)"
+                                    (click)="App.user.follow(identity)"
                                     [ngClass]="{'secondary-bg': App.user}"
                                     [disabled]="!App.user">
                                     follow
                                 </button>
-                                <button mat-raised-button *ngIf="!view && App.user.isFollowing(identity.medao.address)" class="secondary-bg white" disabled="true">
+                                <button mat-raised-button *ngIf="!view && App.user.isFollowing(identity)" class="secondary-bg white" disabled="true">
                                     following
                                 </button>
                                 <button mat-raised-button *ngIf="view" class="secondary-bg white" (click)="identity.view()">
@@ -101,7 +103,7 @@
                                 <span *ngIf="App.user">
                                     <a mat-menu-item
                                         *ngIf="view && App.user.address != identity.medao.owner && !App.user.isFollowing(identity.medao.address)"
-                                        (click)="App.user.follow(identity.medao.address)">
+                                        (click)="App.user.follow(identity)">
                                         follow
                                     </a>
                                     <a mat-menu-item (click)="openTransferDialog()">
@@ -113,8 +115,8 @@
                                         <mat-icon svgIcon="qrcode"></mat-icon>
                                     </a>
                                     <a mat-menu-item
-                                        *ngIf="App.user.isFollowing(identity.medao.address)"
-                                        (click)="App.user.unfollow(identity.medao.address)">
+                                        *ngIf="App.user.isFollowing(identity)"
+                                        (click)="App.user.unfollow(identity)">
                                         unfollow
                                     </a>
                                 </span>

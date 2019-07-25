@@ -24,8 +24,8 @@
                 </button>
             </div>
         </div>
-        <div *ngIf="App.signedIn" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="16px">
-            <h3 class="white padding centered" *ngIf="App.user" fxFlex="65.5px">
+        <div *ngIf="App.user" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="16px">
+            <h3 *ngIf="App.user.medao" class="white padding centered" fxFlex="65.5px">
                 Welcome back, {{App.user.name}}.
             </h3>
             <div *ngIf="!App.user.medao && !App.signingIn" class="white-bg" style="border-radius: 50px; padding: 0px 16px 0px 24px;" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
@@ -37,7 +37,7 @@
                     <button mat-raised-button
                         color="primary"
                         style="margin-bottom: 4px;"
-                        (click)="App.user.view()"
+                        (click)="App.view(App.user)"
                         [disabled]="App.user.deploying">
                         get started
                     </button>
