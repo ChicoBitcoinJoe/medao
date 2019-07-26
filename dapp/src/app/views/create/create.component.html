@@ -1,4 +1,4 @@
-<div fxLayout="column" fxLayoutGap="32px" fxFlex>
+<div *ngIf="(App.user && !App.user.medao) && !App.registering" fxLayout="column" fxLayoutGap="32px" fxFlex>
     <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="16px">
         <h1 class="cursor no-margin white" style="font-size: 48px;" routerLink="['/home']">MeDao</h1>
         <h4 class="centered padding no-margin" style="color: rgba(255,255,255,0.5)">Unleash your financial identity.</h4>
@@ -11,7 +11,7 @@
                 <input matInput
                     type="text"
                     [(ngModel)]="App.user.name"
-                    [disabled]="!App.signedIn">
+                    [disabled]="!App.signedIn || submitting">
             </mat-form-field>
             <mat-form-field>
                 <mat-label>Birth Date</mat-label>
@@ -20,7 +20,7 @@
                     [matDatepicker]="myDatepicker"
                     [(ngModel)]="App.user.birth.date"
                     (ngModelChange)="updateBirthDate()"
-                    [disabled]="!App.signedIn">
+                    [disabled]="!App.signedIn || submitting">
                 <mat-datepicker-toggle matSuffix [for]="myDatepicker"></mat-datepicker-toggle>
                 <mat-datepicker #myDatepicker></mat-datepicker>
             </mat-form-field>
@@ -32,7 +32,7 @@
                     min="0.01"
                     [(ngModel)]="App.user.wage.max.value"
                     (ngModelChange)="updateDetails()"
-                    [disabled]="!App.signedIn">
+                    [disabled]="!App.signedIn || submitting">
                 <span style="padding: 0px 7px; color: grey;" matSuffix>$</span>
             </mat-form-field>
             <mat-form-field>
@@ -42,12 +42,12 @@
                     step="0.01"
                     min="0.01"
                     max="{{App.user.balances.dai.value | number:'1.2-5'}}"
-                    [(ngModel)]="App.user.balances.time.value"
+                    [(ngModel)]="App.user.funding.current.value"
                     (ngModelChange)="updateDetails()"
-                    [disabled]="!App.signedIn || toggleDaiAllowance">
+                    [disabled]="!App.signedIn || toggleDaiAllowance || submitting">
                 <span style="padding: 0px 7px; color: grey;" matSuffix>$</span>
                 <mat-hint>
-                    <span [ngClass]="{'red': App.user.balances.time.value > App.user.balances.dai.value}">
+                    <span [ngClass]="{'red': App.user.funding.current.value > App.user.balances.dai.value}">
                         available: ${{App.user.balances.dai.value | number: '1.2-5'}} (<a href="https://eth2dai.com/instant" target="_blank">get funds</a>)
                     </span>
                 </mat-hint>
@@ -76,7 +76,7 @@
                 <div>
                     Balance:
                     <span fxFlex></span>
-                    <b style="font-size: 16px">{{App.user.balances.time.value / App.user.wage.max.value * 3600 | time }}</b>
+                    <b style="font-size: 16px">{{App.user.funding.current.value / App.user.wage.max.value * 3600 | time }}</b>
                 </div>
                 <span fxFlex="16px"></span>
                 <small class="centered">
@@ -100,8 +100,8 @@
                 <mat-slide-toggle [(ngModel)]="toggleDaiAllowance"
                     (ngModelChange)="enableDaiAllowance()"
                     [disabled]="
-                        !App.user.balances.time.value
-                        || App.user.balances.time.value <= 0
+                        !App.user.funding.current.value
+                        || App.user.funding.current.value <= 0
                         || toggleDaiAllowance
                         || !valid()">
                     Allow app to spend ${{App.user.balances.time.value}}
@@ -114,27 +114,27 @@
         <div fxHide fxShow.gt-sm class="padding white" fxLayout="column" fxLayoutGap="16px" fxFlex.gt-sm="50">
             <span fxFlex="16px"></span>
             <div>
-                Required Funding:
+                Funding:
                 <span fxFlex></span>
                 ${{currentFunding | number: '1.0-0'}} /&nbsp;
                 <b style="font-size: 16px">{{App.user.funding.max.value | number: '1.2-2'}}</b>
             </div>
             <div>
-                Approximate Salary:
+                Salary:
                 <span fxFlex></span>
                 ${{App.user.salary.current.value | number: '1.0-0'}} /&nbsp;
                 <b style="font-size: 16px">{{App.user.salary.max.value | number: '1.2-2'}}</b>
             </div>
             <div>
-                Approximate Wage:
+                Wage:
                 <span fxFlex></span>
                 ${{App.user.wage.current.value | number: '1.2-2'}} /&nbsp;
                 <b style="font-size: 16px">{{App.user.wage.max.value | number: '1.2-2'}}</b>
             </div>
             <div>
-                Starting Balance:
+                Balance:
                 <span fxFlex></span>
-                <b style="font-size: 16px">{{App.user.balances.time.value / App.user.wage.max.value * 3600 | time }}</b>
+                <b style="font-size: 16px">{{App.user.funding.current.value / App.user.wage.max.value * 3600 | time }}</b>
             </div>
             <span fxFlex="16px"></span>
             <small class="padding centered white">
@@ -151,5 +151,31 @@
                 <b class="dark-text centered">{{App.user.funding.percent | number: '1.0-0'}}% funded</b>
             </mat-card>
         </div>
+    </div>
+</div>
+<div *ngIf="App.registering || (App.user && App.user.medao)" fxLayout="column" fxLayoutGap="32px" fxFlexFill>
+    <h1 class="white padding centered" fxLayoutAlign="center center">Your Profile is Almost Ready!</h1>
+    <div class="padding" fxLayout="row" fxLayoutAlign="center center">
+        <span fxFlex.gt-xs></span>
+        <mat-card fxFlex.xs fxFlex="80">
+            <b class="padding" fxLayout="column" fxLayoutGap="16px">
+                <div>Balance: <span fxFlex></span> {{App.user.funding.current.value / App.user.wage.max.value * 3600 | time }}</div>
+                <div>Funding Goal: <span fxFlex></span> ${{App.user.funding.max.value | number: '1.2-2'}}</div>
+                <div>Desired Wage: <span fxFlex></span> ${{App.user.wage.max.value | number: '1.2-2'}}</div>
+                &nbsp;
+                <div>
+                    Status:
+                    <span fxFlex></span>
+                    <span *ngIf="!App.user.medao">deploying...</span>
+                    <span *ngIf="App.user.medao">deployed!</span>
+                </div>
+            </b>
+            <div style="padding: 0px 12px; padding-top: 32px;">
+                <button mat-raised-button color="primary" routerLink="/edit">edit profile</button>
+                <span fxFlex></span>
+                <button mat-raised-button [ngClass]="{'secondary-bg white': App.user.medao}" [disabled]="!App.user.medao" (click)="App.view(App.user)">view</button>
+            </div>
+        </mat-card>
+        <span fxFlex.gt-xs></span>
     </div>
 </div>

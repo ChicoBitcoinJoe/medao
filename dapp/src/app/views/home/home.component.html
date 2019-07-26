@@ -31,14 +31,13 @@
             <div *ngIf="!App.user.medao && !App.signingIn" class="white-bg" style="border-radius: 50px; padding: 0px 16px 0px 24px;" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="16px">
                 <mat-form-field floatLabel="never" fxFlex.xs="128px">
                     <mat-label class="black">Enter your name...</mat-label>
-                    <input matInput type="text" [(ngModel)]="App.user.name" [disabled]="App.user.deploying">
+                    <input matInput type="text" [(ngModel)]="App.user.name" [disabled]="App.registering">
                 </mat-form-field>
                 <div fxLayout="column">
                     <button mat-raised-button
                         color="primary"
                         style="margin-bottom: 4px;"
-                        (click)="App.view(App.user)"
-                        [disabled]="App.user.deploying">
+                        (click)="App.view(App.user)">
                         get started
                     </button>
                 </div>

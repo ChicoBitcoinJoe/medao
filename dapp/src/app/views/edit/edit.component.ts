@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { AppService } from '../../services/app/app.service';
 
@@ -22,12 +23,16 @@ export class EditComponent implements OnInit {
     contract: string;
 
     constructor(
+        private router: Router,
         public App: AppService
     ) { }
 
     async ngOnInit() {
         await this.App.ready;
-        await this.App.user.ready;
+        if(!this.App.user) {
+            this.router.navigate(['/home']);
+            return;
+        }
 
         this.email =  this.App.user.email;
         this.link =  this.App.user.link;

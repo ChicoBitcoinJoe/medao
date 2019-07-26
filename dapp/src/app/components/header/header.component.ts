@@ -75,6 +75,10 @@ export class HeaderComponent implements OnInit {
         });
     }
 
+    copyUrlToClipboard () {
+        
+    }
+
 }
 
 @Component({

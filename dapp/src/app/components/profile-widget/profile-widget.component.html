@@ -36,10 +36,10 @@
         </button>
     </div>
     <div *ngIf="App.user" fxLayout="column">
-        <div *ngIf="!App.user.medao" fxLayout="column">
+        <div *ngIf="!App.user.medao && !App.registering" fxLayout="column">
             <button mat-button routerLink="/register">register</button>
         </div>
-        <div *ngIf="App.user.medao || App.user.deploying" fxLayout="column">
+        <div *ngIf="App.user.medao || App.registering" fxLayout="column">
             <button mat-button (click)="App.view(App.user)">my profile</button>
             <button mat-button routerLink="/edit">edit profile</button>
         </div>

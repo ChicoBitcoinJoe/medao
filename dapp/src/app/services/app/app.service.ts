@@ -65,6 +65,7 @@ export class AppService {
         .then(async currentAccount => {
             this.user = await this.Profile.get(currentAccount);
             this.Web3.watchForAccountChanges();
+
             this.signedIn = true;
 
             return this.user;
@@ -80,19 +81,34 @@ export class AppService {
     }
 
     register () {
+        console.log('App.register')
+        let tx = this.user.register();
+        tx.on('transactionHash', txHash => {
+            console.log(txHash);
+            this.registering = true;
+        })
+        .on('confirmation', async (confirmations, txReceipt) => {
+            if(confirmations == 1){
+                console.log(txReceipt);
+                this.user.setupDao();
+            }
+        })
+        .catch(err => {
+            console.error(err);
+        })
+        .finally(() => {
+            this.registering = false;
+        })
 
+        return tx;
     }
 
     view (profile) {
         if(profile.medao)
             this.router.navigateByUrl('/profile/' + profile.medao.address);
         else {
-            if(this.registering)
-                this.router.navigate(['/deploy']);
-            else
-                this.router.navigate(['/register']);
+            this.router.navigate(['/register']);
         }
     }
-
 
 }

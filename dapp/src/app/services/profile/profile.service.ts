@@ -128,7 +128,9 @@ export class Profile {
         })
     }
 
-    private async setupDao () {
+    async setupDao () {
+        if(this.medao) return;
+
         this.medao = await this.MeDao.of(this.address);
         if(this.medao){
             this.name = await this.medao.getName();
@@ -149,6 +151,8 @@ export class Profile {
 
             await this.updateDao();
         }
+
+        return this.medao;
     }
 
     async update () {
@@ -171,47 +175,28 @@ export class Profile {
     }
 
     register () {
+        if(this.medao) return;
+        if(!this.name) return;
+        if(!this.birth.timestamp) return;
+        if(!this.balances.time.wei) return;
+        if(!this.funding.current.wei) return;
 
+        return this.MeDao.register(
+            this.name,
+            this.birth.timestamp,
+            this.balances.time.wei,
+            this.funding.current.wei
+        );
     }
-
-/*
-    register () {
-        this.deployPromise = this.medao.deploy(this.balances.time.wei);
-        this.deployPromise.on('transactionHash', txHash => {
-            this.deploying = true;
-        })
-        .on('confirmation', async (confirmations, txReceipt) => {
-            if(confirmations == 1){
-                console.log(txReceipt);
-                this.update();
-            }
-        })
-        .catch(err => {
-            console.error(err);
-        })
-        .finally(() => {
-            this.deploying = false;
-        });
-
-        return this.deployPromise;
-    }
-
-    async userAgreesToTerms (profile:Profile) {
-        let allowance = await this.dai.methods.allowance(profile.address, this.medao.address).call();
-        return allowance.gt(0);
-    }
-
-    enableDaiTrading (profile:Profile) {
-
-    }
-
-*/
 
     async getNetwork () {
-        let network = JSON.parse(await this.storage.public.get('network'));
-        if(!network){
+        let publicNetwork = await this.storage.public.get('network');
+        let network = null;
+        if(!publicNetwork){
             network = [];
             this.storage.public.set('network', JSON.stringify(network));
+        } else {
+            network = JSON.parse(publicNetwork);
         }
 
         return network;

@@ -24,12 +24,13 @@ export class CreateComponent implements OnInit {
     allowSubmit: boolean = false;
     maxDate: Date = new Date();
     currentFunding: number = 0;
+    submitting: boolean = false;
 
     constructor(
         private router: Router,
         public Web3: Web3Service,
         public App: AppService,
-        public MedaoService: MedaoService,
+        public MeDao: MedaoService,
     ) { }
 
     async ngOnInit() {
@@ -38,16 +39,9 @@ export class CreateComponent implements OnInit {
             return;
         }
 
-        this.App.user.name = "Joseph Brian Reed";
-        this.App.user.birth.date = new Date("12/23/1989");
-        this.App.user.wage.max.value = 0.01;
-        this.App.user.balances.time.value = 1;
         this.App.user.funding.percent = 50;
-
         this.App.user.wage.current.value = 0;
         this.App.user.funding.max.value = 0;
-
-        this.updateBirthDate();
     }
 
     updateBirthDate () {
@@ -60,12 +54,12 @@ export class CreateComponent implements OnInit {
     }
 
     updateDetails () {
-        if(!this.App.user.balances.time.value || !this.App.user.wage.max.value) return;
+        if(!this.App.user.funding.current.value || !this.App.user.wage.max.value) return;
 
         this.App.user.funding.max.value = this.App.user.wage.max.value * 40 * 52 * this.App.user.age;
         this.App.user.salary.max.value = this.App.user.funding.max.value / this.App.user.age;
-
-        let startingBalance = this.App.user.balances.time.value / this.App.user.wage.max.value;
+        this.App.user.funding.current.wei = web3.utils.toWei(this.App.user.funding.current.value.toString(), 'ether');
+        let startingBalance = this.App.user.funding.current.value / this.App.user.wage.max.value;
         let seconds = startingBalance * 3600;
         this.App.user.balances.time.seconds = seconds;
         this.App.user.balances.time.wei = web3.utils.toWei(seconds.toString(), 'ether').toString();
@@ -76,6 +70,7 @@ export class CreateComponent implements OnInit {
         this.App.user.balances.time.h = hours;
         this.App.user.balances.time.m = minutes;
         this.App.user.balances.time.s = seconds;
+        this.App.user.balances.time.value = this.App.user.funding.current.value;
 
         this.updatePercent();
     }
@@ -87,8 +82,8 @@ export class CreateComponent implements OnInit {
     }
 
     enableDaiAllowance () {
-        let seedAmountInWei = web3.utils.toWei(this.App.user.balances.time.value.toString(), 'ether');
-        this.MedaoService.dai.methods.approve(this.MedaoService.factory.address, seedAmountInWei)
+        let seedAmountInWei = web3.utils.toWei(this.App.user.funding.current.value.toString(), 'ether');
+        this.MeDao.dai.methods.approve(this.MeDao.factory.address, seedAmountInWei)
         .send({
             from: web3.account
         })
@@ -106,85 +101,23 @@ export class CreateComponent implements OnInit {
         if(!this.App.user.name) return false;
         if(!this.App.user.birth.date) return false;
         if(this.App.user.wage.max.value <= 0) return false;
-        if(this.App.user.balances.time.value <= 0) return false;
-        if(this.App.user.balances.time.value > this.App.user.balances.dai.value) return false;
+        if(this.App.user.funding.current.value <= 0) return false;
+        if(this.App.user.funding.current.value > this.App.user.balances.dai.value) return false;
 
         return true;
     }
 
     async submit () {
-        this.App.user.funding.percent = this.App.user.balances.time.value / this.App.user.funding.max.value * 100;
+        this.submitting = true;
+        this.App.user.funding.percent = this.App.user.funding.current.value / this.App.user.funding.max.value * 100;
         this.updatePercent();
-
-        await this.App.user.register();
-        this.router.navigate(['/deploy']);
-    }
-
-/*
-    submit () {
-        console.log(this.App.user);
-        if(!this.valid()) return;
-
-        this.App.user.birthTimestamp = new Date(this.App.user.date).getTime()/1000;
-        var tokenClaimInHours = this.App.user.seed / this.App.user.wage;
-        var tokenClaimInSeconds = Math.floor(tokenClaimInHours * 3600);
-        this.App.user.tokenClaim = web3.utils.toWei(tokenClaimInSeconds.toString(), 'ether');
-
-        if(this.paymentToken == 'ether'){
-            this.App.user.tx.promise = this.Medao.createWithEther(
-                this.App.user.name,
-                this.App.user.birthTimestamp,
-                this.App.user.tokenClaim,
-                this.App.user.maxPayAmount,
-                this.App.user.reserveAmount,
-                this.App.user.address
-            );
-        }
-        else if (this.paymentToken == 'dai'){
-            this.App.user.tx.promise = this.Medao.createWithDai(
-                this.App.user.name,
-                this.App.user.birthTimestamp,
-                this.App.user.tokenClaim,
-                this.App.user.reserveAmount,
-                this.App.user.address
-            );
-        }
-
-        this.App.user.tx.promise
-        .on('transactionHash', (txHash) => {
-            this.App.user.tx.hash = txHash;
-
-            let snackBarRef = this.snackbar.open('Deploying MeDao. Be patient!', 'details', {
-                duration: 10000,
-            });
-
-            snackBarRef.onAction().subscribe(() => {
-                var url = 'https://kovan.etherscan.io/tx/' + txHash;
-                window.open(url, "_blank");
-            });
-        })
-        .on('confirmation', (confirmation, txReceipt) => {
-            if(confirmation == 1) {
-                console.log(confirmation)
-                console.log(txReceipt)
-                this.Medao.addressOf(this.App.user.address)
-                .then(medaoAddress => {
-                    let snackBarRef = this.snackbar.open('MeDao deployed!', 'view', {
-                        duration: 10000,
-                    });
-
-                    this.App.user.signIn();
-                    snackBarRef.onAction().subscribe(() => {
-                        this.router.navigate(['/medao', medaoAddress]);
-                    });
-                })
-            }
-        })
+        this.App.register()
         .catch(err => {
             console.error(err);
-            this.App.user.tx.promise = null;
+        })
+        .finally(() => {
+            this.submitting = false;
         });
     }
-*/
 
 }

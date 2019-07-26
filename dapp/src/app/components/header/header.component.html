@@ -10,6 +10,7 @@
         <mat-icon *ngIf="!identity.image" class="secondary-bg white" style="width: 100%; height: 100%; font-size: 200px;">person</mat-icon>
         <img *ngIf="identity.image" style="width: 100%;" [src]="identity.image">
     </div>
+    <span fxFlex.gt-xs="16px"></span>
     <div
         style="border-top-right-radius: 100px; border-bottom-right-radius: 100px"
         ngStyle.gt-xs="padding-right: 32px"
@@ -93,6 +94,9 @@
                             </button>
                             <mat-menu #moreMenu="matMenu">
                                 <span>
+                                    <button mat-menu-item (click)="copyUrlToClipboard()">
+                                        copy profile link
+                                    </button>
                                     <a mat-menu-item *ngIf="identity.link" [href]="identity.link" target="_blank">
                                         external profile
                                     </a>
