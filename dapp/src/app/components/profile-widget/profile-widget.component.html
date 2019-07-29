@@ -59,7 +59,8 @@
                                 class="white"
                                 [ngClass]="{'secondary-bg': !App.user.paycheck.collecting}"
                                 [disabled]="App.user.paycheck.collecting"
-                                (click)="App.user.collectPaycheck()">
+                                (click)="App.user.collectPaycheck()"
+                                fxFlex="160px">
                                 collect
                                 <span *ngIf="!hovered">{{App.user.paycheck.seconds | time }}</span>
                                 <span *ngIf="hovered" class="centered" style="margin: 0px 12px;">${{App.user.paycheck.value | number: '1.2-2'}}</span>
