@@ -1,8 +1,14 @@
-<div *ngIf="App.user" class="scrollable" fxLayout="column" fxLayoutGap="16px">
-    <div *ngIf="App.user.network.length == 0" class="white centered">No one has been added to your network...</div>
-    <div *ngFor="let profile of App.user.network">{{profile}}</div>
+<div *ngIf="!ready" class="white centered">
+    loading...
 </div>
-
-<!--
-<app-header *ngFor="let identity of App.user.network" fxLayout="column" class="margin" [App]="App" [identity]="identity" view="true"></app-header>
--->
+<div *ngIf="ready" class="padding" fxLayout="column" fxLayoutGap="16px">
+    <div *ngIf="profiles.length == 0" class="white centered">
+        No one has been added to your network...
+    </div>
+    <app-profile-widget class="padding"
+        *ngFor="let profile of profiles"
+        [App]="App"
+        [identity]="profile"
+        view="true">
+    </app-profile-widget>
+</div>

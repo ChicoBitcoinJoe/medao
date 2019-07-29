@@ -64,6 +64,10 @@ export class AppService {
         return web3.signIn()
         .then(async currentAccount => {
             this.user = await this.Profile.get(currentAccount);
+            this.user.network.forEach(async medaoAddress => {
+                this.user.setTimeBalance(await this.Profile.from(medaoAddress));
+            })
+
             this.Web3.watchForAccountChanges();
 
             this.signedIn = true;

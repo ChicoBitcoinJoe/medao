@@ -222,6 +222,7 @@ export class Profile {
     }
 
     isFollowing (profile:Profile) {
+        if(!profile.medao) return false;
         return this.network.includes(profile.medao.address);
     }
 
@@ -285,7 +286,7 @@ export class Profile {
     }
 
     async setTimeBalance (profile:Profile) {
-        this.balances.time[profile.medao.address] = await profile.balanceOf(this);
+        this.balances[profile.medao.address] = await profile.balanceOf(this);
     }
 
     private async getTimeBalance (token, address) {
@@ -440,7 +441,13 @@ export class ProfileService {
         return this.profiles[account];
     }
 
-    private profile (account) {
+    async from (medaoAddress):Promise<Profile> {
+        let address = await this.MeDao.getIdentity(medaoAddress);
+        let profile:Profile = await this.profile(address);
+        return profile;
+    }
+
+    private profile (account):Promise<Profile> {
         return new Promise (async (resolve, reject) => {
             let box = await Box.openBox(account, web3.givenProvider);
             box.onSyncDone(async () => {
