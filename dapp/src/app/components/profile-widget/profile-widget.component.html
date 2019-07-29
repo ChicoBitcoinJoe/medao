@@ -5,7 +5,7 @@
     fxLayout.xs="column"
     fxLayoutAlign.xs="start center"
     fxLayoutAlign="center center">
-
+    <span fxHide.gt-xs fxFlex.xs="16px"></span>
     <div style="overflow: hidden; border-radius: 100px; height: 200px; width: 200px" fxLayout="column" fxLayoutAlign="center center">
         <mat-icon *ngIf="!identity.image" class="secondary-bg white" style="width: 100%; height: 100%; font-size: 200px;">person</mat-icon>
         <img *ngIf="identity.image" style="width: 100%;" [src]="identity.image">
@@ -77,7 +77,7 @@
                                 <button mat-raised-button *ngIf="!view && App.user.isFollowing(identity)" class="secondary-bg white" disabled="true">
                                     following
                                 </button>
-                                <button mat-raised-button *ngIf="view" class="secondary-bg white" (click)="identity.view()">
+                                <button mat-raised-button *ngIf="view" class="secondary-bg white" (click)="App.view(identity)">
                                     view
                                 </button>
                             </span>
@@ -89,7 +89,7 @@
                             <mat-menu #moreMenu="matMenu">
                                 <span *ngIf="App.user">
                                     <a mat-menu-item
-                                        *ngIf="view && App.user.address != identity.medao.owner && !App.user.isFollowing(identity.medao.address)"
+                                        *ngIf="view && App.user.address != identity.address && !App.user.isFollowing(identity)"
                                         (click)="App.user.follow(identity)">
                                         follow
                                     </a>
