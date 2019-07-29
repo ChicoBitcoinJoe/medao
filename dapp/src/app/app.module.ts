@@ -44,7 +44,6 @@ import { NetworkComponent } from './views/network/network.component';
 import { ProfileComponent } from './views/profile/profile.component';
 import { EditComponent } from './views/edit/edit.component';
 
-import { DetailsComponent } from './components/details/details.component';
 import { UserWidgetComponent } from './components/user-widget/user-widget.component';
 import { ProfileWidgetComponent } from './components/profile-widget/profile-widget.component';
 import { TransferDialog } from './components/profile-widget/profile-widget.component';
@@ -57,7 +56,6 @@ import { QrcodeDialog } from './components/profile-widget/profile-widget.compone
     OrderByPipe,
     HomeComponent,
     CreateComponent,
-    DetailsComponent,
     TransferDialog,
     QrcodeDialog,
     TimePipe,
