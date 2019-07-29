@@ -40,6 +40,7 @@ export class ProfileWidgetComponent implements OnInit {
             //height: '100vh',
             data: {
                identity: this.identity,
+               user: this.App.user,
             }
         });
 
@@ -50,10 +51,11 @@ export class ProfileWidgetComponent implements OnInit {
 
     openTransferDialog () {
         const dialogRef = this.dialog.open(TransferDialog, {
-            width: '100vw',
-            height: '100vh',
+            // width: '100vw',
+            // height: '100vh',
             data: {
                identity: this.identity,
+               user: this.App.user,
             }
         });
 
@@ -103,8 +105,6 @@ export class TransferDialog {
     sendAmount: number = 0;
     paymentSelection: string = null;
     toAddress: string = null;
-    selectedToken: string = 'dai';
-    tokens = ['dai','time','ether'];
 
     constructor(
         public dialogRef: MatDialogRef<TransferDialog>,
@@ -122,7 +122,6 @@ export class TransferDialog {
         this.sendAmount = web3.utils.toWei(totalSeconds.toString(), 'ether');
         let dollarValueInWei = await this.identity.medao.methods.calculateReserveClaim(this.sendAmount.toString()).call();
         this.dollarValue = web3.utils.fromWei(dollarValueInWei.toString(), 'ether');
-        console.log(this.dollarValue)
     }
 
     transfer () {
@@ -131,7 +130,9 @@ export class TransferDialog {
             from: web3.account
         });
 
-        this.dialogRef.close(tx)
+        tx.on('transactionHash', txHash => {
+            this.dialogRef.close(tx);
+        })
     }
 
     valid () {
