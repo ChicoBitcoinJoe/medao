@@ -40,15 +40,15 @@ import { TimePipe } from './pipes/time/time.pipe';
 
 import { HomeComponent } from './views/home/home.component';
 import { CreateComponent } from './views/create/create.component';
-import { HeaderComponent } from './components/header/header.component';
-import { DetailsComponent } from './components/details/details.component';
 import { NetworkComponent } from './views/network/network.component';
 import { ProfileComponent } from './views/profile/profile.component';
 import { EditComponent } from './views/edit/edit.component';
-import { ProfileWidgetComponent } from './components/profile-widget/profile-widget.component';
 
-import { TransferDialog } from './components/header/header.component';
-import { QrcodeDialog } from './components/header/header.component';
+import { DetailsComponent } from './components/details/details.component';
+import { UserWidgetComponent } from './components/user-widget/user-widget.component';
+import { ProfileWidgetComponent } from './components/profile-widget/profile-widget.component';
+import { TransferDialog } from './components/profile-widget/profile-widget.component';
+import { QrcodeDialog } from './components/profile-widget/profile-widget.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +57,6 @@ import { QrcodeDialog } from './components/header/header.component';
     OrderByPipe,
     HomeComponent,
     CreateComponent,
-    HeaderComponent,
     DetailsComponent,
     TransferDialog,
     QrcodeDialog,
@@ -66,6 +65,7 @@ import { QrcodeDialog } from './components/header/header.component';
     ProfileComponent,
     EditComponent,
     ProfileWidgetComponent,
+    UserWidgetComponent,
   ],
   imports: [
     BrowserModule,
