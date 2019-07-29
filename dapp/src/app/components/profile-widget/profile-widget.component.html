@@ -1,23 +1,23 @@
 <mat-card
     ngStyle.xs="border-radius: 32px; border-top-left-radius: 136px; border-top-right-radius: 136px;"
     ngStyle.gt-xs="border-radius: 136px;"
-    fxLayout.xs="column"
     fxLayout="row"
+    fxLayout.xs="column"
     fxLayoutAlign.xs="start center"
     fxLayoutAlign="center center">
-    <span fxFlex.xs="16px"></span>
+
     <div style="overflow: hidden; border-radius: 100px; height: 200px; width: 200px" fxLayout="column" fxLayoutAlign="center center">
         <mat-icon *ngIf="!identity.image" class="secondary-bg white" style="width: 100%; height: 100%; font-size: 200px;">person</mat-icon>
         <img *ngIf="identity.image" style="width: 100%;" [src]="identity.image">
     </div>
-    <span fxFlex.gt-xs="16px"></span>
-    <div
-        style="border-top-right-radius: 100px; border-bottom-right-radius: 100px"
+
+    <div style="border-top-right-radius: 100px; border-bottom-right-radius: 100px"
         ngStyle.gt-xs="padding-right: 32px"
         fxLayout="column"
         fxFlex.gt-xs>
-        <div style="min-height: 200px !important;">
+        <div fxLayout="column" style="min-height: 200px !important;">
             <div fxLayout="column"
+                fxLayoutAlign="start start"
                 fxLayoutAlign.xs="start center"
                 fxLayoutGap="16px"
                 fxFlex>
@@ -37,9 +37,9 @@
                     {{identity.title}}
                 </div>
 
-                <div ngClass.xs="centered" fxLayout="column" fxLayoutGap="16px" >
-                    <b *ngIf="!App.signedIn">&nbsp;</b>
-                    <div *ngIf="App.signedIn && App.user">
+                <div fxLayout="column" fxLayoutGap="16px" fxFlex>
+                    <b *ngIf="!App.signedIn" fxFlex>&nbsp;</b>
+                    <div *ngIf="App.signedIn && App.user" fxFlex>
                         <div *ngIf="App.user.balances[identity.medao.address]" fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center">
                             <b style="padding-right: 16px" ngStyle.gt-xs="padding-left: 16px">
                                 balance: ${{App.user.balances[identity.medao.address].value | number: '1.2-2'}}
@@ -47,18 +47,11 @@
                             <small>({{App.user.balances[identity.medao.address].seconds | time }})</small>
                         </div>
                     </div>
-                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center" fxLayoutGap="16px">
+                    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutAlign.xs="center center" fxLayoutGap="16px" fx>
                         <div *ngIf="!App.signedIn" fxLayoutGap="16px">
-                            <a mat-raised-button
-                                class="white"
-                                [ngClass]="{'secondary-bg': !App.user}"
-                                (click)="openQrcodeDialog()">
-                                <span fxLayout="row" fxLayoutAlign="center center">
-                                    pay with dai
-                                    <span fxFlex="16px"></span>
-                                    <mat-icon svgIcon="qrcode"></mat-icon>
-                                </span>
-                            </a>
+                            <button mat-raised-button disabled="true">
+                                follow
+                            </button>
                         </div>
                         <div *ngIf="App.user" (mouseover)="hovered = true;" (mouseleave)="hovered = false;">
                             <button *ngIf="App.user.address == identity.address"
@@ -93,17 +86,6 @@
                                 more... <mat-icon>arrow_drop_down</mat-icon>
                             </button>
                             <mat-menu #moreMenu="matMenu">
-                                <span>
-                                    <button mat-menu-item (click)="copyUrlToClipboard()">
-                                        copy profile link
-                                    </button>
-                                    <a mat-menu-item *ngIf="identity.link" [href]="identity.link" target="_blank">
-                                        external profile
-                                    </a>
-                                    <a mat-menu-item *ngIf="identity.email" [href]="'mailto:' + identity.email" target="_blank">
-                                        send email
-                                    </a>
-                                </span>
                                 <span *ngIf="App.user">
                                     <a mat-menu-item
                                         *ngIf="view && App.user.address != identity.medao.owner && !App.user.isFollowing(identity.medao.address)"
@@ -118,6 +100,19 @@
                                         <span fxFlex="16px"></span>
                                         <mat-icon svgIcon="qrcode"></mat-icon>
                                     </a>
+                                </span>
+                                <span>
+                                    <button mat-menu-item (click)="copyUrlToClipboard()">
+                                        copy profile link
+                                    </button>
+                                    <a mat-menu-item *ngIf="identity.link" [href]="identity.link" target="_blank">
+                                        external profile
+                                    </a>
+                                    <a mat-menu-item *ngIf="identity.email" [href]="'mailto:' + identity.email" target="_blank">
+                                        message
+                                    </a>
+                                </span>
+                                <span *ngIf="App.user">
                                     <a mat-menu-item
                                         *ngIf="App.user.isFollowing(identity)"
                                         (click)="App.user.unfollow(identity)">
@@ -131,4 +126,5 @@
             </div>
         </div>
     </div>
+
 </mat-card>

@@ -2,106 +2,122 @@
 
     <app-profile-widget class="margin" fxLayout="column" [App]="App" [identity]="identity"></app-profile-widget>
 
-    <div ngStyle.gt-sm="padding: 0px 100px;" ngStyle.sm="padding: 0px 50px;" fxLayout="column" fxLayoutGap="16px">
+    <div ngStyle.gt-sm="padding: 0px 100px;" ngStyle.sm="padding: 0px 50px;" fxLayout="column" fxLayoutGap="32px">
 
-        <p class="centered padding margin">
+        <p class="centered padding margin white">
             {{identity.about}}
         </p>
 
-        <div fxLayout="column" fxLayoutGap="32px">
-            <div fxLayout="row" fxLayoutAlign="space-around" fxLayoutGap.lt-md="36px">
-                <div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="space-around" fxFlex.gt-xs fxLayoutGap.lt-md="36px">
-                    <div class="centered" fxLayout="column" fxLayoutGap="4px">
-                        <div class="white-text" style="font-weight: bold; font-size: 24px;">${{identity.funding.current.value | number: '1.2-2'}}</div>
-                        <div class="light-grey-text" style="font-size: 12px;">raised</div>
-                    </div>
-                    <div class="centered" fxLayout="column" fxLayoutGap="4px">
-                        <div class="white-text" style="font-weight: bold; font-size: 24px;">${{identity.funding.max.value | number: '1.2-2'}}</div>
-                        <div class="light-grey-text" style="font-size: 12px;">goal</div>
-                    </div>
+        <div fxLayout="row" fxLayoutAlign="space-around" fxLayoutGap.lt-md="36px">
+            <div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="space-around" fxFlex.gt-xs fxLayoutGap.lt-md="36px">
+                <div class="centered" fxLayout="column" fxLayoutGap="4px">
+                    <div class="white-text" style="font-weight: bold; font-size: 24px;">${{identity.funding.current.value | number: '1.2-2'}}</div>
+                    <div class="light-grey-text" style="font-size: 12px;">raised</div>
                 </div>
-                <div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="space-around" fxFlex.gt-xs fxLayoutGap.lt-md="36px">
-                    <div class="centered" fxLayout="column" fxLayoutGap="4px">
-                        <div class="white-text" style="font-weight: bold; font-size: 24px;">{{identity.funding.percent * 100 | number: '1.2-2'}}%</div>
-                        <div class="light-grey-text" style="font-size: 12px;">funded</div>
-                    </div>
-                    <div class="centered" fxLayout="column" fxLayoutGap="4px">
-                        <div class="white-text" style="font-weight: bold; font-size: 24px;">${{identity.wage.max.value | number: '1.2-2'}}</div>
-                        <div class="light-grey-text" style="font-size: 12px;">wage</div>
-                    </div>
+                <div class="centered" fxLayout="column" fxLayoutGap="4px">
+                    <div class="white-text" style="font-weight: bold; font-size: 24px;">${{identity.funding.max.value | number: '1.2-2'}}</div>
+                    <div class="light-grey-text" style="font-size: 12px;">goal</div>
                 </div>
             </div>
-
-            <div class="margin white" fxLayout="column" fxLayoutGap="16px">
-                <h2>Details</h2>
-                <div>Birth Date <span fxFlex></span> {{identity.birth.date | date: 'LLLL dd, yyyy'}}</div>
-                <div>Last Paycheck <span fxFlex></span> {{identity.paycheck.date | date: 'LLLL dd, yyyy'}}</div>
-                <div>
-                    Hourly Wage
-                    <span fxFlex></span>
-                    ${{identity.wage.current.value | number: '1.2-2'}}/{{identity.wage.max.value | number: '1.2-2'}}
+            <div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="space-around" fxFlex.gt-xs fxLayoutGap.lt-md="36px">
+                <div class="centered" fxLayout="column" fxLayoutGap="4px">
+                    <div class="white-text" style="font-weight: bold; font-size: 24px;">{{identity.funding.percent * 100 | number: '1.2-2'}}%</div>
+                    <div class="light-grey-text" style="font-size: 12px;">funded</div>
                 </div>
-                <div>
-                    Approximate Salary
-                    <span fxFlex></span>
-                    ${{identity.salary.current.value | number: '1.2-2'}}/{{identity.salary.max.value | number: '1.2-2'}}
-                </div>
-                <div>
-                    Total Supply
-                    <span fxFlex></span>
-                    <div *ngIf="identity.supply.current.value > 1">{{identity.supply.current.value | number: '1.0-0'}}</div>
-                    <div *ngIf="identity.supply.current.value <= 1">{{identity.supply.current.value | number: '1.0-2'}}</div>
-                    /{{identity.supply.max.value | number: '1.0-0'}}
-                    <span style="padding-left: 2px">h</span>
-                </div>
-                <div>
-                    Max Annual Inflation
-                    <span fxFlex></span>
-                    {{identity.supply.inflation * 100 | number: '1.0-2'}}%
+                <div class="centered" fxLayout="column" fxLayoutGap="4px">
+                    <div class="white-text" style="font-weight: bold; font-size: 24px;">${{identity.wage.max.value | number: '1.2-2'}}</div>
+                    <div class="light-grey-text" style="font-size: 12px;">wage</div>
                 </div>
             </div>
+        </div>
 
-            <div class="white" fxLayout="column" fxLayoutGap="8px">
-                <mat-card class="margin" style="padding: 32px;" ngStyle.gt-xs="padding: 64px;">
-                    <h2>Contract Agreement</h2>
-                    <div *ngIf="!identity.contract">No contract agreement set. Funds sent to this contract should be considered a DONATION with no expectation of return.</div>
-                    <div *ngIf="identity.contract" style="overflow: hidden; word-break: break-word;" [innerHTML]="identity.contract | MarkdownToHtml"></div>
-                    <div *ngIf="App.signedIn"  style="padding: 32px 0px;" fxLayout="row">
-                        <mat-checkbox
-                            [(ngModel)]="userAgreesToTerms"
-                            [disabled]="userAgreesToTerms"
-                            (ngModelChange)="enableDaiTrading()">
-                        </mat-checkbox>
-                        <b style="padding: 16px; padding-top: 3px;">Check this box to indicate that you have read, understand, and agree to the terms set by {{identity.name}}</b>
+        <div class="margin white" fxLayout="column" fxLayoutGap="16px">
+            <h2>Details</h2>
+            <div>Birth Date <span fxFlex></span> {{identity.birth.date | date: 'LLLL dd, yyyy'}}</div>
+            <div>Last Paycheck <span fxFlex></span> {{identity.paycheck.date | date: 'LLLL dd, yyyy'}}</div>
+            <div>
+                Hourly Wage
+                <span fxFlex></span>
+                ${{identity.wage.current.value | number: '1.2-2'}}/{{identity.wage.max.value | number: '1.2-2'}}
+            </div>
+            <div>
+                Approximate Salary
+                <span fxFlex></span>
+                ${{identity.salary.current.value | number: '1.2-2'}}/{{identity.salary.max.value | number: '1.2-2'}}
+            </div>
+            <div>
+                Total Supply
+                <span fxFlex></span>
+                <div *ngIf="identity.supply.current.value > 1">{{identity.supply.current.value | number: '1.0-0'}}</div>
+                <div *ngIf="identity.supply.current.value <= 1">{{identity.supply.current.value | number: '1.0-2'}}</div>
+                /{{identity.supply.max.value | number: '1.0-0'}}
+                <span style="padding-left: 2px">h</span>
+            </div>
+            <div>
+                Max Annual Inflation
+                <span fxFlex></span>
+                {{identity.supply.inflation * 100 | number: '1.0-2'}}%
+            </div>
+        </div>
+
+        <div class="white" fxLayout="column" fxLayoutGap="8px">
+            <mat-card class="margin" style="padding: 32px;" ngStyle.gt-xs="padding: 64px;">
+                <h2>Contract Agreement</h2>
+                <div *ngIf="!identity.contract">No contract agreement set. Funds sent to this contract should be considered a DONATION with no expectation of return.</div>
+                <div *ngIf="identity.contract" style="overflow: hidden; word-break: break-word;" [innerHTML]="identity.contract | MarkdownToHtml"></div>
+                <div *ngIf="App.signedIn"  style="padding: 32px 0px;" fxLayout="row">
+                    <mat-checkbox
+                        [(ngModel)]="userAgreesToTerms"
+                        [disabled]="userAgreesToTerms"
+                        (ngModelChange)="enableDaiTrading()">
+                    </mat-checkbox>
+                    <b style="padding: 16px; padding-top: 3px;">Check this box to indicate that you have read, understand, and agree to the terms set by {{identity.name}}</b>
+                </div>
+            </mat-card>
+            <mat-card class="margin" style="padding: 32px;" ngStyle.gt-xs="padding: 64px;" fxLayout="column">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                    <h2>Trade</h2>
+                    <span fxFlex></span>
+                    Buy &nbsp; <mat-slide-toggle class="pink-slider" [(ngModel)]="selling">Sell</mat-slide-toggle>
+                </div>
+
+                <div *ngIf="!selling" style="padding: 32px 0px;" fxLayout="column" fxLayout.gt-sm="row" fxLayoutAlign="center center">
+                    <div fxLayout="row" fxLayoutAlign="center center">
+                        <mat-form-field fxFlex="104px">
+                            <mat-label>Dai Amount</mat-label>
+                            <input matInput
+                                type="number"
+                                step="0.01"
+                                min="0.01"
+                                [(ngModel)]="daiAmount"
+                                (ngModelChange)="updateTimeValues()">
+                                <span style="padding: 0px 7px; color: grey;" matSuffix>$</span>
+                                <mat-hint *ngIf="App.user">max: ${{App.user.balances.dai.value | number: '1.2-2'}}</mat-hint>
+                            </mat-form-field>
+                        </div>
+
+                        <div class="margin padding centered" fxLayoutAlign="center">
+                            <mat-icon fxShow fxHide.lt-md>arrow_forward</mat-icon>
+                            <mat-icon fxShow fxHide.gt-sm>arrow_downward</mat-icon>
+                        </div>
+
+                        <div fxLayout="row" fxLayoutGap="16px">
+                            <mat-form-field fxFlex="72px">
+                                <mat-label>Hours</mat-label>
+                                <input matInput type="number" [(ngModel)]="hours" (ngModelChange)="updateDaiAmount()">
+                            </mat-form-field>
+                            <mat-form-field fxFlex="72px">
+                                <mat-label>Minutes</mat-label>
+                                <input matInput type="number" [(ngModel)]="minutes" (ngModelChange)="updateDaiAmount()">
+                            </mat-form-field>
+                            <mat-form-field fxFlex="72px">
+                                <mat-label>Seconds</mat-label>
+                                <input matInput type="number" [(ngModel)]="seconds" (ngModelChange)="updateDaiAmount()">
+                            </mat-form-field>
+                        </div>
                     </div>
-                </mat-card>
-                <mat-card class="margin" style="padding: 32px;" ngStyle.gt-xs="padding: 64px;" fxLayout="column">
-                    <div fxLayout="row" fxLayoutAlign="start center">
-                        <h2>Trade</h2>
-                        <span fxFlex></span>
-                        Buy &nbsp; <mat-slide-toggle class="pink-slider" [(ngModel)]="selling">Sell</mat-slide-toggle>
-                    </div>
-
-                    <div *ngIf="!selling" style="padding: 32px 0px;" fxLayout="column" fxLayout.gt-sm="row" fxLayoutAlign="center center">
-                        <div fxLayout="row" fxLayoutAlign="center center">
-                            <mat-form-field fxFlex="104px">
-                                <mat-label>Dai Amount</mat-label>
-                                <input matInput
-                                    type="number"
-                                    step="0.01"
-                                    min="0.01"
-                                    [(ngModel)]="daiAmount"
-                                    (ngModelChange)="updateTimeValues()">
-                                    <span style="padding: 0px 7px; color: grey;" matSuffix>$</span>
-                                    <mat-hint *ngIf="App.user">max: ${{App.user.balances.dai.value | number: '1.2-2'}}</mat-hint>
-                                </mat-form-field>
-                            </div>
-
-                            <div class="margin padding centered" fxLayoutAlign="center">
-                                <mat-icon fxShow fxHide.lt-md>arrow_forward</mat-icon>
-                                <mat-icon fxShow fxHide.gt-sm>arrow_downward</mat-icon>
-                            </div>
-
+                    <div *ngIf="selling" style="padding: 32px 0px;" fxLayout="column" fxLayout.gt-sm="row" fxLayoutAlign="center center">
+                        <div style="position: relative;" fxLayout="column">
                             <div fxLayout="row" fxLayoutGap="16px">
                                 <mat-form-field fxFlex="72px">
                                     <mat-label>Hours</mat-label>
@@ -116,70 +132,53 @@
                                     <input matInput type="number" [(ngModel)]="seconds" (ngModelChange)="updateDaiAmount()">
                                 </mat-form-field>
                             </div>
+                            <small *ngIf="App.user && App.user.balances[identity.medao.address]" style="position: absolute; bottom: 0px; color: rgba(0,0,0,0.54);" class="centered">
+                                max: {{App.user.balances[identity.medao.address].seconds | time}}
+                            </small>
                         </div>
-                        <div *ngIf="selling" style="padding: 32px 0px;" fxLayout="column" fxLayout.gt-sm="row" fxLayoutAlign="center center">
-                            <div style="position: relative;" fxLayout="column">
-                                <div fxLayout="row" fxLayoutGap="16px">
-                                    <mat-form-field fxFlex="72px">
-                                        <mat-label>Hours</mat-label>
-                                        <input matInput type="number" [(ngModel)]="hours" (ngModelChange)="updateDaiAmount()">
-                                    </mat-form-field>
-                                    <mat-form-field fxFlex="72px">
-                                        <mat-label>Minutes</mat-label>
-                                        <input matInput type="number" [(ngModel)]="minutes" (ngModelChange)="updateDaiAmount()">
-                                    </mat-form-field>
-                                    <mat-form-field fxFlex="72px">
-                                        <mat-label>Seconds</mat-label>
-                                        <input matInput type="number" [(ngModel)]="seconds" (ngModelChange)="updateDaiAmount()">
-                                    </mat-form-field>
-                                </div>
-                                <small *ngIf="App.user && App.user.balances[identity.medao.address]" style="position: absolute; bottom: 0px; color: rgba(0,0,0,0.54);" class="centered">
-                                    max: {{App.user.balances[identity.medao.address].seconds | time}}
-                                </small>
-                            </div>
 
-                            <div class="margin padding centered" fxLayoutAlign="center">
-                                <mat-icon fxShow fxHide.lt-md>arrow_forward</mat-icon>
-                                <mat-icon fxShow fxHide.gt-sm>arrow_downward</mat-icon>
-                            </div>
+                        <div class="margin padding centered" fxLayoutAlign="center">
+                            <mat-icon fxShow fxHide.lt-md>arrow_forward</mat-icon>
+                            <mat-icon fxShow fxHide.gt-sm>arrow_downward</mat-icon>
+                        </div>
 
-                            <div fxLayout="row" fxLayoutAlign.lt-md="center center">
-                                <mat-form-field fxFlex="104px">
-                                    <mat-label>Dai Amount</mat-label>
-                                    <input matInput
-                                        type="number"
-                                        step="0.01"
-                                        min="0.01"
-                                        [(ngModel)]="daiAmount"
-                                        (ngModelChange)="updateTimeValues()">
-                                        <span style="padding: 0px 7px; color: grey;" matSuffix>$</span>
-                                    </mat-form-field>
-                                </div>
+                        <div fxLayout="row" fxLayoutAlign.lt-md="center center">
+                            <mat-form-field fxFlex="104px">
+                                <mat-label>Dai Amount</mat-label>
+                                <input matInput
+                                    type="number"
+                                    step="0.01"
+                                    min="0.01"
+                                    [(ngModel)]="daiAmount"
+                                    (ngModelChange)="updateTimeValues()">
+                                    <span style="padding: 0px 7px; color: grey;" matSuffix>$</span>
+                                </mat-form-field>
                             </div>
+                        </div>
 
-                            <div *ngIf="App.signedIn && !selling && !userAgreesToTerms" class="margin" style="color: red;">
-                                *In order to buy you must first accept the contract agreement above!
-                            </div>
+                        <div *ngIf="App.signedIn && !selling && !userAgreesToTerms" class="margin" style="color: red;">
+                            *In order to buy you must first accept the contract agreement above!
+                        </div>
 
-                            <button mat-raised-button
-                            *ngIf="!selling"
-                            class="secondary-bg white"
-                            [ngClass]="{'grey-bg': !userAgreesToTerms || !validBuy()}"
-                            [disabled]="!userAgreesToTerms || !validBuy()"
-                            (click)="buy()">
-                            Buy
-                        </button>
                         <button mat-raised-button
-                        *ngIf="selling"
+                        *ngIf="!selling"
                         class="secondary-bg white"
-                        [ngClass]="{'grey-bg': !validSell()}"
-                        [disabled]="!validSell()"
-                        (click)="sell()">
-                        Sell
+                        [ngClass]="{'grey-bg': !userAgreesToTerms || !validBuy()}"
+                        [disabled]="!userAgreesToTerms || !validBuy()"
+                        (click)="buy()">
+                        Buy
                     </button>
-                </mat-card>
-            </div>
+                    <button mat-raised-button
+                    *ngIf="selling"
+                    class="secondary-bg white"
+                    [ngClass]="{'grey-bg': !validSell()}"
+                    [disabled]="!validSell()"
+                    (click)="sell()">
+                    Sell
+                </button>
+            </mat-card>
         </div>
+
     </div>
 
 </div>
