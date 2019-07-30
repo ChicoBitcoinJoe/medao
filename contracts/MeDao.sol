@@ -23,6 +23,7 @@ contract MeDao is Owned, TokenController {
 
     address public identity;
     string public hash;
+    address[] public clones;
 
     constructor () public {
         blockInitialized = block.number;
@@ -52,6 +53,14 @@ contract MeDao is Owned, TokenController {
         lastPayTimestamp = now;
 
         require(timeToken.generateTokens(owner, _tokenClaim), "failed to generate tokens");
+    }
+
+    function getClones () public view returns (address[] memory) {
+        return clones;
+    }
+
+    function getTotalClones () public view returns (uint) {
+        return clones.length;
     }
 
     function calculateTokenClaim (uint reserveAmount) public view returns (uint) {
@@ -108,6 +117,7 @@ contract MeDao is Owned, TokenController {
     }
 
     event Pay_event (uint tokenAmount);
+    event Clone_event (address token);
     event Deposit_event (address msgSender, uint reserveAmount, uint tokenAmount);
     event Withdraw_event (address msgSender, uint tokenAmount, uint reserveAmount);
     event Burn_event (address msgSender, uint tokenAmount);
