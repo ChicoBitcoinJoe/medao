@@ -1,5 +1,9 @@
-| Kovan Network | Contract Address |
-| --- | --- |
-| MiniMe Token Factory | 0x9F2d4244AA90e2C979555b03afcae464D416A24C |
-| MeDao Blueprint | 0xC2eAD50B53495e8b53f85cE1e4e0b2a0784dC949 |
-| MeDao Factory | 0xEC07C13FFEA20b96c0211ef6f4A205630108FC5d |
+## Uncertainties
+
+1. Should the maximum token supply be determined by age or a constant? Being set by the user seems like a bad idea.
+
+2. Should there be a burn function? The pros and cons aren't super obvious vs just supporting paying with Dai
+
+3. Would a "multi-reserve token" contract make sense? This introduces the need for price feeds which can fail over time. Already relies on Dai not failing.
+
+4. Would it make sense to start with a multisig dao to handle lost keys?
