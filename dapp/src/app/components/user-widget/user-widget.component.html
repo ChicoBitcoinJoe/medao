@@ -36,13 +36,9 @@
         </button>
     </div>
     <div *ngIf="App.user" fxLayout="column">
-        <div *ngIf="!App.user.medao && !App.registering" fxLayout="column">
-            <button mat-button routerLink="/register">register</button>
-        </div>
-        <div *ngIf="App.user.medao || App.registering" fxLayout="column">
-            <button mat-button (click)="App.view(App.user)">my profile</button>
-            <button mat-button routerLink="/edit">edit profile</button>
-        </div>
+        <button *ngIf="!App.user.medao && !App.registering" mat-button routerLink="/register">register</button>
+        <button *ngIf="App.user.medao || App.registering" mat-button (click)="App.view(App.user)">my profile</button>
         <button mat-button routerLink="/network">my network</button>
+        <button *ngIf="App.user.medao || App.registering" mat-button routerLink="/edit">edit profile</button>
     </div>
 </mat-menu>
