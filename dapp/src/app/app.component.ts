@@ -18,7 +18,7 @@ export class AppComponent {
     constructor (
         private matIconRegistry: MatIconRegistry,
         private domSanitizer: DomSanitizer,
-        private App: AppService,
+        public App: AppService,
     ) {
         this.matIconRegistry.addSvgIcon("qrcode", this.domSanitizer.bypassSecurityTrustResourceUrl("./assets/qrcode.svg"));
         this.App.initialize();
