@@ -4,7 +4,7 @@ import { MedaoService, MeDao } from '../../services/medao/medao.service';
 
 declare let web3: any;
 declare let require: any;
-let MeDaoArtifact = require('../../../contracts/MeDao.json');
+let MeDaoArtifact = require('../../../contracts/kovan/MeDao.json');
 let ERC20Artifact = require('../../../contracts/ERC20.json');
 const Box = require('3box');
 

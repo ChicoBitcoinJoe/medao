@@ -3,10 +3,10 @@ import { Injectable } from '@angular/core';
 declare let web3: any;
 declare let require: any;
 
-let MiniMeTokenArtifact = require('../../../contracts/MiniMeToken.json');
-let MeDaoArtifact = require('../../../contracts/MeDao.json');
-let MeDaoFactoryArtifact = require('../../../contracts/MeDaoFactory.json');
 let ERC20Artifact = require('../../../contracts/ERC20.json');
+let MiniMeTokenArtifact = require('../../../contracts/MiniMeToken.json');
+let MeDaoArtifact = require('../../../contracts/kovan/MeDao.json');
+let MeDaoFactoryArtifact = require('../../../contracts/kovan/MeDaoFactory.json');
 
 let Dai = {
     '1': "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359",
