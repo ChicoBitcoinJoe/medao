@@ -120,6 +120,24 @@ contract MeDao is Owned, TokenController {
         emit NewIdentity_event(newIdentity);
     }
 
+    function createCloneToken (
+        MiniMeToken cloneableToken,
+        string memory tokenName,
+        string memory tokenSymbol,
+        uint snapshotBlock
+    ) public onlyOwner {
+        address payable token = address(uint160(cloneableToken.createCloneToken(
+            tokenName,
+            18,
+            tokenSymbol,
+            snapshotBlock,
+            true
+        )));
+
+        clones.push(token);
+        emit Clone_event(token);
+    }
+
     event Pay_event (uint tokenAmount);
     event Clone_event (address token);
     event ConvertDai_event (address msgSender, uint reserveAmount, uint tokenAmount);
