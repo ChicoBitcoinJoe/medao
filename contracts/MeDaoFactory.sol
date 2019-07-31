@@ -28,6 +28,7 @@ contract MeDaoFactory is CloneFactory {
         uint tokenClaim,
         uint initialReserve
     ) public returns (MeDao medao) {
+        require(registry[msg.sender] == address(0x0));
         require(initialReserve > 0);
         require(tokenClaim > 0);
 
@@ -45,13 +46,6 @@ contract MeDaoFactory is CloneFactory {
         timeToken.changeController(address(medao));
         require(dai.transferFrom(msg.sender, address(medao), initialReserve));
         medao.initialize(msg.sender, timeToken, dai, birthTimestamp, tokenClaim);
-
-        register(medao);
-    }
-
-    function register (MeDao medao) public {
-        require(created[address(medao)], 'invalid medao');
-        require(medao.identity() == msg.sender, 'invalid caller');
 
         registry[msg.sender] = medao;
         emit Register_event(msg.sender, medao);
