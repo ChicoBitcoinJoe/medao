@@ -28,7 +28,7 @@ contract MeDaoFactory is CloneFactory {
         uint tokenClaim,
         uint initialReserve
     ) public returns (MeDao medao) {
-        require(registry[msg.sender] == address(0x0));
+        require(address(registry[msg.sender]) == address(0x0));
         require(initialReserve > 0);
         require(tokenClaim > 0);
 
