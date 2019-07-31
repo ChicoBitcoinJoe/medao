@@ -40,8 +40,8 @@ export class CreateComponent implements OnInit {
         }
 
         this.App.user.funding.percent = 50;
-        this.App.user.wage.current.value = 0;
-        this.App.user.funding.max.value = 0;
+        this.App.user.wage.max.value = null;
+        this.App.user.funding.current.value = null;
     }
 
     updateBirthDate () {

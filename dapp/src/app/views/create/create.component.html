@@ -71,7 +71,8 @@
                     Wage:
                     <span fxFlex></span>
                     ${{App.user.wage.current.value | number: '1.2-2'}} /&nbsp;
-                    <b style="font-size: 16px">{{App.user.wage.max.value | number: '1.2-2'}}</b>
+                    <b *ngIf="!App.user.wage.max.value" style="font-size: 16px">0.00</b>
+                    <b *ngIf="App.user.wage.max.value" style="font-size: 16px">{{App.user.wage.max.value | number: '1.2-2'}}</b>
                 </div>
                 <div>
                     Balance:
@@ -129,7 +130,8 @@
                 Wage:
                 <span fxFlex></span>
                 ${{App.user.wage.current.value | number: '1.2-2'}} /&nbsp;
-                <b style="font-size: 16px">{{App.user.wage.max.value | number: '1.2-2'}}</b>
+                <b *ngIf="!App.user.wage.max.value" style="font-size: 16px">0.00</b>
+                <b *ngIf="App.user.wage.max.value" style="font-size: 16px">{{App.user.wage.max.value | number: '1.2-2'}}</b>
             </div>
             <div>
                 Balance:
