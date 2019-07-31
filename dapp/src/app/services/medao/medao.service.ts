@@ -27,7 +27,7 @@ export class MeDao {
     ) {
         this.ready = new Promise (async (resolve, reject) => {
             this.methods = new web3.eth.Contract(MeDaoArtifact.abi, this.address).methods;
-            let tokenAddress = await this.methods.timeToken().call();
+            let tokenAddress = await this.methods.Time().call();
             this.token = new web3.eth.Contract(MiniMeTokenArtifact.abi, tokenAddress);
             resolve(true);
         })

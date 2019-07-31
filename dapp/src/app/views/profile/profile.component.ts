@@ -79,7 +79,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
             this.daiAmount = 0;
 
         let daiAmountInWei = web3.utils.toWei(this.daiAmount.toString(), 'ether');
-        let tokenClaim = await this.identity.medao.methods.calculateTokenClaim(daiAmountInWei).call();
+        let tokenClaim = await this.identity.medao.methods.calculateTimeClaim(daiAmountInWei).call();
         let seconds = web3.utils.fromWei(tokenClaim.toString(), 'ether');
         let hours = Math.floor(seconds / 3600);
         seconds -= hours*3600;
@@ -94,7 +94,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     async updateDaiAmount () {
         let seconds = this.seconds + this.minutes * 60 + this.hours * 3600;
         let secondsInWei = web3.utils.toWei(seconds.toString(), 'ether');
-        let daiAmountInWei = await this.identity.medao.methods.calculateReserveClaim(secondsInWei).call()
+        let daiAmountInWei = await this.identity.medao.methods.calculateDaiClaim(secondsInWei).call()
         this.daiAmount = web3.utils.fromWei(daiAmountInWei.toString(), 'ether');
     }
 
@@ -119,7 +119,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     async buy () {
         let daiAmount = this.daiAmount.toString();
         let daiAmountInWei = web3.utils.toWei(daiAmount, 'ether');
-        this.identity.medao.methods.deposit(daiAmountInWei)
+        this.identity.medao.methods.convertDai(daiAmountInWei)
         .send({
             from: web3.account
         })
@@ -140,7 +140,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     async sell () {
         let seconds = this.seconds + this.minutes * 60 + this.hours * 3600;
         let secondsInWei = web3.utils.toWei(seconds.toString(), 'ether');
-        this.identity.medao.methods.withdraw(secondsInWei)
+        this.identity.medao.methods.convertTime(secondsInWei)
         .send({
             from: web3.account
         })

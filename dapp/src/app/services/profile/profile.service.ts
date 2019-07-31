@@ -302,7 +302,7 @@ export class Profile {
         }
 
         let balanceInWei = await token.methods.balanceOf(address).call();
-        let value = await this.medao.methods.calculateReserveClaim(balanceInWei).call();
+        let value = await this.medao.methods.calculateDaiClaim(balanceInWei).call();
         value = web3.utils.fromWei(value.toString(), 'ether');
         let balanceInSeconds = web3.utils.fromWei(balanceInWei.toString(), 'ether').toString();
         let seconds = balanceInSeconds;
@@ -366,7 +366,7 @@ export class Profile {
 
         this.funding.current.wei = await this.MeDao.dai.methods.balanceOf(this.medao.address).call();
         this.funding.current.value = web3.utils.fromWei(this.funding.current.wei.toString(), 'ether');
-        this.funding.max.wei = await this.medao.methods.calculateReserveClaim(this.supply.max.wei).call();
+        this.funding.max.wei = await this.medao.methods.calculateDaiClaim(this.supply.max.wei).call();
         this.funding.max.value = web3.utils.fromWei(this.funding.max.wei.toString(), 'ether');
         this.funding.percent = this.funding.current.value / this.funding.max.value;
     }
@@ -384,7 +384,7 @@ export class Profile {
         if(!this.medao) return;
 
         let oneHour = web3.utils.toWei('3600', 'ether');
-        this.wage.max.wei = await this.medao.methods.calculateReserveClaim(oneHour.toString()).call();
+        this.wage.max.wei = await this.medao.methods.calculateDaiClaim(oneHour.toString()).call();
         this.wage.max.value = web3.utils.fromWei(this.wage.max.wei.toString(), 'ether');
         this.wage.current.value = +((this.wage.max.value * this.funding.percent).toFixed(18));
         this.wage.current.wei = web3.utils.toWei(this.wage.current.value.toString(), 'ether');
@@ -405,7 +405,7 @@ export class Profile {
 
     collectPaycheck () {
         this.paycheck.collecting = true;
-        this.medao.methods.pay().send({
+        this.medao.methods.collectPaycheck().send({
             from: web3.account
         })
         .on('confirmation', async (confirmations, txReceipt) => {
