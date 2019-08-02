@@ -1,35 +1,30 @@
 <div fxLayout="column" fxFlexFill>
-    <span fxFlex="80px"></span>
-    <mat-toolbar class="primary-bg white fixed" style="width: 100%;" fxLayoutGap="8px" fxFlex="80px">
+    <mat-toolbar class="primary-bg white" fxLayoutGap="8px" fxFlex="96px">
         <span class="cursor white-text" routerLink="/home'">MeDao</span>
         <span fxFlex></span>
         <app-user-widget *ngIf="App.ready" [App]="App"></app-user-widget>
     </mat-toolbar>
 
-    <span fxFlex="40px"></span>
-
-    <div *ngIf="App.user">
-        <span *ngIf="App.user.deploying" fxFlex="80px"></span>
-        <span *ngIf="App.user.deploying" class="fixed" style="top: 80px; width: 100%;" fxLayout="column" fxFlex="80px">
-            <mat-card class="padding centered" style="border-radius: 0px;">
-                <span *ngIf="!App.user.medao" style="color: red;">While your dao is deploying, consider filling out <a routerLink="/edit">your profile</a>...</span>
-                <span *ngIf="App.user.medao" fxLayout="row" fxLayoutGap="16px">
-                    <div fxLayout="column" fxFlex>
-                        <span>Your dao has successfully deployed!</span>
-                        <a class="cursor" style="color: blue;" (click)="App.user.view()">check it out...</a>
-                    </div>
-                    <button mat-icon-button (click)="App.user.deploying = null">
-                        <mat-icon>close</mat-icon>
-                    </button>
-                </span>
-            </mat-card>
-            <span fxFlex="80px"></span>
-        </span>
+    <div *ngIf="App.user && App.user.deploying" fxLayout="column" fxFlex="80px">
+        <mat-card class="padding centered" style="border-radius: 0px;">
+            <span *ngIf="!App.user.medao" style="color: red;">While your dao is deploying, consider filling out <a routerLink="/edit">your profile</a>...</span>
+            <span *ngIf="App.user.medao" fxLayout="row" fxLayoutGap="16px">
+                <div fxLayout="column" fxFlex>
+                    <span>Your dao has successfully deployed!</span>
+                    <a class="cursor" style="color: blue;" (click)="App.view(user)">check it out...</a>
+                </div>
+                <button mat-icon-button (click)="App.user.deploying = null">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </span>
+        </mat-card>
     </div>
 
-    <div fxLayout="row" fxLayoutAlign="center" fxFlex>
-        <div fxLayout="column" style="max-width: 996px; width: 100%">
-            <router-outlet></router-outlet>
-        </div>
+    <div fxFlex>
+        <router-outlet></router-outlet>
     </div>
+
+    <mat-toolbar fxFlex="120px">
+        footer
+    </mat-toolbar>
 </div>

@@ -1,4 +1,112 @@
-<div *ngIf="ready" fxLayout="column" fxLayoutGap="32px" fxFlexFill>
+<div *ngIf="ready" style="max-width: 1196px; margin: auto;" fxLayout="column">
+    <div fxHide.lt-md style="margin: 32px" fxLayout="row" fxLayoutGap="32px">
+        <div style="border: 4px solid white; border-radius: 3px; height: 400px; width: 400px;">
+            <img *ngIf="identity.image" style="width: 100%; height: auto;" [src]="identity.image">
+        </div>
+        <div class="white" fxLayout="row" fxFlex>
+            <div style="padding: 0px 32px; width: 100%; max-width: 796px;" fxLayout="column" fxLayoutGap="24px">
+                <h1 style="font-size: 36px;">{{identity.name}}</h1>
+                <p style="font-size: 16px;" fxFlex>{{identity.title}}</p>
+                <div style="padding: 16px 0px;" fxLayout="row" fxLayoutGap="64px">
+                    <div fxLayout="column">
+                        <div style="font-size: 24px;">${{identity.funding.current.value | number: '1.0-2'}}</div>
+                        <div>pledged of ${{identity.funding.max.value | number: '1.0-0'}}</div>
+                    </div>
+                    <div fxLayout="column">
+                        <div style="font-size: 24px;">???</div>
+                        <div>pledgers</div>
+                    </div>
+                    <div fxLayout="column">
+                        <div style="font-size: 24px;">{{identity.funding.percent * 100 | number: '1.0-0'}}%</div>
+                        <div>to goal</div>
+                    </div>
+                </div>
+                <div style="padding-bottom: 24px;" fxLayout="row" fxLayoutGap="16px">
+                    <button mat-raised-button>pledge</button>
+                    <button mat-raised-button>follow</button>
+                    <button mat-raised-button>more...</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div fxHide.gt-sm class="white" fxLayout="column" fxLayoutGap="32px">
+        <div *ngIf="identity.image" class="white-bg" style="padding: 8px 0px">
+            <img style="width: 100%; height: auto;" [src]="identity.image">
+        </div>
+        <div style="padding: 0px 32px;" fxLayout="column">
+            <h1 style="font-size: 36px;">{{identity.name}}</h1>
+            <p style="font-size: 16px;">{{identity.title}}</p>
+        </div>
+        <div style="padding: 16px 32px;" fxLayout.xs="column" fxLayout="row" fxLayoutGap.xs="16px" fxLayoutGap="64px">
+            <div fxLayout="column">
+                <div style="font-size: 24px;">${{identity.funding.current.value | number: '1.0-2'}}</div>
+                <div>pledged of ${{identity.funding.max.value | number: '1.0-0'}}</div>
+            </div>
+            <div fxLayout="column">
+                <div style="font-size: 24px;">???</div>
+                <div>pledgers</div>
+            </div>
+            <div fxLayout="column">
+                <div style="font-size: 24px;">{{identity.funding.percent * 100 | number: '1.0-0'}}%</div>
+                <div>to goal</div>
+            </div>
+        </div>
+
+        <div style="padding: 0px 32px;" fxLayout="row" fxLayoutGap="16px">
+            <button mat-raised-button>pledge</button>
+            <button mat-raised-button>follow</button>
+            <button mat-raised-button>more...</button>
+        </div>
+
+    </div>
+
+    <span fxFlex="64px"></span>
+
+    <div ngStyle.gt-xs="padding: 0px 32px;" fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap="32px" fxLayoutGap.lt-md="64px">
+        <div fxFlex.gt-sm="55" fxFlex.gt-md="60">
+            <mat-card style="padding: 32px;">
+                <h2>About</h2>
+                <div *ngIf="!identity.about">No contract agreement set. Funds sent to this contract should be considered a DONATION with no expectation of return.</div>
+                <div *ngIf="identity.about" style="overflow: hidden; word-break: break-word;" [innerHTML]="identity.about | MarkdownToHtml"></div>
+            </mat-card>
+        </div>
+        <div fxFlex.gt-sm="45" fxFlex.gt-md="40">
+            <div ngStyle.xs="padding: 0px 16px;" fxLayout="column" fxLayoutGap="32px">
+                <div class="white padding" style="border: 1px solid white; border-radius: 3px;">
+                    <h2>Custom Pledge Card #1</h2>
+                    <p>Required Contribution: 0h</p>
+                    <p>Perk description goes here</p>
+                </div>
+                <div class="white padding" style="border: 1px solid white; border-radius: 3px;">
+                    <h2>Custom Pledge Card #2</h2>
+                    <p>Required Contribution: 0h</p>
+                    <p>Perk description goes here</p>
+                </div>
+                <div class="white padding" style="border: 1px solid white; border-radius: 3px;">
+                    <h2>Custom Pledge Card #3</h2>
+                    <p>Required Contribution: 0h</p>
+                    <p>Perk description goes here</p>
+                </div>
+                <mat-card>
+                    <div class="padding" fxLayout="column" fxLayoutGap="16px">
+                        <h2>Pledge Custom Amount</h2>
+                        <mat-form-field>
+                            <span matPrefix>$ &nbsp;</span>
+                            <input matInput>
+                            <mat-hint>max: $0.00 (get funds)</mat-hint>
+                        </mat-form-field>
+                        <p>Your pledge will fund ~0 hours of {{identity.name}}'s time</p>
+                        <button mat-button>pledge</button>
+                    </div>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+
+    <span fxFlex="128px"></span>
+</div>
+
+<div *ngIf="false && ready" fxLayout="column" fxLayoutGap="32px" fxFlexFill>
 
     <app-profile-widget class="margin" fxLayout="column" [App]="App" [identity]="identity"></app-profile-widget>
 
@@ -11,21 +119,21 @@
         <div fxLayout="row" fxLayoutAlign="space-around" fxLayoutGap.lt-md="36px">
             <div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="space-around" fxFlex.gt-xs fxLayoutGap.lt-md="36px">
                 <div class="centered" fxLayout="column" fxLayoutGap="4px">
-                    <div class="white-text" style="font-weight: bold; font-size: 24px;">${{identity.funding.current.value | number: '1.2-2'}}</div>
+                    <div class="white" style="font-weight: bold; font-size: 24px;">${{identity.funding.current.value | number: '1.2-2'}}</div>
                     <div class="light-grey-text" style="font-size: 12px;">raised</div>
                 </div>
                 <div class="centered" fxLayout="column" fxLayoutGap="4px">
-                    <div class="white-text" style="font-weight: bold; font-size: 24px;">${{identity.funding.max.value | number: '1.2-2'}}</div>
+                    <div class="white" style="font-weight: bold; font-size: 24px;">${{identity.funding.max.value | number: '1.2-2'}}</div>
                     <div class="light-grey-text" style="font-size: 12px;">goal</div>
                 </div>
             </div>
             <div fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="space-around" fxFlex.gt-xs fxLayoutGap.lt-md="36px">
                 <div class="centered" fxLayout="column" fxLayoutGap="4px">
-                    <div class="white-text" style="font-weight: bold; font-size: 24px;">{{identity.funding.percent * 100 | number: '1.2-2'}}%</div>
+                    <div class="white" style="font-weight: bold; font-size: 24px;">{{identity.funding.percent * 100 | number: '1.2-2'}}%</div>
                     <div class="light-grey-text" style="font-size: 12px;">funded</div>
                 </div>
                 <div class="centered" fxLayout="column" fxLayoutGap="4px">
-                    <div class="white-text" style="font-weight: bold; font-size: 24px;">${{identity.wage.max.value | number: '1.2-2'}}</div>
+                    <div class="white" style="font-weight: bold; font-size: 24px;">${{identity.wage.max.value | number: '1.2-2'}}</div>
                     <div class="light-grey-text" style="font-size: 12px;">wage</div>
                 </div>
             </div>
