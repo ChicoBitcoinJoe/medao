@@ -19,7 +19,8 @@ contract MeDao is Owned, TokenController {
 
     ERC20 public Dai;               // A reserve currency to hold the value of a person
     MiniMeToken public Time;        // A cloneable token that represents the value of a person
-    uint public maxTokenSupply;     // The maximum amount of tokens that can be minted
+    uint public maxTimeSupply;      // The maximum amount of time that can be created
+    uint public burnedTimeSupply;   // The total amount of time burned by this contract
 
     address public identity;        // The account associated with this medao
     address[] public clones;        // A list of clones created by the owner
@@ -38,7 +39,7 @@ contract MeDao is Owned, TokenController {
         MiniMeToken _Time,
         ERC20 _Dai,
         int _birthTimestamp,
-        uint _initialTokenBalance
+        uint _initialTimeBalance
     ) public {
         require(blockInitialized == 0, 'contract already initialized');
         require(_birthTimestamp < int(now), 'invalid birth timestamp');
@@ -53,10 +54,10 @@ contract MeDao is Owned, TokenController {
         birthTimestamp = _birthTimestamp;
 
         uint elapsedSeconds = uint(int(now) - birthTimestamp);
-        maxTokenSupply = calculateWorkTime(elapsedSeconds);
+        maxTimeSupply = calculateWorkTime(elapsedSeconds);
         lastPayTimestamp = now;
 
-        require(Time.generateTokens(owner, _initialTokenBalance), "failed to generate tokens");
+        require(Time.generateTokens(owner, _initialTimeBalance), "failed to generate tokens");
     }
 
     function getClones () public view returns (address[] memory) {
@@ -71,26 +72,25 @@ contract MeDao is Owned, TokenController {
         return Time.totalSupply() * daiAmount / Dai.balanceOf(address(this));
     }
 
-    function calculateDaiClaim (uint secondsInWei) public view returns (uint) {
-        return Dai.balanceOf(address(this)) * secondsInWei / Time.totalSupply();
+    function calculateDaiClaim (uint timeAmount) public view returns (uint) {
+        return Dai.balanceOf(address(this)) * timeAmount / Time.totalSupply();
     }
 
     function calculateWorkTime (uint elapsedSeconds) public pure returns (uint) {
-        return (elapsedSeconds * 1 ether) * 40 / 168;
+        return elapsedSeconds * 1 ether * 40 / 168;
     }
 
     function collectPaycheck () public onlyOwner {
         uint elapsedSeconds = now - lastPayTimestamp;
         uint workTime = calculateWorkTime(elapsedSeconds);
-        uint fundedTime = workTime * Time.totalSupply() / maxTokenSupply;
-        maxTokenSupply += workTime;
-        lastPayTimestamp = now;
-        require(Time.generateTokens(owner, fundedTime), "failed to generate tokens");
-        emit Pay_event(fundedTime);
+        uint fundedTime = workTime * Time.totalSupply() / maxTimeSupply;
+        uint daiClaim = calculateDaiClaim(fundedTime);
+        require(Dai.transfer(owner, daiClaim), 'failed to transfer');
+        emit Pay_event(fundedTime, daiClaim);
     }
 
     function convertDai (uint daiAmount) public {
-        uint availableSeconds = maxTokenSupply - Time.totalSupply();
+        uint availableSeconds = maxTimeSupply - Time.totalSupply();
         uint claimedTime = calculateTimeClaim(daiAmount);
         require(availableSeconds >= claimedTime, "invalid reserve amount");
         require(Dai.transferFrom(msg.sender, address(this), daiAmount), "failed to transfer");
@@ -98,16 +98,18 @@ contract MeDao is Owned, TokenController {
         emit ConvertDai_event(msg.sender, daiAmount, claimedTime);
     }
 
-    function convertTime (uint secondsInWei) public {
-        uint daiClaim = calculateDaiClaim(secondsInWei);
-        require(Time.destroyTokens(msg.sender, secondsInWei), "failed to destroy tokens");
+    function convertTime (uint timeAmount) public {
+        uint daiClaim = calculateDaiClaim(timeAmount);
+        require(Time.destroyTokens(msg.sender, timeAmount), "failed to destroy tokens");
         require(Dai.transfer(msg.sender, daiClaim), "failed to transfer");
-        emit ConvertTime_event(msg.sender, secondsInWei, daiClaim);
+        emit ConvertTime_event(msg.sender, timeAmount, daiClaim);
     }
 
-    function burn (uint tokenAmount) public {
-        require(Time.destroyTokens(msg.sender, tokenAmount), "failed to burn tokens");
-        emit Burn_event(msg.sender, tokenAmount);
+    function burn (uint timeAmount) public {
+        require(Time.destroyTokens(msg.sender, timeAmount), "failed to burn tokens");
+        maxTimeSupply -= timeAmount;
+        burnedTimeSupply += timeAmount;
+        emit Burn_event(msg.sender, timeAmount);
     }
 
     function setHash (string memory newHash) public onlyOwner {
@@ -126,23 +128,23 @@ contract MeDao is Owned, TokenController {
         string memory tokenSymbol,
         uint snapshotBlock
     ) public onlyOwner {
-        address payable token = address(uint160(cloneableToken.createCloneToken(
+        address token = cloneableToken.createCloneToken(
             tokenName,
             18,
             tokenSymbol,
             snapshotBlock,
             true
-        )));
+        );
 
         clones.push(token);
         emit Clone_event(token);
     }
 
-    event Pay_event (uint tokenAmount);
+    event Pay_event (uint timeAmount, uint daiAmount);
     event Clone_event (address token);
-    event ConvertDai_event (address msgSender, uint reserveAmount, uint tokenAmount);
-    event ConvertTime_event (address msgSender, uint tokenAmount, uint reserveAmount);
-    event Burn_event (address msgSender, uint tokenAmount);
+    event ConvertDai_event (address msgSender, uint daiAmount, uint timeAmount);
+    event ConvertTime_event (address msgSender, uint timeAmount, uint daiAmount);
+    event Burn_event (address msgSender, uint timeAmount);
     event NewHash_event (string newHash);
     event NewIdentity_event (address newIdentity);
 
