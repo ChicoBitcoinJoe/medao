@@ -1,7 +1,8 @@
 <div *ngIf="ready" style="max-width: 1196px; margin: auto;" fxLayout="column">
     <div fxHide.lt-md style="margin: 32px" fxLayout="row" fxLayoutGap="32px">
         <div style="border: 4px solid white; border-radius: 3px; height: 400px; width: 400px;">
-            <img *ngIf="identity.image" style="width: 100%; height: auto;" [src]="identity.image">
+            <img *ngIf="!identity.image" style="width: 100%; height: auto;" [src]="identity.image">
+            <mat-icon *ngIf="identity.image" class="secondary-bg white" style="width: 100%; height: 100%; font-size: 400px;">person</mat-icon>
         </div>
         <div class="white" fxLayout="row" fxFlex>
             <div style="padding: 0px 32px; width: 100%; max-width: 796px;" fxLayout="column" fxLayoutGap="24px">

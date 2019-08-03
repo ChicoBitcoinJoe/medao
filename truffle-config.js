@@ -1,6 +1,3 @@
-import hosts from "hosts";
-import addresses from "addresses";
-
 module.exports = {
     networks: {
         main: {
@@ -12,10 +9,10 @@ module.exports = {
             gasPrice: 10000000000
         },
         kovan: {
-            host: hosts[0],
+            host: '',
             port: 8545,
             network_id: 42,
-            from: addresses[0],
+            from: '',
             gas: 6000000,
             gasPrice: 1000000000
         }

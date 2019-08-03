@@ -142,7 +142,7 @@ contract Employee is Owned, TokenController {
     function calculateCurrentPaycheck () public view returns (uint) {
         uint elapsedSeconds = now - paycheckTimestamp;
         uint workTime = elapsedSeconds * 1 ether * 40 / 168;
-        return earnedShares = workTime * shareToken.totalSupply() / maxTokenSupply;
+        return workTime * shareToken.totalSupply() / maxTokenSupply;
     }
 
     function collectPaycheck () public onlyOwner returns (uint shareClaim) {
