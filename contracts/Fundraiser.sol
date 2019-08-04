@@ -1,16 +1,18 @@
 pragma solidity ^0.5.0;
 
 import "./external/MiniMeToken.sol";
-import "./external/ERC20.sol";
+import "./external/ERC20Token.sol";
 import "./external/Owned.sol";
 import "./external/CloneFactory.sol";
 
-contract Fundraiser is Owned, TokenController {
+import "./Interfaces.sol";
+
+contract Fundraiser is IFundraiser, Owned, TokenController {
 
     address public factory;         // The factory that deployed this contract
     uint public blockInitialized;   // The block this contract was initialized
 
-    ERC20 public reserveToken;      // A reserve token to hold the value of a person
+    ERC20Token public reserveToken;      // A reserve token to hold the value of a person
     MiniMeToken public shareToken;  // A cloneable token that represents a share of a person
     uint public desiredWage;        // How much the owner desires to earn per second worked
     uint public maxTokenSupply;     // The maximum amount of shares that can be created
@@ -22,9 +24,8 @@ contract Fundraiser is Owned, TokenController {
 
     function initialize (
         address _owner,
-        ERC20 _reserveToken,
+        ERC20Token _reserveToken,
         MiniMeToken _shareToken,
-        uint _startTimestamp,
         uint _fundraiserGoal,
         uint _fundraiserDuration
     ) public {
@@ -35,7 +36,7 @@ contract Fundraiser is Owned, TokenController {
         owner = _owner;
         reserveToken = _reserveToken;
         shareToken = _shareToken;
-        collectedTimestamp = _startTimestamp;
+        collectedTimestamp = now;
 
         desiredWage = _fundraiserGoal / _fundraiserDuration;
         maxTokenSupply = _fundraiserDuration * 1 ether;
@@ -61,7 +62,7 @@ contract Fundraiser is Owned, TokenController {
         uint maxReserveClaim = claimedWorkTime * desiredWage / 1 ether;
         reserveClaim = maxReserveClaim * shareToken.totalSupply() / maxTokenSupply;
         require(reserveToken.transfer(owner, reserveClaim), 'failed to pay');
-        emit Collect_event(workTime, reserveClaim);
+        emit Collect_event(claimedWorkTime, reserveClaim);
     }
 
     function deposit (uint reserveAmount) public returns (uint shareClaim) {
@@ -105,16 +106,16 @@ contract Fundraiser is Owned, TokenController {
 
 }
 
-contract FundraiserFactory is CloneFactory {
+contract FundraiserFactory is IFundraiserFactory, CloneFactory {
 
     Fundraiser blueprint;
-    ERC20 public Dai;
+    ERC20Token public Dai;
     MiniMeTokenFactory public TokenFactory;
 
     mapping (address => bool) public created;
 
     constructor (
-        ERC20 _Dai,
+        ERC20Token _Dai,
         Fundraiser _blueprint,
         MiniMeTokenFactory _TokenFactory
     ) public {
@@ -125,10 +126,9 @@ contract FundraiserFactory is CloneFactory {
 
     function create (
         string memory name,
-        uint startTimestamp,
         uint fundraiserGoal,
         uint fundraiserDuration
-    ) public returns (Fundraiser fundraiser) {
+    ) public returns (IFundraiser) {
         require(fundraiserGoal > 0);
         require(fundraiserDuration > 0);
 
@@ -141,17 +141,17 @@ contract FundraiserFactory is CloneFactory {
             true
         );
 
-        fundraiser = Fundraiser(createClone(address(blueprint)));
+        Fundraiser fundraiser = Fundraiser(createClone(address(blueprint)));
         fundraiser.initialize(
             msg.sender,
             Dai,
             shareToken,
-            startTimestamp,
             fundraiserGoal,
             fundraiserDuration
         );
 
         created[address(fundraiser)] = true;
+        return fundraiser;
     }
 
 }

@@ -1,56 +1,79 @@
 pragma solidity ^0.5.0;
 
-import "./external/MiniMeToken.sol";
-import "./external/ERC20.sol";
+import "./external/AddressListLib.sol";
 import "./external/Owned.sol";
-import "./external/CloneFactory.sol";
+import "./Interfaces.sol";
 
-import "./Fundraiser.sol";
+contract TimeManager is ITimeManager, Owned {
 
-contract TimeManager is Owned {
+    // Import the data structure AddressList from the AddressListLib contract
+    using AddressListLib for AddressListLib.AddressList;
 
-    struct TimeAllotment {
-        uint startTimestamp;
-        uint workTime;
-        Fundraiser fundraiser;
+    struct Task {
+        address task;
+        uint time;
+        uint lockedTimestamp;
+        bool isLocked;
     }
 
-    ERC20 public Dai;
-    FundraiserFactory public Fundraisers;
+    uint public blockInitialized;
+    AddressListLib.AddressList tasks;
+    mapping (address => Task) schedule;
 
-    uint public freeTime;
-    TimeAllotment[] public allotments;
-
-    constructor () public  {
-        freeTime = 24 hours;
+    function initialize (address baseTask) public runOnce {
+        register(baseTask);
+        increase(schedule[baseTask], 16 hours);
     }
 
-    function startFundraiser (
-        string memory name,
-        uint startTimestamp,
-        uint fundraiserGoal,
-        uint fundraiserDuration,
-        uint seedFunds,
-        uint expectedWorkTime
-    ) public onlyOwner returns (Fundraiser fundraiser) {
-        fundraiser = Fundraisers.create(
-            name,
-            startTimestamp,
-            fundraiserGoal,
-            fundraiserDuration
-        );
-
-        require(Dai.transferFrom(msg.sender, address(this), seedFunds));
-        require(Dai.approve(address(fundraiser), seedFunds));
-        uint initialShares = fundraiser.deposit(seedFunds);
-        fundraiser.shareToken().transfer(owner, seedFunds);
-
-        allotments.push(TimeAllotment(startTimestamp, expectedWorkTime, fundraiser));
+    function assign (address task, uint time) public onlyOwner {
+        assign(task, time, tasks.index(0));
     }
 
-    function getTimeAllotment (uint index) public view returns (uint, uint, Fundraiser) {
-        TimeAllotment memory allotment = allotments[index];
-        return (allotment.startTimestamp, allotment.workTime, allotment.fundraiser);
+    function assign (address taskA, uint time, address taskB) public onlyOwner {
+        // Assign 'time' to 'taskA' from 'taskB'
+        require(tasks.contains(taskB));
+        register(taskA);
+
+        decrease(schedule[taskB], time);
+        increase(schedule[taskA], time);
+    }
+
+    function lock (address task) public onlyOwner {
+        require(task != tasks.index(0));
+
+        schedule[task].lockedTimestamp = now;
+    }
+
+    function unlock (address task) public onlyOwner {
+        Task storage scheduled = schedule[task];
+        uint elapsedSeconds = now - scheduled.lockedTimestamp;
+        require(elapsedSeconds >= 30 days);
+        scheduled.lockedTimestamp = 0;
+    }
+
+    function register (address task) internal {
+        if(tasks.contains(task)) return;
+
+        tasks.add(task);
+        schedule[task] = Task(task, 0, 0, false);
+    }
+
+    function increase (Task storage task, uint time) internal {
+        require(!task.isLocked);
+        task.time += time;
+    }
+
+    function decrease (Task storage task, uint time) internal {
+        require(task.time >= time);
+        task.time -= time;
+    }
+
+    // Modifiers and Events
+
+    modifier runOnce () {
+        require(blockInitialized == 0);
+        _;
+        blockInitialized = block.number;
     }
 
 }

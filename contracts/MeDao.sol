@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 
 import "./external/MiniMeToken.sol";
-import "./external/ERC20.sol";
+import "./external/ERC20Token.sol";
 import "./external/Owned.sol";
 
 /**
@@ -17,12 +17,12 @@ contract MeDao is Owned, TokenController {
     address public factory;         // The factory that deployed this contract
     uint public blockInitialized;   // The block this contract was initialized
 
-    ERC20 public Dai;               // A reserve currency to hold the value of a person
+    ERC20Token public Dai;               // A reserve currency to hold the value of a person
     MiniMeToken public Time;        // A cloneable token that represents the value of a person
     uint public maxTimeSupply;      // The maximum amount of time that can be created
     uint public burnedTimeSupply;   // The total amount of time burned by this contract
 
-    address public identity;        // The account associated with this medao
+
     address[] public clones;        // A list of clones created by the owner
     int public birthTimestamp;      // The Unix timestamp of the birth date of
     uint public lastPayTimestamp;   // The last time the owner collected a paycheck
@@ -37,7 +37,7 @@ contract MeDao is Owned, TokenController {
     function initialize (
         address _owner,
         MiniMeToken _Time,
-        ERC20 _Dai,
+        ERC20Token _Dai,
         int _birthTimestamp,
         uint _initialTimeBalance
     ) public {
@@ -48,7 +48,6 @@ contract MeDao is Owned, TokenController {
         factory = msg.sender;
 
         owner = _owner;
-        identity = _owner;
         Time = _Time;
         Dai = _Dai;
         birthTimestamp = _birthTimestamp;
@@ -117,10 +116,7 @@ contract MeDao is Owned, TokenController {
         emit NewHash_event(newHash);
     }
 
-    function setIdentity (address newIdentity) public onlyOwner {
-        identity = newIdentity;
-        emit NewIdentity_event(newIdentity);
-    }
+
 
     function createCloneToken (
         MiniMeToken cloneableToken,
@@ -146,7 +142,6 @@ contract MeDao is Owned, TokenController {
     event ConvertTime_event (address msgSender, uint timeAmount, uint daiAmount);
     event Burn_event (address msgSender, uint timeAmount);
     event NewHash_event (string newHash);
-    event NewIdentity_event (address newIdentity);
 
 /// Token Controller Functions
 

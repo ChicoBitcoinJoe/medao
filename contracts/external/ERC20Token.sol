@@ -1,6 +1,6 @@
 pragma solidity ^0.5.0;
 
-contract ERC20 {
+contract ERC20Token {
     function totalSupply() public view returns (uint);
     function balanceOf(address tokenOwner) public view returns (uint balance);
     function allowance(address tokenOwner, address spender) public view returns (uint remaining);
@@ -10,9 +10,4 @@ contract ERC20 {
 
     event Transfer(address indexed from, address indexed to, uint tokens);
     event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
-}
-
-contract WETH is ERC20 {
-    function deposit () public payable;
-    function withdraw (uint amount) public;
 }

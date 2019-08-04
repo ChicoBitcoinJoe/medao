@@ -1,10 +1,73 @@
 pragma solidity ^0.5.0;
 
-import "./external/MiniMeToken.sol";
-import "./external/ERC20.sol";
 import "./external/Owned.sol";
-import "./external/CloneFactory.sol";
+import "./Fundraiser.sol";
+import "./Interfaces.sol";
 
+contract Person is IPerson, Owned {
+
+    uint public blockInitialized;
+
+    struct Project {
+        IFundraiser fundraiser;
+        uint startTimestamp;
+        uint endTimestamp;
+        uint fundraiserDuration;
+        uint fundraiserGoal;
+    }
+
+    IMeDao public Dao;              // The dao financially supporting this person
+    address public identity;        // The account associated with this person
+    ITimeManager public Schedule;   // Manages alloted time for projects
+
+    function initialize (
+        IMeDao _Dao,
+        ITimeManager _Schedule
+    ) public runOnce {
+        Dao = _Dao;
+        Schedule = _Schedule;
+        owner = msg.sender;
+        identity = msg.sender;
+    }
+
+    function startProject (
+        IFundraiserFactory Factory,
+        string memory projectName,
+        uint startTimestamp,
+        uint endTimestamp,
+        uint fundraiserDuration,
+        uint fundraiserGoal,
+        uint expectedWorkTime
+    ) public onlyOwner returns (IFundraiser fundraiser) {
+        fundraiser = Factory.create(
+            projectName,
+            fundraiserGoal,
+            fundraiserDuration
+        );
+
+        Schedule.assign(address(fundraiser), expectedWorkTime);
+
+        return fundraiser;
+    }
+
+    function setIdentity (address newIdentity) public onlyOwner {
+        identity = newIdentity;
+        emit NewIdentity_event(newIdentity);
+    }
+
+    // Modifiers and Events
+
+    modifier runOnce () {
+        require(blockInitialized == 0);
+        _;
+        blockInitialized = block.number;
+    }
+
+    event NewIdentity_event (address newIdentity);
+
+}
+
+/*
 contract EmployeeRegistry is CloneFactory {
 
     Employee Blueprint;
@@ -70,7 +133,7 @@ contract EmployeeRegistry is CloneFactory {
     }
 
 }
-
+*/
 /**
     The goal of this contract is to allow anyone in the world to invest directly in the value of a person.
     Similar to a crowdfund, many people deposit into a pool of currency. The employee then collects a
@@ -87,7 +150,8 @@ contract EmployeeRegistry is CloneFactory {
 
     Whitepaper: https://docs.google.com/document/d/1A8fjq-fONbSUo_zS8ac7Qs3hqog2Ap78eWHjDGHI5_s/edit#heading=h.m1cmgqsdjew5
 **/
-contract Employee is Owned, TokenController {
+/*
+contract EmployeeOld is Owned, TokenController {
 
     address public factory;         // The factory that deployed this contract
     uint public blockInitialized;   // The block this contract was initialized
@@ -213,3 +277,5 @@ contract Employee is Owned, TokenController {
     event Token_event (ERC20 token);
 
 }
+
+*/

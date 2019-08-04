@@ -6,7 +6,7 @@ import "./MeDao.sol";
 contract MeDaoFactory is CloneFactory {
 
     address public blueprint;
-    ERC20 public dai;
+    ERC20Token public dai;
     MiniMeTokenFactory factory;
 
     mapping (address => bool) public created;
@@ -14,7 +14,7 @@ contract MeDaoFactory is CloneFactory {
 
     constructor (
         address _blueprint,
-        ERC20 _dai,
+        ERC20Token _dai,
         MiniMeTokenFactory _factory
     ) public {
         blueprint = _blueprint;
