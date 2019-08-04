@@ -16,39 +16,62 @@ contract Person is IPerson, Owned {
         uint fundraiserGoal;
     }
 
-    IMeDao public Dao;              // The dao financially supporting this person
-    address public identity;        // The account associated with this person
+    mapping (address => bool) allowedFactories; // This flag allows a factory to schedule a project
+    IFundraiser public MeDao;       // The dao financially supporting this person
     ITimeManager public Schedule;   // Manages alloted time for projects
+    address public identity;        // The account associated with this person
 
     function initialize (
-        IMeDao _Dao,
+        IFundraiser _MeDao,
         ITimeManager _Schedule
     ) public runOnce {
-        Dao = _Dao;
+        MeDao = _MeDao;
         Schedule = _Schedule;
         owner = msg.sender;
         identity = msg.sender;
     }
 
-    function startProject (
-        IFundraiserFactory Factory,
-        string memory projectName,
-        uint startTimestamp,
-        uint endTimestamp,
-        uint fundraiserDuration,
-        uint fundraiserGoal,
+    function scheduleProject (
+        IFundraiser fundraiser,
         uint expectedWorkTime
-    ) public onlyOwner returns (IFundraiser fundraiser) {
-        fundraiser = Factory.create(
-            projectName,
-            fundraiserGoal,
-            fundraiserDuration
-        );
-
-        Schedule.assign(address(fundraiser), expectedWorkTime);
-
-        return fundraiser;
+    ) public onlyAllowedFactories  {
+        Schedule.assign(expectedWorkTime, address(fundraiser), address(MeDao));
     }
+
+    function reschedule (uint time, address projectA, address projectB) public onlyOwner {
+        Schedule.assign(time, projectA, projectB);
+    }
+
+    function collectPay (IFundraiser[] memory fundraisers) public onlyOwner {
+        uint totalCollectedFunds = 0;
+        for(uint i = 0; i < fundraisers.length; i++) {
+            IFundraiser fundraiser = fundraisers[i];
+            uint collectedFunds = fundraiser.collect();
+            uint scheduledTime = Schedule.getTime(address(fundraiser));
+            if(scheduledTime > 8 hours) {
+                scheduledTime = 8 hours;
+            }
+
+            uint earnedFunds = collectedFunds * scheduledTime / 8 hours;
+            uint refund = collectedFunds - earnedFunds;
+            require(fundraiser.reserveToken().transfer(address(fundraiser), refund));
+            totalCollectedFunds += earnedFunds;
+        }
+    }
+
+    function toggleFactory (address factory) public onlyOwner {
+        allowedFactories[factory] = true;
+    }
+
+    // MeDao
+
+    // TimeManager
+
+    function lock () public {}
+
+    function unlock () public {}
+
+    // Getters and Setters
 
     function setIdentity (address newIdentity) public onlyOwner {
         identity = newIdentity;
@@ -56,6 +79,11 @@ contract Person is IPerson, Owned {
     }
 
     // Modifiers and Events
+
+    modifier onlyAllowedFactories () {
+        require(allowedFactories[msg.sender]);
+        _;
+    }
 
     modifier runOnce () {
         require(blockInitialized == 0);

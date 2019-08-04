@@ -6,66 +6,32 @@ import "./Interfaces.sol";
 
 contract TimeManager is ITimeManager, Owned {
 
-    // Import the data structure AddressList from the AddressListLib contract
     using AddressListLib for AddressListLib.AddressList;
-
-    struct Task {
-        address task;
-        uint time;
-        uint lockedTimestamp;
-        bool isLocked;
-    }
 
     uint public blockInitialized;
     AddressListLib.AddressList tasks;
-    mapping (address => Task) schedule;
+    mapping (address => uint) scheduledTime;
 
-    function initialize (address baseTask) public runOnce {
-        register(baseTask);
-        increase(schedule[baseTask], 16 hours);
+    function initialize (address baseTask, uint baseTime) public runOnce {
+        tasks.add(baseTask);
+        scheduledTime[baseTask] = baseTime;
     }
 
-    function assign (address task, uint time) public onlyOwner {
-        assign(task, time, tasks.index(0));
-    }
-
-    function assign (address taskA, uint time, address taskB) public onlyOwner {
-        // Assign 'time' to 'taskA' from 'taskB'
-        require(tasks.contains(taskB));
-        register(taskA);
-
-        decrease(schedule[taskB], time);
-        increase(schedule[taskA], time);
-    }
-
-    function lock (address task) public onlyOwner {
-        require(task != tasks.index(0));
-
-        schedule[task].lockedTimestamp = now;
-    }
-
-    function unlock (address task) public onlyOwner {
-        Task storage scheduled = schedule[task];
-        uint elapsedSeconds = now - scheduled.lockedTimestamp;
-        require(elapsedSeconds >= 30 days);
-        scheduled.lockedTimestamp = 0;
-    }
-
-    function register (address task) internal {
-        if(tasks.contains(task)) return;
-
+    function register (address task) public onlyOwner {
         tasks.add(task);
-        schedule[task] = Task(task, 0, 0, false);
     }
 
-    function increase (Task storage task, uint time) internal {
-        require(!task.isLocked);
-        task.time += time;
+    // Assign 'time' to 'taskA' from 'taskB'
+    function assign (uint time, address taskA, address taskB) public onlyOwner {
+        require(tasks.contains(taskA));
+        require(tasks.contains(taskB));
+        require(scheduledTime[taskB] >= time);
+        scheduledTime[taskB] -= time;
+        scheduledTime[taskA] += time;
     }
 
-    function decrease (Task storage task, uint time) internal {
-        require(task.time >= time);
-        task.time -= time;
+    function getTime (address task) public view returns (uint time) {
+        return scheduledTime[task];
     }
 
     // Modifiers and Events

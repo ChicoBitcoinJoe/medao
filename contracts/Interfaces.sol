@@ -4,14 +4,16 @@ import "./external/ERC20Token.sol";
 import "./external/MiniMeToken.sol";
 
 contract ITimeManager {
-    function assign (address task, uint time) public;
-    function assign (address taskA, uint time, address taskB) public;
-    function lock (address task) public;
-    function unlock (address task) public;
+    function register (address task) public;
+    function assign (uint time, address taskA, address taskB) public;
+    function getTime (address task) public view returns (uint time);
 }
 
 contract IFundraiser {
-
+    ERC20Token public reserveToken;
+    MiniMeToken public shareToken;
+    function collect () public returns (uint collectedFunds);
+    function calculateAvailableFunds () public view returns (uint);
 }
 
 contract IFundraiserFactory {
@@ -23,12 +25,7 @@ contract IFundraiserFactory {
 }
 
 contract IPerson {
-    ITimeManager public manager;
-    IMeDao public dao;
-    address public identity;
-}
-
-contract IMeDao {
-    ERC20Token public reserveToken;
-    MiniMeToken public shareToken;
+    IFundraiser public MeDao;       // The dao financially supporting this person
+    ITimeManager public Schedule;   // Manages alloted time for projects
+    address public identity;        // The account associated with this person
 }

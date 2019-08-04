@@ -1,8 +1,7 @@
 pragma solidity ^0.5.0;
 
-import "./external/MiniMeToken.sol";
-import "./external/ERC20Token.sol";
 import "./external/Owned.sol";
+import "./Interfaces.sol";
 
 /**
     The goal of this contract is to allow investing directly in the value of a person.
@@ -12,16 +11,15 @@ import "./external/Owned.sol";
     4. At any point, a person can convert their time tokens back into what remains of their
         share of the reseerve tokens.
 **/
-contract MeDao is Owned, TokenController {
+contract MeDao is IFundraiser, Owned, TokenController {
 
     address public factory;         // The factory that deployed this contract
     uint public blockInitialized;   // The block this contract was initialized
 
-    ERC20Token public Dai;               // A reserve currency to hold the value of a person
+    ERC20Token public Dai;          // A reserve currency to hold the value of a person
     MiniMeToken public Time;        // A cloneable token that represents the value of a person
     uint public maxTimeSupply;      // The maximum amount of time that can be created
     uint public burnedTimeSupply;   // The total amount of time burned by this contract
-
 
     address[] public clones;        // A list of clones created by the owner
     int public birthTimestamp;      // The Unix timestamp of the birth date of
@@ -79,13 +77,13 @@ contract MeDao is Owned, TokenController {
         return elapsedSeconds * 1 ether * 40 / 168;
     }
 
-    function collectPaycheck () public onlyOwner {
+    function collect () public onlyOwner returns (uint collectedFunds){
         uint elapsedSeconds = now - lastPayTimestamp;
         uint workTime = calculateWorkTime(elapsedSeconds);
         uint fundedTime = workTime * Time.totalSupply() / maxTimeSupply;
-        uint daiClaim = calculateDaiClaim(fundedTime);
-        require(Dai.transfer(owner, daiClaim), 'failed to transfer');
-        emit Pay_event(fundedTime, daiClaim);
+        collectedFunds = calculateDaiClaim(fundedTime);
+        require(Dai.transfer(owner, collectedFunds), 'failed to transfer');
+        emit Pay_event(fundedTime, collectedFunds);
     }
 
     function convertDai (uint daiAmount) public {
@@ -115,8 +113,6 @@ contract MeDao is Owned, TokenController {
         hash = newHash;
         emit NewHash_event(newHash);
     }
-
-
 
     function createCloneToken (
         MiniMeToken cloneableToken,

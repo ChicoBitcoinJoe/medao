@@ -56,13 +56,25 @@ contract Fundraiser is IFundraiser, Owned, TokenController {
         return elapsedSeconds * 1 ether * 40 / 168;
     }
 
-    function collect (uint claimedWorkTime) public onlyOwner returns (uint reserveClaim) {
+    function calculatePaycheck (uint workTime) public view returns (uint reserveClaim) {
+        uint maxReserveClaim = workTime * desiredWage / 1 ether;
+        return maxReserveClaim * shareToken.totalSupply() / maxTokenSupply;
+    }
+
+    function calculateAvailableFunds () public view returns (uint) {
+        uint elapsedSeconds = now - collectedTimestamp;
+        uint workTime = elapsedSeconds * 1 ether * 40 / 168;
+        uint maxReserveClaim = workTime * desiredWage / 1 ether;
+        return maxReserveClaim * shareToken.totalSupply() / maxTokenSupply;
+    }
+
+    function collect (uint claimedWorkTime) public onlyOwner returns (uint collectedFunds) {
         uint maxWorkTime = calculateWorkTime();
         require(maxWorkTime >= claimedWorkTime, "invalid work time");
-        uint maxReserveClaim = claimedWorkTime * desiredWage / 1 ether;
-        reserveClaim = maxReserveClaim * shareToken.totalSupply() / maxTokenSupply;
-        require(reserveToken.transfer(owner, reserveClaim), 'failed to pay');
-        emit Collect_event(claimedWorkTime, reserveClaim);
+        collectedFunds = calculatePaycheck(claimedWorkTime);
+        require(reserveToken.transfer(owner, collectedFunds), 'failed to pay');
+        collectedTimestamp = now;
+        emit Collect_event(claimedWorkTime, collectedFunds);
     }
 
     function deposit (uint reserveAmount) public returns (uint shareClaim) {

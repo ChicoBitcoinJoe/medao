@@ -28,4 +28,10 @@ contract NameRegistry {
         return (account.name, account.id);
     }
 
+    function transfer (string memory name, uint id, address _address) public {
+        require(registry[name][id] == msg.sender);
+        reverseLookup[_address] = Account(name, id);
+        registry[name][id] = _address;
+    }
+
 }
