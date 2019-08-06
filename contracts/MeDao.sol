@@ -4,7 +4,7 @@ import "./external/CloneFactory.sol";
 import "./MoneyPool.sol";
 import "./Interfaces.sol";
 
-contract MeDao is MoneyPool {
+contract MeDao is IFundraiser, MoneyPool {
 
     uint public collectedTimestamp; // The timestamp when a paycheck was last collected
 
@@ -12,8 +12,7 @@ contract MeDao is MoneyPool {
         ERC20Token _reserveToken,
         MiniMeToken _shareToken,
         uint _maxTokenSupply,
-        uint _baseShareValue,
-        bool _useBaseValue
+        uint _baseShareValue
     ) public runOnce {
         collectedTimestamp = now;
 
@@ -30,7 +29,7 @@ contract MeDao is MoneyPool {
         return elapsedSeconds * 1 ether * 40 / 168;
     }
 
-    function collect () public onlyOwner returns (uint collectedFunds){
+    function collectFunds () public onlyOwner returns (uint collectedFunds){
         uint elapsedSeconds = now - collectedTimestamp;
         uint workTime = calculateWorkTime(elapsedSeconds);
         collectedFunds = workTime * shareToken.totalSupply() / maxTokenSupply;
@@ -52,7 +51,7 @@ contract MeDaoFactory is CloneFactory {
         string memory name,
         uint maxTokenSupply,
         uint baseShareValue
-    ) public returns (MeDao medao){
+    ) public returns (MeDao medao) {
         MiniMeToken shareToken = factory.createCloneToken(
             address(0x0),
             0,
@@ -67,8 +66,7 @@ contract MeDaoFactory is CloneFactory {
             reserveToken,
             shareToken,
             maxTokenSupply,
-            baseShareValue,
-            false
+            baseShareValue
         );
 
         created[address(medao)] = true;

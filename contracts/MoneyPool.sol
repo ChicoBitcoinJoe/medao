@@ -3,7 +3,7 @@ pragma solidity ^0.5.0;
 import "./external/CloneFactory.sol";
 import "./Interfaces.sol";
 
-contract MoneyPool is Initialized, Owned, SimpleTokenController {
+contract MoneyPool is Initialized, IMoneyPool {
 
     ERC20Token public reserveToken; // A reserve token to hold the value of a person
     MiniMeToken public shareToken;  // A cloneable token that represents a person
@@ -70,8 +70,6 @@ contract MoneyPool is Initialized, Owned, SimpleTokenController {
         maxTokenSupply -= shareAmount;
         emit Destroy_event(account, shareAmount);
     }
-
-    function collect () public returns (uint collectedAmount);
 
     event Collect_event (uint collectedAmount);
     event Deposit_event (address msgSender, uint reserveAmount, uint shareClaim);

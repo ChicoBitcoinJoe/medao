@@ -1,145 +1,71 @@
 {
-  "contractName": "IMeDao",
+  "contractName": "IHumanCapital",
   "abi": [
     {
-      "constant": false,
+      "constant": true,
+      "inputs": [],
+      "name": "identity",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "Dao",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "Scheduler",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "ReserveToken",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
       "inputs": [
         {
-          "name": "shareAmount",
-          "type": "uint256"
-        }
-      ],
-      "name": "withdraw",
-      "outputs": [
-        {
-          "name": "reserveClaim",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "reserveAmount",
-          "type": "uint256"
-        }
-      ],
-      "name": "calculateShareClaim",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "_from",
-          "type": "address"
-        },
-        {
-          "name": "_to",
-          "type": "address"
-        },
-        {
-          "name": "_amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "onTransfer",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "maxTokenSupply",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [],
-      "name": "collectFunds",
-      "outputs": [
-        {
-          "name": "collectedFunds",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "shareToken",
-      "outputs": [
-        {
           "name": "",
           "type": "address"
         }
       ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "baseShareValue",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "owner",
-      "outputs": [
-        {
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "useBaseValue",
+      "name": "factories",
       "outputs": [
         {
           "name": "",
@@ -151,78 +77,18 @@
       "type": "function"
     },
     {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "shareAmount",
-          "type": "uint256"
-        }
-      ],
-      "name": "calculateReserveClaim",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
       "constant": false,
       "inputs": [
         {
-          "name": "reserveAmount",
-          "type": "uint256"
+          "name": "fundraiser",
+          "type": "address"
         }
       ],
-      "name": "deposit",
-      "outputs": [
-        {
-          "name": "shareClaim",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "collectedTimestamp",
+      "name": "scheduleFundraiser",
       "outputs": [
         {
           "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "_owner",
           "type": "address"
-        },
-        {
-          "name": "_spender",
-          "type": "address"
-        },
-        {
-          "name": "_amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "onApprove",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
         }
       ],
       "payable": false,
@@ -233,70 +99,63 @@
       "constant": false,
       "inputs": [
         {
-          "name": "newOwner",
+          "name": "fundraisers",
+          "type": "address[]"
+        }
+      ],
+      "name": "collectPaycheck",
+      "outputs": [
+        {
+          "name": "paycheckAmount",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "time",
+          "type": "uint256"
+        },
+        {
+          "name": "taskA",
+          "type": "address"
+        },
+        {
+          "name": "taskB",
           "type": "address"
         }
       ],
-      "name": "transferOwnership",
+      "name": "reschedule",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
-      "constant": true,
-      "inputs": [],
-      "name": "reserveToken",
-      "outputs": [
-        {
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
       "constant": false,
       "inputs": [
         {
-          "name": "_owner",
+          "name": "factory",
           "type": "address"
-        }
-      ],
-      "name": "proxyPayment",
-      "outputs": [
+        },
         {
-          "name": "",
+          "name": "allowed",
           "type": "bool"
         }
       ],
-      "payable": true,
-      "stateMutability": "payable",
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "elapsedSeconds",
-          "type": "uint256"
-        }
-      ],
-      "name": "calculateWorkTime",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
+      "name": "allowFactory",
+      "outputs": [],
       "payable": false,
-      "stateMutability": "pure",
+      "stateMutability": "nonpayable",
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.5.8+commit.23d335f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":false,\"inputs\":[{\"name\":\"shareAmount\",\"type\":\"uint256\"}],\"name\":\"withdraw\",\"outputs\":[{\"name\":\"reserveClaim\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"reserveAmount\",\"type\":\"uint256\"}],\"name\":\"calculateShareClaim\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_from\",\"type\":\"address\"},{\"name\":\"_to\",\"type\":\"address\"},{\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"onTransfer\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"maxTokenSupply\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[],\"name\":\"collectFunds\",\"outputs\":[{\"name\":\"collectedFunds\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"shareToken\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"baseShareValue\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"useBaseValue\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"shareAmount\",\"type\":\"uint256\"}],\"name\":\"calculateReserveClaim\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"reserveAmount\",\"type\":\"uint256\"}],\"name\":\"deposit\",\"outputs\":[{\"name\":\"shareClaim\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"collectedTimestamp\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"elapsedSeconds\",\"type\":\"uint256\"}],\"name\":\"calculateWorkTime\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_owner\",\"type\":\"address\"},{\"name\":\"_spender\",\"type\":\"address\"},{\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"onApprove\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"reserveToken\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_owner\",\"type\":\"address\"}],\"name\":\"proxyPayment\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":true,\"stateMutability\":\"payable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/joe/Documents/github/chicobitcoinjoe/medao/contracts/Interfaces.sol\":\"IMeDao\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/joe/Documents/github/chicobitcoinjoe/medao/contracts/Interfaces.sol\":{\"keccak256\":\"0x0ac6ba6c5bf2b2953458a6fff97e8e82a4ebf83f0e0260887e659770ba26af05\",\"urls\":[\"bzzr://d64d891c62176dd19a97eca06cd112e4c809047fae72efaa01363524d2ab719c\"]},\"/home/joe/Documents/github/chicobitcoinjoe/medao/contracts/external/ERC20Token.sol\":{\"keccak256\":\"0x13124564ed57c260987765593adeb6821fe1ca9b384fee9dea7a094834633a6d\",\"urls\":[\"bzzr://ef17cd60f48bea8e5c519b75606816ce9cdec4d5e311eb09c4a47a3bf6a285f6\"]},\"/home/joe/Documents/github/chicobitcoinjoe/medao/contracts/external/MiniMeToken.sol\":{\"keccak256\":\"0x5937d571cabe2806672e06abb894714d071d89e7c857256e2b31029829799ff2\",\"urls\":[\"bzzr://03d3116d40db1746615d25ba90c62931a87141522e88406bd012c01918a31f4b\"]},\"/home/joe/Documents/github/chicobitcoinjoe/medao/contracts/external/Owned.sol\":{\"keccak256\":\"0x895a3793732819c660a20c3572a65838204a698633445220dace5284c282022a\",\"urls\":[\"bzzr://fbf22e09ce9cde6dabc2ad6afce37d69f082860b192c17b4bfb15ad3d6b21e95\"]},\"/home/joe/Documents/github/chicobitcoinjoe/medao/contracts/helpers/Initialized.sol\":{\"keccak256\":\"0x9a4e7561d58e2136efc314ad8ba124cef32db7b30b4107cd5f4180d839d337dc\",\"urls\":[\"bzzr://e46d92d4abcb7ade9338fd52020fcfe328e4b45f88296b66ec172b228f993cd1\"]},\"/home/joe/Documents/github/chicobitcoinjoe/medao/contracts/helpers/SimpleTokenController.sol\":{\"keccak256\":\"0x3eb12e6ddd56d0009d2ad3426e1e638007985c843727273f0e89d54e41b493be\",\"urls\":[\"bzzr://64df8ce41a3134518ab13d2ba59502fc5f012e5cb51a4994b358612fab6347f9\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.5.8+commit.23d335f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[],\"name\":\"identity\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"Dao\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"time\",\"type\":\"uint256\"},{\"name\":\"taskA\",\"type\":\"address\"},{\"name\":\"taskB\",\"type\":\"address\"}],\"name\":\"reschedule\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"Scheduler\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"factory\",\"type\":\"address\"},{\"name\":\"allowed\",\"type\":\"bool\"}],\"name\":\"allowFactory\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"fundraisers\",\"type\":\"address[]\"}],\"name\":\"collectPaycheck\",\"outputs\":[{\"name\":\"paycheckAmount\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"ReserveToken\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"fundraiser\",\"type\":\"address\"}],\"name\":\"scheduleFundraiser\",\"outputs\":[{\"name\":\"\",\"type\":\"address\"}],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"\",\"type\":\"address\"}],\"name\":\"factories\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/home/joe/Documents/github/chicobitcoinjoe/medao/contracts/Interfaces.sol\":\"IHumanCapital\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/joe/Documents/github/chicobitcoinjoe/medao/contracts/Interfaces.sol\":{\"keccak256\":\"0x0ac6ba6c5bf2b2953458a6fff97e8e82a4ebf83f0e0260887e659770ba26af05\",\"urls\":[\"bzzr://d64d891c62176dd19a97eca06cd112e4c809047fae72efaa01363524d2ab719c\"]},\"/home/joe/Documents/github/chicobitcoinjoe/medao/contracts/external/ERC20Token.sol\":{\"keccak256\":\"0x13124564ed57c260987765593adeb6821fe1ca9b384fee9dea7a094834633a6d\",\"urls\":[\"bzzr://ef17cd60f48bea8e5c519b75606816ce9cdec4d5e311eb09c4a47a3bf6a285f6\"]},\"/home/joe/Documents/github/chicobitcoinjoe/medao/contracts/external/MiniMeToken.sol\":{\"keccak256\":\"0x5937d571cabe2806672e06abb894714d071d89e7c857256e2b31029829799ff2\",\"urls\":[\"bzzr://03d3116d40db1746615d25ba90c62931a87141522e88406bd012c01918a31f4b\"]},\"/home/joe/Documents/github/chicobitcoinjoe/medao/contracts/external/Owned.sol\":{\"keccak256\":\"0x895a3793732819c660a20c3572a65838204a698633445220dace5284c282022a\",\"urls\":[\"bzzr://fbf22e09ce9cde6dabc2ad6afce37d69f082860b192c17b4bfb15ad3d6b21e95\"]},\"/home/joe/Documents/github/chicobitcoinjoe/medao/contracts/helpers/Initialized.sol\":{\"keccak256\":\"0x9a4e7561d58e2136efc314ad8ba124cef32db7b30b4107cd5f4180d839d337dc\",\"urls\":[\"bzzr://e46d92d4abcb7ade9338fd52020fcfe328e4b45f88296b66ec172b228f993cd1\"]},\"/home/joe/Documents/github/chicobitcoinjoe/medao/contracts/helpers/SimpleTokenController.sol\":{\"keccak256\":\"0x3eb12e6ddd56d0009d2ad3426e1e638007985c843727273f0e89d54e41b493be\",\"urls\":[\"bzzr://64df8ce41a3134518ab13d2ba59502fc5f012e5cb51a4994b358612fab6347f9\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "sourceMap": "",
@@ -4899,7 +4758,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.11",
-  "updatedAt": "2019-08-06T03:13:26.807Z",
+  "updatedAt": "2019-08-06T03:13:26.804Z",
   "devdoc": {
     "methods": {}
   },

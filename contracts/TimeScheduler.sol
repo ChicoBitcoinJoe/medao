@@ -4,7 +4,7 @@ import "./external/AddressListLib.sol";
 import "./external/CloneFactory.sol";
 import "./Interfaces.sol";
 
-contract TimeScheduler is ITimeScheduler, Owned {
+contract TimeScheduler is ITimeScheduler {
 
     using AddressListLib for AddressListLib.AddressList;
 
@@ -17,13 +17,9 @@ contract TimeScheduler is ITimeScheduler, Owned {
         scheduledTime[baseTask] = baseTime;
     }
 
-    function register (address task) public onlyOwner {
-        tasks.add(task);
-    }
-
     // Assign 'time' to 'taskA' from 'taskB'
     function assign (uint time, address taskA, address taskB) public onlyOwner {
-        require(tasks.contains(taskA));
+        tasks.add(taskA);
         require(tasks.contains(taskB));
         require(scheduledTime[taskB] >= time);
         scheduledTime[taskB] -= time;
