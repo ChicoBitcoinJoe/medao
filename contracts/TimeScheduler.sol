@@ -1,10 +1,10 @@
 pragma solidity ^0.5.0;
 
 import "./external/AddressListLib.sol";
-import "./external/Owned.sol";
+import "./external/CloneFactory.sol";
 import "./Interfaces.sol";
 
-contract TimeManager is ITimeManager, Owned {
+contract TimeScheduler is ITimeScheduler, Owned {
 
     using AddressListLib for AddressListLib.AddressList;
 
@@ -34,12 +34,38 @@ contract TimeManager is ITimeManager, Owned {
         return scheduledTime[task];
     }
 
+    function getSchedule () public view returns (address[] memory, uint[] memory) {
+        address[] memory currentTasks = new address[](tasks.getLength());
+        uint[] memory currentTimes = new uint[](tasks.getLength());
+        for(uint i = 0; i < tasks.getLength(); i++) {
+            address task = tasks.index(i);
+            currentTasks[i] = task;
+            currentTimes[i] = scheduledTime[task];
+        }
+
+        return (currentTasks, currentTimes);
+    }
+
     // Modifiers and Events
 
     modifier runOnce () {
         require(blockInitialized == 0);
         _;
         blockInitialized = block.number;
+    }
+
+}
+
+contract TimeSchedulerFactory is CloneFactory {
+
+    TimeScheduler public blueprint;
+
+    function create (
+        address baseTask,
+        uint baseTime
+    ) public returns (TimeScheduler Scheduler) {
+        Scheduler = TimeScheduler(createClone(address(blueprint)));
+        Scheduler.initialize(baseTask, baseTime);
     }
 
 }

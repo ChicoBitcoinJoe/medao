@@ -1,76 +1,29 @@
 pragma solidity ^0.5.0;
 
-import "./external/Owned.sol";
+import "./external/CloneFactory.sol";
+import "./MoneyPool.sol";
 import "./Interfaces.sol";
 
-/**
-    The goal of this contract is to allow investing directly in the value of a person.
-    1. Investors convert a reserve token into time tokens up to a maximum based on age
-    2. The reserve token (dai) provides a price floor on the value of the person's time
-    3. The owner can generate a set amount of tokens over time as compensation for work done
-    4. At any point, a person can convert their time tokens back into what remains of their
-        share of the reseerve tokens.
-**/
-contract MeDao is IFundraiser, Owned, TokenController {
+contract MeDao is MoneyPool {
 
-    address public factory;         // The factory that deployed this contract
-    uint public blockInitialized;   // The block this contract was initialized
-
-    ERC20Token public Dai;          // A reserve currency to hold the value of a person
-    MiniMeToken public Time;        // A cloneable token that represents the value of a person
-    uint public maxTimeSupply;      // The maximum amount of time that can be created
-    uint public burnedTimeSupply;   // The total amount of time burned by this contract
-
-    address[] public clones;        // A list of clones created by the owner
-    int public birthTimestamp;      // The Unix timestamp of the birth date of
-    uint public lastPayTimestamp;   // The last time the owner collected a paycheck
-
-    string public hash;             // The hash of any relevant data about this medao
-
-    constructor () public {
-        // ensures the blueprint provided to the factory cannot be initialized
-        blockInitialized = block.number;
-    }
+    uint public collectedTimestamp; // The timestamp when a paycheck was last collected
 
     function initialize (
-        address _owner,
-        MiniMeToken _Time,
-        ERC20Token _Dai,
-        int _birthTimestamp,
-        uint _initialTimeBalance
-    ) public {
-        require(blockInitialized == 0, 'contract already initialized');
-        require(_birthTimestamp < int(now), 'invalid birth timestamp');
+        ERC20Token _reserveToken,
+        MiniMeToken _shareToken,
+        uint _maxTokenSupply,
+        uint _baseShareValue,
+        bool _useBaseValue
+    ) public runOnce {
+        collectedTimestamp = now;
 
-        blockInitialized = block.number;
-        factory = msg.sender;
-
-        owner = _owner;
-        Time = _Time;
-        Dai = _Dai;
-        birthTimestamp = _birthTimestamp;
-
-        uint elapsedSeconds = uint(int(now) - birthTimestamp);
-        maxTimeSupply = calculateWorkTime(elapsedSeconds);
-        lastPayTimestamp = now;
-
-        require(Time.generateTokens(owner, _initialTimeBalance), "failed to generate tokens");
-    }
-
-    function getClones () public view returns (address[] memory) {
-        return clones;
-    }
-
-    function getTotalClones () public view returns (uint) {
-        return clones.length;
-    }
-
-    function calculateTimeClaim (uint daiAmount) public view returns (uint) {
-        return Time.totalSupply() * daiAmount / Dai.balanceOf(address(this));
-    }
-
-    function calculateDaiClaim (uint timeAmount) public view returns (uint) {
-        return Dai.balanceOf(address(this)) * timeAmount / Time.totalSupply();
+        setupMoneyPool (
+            _reserveToken,
+            _shareToken,
+            _maxTokenSupply,
+            _baseShareValue,
+            false
+        );
     }
 
     function calculateWorkTime (uint elapsedSeconds) public pure returns (uint) {
@@ -78,85 +31,190 @@ contract MeDao is IFundraiser, Owned, TokenController {
     }
 
     function collect () public onlyOwner returns (uint collectedFunds){
-        uint elapsedSeconds = now - lastPayTimestamp;
+        uint elapsedSeconds = now - collectedTimestamp;
         uint workTime = calculateWorkTime(elapsedSeconds);
-        uint fundedTime = workTime * Time.totalSupply() / maxTimeSupply;
+        collectedFunds = workTime * shareToken.totalSupply() / maxTokenSupply;
+        issue(owner, collectedFunds);
+        emit Collect_event(collectedFunds);
+    }
+
+}
+
+contract MeDaoFactory is CloneFactory {
+
+    MeDao public blueprint;
+    MiniMeTokenFactory factory;
+
+    mapping (address => bool) public created;
+
+    function create (
+        ERC20Token reserveToken,
+        string memory name,
+        uint maxTokenSupply,
+        uint baseShareValue
+    ) public returns (MeDao medao){
+        MiniMeToken shareToken = factory.createCloneToken(
+            address(0x0),
+            0,
+            name,
+            18,
+            'seconds',
+            true
+        );
+
+        medao = MeDao(createClone(address(blueprint)));
+        medao.initialize(
+            reserveToken,
+            shareToken,
+            maxTokenSupply,
+            baseShareValue,
+            false
+        );
+
+        created[address(medao)] = true;
+    }
+
+}
+
+/*
+contract MeDao is Owned, SimpleTokenController {
+
+    address public factory;         // The factory that deployed this contract
+    uint public blockInitialized;   // The block this contract was initialized
+
+    ERC20Token public reserveToken; // A reserve token to hold the value of a person
+    MiniMeToken public shareToken;  // A cloneable token that represents a share of a person
+    uint public desiredWage;        // How much the owner desires to earn per second worked
+    uint public maxTokenSupply;     // The maximum amount of shares that can be created
+    uint public burnedTokenSupply;  // The maximum amount of shares that can be created
+    uint public collectedTimestamp; // The timestamp when a paycheck was last collected
+
+    constructor () public {
+        blockInitialized = block.number;
+    }
+
+    function initialize (
+        address _owner,
+        ERC20Token _reserveToken,
+        MiniMeToken _shareToken,
+        uint _fundraiserGoal,
+        uint _fundraiserDuration
+    ) public {
+        require(blockInitialized == 0, "contract already initialized");
+
+        blockInitialized = block.number;
+
+        owner = _owner;
+        reserveToken = _reserveToken;
+        shareToken = _shareToken;
+        collectedTimestamp = now;
+
+        desiredWage = _fundraiserGoal / _fundraiserDuration;
+        maxTokenSupply = _fundraiserDuration * 1 ether;
+        collectedTimestamp = now;
+    }
+
+    function calculateTimeClaim (uint daiAmount) public view returns (uint) {
+        return shareToken.totalSupply() * daiAmount / reserveToken.balanceOf(address(this));
+    }
+
+    function calculateDaiClaim (uint timeAmount) public view returns (uint) {
+        return reserveToken.balanceOf(address(this)) * timeAmount / shareToken.totalSupply();
+    }
+
+    function calculateWorkTime (uint elapsedSeconds) public pure returns (uint) {
+        return elapsedSeconds * 1 ether * 40 / 168;
+    }
+
+    function collectFunds () public onlyOwner returns (uint collectedFunds){
+        uint elapsedSeconds = now - collectedTimestamp;
+        uint workTime = calculateWorkTime(elapsedSeconds);
+        uint fundedTime = workTime * shareToken.totalSupply() / maxTokenSupply;
         collectedFunds = calculateDaiClaim(fundedTime);
-        require(Dai.transfer(owner, collectedFunds), 'failed to transfer');
+        require(reserveToken.transfer(owner, collectedFunds), 'failed to transfer');
+        collectedTimestamp = now;
         emit Pay_event(fundedTime, collectedFunds);
     }
 
-    function convertDai (uint daiAmount) public {
-        uint availableSeconds = maxTimeSupply - Time.totalSupply();
+    function deposit (uint daiAmount) public {
+        uint availableSeconds = maxTokenSupply - shareToken.totalSupply();
         uint claimedTime = calculateTimeClaim(daiAmount);
         require(availableSeconds >= claimedTime, "invalid reserve amount");
-        require(Dai.transferFrom(msg.sender, address(this), daiAmount), "failed to transfer");
-        require(Time.generateTokens(msg.sender, claimedTime), "failed to generate tokens");
+        require(reserveToken.transferFrom(msg.sender, address(this), daiAmount), "failed to transfer");
+        require(shareToken.generateTokens(msg.sender, claimedTime), "failed to generate tokens");
         emit ConvertDai_event(msg.sender, daiAmount, claimedTime);
     }
 
-    function convertTime (uint timeAmount) public {
+    function withdraw (uint timeAmount) public {
         uint daiClaim = calculateDaiClaim(timeAmount);
-        require(Time.destroyTokens(msg.sender, timeAmount), "failed to destroy tokens");
-        require(Dai.transfer(msg.sender, daiClaim), "failed to transfer");
+        require(shareToken.destroyTokens(msg.sender, timeAmount), "failed to destroy tokens");
+        require(reserveToken.transfer(msg.sender, daiClaim), "failed to transfer");
         emit ConvertTime_event(msg.sender, timeAmount, daiClaim);
     }
 
     function burn (uint timeAmount) public {
-        require(Time.destroyTokens(msg.sender, timeAmount), "failed to burn tokens");
-        maxTimeSupply -= timeAmount;
-        burnedTimeSupply += timeAmount;
+        require(shareToken.destroyTokens(msg.sender, timeAmount), "failed to burn tokens");
+        maxTokenSupply -= timeAmount;
+        burnedTokenSupply += timeAmount;
         emit Burn_event(msg.sender, timeAmount);
     }
 
-    function setHash (string memory newHash) public onlyOwner {
-        hash = newHash;
-        emit NewHash_event(newHash);
-    }
-
-    function createCloneToken (
-        MiniMeToken cloneableToken,
-        string memory tokenName,
-        string memory tokenSymbol,
-        uint snapshotBlock
-    ) public onlyOwner {
-        address token = cloneableToken.createCloneToken(
-            tokenName,
-            18,
-            tokenSymbol,
-            snapshotBlock,
-            true
-        );
-
-        clones.push(token);
-        emit Clone_event(token);
-    }
-
     event Pay_event (uint timeAmount, uint daiAmount);
-    event Clone_event (address token);
     event ConvertDai_event (address msgSender, uint daiAmount, uint timeAmount);
     event ConvertTime_event (address msgSender, uint timeAmount, uint daiAmount);
     event Burn_event (address msgSender, uint timeAmount);
     event NewHash_event (string newHash);
 
-/// Token Controller Functions
-
-    function proxyPayment (address _owner) public payable returns(bool) {
-        _owner;
-        return false;
-    }
-
-    function onTransfer (address _from, address _to, uint _amount) public returns(bool) {
-        _from; _amount;
-        if(_to == address(this) || _to == address(0x0))
-            return false;
-
-        return true;
-    }
-
-    function onApprove (address _owner, address _spender, uint _amount) public returns(bool) {
-        _owner; _spender; _amount;
-        return true;
-    }
-
 }
+
+contract MeDaoFactory is CloneFactory {
+
+    address public blueprint;
+    ERC20Token public dai;
+    MiniMeTokenFactory factory;
+
+    mapping (address => bool) public created;
+    mapping (address => MeDao) public registry;
+
+    constructor (
+        address _blueprint,
+        ERC20Token _dai,
+        MiniMeTokenFactory _factory
+    ) public {
+        blueprint = _blueprint;
+        dai = _dai;
+        factory = _factory;
+    }
+
+    function create (
+        string memory name,
+        //int birthTimestamp,
+        uint tokenClaim,
+        uint initialReserve
+    ) public returns (MeDao medao) {
+        require(address(registry[msg.sender]) == address(0x0));
+        require(initialReserve > 0);
+        require(tokenClaim > 0);
+
+        MiniMeToken timeToken = factory.createCloneToken(
+            address(0x0),
+            0,
+            name,
+            18,
+            'seconds',
+            true
+        );
+
+        medao = MeDao(createClone(blueprint));
+        created[address(medao)] = true;
+        timeToken.changeController(address(medao));
+        require(dai.transferFrom(msg.sender, address(medao), initialReserve));
+        //medao.initialize(msg.sender, dai, timeToken, birthTimestamp, tokenClaim);
+
+        registry[msg.sender] = medao;
+        emit Register_event(msg.sender, medao);
+    }
+
+    event Register_event (address indexed owner, MeDao medao);
+}
+*/

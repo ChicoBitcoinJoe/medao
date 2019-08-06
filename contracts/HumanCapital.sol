@@ -1,10 +1,78 @@
 pragma solidity ^0.5.0;
 
-import "./external/Owned.sol";
-import "./Fundraiser.sol";
+import "./external/CloneFactory.sol";
+import "./MeDao.sol";
+import "./TimeScheduler.sol";
+import "./MoneyPool.sol";
 import "./Interfaces.sol";
 
-contract Person is IPerson, Owned {
+contract HumanCapital is Initialized, Owned {
+
+    ERC20Token public Dai;
+
+    MeDao public Dao;
+    TimeScheduler public Scheduler;
+
+    function initialize (
+        ERC20Token _Dai,
+        MeDao _Dao,
+        TimeScheduler _Scheduler
+    ) public runOnce {
+        Dai = _Dai;
+        Dao = _Dao;
+        Scheduler = _Scheduler;
+    }
+
+    function collectPaycheck (IFundraiser[] memory fundraisers) public onlyOwner returns (uint payAmount) {
+        uint totalCollectedFunds = 0;
+        for(uint i = 0; i < fundraisers.length; i++) {
+            IFundraiser fundraiser = fundraisers[i];
+            uint collectedFunds = fundraiser.collectFunds();
+            uint scheduledTime = Scheduler.getTime(address(fundraiser));
+            if(scheduledTime > 8 hours) {
+                scheduledTime = 8 hours;
+            }
+
+            uint earnedFunds = collectedFunds * scheduledTime / 8 hours;
+            uint refund = collectedFunds - earnedFunds;
+            require(Dai.transfer(address(fundraiser), refund));
+            totalCollectedFunds += earnedFunds;
+        }
+    }
+
+}
+
+contract HumanCapitalFactory is CloneFactory {
+
+    HumanCapital public blueprint;
+    MeDaoFactory public MedaoFactory;
+    TimeSchedulerFactory public SchedulerFactory;
+    ERC20Token public Dai;
+
+    function register (
+        string memory name,
+        uint maxTokenSupply,
+        uint baseShareValue
+    ) public returns (HumanCapital person){
+        MeDao dao = MedaoFactory.create(
+            Dai,
+            name,
+            maxTokenSupply,
+            baseShareValue
+        );
+
+        TimeScheduler scheduler = SchedulerFactory.create(address(dao), 16 hours);
+        person = HumanCapital(createClone(address(blueprint)));
+        person.initialize(Dai, dao, scheduler);
+        dao.transferOwnership(address(person));
+        scheduler.transferOwnership(address(person));
+    }
+
+}
+
+
+/*
+contract Identity is IIdentity, Owned {
 
     uint public blockInitialized;
 
@@ -17,15 +85,15 @@ contract Person is IPerson, Owned {
     }
 
     mapping (address => bool) allowedFactories; // This flag allows a factory to schedule a project
-    IFundraiser public MeDao;       // The dao financially supporting this person
-    ITimeManager public Schedule;   // Manages alloted time for projects
+    IFundraiser public Dao;         // The dao financially supporting this person
+    ITimeScheduler public Schedule; // Manages alloted time for projects
     address public identity;        // The account associated with this person
 
     function initialize (
-        IFundraiser _MeDao,
-        ITimeManager _Schedule
+        IFundraiser _Dao,
+        ITimeScheduler _Schedule
     ) public runOnce {
-        MeDao = _MeDao;
+        Dao = _Dao;
         Schedule = _Schedule;
         owner = msg.sender;
         identity = msg.sender;
@@ -35,7 +103,8 @@ contract Person is IPerson, Owned {
         IFundraiser fundraiser,
         uint expectedWorkTime
     ) public onlyAllowedFactories  {
-        Schedule.assign(expectedWorkTime, address(fundraiser), address(MeDao));
+        Schedule.register(address(fundraiser));
+        Schedule.assign(expectedWorkTime, address(fundraiser), address(Dao));
     }
 
     function reschedule (uint time, address projectA, address projectB) public onlyOwner {
@@ -46,7 +115,7 @@ contract Person is IPerson, Owned {
         uint totalCollectedFunds = 0;
         for(uint i = 0; i < fundraisers.length; i++) {
             IFundraiser fundraiser = fundraisers[i];
-            uint collectedFunds = fundraiser.collect();
+            uint collectedFunds = fundraiser.collectFunds();
             uint scheduledTime = Schedule.getTime(address(fundraiser));
             if(scheduledTime > 8 hours) {
                 scheduledTime = 8 hours;
@@ -59,13 +128,43 @@ contract Person is IPerson, Owned {
         }
     }
 
-    function toggleFactory (address factory) public onlyOwner {
-        allowedFactories[factory] = true;
+    function allowFactory (address factory, bool allowed) public onlyOwner {
+        allowedFactories[factory] = allowed;
     }
 
     // MeDao
 
-    // TimeManager
+    function setHash (string memory newHash) public onlyOwner {
+        hash = newHash;
+        emit NewHash_event(newHash);
+    }
+
+    function createCloneToken (
+        MiniMeToken cloneableToken,
+        string memory tokenName,
+        string memory tokenSymbol,
+        uint snapshotBlock
+    ) public onlyOwner {
+        address token = cloneableToken.createCloneToken(
+            tokenName,
+            18,
+            tokenSymbol,
+            snapshotBlock,
+            true
+        );
+
+        clones.push(token);
+        emit Clone_event(token);
+    }
+    function getClones () public view returns (address[] memory) {
+        return clones;
+    }
+
+    function getTotalClones () public view returns (uint) {
+        return clones.length;
+    }
+
+    // TimeScheduler
 
     function lock () public {}
 
@@ -95,7 +194,6 @@ contract Person is IPerson, Owned {
 
 }
 
-/*
 contract EmployeeRegistry is CloneFactory {
 
     Employee Blueprint;
