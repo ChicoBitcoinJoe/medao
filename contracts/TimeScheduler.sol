@@ -30,19 +30,21 @@ contract TimeScheduler is ITimeScheduler {
         return scheduledTime[task];
     }
 
-    function getSchedule () public view returns (address[] memory, uint[] memory) {
-        address[] memory currentTasks = new address[](tasks.getLength());
-        uint[] memory currentTimes = new uint[](tasks.getLength());
+    function getTasks () public view returns (address[] memory) {
+        address[] memory allTasks = new address[](tasks.getLength());
         for(uint i = 0; i < tasks.getLength(); i++) {
-            address task = tasks.index(i);
-            currentTasks[i] = task;
-            currentTimes[i] = scheduledTime[task];
+            allTasks[i] = tasks.index(i);
         }
-
-        return (currentTasks, currentTimes);
     }
 
-    // Modifiers and Events
+    function getSchedule () public view returns (address[] memory, uint[] memory) {
+        uint[] memory taskTimes = new uint[](tasks.getLength());
+        for(uint i = 0; i < tasks.getLength(); i++) {
+            taskTimes[i] = scheduledTime[tasks.index(i)];
+        }
+
+        return (getTasks(), taskTimes);
+    }
 
     modifier runOnce () {
         require(blockInitialized == 0);

@@ -139,7 +139,8 @@ contract HumanCapitalFactory is CloneFactory {
             baseShareValue
         );
 
-        ITimeScheduler scheduler = SchedulerFactory.create(address(dao), 16 hours);
+        ITimeScheduler scheduler = SchedulerFactory.create(address(this), 16 hours);
+        scheduler.assign(8 hours, address(dao), address(this));
         human = HumanCapital(createClone(address(blueprint)));
         human.initialize(dao, scheduler, reserveToken);
         dao.transferOwnership(address(human));

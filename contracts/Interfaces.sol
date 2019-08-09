@@ -8,6 +8,7 @@ import "./helpers/SimpleTokenController.sol";
 contract ITimeScheduler is Owned {
     function assign (uint time, address taskA, address taskB) public;
     function getTime (address task) public view returns (uint time);
+    function getTasks () public view returns (address[] memory);
     function getSchedule () public view returns (address[] memory, uint[] memory);
 }
 
@@ -21,17 +22,17 @@ contract IMoneyPool is SimpleTokenController{
     function calculateReserveClaim (uint shareAmount) public view returns (uint);
     function deposit (uint reserveAmount) public returns (uint shareClaim);
     function withdraw (uint shareAmount) public returns (uint reserveClaim);
-    function transfer (address account, uint reserveAmount) internal;
-    function issue (address account, uint shareAmount) internal;
-    function destroy (address account, uint shareAmount) internal;
+    function transfer (address account, uint reserveAmount) internal returns (bool);
+    function issue (address account, uint shareAmount) internal returns (bool);
+    function destroy (address account, uint shareAmount) internal returns (bool);
 }
 
 contract IFundraiser is Owned, IMoneyPool {
+    uint public collectedTimestamp; // The timestamp when funds were last collected
     function collectFunds () public returns (uint collectedFunds);
 }
 
 contract IMeDao is IFundraiser {
-    uint public collectedTimestamp;
     function calculateWorkTime (uint elapsedSeconds) public pure returns (uint);
 }
 
