@@ -22,7 +22,7 @@ contract MoneyPool is Initialized, IMoneyPool {
     }
 
     function calculateShareClaim (uint reserveTokens) public view returns (uint) {
-        return reserveTokens * 1 ether / baseShareValue;
+        return reserveTokens * 1 ether / reserveToken.totalSupply();
     }
 
     function calculateReserveClaim (uint shareTokens) public view returns (uint) {
