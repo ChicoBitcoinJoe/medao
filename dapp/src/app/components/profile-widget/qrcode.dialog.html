@@ -1,9 +1,0 @@
-<div fxLayout="column" fxLayoutAlign="start center">
-    <div class="padding centered" fxLayout="column">
-        <b style="color: red; max-width: 256px;">WARNING: Only send Dai to this address. Dai sent to this address cannot be recovered!</b>
-    </div>
-    <qrcode [qrdata]="address" [size]="256" [level]="'M'"></qrcode>
-    <div class="padding centered" style="max-width: 256px; word-break: break-all;">
-        {{address}}
-    </div>
-</div>
