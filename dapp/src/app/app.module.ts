@@ -34,13 +34,15 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './routes/home/home.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
+import { SigninComponent } from './routes/signin/signin.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     FooterComponent,
-    ToolbarComponent
+    ToolbarComponent,
+    SigninComponent
   ],
   imports: [
     BrowserModule,
