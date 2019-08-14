@@ -66,5 +66,9 @@ body {
 //// Angular Overrides
 
 .mat-checkbox-frame {
-    border-color: white !important;
+    border-color: white;
+}
+
+.mat-divider {
+    border-top-color: rgb(255, 255, 255);
 }
