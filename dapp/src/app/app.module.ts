@@ -52,6 +52,7 @@ import { SigninComponent } from './routes/signin/signin.component';
     FormsModule,
     HttpClientModule,
     MatButtonModule,
+    MatCheckboxModule,
     MatIconModule,
     MatToolbarModule,
   ],
