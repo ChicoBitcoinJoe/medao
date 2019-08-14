@@ -1,1 +1,64 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@import '~@angular/material/theming';
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
+
+$dapp-primary: mat-palette($mat-indigo);
+$dapp-accent: mat-palette($mat-pink, A200, A100, A400);
+$dapp-theme: mat-light-theme($dapp-primary, $dapp-accent);
+@include angular-material-theme($dapp-theme);
+
 /* You can add global styles to this file, and also import other style files */
+
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.cursor {
+    cursor: hand;
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    outline: none;
+}
+
+.skinny {
+    margin: auto;
+    max-width: 1196px;
+    width: 100%;
+}
+
+.black-theme {
+    background-color: black;
+    color: white;
+}
+
+.margin16 {
+    margin: 16px;
+}
+
+.margin32 {
+    margin: 32px;
+}
+
+.padding16 {
+    padding: 16px;
+}
+
+.padding32 {
+    padding: 32px;
+}

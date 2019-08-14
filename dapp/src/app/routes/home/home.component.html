@@ -1,0 +1,63 @@
+<div fxLayout="column">
+    <div class="black-theme" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="16px" fxFlex="200px">
+        <h1 class="cursor no-margin" style="font-size: 48px;" routerLink="['/home']">
+            Me + Dao
+        </h1>
+        <h3 class="centered padding no-margin">
+            Unleash your creativity.
+        </h3>
+    </div>
+    <div class="skinny">
+        <div class="margin32" fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.lt-md="16px" fxLayoutGap="64px">
+            <div fxLayout="column" fxFlex.gt-sm="33">
+                <h3>Crowd source a salary</h3>
+                <p>
+                    As a content creator your time is worth something and others think so too. Crowdsource a salary from millions of people around the world so you can do what you love... to create!
+                </p>
+            </div>
+            <div fxLayout="column" fxFlex.gt-sm="33">
+                <h3>Time based funding</h3>
+                <p>
+                    Funds pledged to a content creator are released over time. If a pledger is unsatisfied with the performance of a content creator they can get a partial refund based on how much time has passed.
+                </p>
+            </div>
+            <div fxLayout="column" fxFlex.gt-sm="33">
+                <h3>Earn perks for your pledges!</h3>
+                <p>
+                    Content creators can offer unique perks to pledgers as an incentive to pledge more. Perks will depend entirely on the skillset of each content creator.
+                </p>
+            </div>
+        </div>
+        <div fxHide.gt-sm fxLayout="column" class="black-theme padding32">
+            <h4>Featured Dao</h4>
+            <div style="height: 200px; width:100%; border: 1px solid white;">
+
+            </div>
+            <div fxLayout="column" fxLayoutAlign.lt-md="start center" fxFlex>
+                <h1 ngStyle.lt-md="text-align: center">Joseph Brian Reed</h1>
+                <p ngStyle.lt-md="text-align: justify">CEO of MeDao - CEO of the Everchain Project</p>
+                <h3 fxLayout="row" fxLayoutGap="32px">
+                    <span>100% funded</span>
+                    <span>$50.00/h</span>
+                </h3>
+            </div>
+            <button mat-button>view</button>
+        </div>
+        <div fxHide fxShow.gt-sm class="black-theme padding32 cursor" (click)="null">
+            <h4>Featured Dao</h4>
+            <div fxLayout="row" fxLayoutGap="32px">
+                <div style="height: 200px; min-width: 200px; border: 1px solid white;">
+
+                </div>
+                <div fxLayout="column" fxFlex>
+                    <h1 style="margin-top: 0px;">Joseph Brian Reed</h1>
+                    <p>CEO of MeDao - CEO of the Everchain Project</p>
+                    <h3 fxLayout="row" fxLayoutGap="32px">
+                        <span>100% funded</span>
+                        <span>$50.00/h</span>
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

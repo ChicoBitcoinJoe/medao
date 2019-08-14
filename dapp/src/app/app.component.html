@@ -1,21 +1,74 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/cli">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
+<div fxLayout="column" fxFlexFill>
+    <mat-toolbar class="black-theme" fxFlex="64px">
+        <span class="cursor white-text" routerLink="/home'">MeDao</span>
+        <span fxFlex></span>
+        <button mat-icon-button>
+            <mat-icon>search</mat-icon>
+        </button>
+        <button mat-button>sign in</button>
+    </mat-toolbar>
 
-<router-outlet></router-outlet>
+    <div fxLayout="column">
+        <router-outlet></router-outlet>
+    </div>
+
+    <div id="footer">
+        <div class="skinny">
+            <div class="padding32" fxLayout="row" fxHide fxShow.xs>
+                <div fxLayout="column" fxLayoutGap="32px" fxFlex>
+                    <div fxLayout="column" fxLayoutGap="12px">
+                        <b>About</b>
+                        <span class="cursor">Mission</span>
+                        <span class="cursor">Team</span>
+                    </div>
+                    <div fxLayout="column" fxLayoutGap="12px">
+                        <b>Support</b>
+                        <span class="cursor">Chat</span>
+                        <span class="cursor">Email</span>
+                    </div>
+                </div>
+                <div fxLayout="column" fxLayoutGap="32px" fxFlex>
+                    <div fxLayout="column" fxLayoutGap="12px">
+                        <b>Links</b>
+                        <span class="cursor">Chat</span>
+                        <span class="cursor">Email</span>
+                    </div>
+                    <div fxLayout="column" fxLayoutGap="12px">
+                        <b>Partner Projects</b>
+                        <span class="cursor">Everchain</span>
+                        <span class="cursor">Maker</span>
+                    </div>
+                </div>
+            </div>
+            <div class="padding32" fxLayout="row" fxHide.xs>
+                <div fxLayout="column" fxLayoutAlign="start center" fxFlex>
+                    <div fxLayout="column" fxLayoutGap="12px">
+                        <b>About</b>
+                        <span class="cursor">Mission</span>
+                        <span class="cursor">Team</span>
+                    </div>
+                </div>
+                <div fxLayout="column" fxLayoutAlign="start center" fxFlex>
+                    <div fxLayout="column" fxLayoutGap="12px">
+                        <b>Support</b>
+                        <span class="cursor">Chat</span>
+                        <span class="cursor">Email</span>
+                    </div>
+                </div>
+                <div fxLayout="column" fxLayoutAlign="start center" fxFlex>
+                    <div fxLayout="column" fxLayoutGap="12px">
+                        <b>Links</b>
+                        <span class="cursor">Github</span>
+                        <span class="cursor">Audit</span>
+                    </div>
+                </div>
+                <div fxLayout="column" fxLayoutAlign="start center" fxFlex>
+                    <div fxLayout="column" fxLayoutGap="12px">
+                        <b>Partner Projects</b>
+                        <span class="cursor">Everchain</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
