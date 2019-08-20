@@ -35,6 +35,7 @@ import { HomeComponent } from './routes/home/home.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { SigninComponent } from './routes/signin/signin.component';
+import { ProfileComponent } from './routes/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { SigninComponent } from './routes/signin/signin.component';
     HomeComponent,
     FooterComponent,
     ToolbarComponent,
-    SigninComponent
+    SigninComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,

@@ -4,5 +4,6 @@
     <button mat-icon-button>
         <mat-icon>search</mat-icon>
     </button>
-    <button mat-button routerLink="/signin">sign in</button>
+    <button *ngIf="!web3.isSignedIn" mat-button routerLink="/signin">sign in</button>
+    <button *ngIf="web3.isSignedIn" mat-button>anonymous</button>
 </mat-toolbar>

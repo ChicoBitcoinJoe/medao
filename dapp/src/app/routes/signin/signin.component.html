@@ -1,11 +1,19 @@
-<div style="max-width: 400px; width: 100%; margin: 64px auto;">
-    <div class="black-theme padding32" fxLayout="column">
-        <h1 style="margin-top: 0px !important; margin-bottom: 32px !important;">Sign In</h1>
-        <div fxLayout="column" fxLayoutGap="16px">
-            <button mat-raised-button>sign in with metamask</button>
-            <mat-checkbox>Remember me</mat-checkbox>
-            <mat-divider></mat-divider>
-            <span>By using this site or any associated smart contracts or applications you agree to any set <a href="">Privacy Policies</a> and/or <a href="">Terms of Service</a>.</span>
+<div class="black-theme" style="width: 100%;">
+    <div style="max-width: 400px; margin: 0px auto;" fxLayout="column">
+        <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="16px" fxFlex="200px">
+            <h1 class="no-margin" style="font-size: 48px;">
+                Sign In
+            </h1>
+            <h3 class="centered padding no-margin">
+                Unlock your Ethereum Account
+            </h3>
         </div>
+        <div class="padding32" fxLayout="column" fxLayoutGap="16px">
+            <button mat-raised-button (click)="App.signIn()">sign in with metamask</button>
+            <mat-checkbox [(ngModel)]="App.autoSignin" (ngModelChange)="App.toggleAutoSignin()">Remember me</mat-checkbox>
+            <mat-divider></mat-divider>
+            <span>By using this site or any associated smart contracts or applications you agree to any <a href="">Privacy Policies</a> and <a href="">Terms of Service</a>.</span>
+        </div>
+        <span fxFlex="64px"></span>
     </div>
 </div>

@@ -1,6 +1,6 @@
 <div fxLayout="column">
     <div class="black-theme" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="16px" fxFlex="200px">
-        <h1 class="cursor no-margin" style="font-size: 48px;" routerLink="['/home']">
+        <h1 class="no-margin" style="font-size: 48px;">
             Me + Dao
         </h1>
         <h3 class="centered padding no-margin">
@@ -28,35 +28,54 @@
                 </p>
             </div>
         </div>
-        <h4>Featured Dao</h4>
-        <div fxHide.gt-sm fxLayout="column" class="black-theme padding32">
-            <div style="height: 200px; width:100%; border: 1px solid white;">
-
+        <h2 style="margin-left: 32px;">Featured</h2>
+    </div>
+    <div class="black-theme">
+        <div class="skinny">
+            <div fxHide.gt-sm style="width: 100%; background-color: #444;" fxLayoutAlign="center center">
+                <mat-icon style="height: 300px; width: 300px; font-size: 300px;">person</mat-icon>
             </div>
-            <div fxLayout="column" fxLayoutAlign="start center" fxFlex>
-                <h2 style="text-align: center; margin-bottom: 8px;">Joseph Brian Reed</h2>
-                <h4 style="text-align: center; margin-top: 0px; color: rgba(255,255,255,0.77)">@chicobitcoinjoe</h4>
-                <p style="text-align: justify">CEO of MeDao - CEO of the Everchain Project</p>
-                <h3 fxLayout="row" fxLayoutGap="32px">
-                    <span>100% funded</span>
-                    <span>$50.00/h</span>
-                </h3>
-            </div>
-            <button mat-button>view</button>
-        </div>
-        <div fxHide fxShow.gt-sm class="black-theme padding32 cursor" (click)="null">
-            <div fxLayout="row" fxLayoutGap="32px">
-                <div style="height: 200px; min-width: 200px; border: 1px solid white;">
-
-                </div>
-                <div fxLayout="column" fxFlex>
-                    <h1 style="margin-bottom: 8px;">Joseph Brian Reed</h1>
-                    <h4 style="margin-top: 0px; color: rgba(255,255,255,0.77)">@chicobitcoinjoe</h4>
-                    <p>CEO of MeDao - CEO of the Everchain Project</p>
-                    <h3 fxLayout="row" fxLayoutGap="32px">
+            <div class="padding32" fxHide.gt-sm fxLayout="column" fxLayoutGap="32px">
+                <div fxLayout="column" fxLayoutAlign="start center" fxFlex>
+                    <h2 style="text-align: center; margin-bottom: 8px;">Joseph Brian Reed</h2>
+                    <h4 style="text-align: center; margin-top: 0px; color: rgba(255,255,255,0.77)" fxLayout.xs="column">
+                        <span style="margin-bottom: 8px;">@chicobitcoinjoe</span>
+                    </h4>
+                    <p>
+                        CEO of MeDao - CEO of the Everchain Project
+                    </p>
+                    <div>
                         <span>100% funded</span>
+                        <span fxFlex="48px"></span>
                         <span>$50.00/h</span>
-                    </h3>
+                    </div>
+                </div>
+                <button mat-raised-button routerLink="/profile/preview">view profile</button>
+            </div>
+            <div fxHide fxShow.gt-sm class="padding32" fxLayout="column">
+                <div fxLayout="row" fxLayoutGap="32px" fxFlex>
+                    <mat-icon style="
+                        width: 300px;
+                        height: 300px;
+                        font-size: 300px;
+                        color: #444;
+                        background-color: #AAA;">
+                        person
+                    </mat-icon>
+                    <div fxLayout="column" fxFlex>
+                        <h1 style="margin-top: 0px; margin-bottom: 8px;">Joseph Brian Reed</h1>
+                        <h4 style="margin-top: 0px; color: rgba(255,255,255,0.77)">
+                            @chicobitcoinjoe
+                            <span fxFlex="48px"></span>
+                            100% funded
+                            <span fxFlex="48px"></span>
+                            $50.00/h
+                        </h4>
+                        <p style="padding: 16px 0px;">
+                            CEO of MeDao - CEO of the Everchain Project
+                        </p>
+                        <button mat-raised-button routerLink="/profile/preview">view profile</button>
+                    </div>
                 </div>
             </div>
         </div>

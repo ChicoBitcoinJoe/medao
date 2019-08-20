@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
+import { AppService } from '../../services/app/app.service';
+
+declare let web3: any;
+
 @Component({
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
@@ -7,9 +11,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ToolbarComponent implements OnInit {
 
-  constructor() { }
+    web3 = web3;
 
-  ngOnInit() {
-  }
+    constructor (
+        public App: AppService,
+    ) {
+
+    }
+
+    ngOnInit() {
+
+    }
 
 }
