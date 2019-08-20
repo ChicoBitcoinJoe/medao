@@ -7,7 +7,6 @@ const MiniMeTokenBlueprint = artifacts.require("MiniMeToken");
 
 // Factories
 const MeDaoFactory = artifacts.require("MeDaoFactory");
-const FundraiserFactory = artifacts.require("FundraiserFactory");
 const MiniMeTokenFactory = artifacts.require("MiniMeTokenFactory");
 
 module.exports = function(deployer) {
@@ -22,13 +21,15 @@ module.exports = function(deployer) {
         ])
     })
     .then(() => {
-        return Promise.all([
-            deployer.deploy(FundraiserFactory, FundraiserBlueprint.address, {overwrite: false}),
-            deployer.deploy(MiniMeTokenFactory, MiniMeTokenBlueprint.address, {overwrite: false}),
-        ])
+        return deployer.deploy(MiniMeTokenFactory, MiniMeTokenBlueprint.address);
     })
     .then(() => {
-        return deployer.deploy(MeDaoFactory, FundraiserFactory.address, MiniMeTokenFactory.address);
+        return deployer.deploy(MeDaoFactory, MeDaoBlueprint.address, FundraiserBlueprint.address, MiniMeTokenFactory.address);
+    })
+    .then(() => {
+        console.log("")
+        console.log("Finished deploying contracts!")
+        console.log("")
     })
 
 };

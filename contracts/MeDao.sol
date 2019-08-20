@@ -37,12 +37,12 @@ contract MeDao is Owned, Initialized {
         collectedFunds = fundraiser.collectFunds();
     }
 
-    function collectFrom (Fundraiser[] memory fundraisers) public onlyOwner returns (uint collectedFunds) {
-        for(uint i = 0; i < fundraisers.length; i++) {
-            collectedFunds += collectFunds(fundraisers[i]);
+    function collectFrom (Fundraiser[] memory list) public onlyOwner returns (uint collectedFunds) {
+        for(uint i = 0; i < list.length; i++) {
+            collectedFunds += collectFunds(list[i]);
         }
 
-        ReserveToken.transfer(owner, collectedFunds);
+        Factory.ReserveToken().transfer(owner, collectedFunds);
     }
 
     function reschedule (uint time, Fundraiser from, Fundraiser to) public onlyOwner {
@@ -63,7 +63,7 @@ contract MeDao is Owned, Initialized {
         }
     }
 
-    function getFundraiserAt (uint index) public view returns (addres) {
+    function getFundraiserAt (uint i) public view returns (address) {
         return fundraisers.index(i);
     }
 
@@ -94,7 +94,7 @@ contract MeDaoFactory is CloneFactory {
         string memory name,
         uint desiredWage
     ) public returns (MeDao medao) {
-        require(registry[msg.sender] == address(0x0));
+        require(registry[msg.sender] == MeDao(0x0));
 
         MiniMeToken Time = Factory.createCloneToken(
             address(0x0),
@@ -132,7 +132,7 @@ contract MeDaoFactory is CloneFactory {
             'seconds',
             true
         );
-        
+
         fundraiser = Fundraiser(createClone(fundraiserBlueprint));
         fundraiser.initialize(ReserveToken, RewardToken, Time, desiredWage);
     }
