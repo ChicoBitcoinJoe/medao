@@ -8,17 +8,26 @@ import "./helpers/SimpleTokenController.sol";
 
 contract Fundraiser is Owned, Initialized, SimpleTokenController {
 
+    address public Factory;
+
     ERC20Token public ReserveToken;
     MiniMeToken public RewardToken;
     MiniMeToken public Time;
 
     uint public desiredWage;
     uint public fundingGoal;
-
     uint public currentWage;
     uint public timestampLastCollected;
 
-    function _Fundraiser (uint _desiredWage) public runOnce {
+    function initialize (
+        ERC20Token _ReserveToken,
+        MiniMeToken _RewardToken,
+        MiniMeToken _Time,
+        uint _desiredWage
+    ) public runOnce {
+        ReserveToken = _ReserveToken;
+        RewardToken = _RewardToken;
+        Time = _Time;
         desiredWage = _desiredWage;
         currentWage = _desiredWage;
     }
