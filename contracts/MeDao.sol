@@ -9,8 +9,9 @@ contract MeDao is Owned, Initialized {
     using ListLib for ListLib.AddressList;
 
     FundraiserFactory public Factory;
-    ListLib.AddressList fundraisers;
+    ERC20Token public ReserveToken;
     MiniMeToken public Time;
+    ListLib.AddressList fundraisers;
     Fundraiser public freeTime;
 
     uint public minimumWage;
@@ -20,8 +21,8 @@ contract MeDao is Owned, Initialized {
         Fundraiser _freeTime
     ) public runOnce {
         Time = _Time;
-        freeTime = _freeTime;
-        Time.generateTokens(address(freeTime), convertHoursToTime(60));
+        fundraisers.add(address(_freeTime));
+        require(Time.generateTokens(address(freeTime), convertHoursToTime(60)));
     }
 
     function startFundraiser (uint allotedTime) public onlyOwner returns (Fundraiser fundraiser) {
@@ -32,8 +33,9 @@ contract MeDao is Owned, Initialized {
     }
 
     function reschedule (uint time, Fundraiser from, Fundraiser to) public onlyOwner {
-        from.collectFunds(Time.balanceOf(address(from)));
-        to.collectFunds(Time.balanceOf(address(to)));
+        uint collectedFunds = from.collectFunds();
+        collectedFunds += to.collectFunds();
+        require(ReserveToken.transfer(owner, collectedFunds));
         require(Time.transferFrom(address(from), address(to), time));
     }
 

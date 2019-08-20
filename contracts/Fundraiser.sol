@@ -10,6 +10,7 @@ contract Fundraiser is Owned, Initialized, SimpleTokenController {
 
     ERC20Token public ReserveToken;
     MiniMeToken public RewardToken;
+    MiniMeToken public TimeToken;
 
     uint public desiredWage;
     uint public fundingGoal;
@@ -22,9 +23,9 @@ contract Fundraiser is Owned, Initialized, SimpleTokenController {
         currentWage = _desiredWage;
     }
 
-    function collectFunds (uint allotedTime) public onlyOwner returns (uint collectedFunds) {
+    function collectFunds () public onlyOwner returns (uint collectedFunds) {
         uint reserveBalance = ReserveToken.balanceOf(address(this));
-        uint workTime = calculateTime(allotedTime);
+        uint workTime = calculateTime(TimeToken.balanceOf(address(this)));
         collectedFunds = workTime * currentWage * reserveBalance / fundingGoal;
         require(ReserveToken.transfer(owner, collectedFunds));
         timestampLastCollected = now;
