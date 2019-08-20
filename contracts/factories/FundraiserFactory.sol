@@ -5,8 +5,10 @@ import "./Fundraiser.sol";
 
 contract FundraiserFactory is CloneFactory {
 
-    function create () public view returns (Fundraiser fundraiser){
-
+    function create (
+        uint desiredWage
+    ) public view returns (Fundraiser fundraiser){
+        desiredWage;
     }
 
 }

@@ -9,33 +9,47 @@ contract MeDao is Owned, Initialized {
     using ListLib for ListLib.AddressList;
 
     FundraiserFactory public Factory;
+    ListLib.AddressList Fundraisers;
     ERC20Token public ReserveToken;
     MiniMeToken public Time;
-    ListLib.AddressList fundraisers;
-    Fundraiser public freeTime;
-
     uint public minimumWage;
 
     function _MeDao (
-        MiniMeToken _Time,
-        Fundraiser _freeTime
+        FundraiserFactory _Factory,
+        ERC20Token _ReserveToken,
+        MiniMeToken _Time
+        Fundraiser _FreeTime,
     ) public runOnce {
+        owner = msg.sender;
+        Factory = _Factory;
+        ReserveToken = _ReserveToken;
         Time = _Time;
-        fundraisers.add(address(_freeTime));
-        require(Time.generateTokens(address(freeTime), convertHoursToTime(60)));
+        Fundraisers.add(address(_FreeTime));
+        require(Time.generateTokens(address(_FreeTime), convertHoursToTime(40)));
     }
 
     function startFundraiser (uint allotedTime) public onlyOwner returns (Fundraiser fundraiser) {
-        fundraiser = Factory.create();
-        fundraisers.add(address(fundraiser));
+        fundraiser = Factory.create(minimumWage);
+        Fundraisers.add(address(fundraiser));
         require(Time.transferFrom(address(freeTime), address(fundraiser), allotedTime));
         emit Fundraiser_event(fundraiser);
     }
 
+    function collectFunds (Fundraiser fundraiser) public onlyOwner returns (uint collectedFunds) {
+        collectedFunds = fundraiser.collectFunds();
+    }
+
+    function collectFrom (Fundraiser[] memory fundraisers) public onlyOwner returns (uint collectedFunds) {
+        for(uint i = 0; i < fundraisers.length; i++) {
+            collectedFunds += collectFunds(fundraisers[i]);
+        }
+
+        ReserveToken.transfer(owner, collectedFunds);
+    }
+
     function reschedule (uint time, Fundraiser from, Fundraiser to) public onlyOwner {
-        uint collectedFunds = from.collectFunds();
-        collectedFunds += to.collectFunds();
-        require(ReserveToken.transfer(owner, collectedFunds));
+        collectFunds(from)
+        colelctFunds(to);
         require(Time.transferFrom(address(from), address(to), time));
     }
 
@@ -47,23 +61,16 @@ contract MeDao is Owned, Initialized {
         return _hours * 60 * 60 * 10^18;
     }
 
-/*
-    function getFundraisers () public view returns (address[] memory) {
-        address[] memory allTasks = new address[](fundraisers.getLength());
-        for(uint i = 0; i < fundraisers.getLength(); i++) {
-            allTasks[i] = fundraisers.index(i);
+    function getFundraiserList () public view returns (address[] memory list) {
+        list = new address[](Fundraisers.getLength());
+        for(uint i = 0; i < Fundraisers.getLength(); i++) {
+            list[i] = Fundraisers.index(i);
         }
     }
 
-    function getTimeSchedule () public view returns (address[] memory, uint[] memory) {
-        uint[] memory times = new uint[](fundraisers.getLength());
-        for(uint i = 0; i < fundraisers.getLength(); i++) {
-            times[i] = Fundraiser(fundraisers.index(i)).time();
-        }
-
-        return (getFundraisers(), times);
+    function getFundraiserAt (uint index) public view returns (addres) {
+        return fundraisers.index(i);
     }
-*/
 
     event Fundraiser_event (Fundraiser fundraiser);
 

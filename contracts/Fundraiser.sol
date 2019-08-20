@@ -14,11 +14,11 @@ contract Fundraiser is Owned, Initialized, SimpleTokenController {
 
     uint public desiredWage;
     uint public fundingGoal;
-
     uint public currentWage;
     uint public timestampLastCollected;
 
     function _Fundraiser (uint _desiredWage) public runOnce {
+        owner = msg.sender;
         desiredWage = _desiredWage;
         currentWage = _desiredWage;
     }
@@ -29,7 +29,7 @@ contract Fundraiser is Owned, Initialized, SimpleTokenController {
         collectedFunds = workTime * currentWage * reserveBalance / fundingGoal;
         require(ReserveToken.transfer(owner, collectedFunds));
         timestampLastCollected = now;
-        emit Collect_event(collectedFunds);
+        emit Collect_event(workTime, collectedFunds);
     }
 
     function pledgeFunds (uint reserveTokens, uint minPledgeReward) public returns (uint pledgeReward){
@@ -71,15 +71,7 @@ contract Fundraiser is Owned, Initialized, SimpleTokenController {
         require(RewardToken.destroyTokens(msg.sender, rewardTokens));
     }
 
-    event Collect_event (uint collectedAmount);
+    event Collect_event (uint workTime, uint collectedFunds);
     event Pledge_event (address indexed msgSender, uint reserveTokens, uint pledgeReward);
-
-}
-
-contract FundraiserFactory {
-
-    function create () public view returns (Fundraiser fundraiser){
-
-    }
 
 }
