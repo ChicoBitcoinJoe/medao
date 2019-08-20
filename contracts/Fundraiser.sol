@@ -25,6 +25,7 @@ contract Fundraiser is Owned, Initialized, SimpleTokenController {
         MiniMeToken _Time,
         uint _desiredWage
     ) public runOnce {
+        owner = msg.sender;
         ReserveToken = _ReserveToken;
         RewardToken = _RewardToken;
         Time = _Time;

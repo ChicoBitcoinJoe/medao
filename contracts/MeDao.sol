@@ -33,6 +33,18 @@ contract MeDao is Owned, Initialized {
         emit Fundraiser_event(fundraiser);
     }
 
+    function collectFunds (Fundraiser fundraiser) public onlyOwner returns (uint collectedFunds) {
+        collectedFunds = fundraiser.collectFunds();
+    }
+
+    function collectFrom (Fundraiser[] memory fundraisers) public onlyOwner returns (uint collectedFunds) {
+        for(uint i = 0; i < fundraisers.length; i++) {
+            collectedFunds += collectFunds(fundraisers[i]);
+        }
+
+        ReserveToken.transfer(owner, collectedFunds);
+    }
+
     function reschedule (uint time, Fundraiser from, Fundraiser to) public onlyOwner {
         uint collectedFunds = from.collectFunds();
         collectedFunds += to.collectFunds();
@@ -42,6 +54,17 @@ contract MeDao is Owned, Initialized {
 
     function setDesiredWage (uint _desiredWage) public onlyOwner {
         desiredWage = _desiredWage;
+    }
+
+    function getFundraiserList () public view returns (address[] memory list) {
+        list = new address[](fundraisers.getLength());
+        for(uint i = 0; i < fundraisers.getLength(); i++) {
+            list[i] = fundraisers.index(i);
+        }
+    }
+
+    function getFundraiserAt (uint index) public view returns (addres) {
+        return fundraisers.index(i);
     }
 
     event Fundraiser_event (Fundraiser fundraiser);
@@ -55,6 +78,8 @@ contract MeDaoFactory is CloneFactory {
     MiniMeTokenFactory public Factory;
     ERC20Token public ReserveToken;
 
+    mapping (address => MeDao) public registry;
+
     constructor (
         address _medaoBlueprint,
         address _fundraiserBlueprint,
@@ -65,10 +90,12 @@ contract MeDaoFactory is CloneFactory {
         Factory = _Factory;
     }
 
-    function createMeDao (
+    function register (
         string memory name,
         uint desiredWage
     ) public returns (MeDao medao) {
+        require(registry[msg.sender] == address(0x0));
+
         MiniMeToken Time = Factory.createCloneToken(
             address(0x0),
             0,
@@ -79,13 +106,17 @@ contract MeDaoFactory is CloneFactory {
         );
 
         Fundraiser primaryFundraiser = startFundraiser(Time, name, desiredWage);
-        require(Time.generateTokens(address(primaryFundraiser), convertHoursToTime(40)));
+        uint fortyHours = 40 * 60 * 60 * 10^18;
+        require(Time.generateTokens(address(primaryFundraiser), fortyHours));
         Time.changeController(address(medao));
 
         medao = MeDao(createClone(medaoBlueprint));
         medao.initialize(primaryFundraiser, Time);
         medao.setDesiredWage(desiredWage);
         medao.transferOwnership(msg.sender);
+
+        registry[msg.sender] = medao;
+        emit Register_event(msg.sender, medao);
     }
 
     function startFundraiser (
@@ -93,7 +124,6 @@ contract MeDaoFactory is CloneFactory {
         string memory name,
         uint desiredWage
     ) public returns (Fundraiser fundraiser){
-        fundraiser = Fundraiser(createClone(fundraiserBlueprint));
         MiniMeToken RewardToken = Factory.createCloneToken(
             address(0x0),
             0,
@@ -102,11 +132,10 @@ contract MeDaoFactory is CloneFactory {
             'seconds',
             true
         );
+        
+        fundraiser = Fundraiser(createClone(fundraiserBlueprint));
         fundraiser.initialize(ReserveToken, RewardToken, Time, desiredWage);
     }
 
-    function convertHoursToTime (uint _hours) internal pure returns (uint time) {
-        return _hours * 60 * 60 * 10^18;
-    }
-
+    event Register_event (address creator, MeDao medao);
 }

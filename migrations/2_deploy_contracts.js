@@ -30,10 +30,5 @@ module.exports = function(deployer) {
     .then(() => {
         return deployer.deploy(MeDaoFactory, FundraiserFactory.address, MiniMeTokenFactory.address);
     })
-    .then(() => {
-        console.log("")
-        console.log("finished deploying contracts!")
-        console.log("")
-    })
 
 };
