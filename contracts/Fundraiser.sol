@@ -1,8 +1,8 @@
 pragma solidity ^0.5.0;
 
-import "./external/ERC20Token.sol";
 import "./external/MiniMeToken.sol";
-import "./external/Owned.sol";
+import "./helpers/ERC20Token.sol";
+import "./helpers/Owned.sol";
 import "./helpers/Initialized.sol";
 import "./helpers/SimpleTokenController.sol";
 
@@ -10,7 +10,7 @@ contract Fundraiser is Owned, Initialized, SimpleTokenController {
 
     ERC20Token public ReserveToken;
     MiniMeToken public RewardToken;
-    MiniMeToken public TimeToken;
+    MiniMeToken public Time;
 
     uint public desiredWage;
     uint public fundingGoal;
@@ -25,7 +25,7 @@ contract Fundraiser is Owned, Initialized, SimpleTokenController {
 
     function collectFunds () public onlyOwner returns (uint collectedFunds) {
         uint reserveBalance = ReserveToken.balanceOf(address(this));
-        uint workTime = calculateTime(TimeToken.balanceOf(address(this)));
+        uint workTime = calculateTime(Time.balanceOf(address(this)));
         collectedFunds = workTime * currentWage * reserveBalance / fundingGoal;
         require(ReserveToken.transfer(owner, collectedFunds));
         timestampLastCollected = now;
@@ -73,13 +73,5 @@ contract Fundraiser is Owned, Initialized, SimpleTokenController {
 
     event Collect_event (uint collectedAmount);
     event Pledge_event (address indexed msgSender, uint reserveTokens, uint pledgeReward);
-
-}
-
-contract FundraiserFactory {
-
-    function create () public view returns (Fundraiser fundraiser){
-
-    }
 
 }

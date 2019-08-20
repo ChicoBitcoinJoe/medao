@@ -1,6 +1,6 @@
 pragma solidity ^0.5.0;
 
-import "./../external/MiniMeToken.sol";
+import "../external/MiniMeToken.sol";
 
 contract SimpleTokenController is TokenController {
 
@@ -18,5 +18,5 @@ contract SimpleTokenController is TokenController {
         _owner; _spender; _amount;
         return true;
     }
-    
+
 }

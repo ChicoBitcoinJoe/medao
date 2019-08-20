@@ -1,5 +1,6 @@
 pragma solidity ^0.5.0;
 
+import "./external/CloneFactory.sol";
 import "./external/ListLib.sol";
 import "./helpers/Initialized.sol";
 import "./Fundraiser.sol";
@@ -8,7 +9,7 @@ contract MeDao is Owned, Initialized {
 
     using ListLib for ListLib.AddressList;
 
-    FundraiserFactory public Factory;
+    MeDaoFactory public Factory;
     ERC20Token public ReserveToken;
     MiniMeToken public Time;
     ListLib.AddressList fundraisers;
@@ -26,7 +27,7 @@ contract MeDao is Owned, Initialized {
     }
 
     function startFundraiser (uint allotedTime) public onlyOwner returns (Fundraiser fundraiser) {
-        fundraiser = Factory.create();
+        fundraiser = Factory.startFundraiser();
         fundraisers.add(address(fundraiser));
         require(Time.transferFrom(address(freeTime), address(fundraiser), allotedTime));
         emit Fundraiser_event(fundraiser);
@@ -47,24 +48,29 @@ contract MeDao is Owned, Initialized {
         return _hours * 60 * 60 * 10^18;
     }
 
-/*
-    function getFundraisers () public view returns (address[] memory) {
-        address[] memory allTasks = new address[](fundraisers.getLength());
-        for(uint i = 0; i < fundraisers.getLength(); i++) {
-            allTasks[i] = fundraisers.index(i);
-        }
-    }
-
-    function getTimeSchedule () public view returns (address[] memory, uint[] memory) {
-        uint[] memory times = new uint[](fundraisers.getLength());
-        for(uint i = 0; i < fundraisers.getLength(); i++) {
-            times[i] = Fundraiser(fundraisers.index(i)).time();
-        }
-
-        return (getFundraisers(), times);
-    }
-*/
-
     event Fundraiser_event (Fundraiser fundraiser);
+
+}
+
+contract MeDaoFactory is CloneFactory {
+
+    address public medaoBlueprint;
+    address public fundraiserBlueprint;
+
+    constructor (
+        address _medaoBlueprint,
+        address _fundraiserBlueprint
+    ) public {
+        medaoBlueprint = _medaoBlueprint;
+        fundraiserBlueprint = _fundraiserBlueprint;
+    }
+
+    function createMeDao () public returns (MeDao) {
+
+    }
+
+    function startFundraiser () public returns (Fundraiser){
+
+    }
 
 }
