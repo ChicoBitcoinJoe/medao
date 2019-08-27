@@ -2,8 +2,81 @@ pragma solidity ^0.5.0;
 
 import "./external/CloneFactory.sol";
 import "./external/ListLib.sol";
-import "./helpers/Initialized.sol";
+import "./external/BancorFormula.sol";
+import "./utility/Initialized.sol";
 import "./Fundraiser.sol";
+
+contract NameRegistry {
+    function register (string memory name) public returns (uint id);
+}
+
+contract Me is Owned {
+
+    NameRegistry public registry;
+    string public hash;
+
+    function register (string memory name) public onlyOwner returns (uint id) {
+        id = registry.register(name);
+        emit Register_event(name,id);
+    }
+
+    function updateHash (string memory newHash) public onlyOwner {
+        hash = newHash;
+    }
+
+    event Register_event (string name, uint id);
+    event Update_event (string hash);
+
+}
+
+contract Dao {
+
+    ERC20Token public Dai;
+    MiniMeToken public Reward;
+
+    function pledge (uint reserveAmount, uint minRewardAmount) public {
+
+    }
+
+    function unpledge (uint rewardAmount) public {
+
+    }
+
+}
+
+contract IMeDao is Me, Dao {
+
+    MeDaoFactory public Factory;
+    ERC20Token public Dai;
+    MiniMeToken public Reward;
+    BancorFormula public Formula;
+
+    uint public derivedSupply;
+    uint32 public connectorWeight = 400000;
+
+    function pledge (uint depositAmount, uint minReward) public {
+        uint rewardAmount = Formula.calculatePurchaseReturn(
+            derivedSupply,
+            Dai.balanceOf(address(this)),
+            connectorWeight,
+            depositAmount
+        );
+        require(rewardAmount >= minReward);
+        derivedSupply += rewardAmount;
+        /* ... */
+    }
+
+    function refund (uint rewardAmount) public {
+        uint depositRefund = Formula.calculateSaleReturn(
+            Reward.totalSupply(),
+            Dai.balanceOf(address(this)),
+            connectorWeight,
+            rewardAmount
+        );
+        /* ... */
+    }
+
+}
 
 contract MeDao is Owned, Initialized {
 
@@ -78,6 +151,8 @@ contract MeDaoFactory is CloneFactory {
     MiniMeTokenFactory public Factory;
     ERC20Token public ReserveToken;
 
+    uint constant FORTY_HOURS = 40 * 60 * 60 * 10^18;
+
     mapping (address => MeDao) public registry;
 
     constructor (
@@ -106,8 +181,7 @@ contract MeDaoFactory is CloneFactory {
         );
 
         Fundraiser primaryFundraiser = startFundraiser(Time, name, desiredWage);
-        uint fortyHours = 40 * 60 * 60 * 10^18;
-        require(Time.generateTokens(address(primaryFundraiser), fortyHours));
+        require(Time.generateTokens(address(primaryFundraiser), FORTY_HOURS));
         Time.changeController(address(medao));
 
         medao = MeDao(createClone(medaoBlueprint));

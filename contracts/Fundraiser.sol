@@ -1,10 +1,10 @@
 pragma solidity ^0.5.0;
 
 import "./external/MiniMeToken.sol";
-import "./helpers/ERC20Token.sol";
-import "./helpers/Owned.sol";
-import "./helpers/Initialized.sol";
-import "./helpers/SimpleTokenController.sol";
+import "./external/ERC20Token.sol";
+import "./external/Owned.sol";
+import "./utility/Initialized.sol";
+import "./utility/SimpleTokenController.sol";
 
 contract Fundraiser is Owned, Initialized, SimpleTokenController {
 
