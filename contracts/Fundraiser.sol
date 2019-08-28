@@ -1,49 +1,37 @@
 pragma solidity ^0.5.0;
 
 import "./external/BancorFormula.sol";
-import "./external/MiniMeToken.sol";
-import "./external/ERC20Token.sol";
 import "./external/Owned.sol";
+import "./external/CloneFactory.sol";
 import "./utility/Initialized.sol";
 import "./utility/SimpleTokenController.sol";
-import ".//Interfaces.sol";
+import "./Interfaces.sol";
 
+contract Fundraiser is IFundraiser, ITimeReleased, Owned, Initialized, SimpleTokenController {
 
-contract IFundraiserFactory {
-    function create (uint wage) public returns (IFundraiser);
-}
-
-contract ITimeReleased {
-    ITimeManager public Manager;
-    uint public timestampLastReleased;
-    function calculateElligibleTime () public view returns (uint);
-}
-
-contract IFundraiser is ITimeReleased {
-    ERC20Token public ReserveToken;
-    MiniMeToken public RewardToken;
-    function pledge (uint reserveAmount, uint minRewardAmount) public;
-    function unpledge (uint rewardAmount) public;
-    function collect () public returns (uint reserveAmount);
-}
-
-contract Fundraiser is IFundraiser, Owned, Initialized, SimpleTokenController {
-
+    FundraiserFactory public Factory;
     BancorFormula public Formula;
     uint32 public connectorWeight;
     uint public derivedSupply;
-    uint public maxAllottableTime;
 
     function initialize (
-        BancorFormula _Formula,
         ITimeManager _Manager,
-        uint _derivedSupply
+        BancorFormula _Formula,
+        ERC20Token _ReserveToken,
+        MiniMeToken _RewardToken,
+        uint _derivedSupply,
+        uint _maxAllottableTime,
+        uint32 _connectorWeight
     ) public runOnce {
+        owner = msg.sender;
+        Factory = FundraiserFactory(msg.sender);
         Formula = _Formula;
         Manager = _Manager;
-        connectorWeight = 400000; // CW = 0.4
-        maxAllottableTime = 40 hours;
+        ReserveToken = _ReserveToken;
+        RewardToken = _RewardToken;
+        connectorWeight = _connectorWeight;
         derivedSupply = _derivedSupply;
+        maxAllottableTime = _maxAllottableTime;
     }
 
     function pledge (uint reserveAmount, uint minRewardAmount) public {
@@ -53,12 +41,13 @@ contract Fundraiser is IFundraiser, Owned, Initialized, SimpleTokenController {
             connectorWeight,
             reserveAmount
         );
+
         require(rewardAmount >= minRewardAmount);
         require(ReserveToken.transferFrom(msg.sender, address(this), reserveAmount));
         derivedSupply += rewardAmount;
     }
 
-    function unpledge (uint rewardAmount) public {
+    function refund (uint rewardAmount) public {
         uint depositRefund = Formula.calculateSaleReturn(
             RewardToken.totalSupply(),
             ReserveToken.balanceOf(address(this)),
@@ -66,24 +55,42 @@ contract Fundraiser is IFundraiser, Owned, Initialized, SimpleTokenController {
             rewardAmount
         );
 
-        /* ... */
         ReserveToken.transfer(owner, depositRefund);
         derivedSupply -= rewardAmount;
     }
 
-    function collect (uint workedTime) public onlyOwner returns (uint reserveAmount) {
+    function collect () public onlyOwner returns (uint reserveAmount) {
         uint allottedTime = Manager.Time().balanceOf(address(this));
         uint elligibleTime = calculateElligibleTime(allottedTime);
-        require(workedTime <= elligibleTime);
         reserveAmount = Formula.calculateSaleReturn(
             derivedSupply,
             ReserveToken.balanceOf(address(this)),
             connectorWeight,
-            workedTime
+            elligibleTime
         );
 
         ReserveToken.transfer(owner, reserveAmount);
-        timestampLastReleased = timestampLastReleased + workedTime * 604800 / allottedTime;
+        timestampLastReleased += reserveAmount;
+    }
+
+    function collect (uint reserveAmount) public onlyOwner returns (bool success) {
+        uint allottedTime = Manager.Time().balanceOf(address(this));
+        uint elligibleTime = calculateElligibleTime(allottedTime);
+        uint collectibleReserves = Formula.calculateSaleReturn(
+            derivedSupply,
+            ReserveToken.balanceOf(address(this)),
+            connectorWeight,
+            elligibleTime
+        );
+
+        if (reserveAmount <= collectibleReserves) {
+            ReserveToken.transfer(owner, reserveAmount);
+            timestampLastReleased += (elligibleTime * reserveAmount / collectibleReserves);
+            success = true;
+        }
+        else {
+            success = false;
+        }
     }
 
     function calculateElligibleTime (uint allottedTime) public view returns (uint) {
@@ -95,84 +102,50 @@ contract Fundraiser is IFundraiser, Owned, Initialized, SimpleTokenController {
 
 }
 
-/*
-contract Fundraiser is Owned, Initialized, SimpleTokenController {
+contract FundraiserFactory is IFundraiserFactory, CloneFactory {
 
-    address public Factory;
-
+    Fundraiser public blueprint;
+    BancorFormula public Formula;
     ERC20Token public ReserveToken;
-    MiniMeToken public RewardToken;
-    MiniMeToken public Time;
+    MiniMeTokenFactory public TokenFactory;
+    uint public defaultAllottableTime = 40 hours * 1 ether;
+    uint32 public defaultConnectorWeight = 400000; // == 0.4
+    mapping (address => bool) public created;
 
-    uint public desiredWage;
-    uint public fundingGoal;
-    uint public currentWage;
-    uint public timestampLastReleased;
+    constructor (
 
-    function initialize (
-        ERC20Token _ReserveToken,
-        MiniMeToken _RewardToken,
-        MiniMeToken _Time,
-        uint _desiredWage
-    ) public runOnce {
-        owner = msg.sender;
-        ReserveToken = _ReserveToken;
-        RewardToken = _RewardToken;
-        Time = _Time;
-        desiredWage = _desiredWage;
-        currentWage = _desiredWage;
+    ) public {
+
     }
 
-    function collectFunds () public onlyOwner returns (uint collectedFunds) {
-        uint reserveBalance = ReserveToken.balanceOf(address(this));
-        uint workTime = calculateTime(Time.balanceOf(address(this)));
-        collectedFunds = workTime * currentWage * reserveBalance / fundingGoal;
-        require(ReserveToken.transfer(owner, collectedFunds));
-        timestampLastReleased = now;
-        emit Collect_event(collectedFunds);
-    }
+    function createFundraiser (
+        string memory fundraiserName,
+        uint desiredWage
+    ) public returns (IFundraiser) {
+        MiniMeToken RewardToken = TokenFactory.createCloneToken(
+            address(0x0),
+            0,
+            fundraiserName,
+            18,
+            'seconds',
+            true
+        );
 
-    function pledgeFunds (uint reserveTokens, uint minPledgeReward) public returns (uint pledgeReward){
-        pledgeReward = calculatePledgeReward(reserveTokens);
-        require(pledgeReward >= minPledgeReward, 'pledge reward does not meet minimum');
-        require(RewardToken.generateTokens(msg.sender, pledgeReward), 'failed to generate tokens');
-        emit Pledge_event(msg.sender, reserveTokens, pledgeReward);
-    }
+        Fundraiser fundraiser = Fundraiser(createClone(address(blueprint)));
+        fundraiser.initialize(
+            ITimeManager(msg.sender),
+            Formula,
+            ReserveToken,
+            RewardToken,
+            desiredWage * 2080 * 1000000 / defaultConnectorWeight,
+            defaultAllottableTime,
+            defaultConnectorWeight
+        );
 
-    function calculateTime (uint allotedTime) public view returns (uint) {
-        uint elapsedSeconds = now - timestampLastReleased;
-        return elapsedSeconds * allotedTime / 168;
+        require(address(fundraiser) != address(0x0));
+        created[address(fundraiser)] = true;
+        fundraiser.transferOwnership(msg.sender);
+        return fundraiser;
     }
-
-    function calculatePledgeReward (uint reserveTokens) public view returns (uint pledgeReward) {
-        uint reserveBalance = ReserveToken.balanceOf(address(this));
-        if(reserveBalance < fundingGoal) {
-            // This medao is less than or equal to 100% funded
-            uint availableTokens = fundingGoal - reserveBalance;
-            if(reserveTokens <= availableTokens) {
-                pledgeReward = reserveTokens * 1 ether / currentWage;
-            }
-            else {
-                pledgeReward = availableTokens * 1 ether / currentWage;
-                pledgeReward += calculateOverpledgeReward(reserveTokens - availableTokens);
-            }
-        }
-        else {
-            pledgeReward = calculateOverpledgeReward(reserveTokens);
-        }
-    }
-
-    function calculateOverpledgeReward (uint reserveTokens) internal view returns (uint overpledgeReward){
-        uint reserveBalance = ReserveToken.balanceOf(address(this));
-        overpledgeReward = reserveTokens * 1 ether / (currentWage * reserveBalance / fundingGoal);
-    }
-
-    function burnRewardTokens (uint rewardTokens) public {
-        require(RewardToken.destroyTokens(msg.sender, rewardTokens));
-    }
-
-    event Collect_event (uint collectedAmount);
-    event Pledge_event (address indexed msgSender, uint reserveTokens, uint pledgeReward);
 
 }
-*/

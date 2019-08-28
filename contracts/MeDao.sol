@@ -2,7 +2,6 @@ pragma solidity ^0.5.0;
 
 import "./external/CloneFactory.sol";
 import "./external/ListLib.sol";
-import "./external/MiniMeToken.sol";
 import "./utility/Initialized.sol";
 import "./Fundraiser.sol";
 import "./Interfaces.sol";
@@ -30,10 +29,11 @@ contract MeDao is ITimeManager, Owned, Initialized {
 
     function startFundraiser (
         IFundraiserFactory factory,
+        string memory name,
         uint desiredWage,
         uint workHours
     ) public onlyOwner returns (IFundraiser fundraiser){
-        fundraiser = factory.create(desiredWage);
+        fundraiser = factory.createFundraiser(name, desiredWage);
         require(address(fundraiser) != address(0x0));
         fundraisers.add(address(fundraiser));
         assign(workHours, address(fundraiser), address(fundraisers.index(defaultFundraiser)));
@@ -46,8 +46,8 @@ contract MeDao is ITimeManager, Owned, Initialized {
         assign(time, toTask, fromTask);
     }
 
-    function setName (NameRegistry nameRegistry, string memory name) public onlyOwner returns (uint id) {
-        id = nameRegistry.register(name);
+    function setName (NameRegistry nameRegistry, string memory name) public onlyOwner {
+        nameRegistry.register(name);
     }
 
     function updateHash (string memory newHash) public onlyOwner {
