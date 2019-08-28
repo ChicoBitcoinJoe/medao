@@ -2,82 +2,88 @@ pragma solidity ^0.5.0;
 
 import "./external/CloneFactory.sol";
 import "./external/ListLib.sol";
-import "./external/BancorFormula.sol";
+import "./external/MiniMeToken.sol";
 import "./utility/Initialized.sol";
 import "./Fundraiser.sol";
+import "./Interfaces.sol";
+import "./NameRegistry.sol";
 
-contract NameRegistry {
-    function register (string memory name) public returns (uint id);
-}
+contract MeDao is ITimeManager, Owned, Initialized {
 
-contract Me is Owned {
+    using ListLib for ListLib.AddressList;
 
-    NameRegistry public registry;
+    MeDaoFactory public Factory;
+    MiniMeToken public Time;
+    ListLib.AddressList fundraisers;
+    uint public defaultFundraiser;
     string public hash;
 
-    function register (string memory name) public onlyOwner returns (uint id) {
-        id = registry.register(name);
-        emit Register_event(name,id);
+    function initialize (
+        MiniMeToken _Time,
+        Fundraiser _initialFundraiser
+    ) public runOnce {
+        Factory = MeDaoFactory(msg.sender);
+        Time = _Time;
+        Time.generateTokens(address(_initialFundraiser), 80 hours);
+        fundraisers.add(address(_initialFundraiser));
+    }
+
+    function startFundraiser (
+        IFundraiserFactory factory,
+        uint desiredWage,
+        uint workHours
+    ) public onlyOwner returns (IFundraiser fundraiser){
+        fundraiser = factory.create(desiredWage);
+        require(address(fundraiser) != address(0x0));
+        fundraisers.add(address(fundraiser));
+        assign(workHours, address(fundraiser), address(fundraisers.index(defaultFundraiser)));
+        emit Fundraiser_event(fundraiser);
+    }
+
+    function assign (uint time, address toTask, address fromTask) public onlyOwner {
+        require(fundraisers.contains(toTask));
+        require(fundraisers.contains(fromTask));
+        assign(time, toTask, fromTask);
+    }
+
+    function setName (NameRegistry nameRegistry, string memory name) public onlyOwner returns (uint id) {
+        id = nameRegistry.register(name);
     }
 
     function updateHash (string memory newHash) public onlyOwner {
         hash = newHash;
+        emit UpdateHash_event(newHash);
     }
 
-    event Register_event (string name, uint id);
-    event Update_event (string hash);
+    function getTotalFundraisers () public view returns (uint) {
+        return fundraisers.getLength();
+    }
+
+    function getFundraiserAtIndex (uint i) public view returns (address) {
+        return fundraisers.index(i);
+    }
+
+    function getFundraiserList () public view returns (address[] memory) {
+        return fundraisers.get();
+    }
+
+    event Fundraiser_event (IFundraiser fundraiser);
+    event UpdateHash_event (string hash);
 
 }
 
-contract Dao {
+contract MeDaoFactory {
 
-    ERC20Token public Dai;
-    MiniMeToken public Reward;
+    MeDao public blueprint;
 
-    function pledge (uint reserveAmount, uint minRewardAmount) public {
-
-    }
-
-    function unpledge (uint rewardAmount) public {
+    function register (
+        string memory name
+    ) public returns (MeDao medao) {
 
     }
-
 }
 
-contract IMeDao is Me, Dao {
-
-    MeDaoFactory public Factory;
-    ERC20Token public Dai;
-    MiniMeToken public Reward;
-    BancorFormula public Formula;
-
-    uint public derivedSupply;
-    uint32 public connectorWeight = 400000;
-
-    function pledge (uint depositAmount, uint minReward) public {
-        uint rewardAmount = Formula.calculatePurchaseReturn(
-            derivedSupply,
-            Dai.balanceOf(address(this)),
-            connectorWeight,
-            depositAmount
-        );
-        require(rewardAmount >= minReward);
-        derivedSupply += rewardAmount;
-        /* ... */
-    }
-
-    function refund (uint rewardAmount) public {
-        uint depositRefund = Formula.calculateSaleReturn(
-            Reward.totalSupply(),
-            Dai.balanceOf(address(this)),
-            connectorWeight,
-            rewardAmount
-        );
-        /* ... */
-    }
-
-}
-
+/*
 contract MeDao is Owned, Initialized {
 
     using ListLib for ListLib.AddressList;
@@ -98,11 +104,11 @@ contract MeDao is Owned, Initialized {
 
     function startFundraiser (
         string memory name,
-        uint allotedTime
+        uint allottedTime
     ) public onlyOwner returns (Fundraiser fundraiser) {
         fundraiser = Factory.startFundraiser(Time, name, desiredWage);
         fundraisers.add(address(fundraiser));
-        require(Time.transferFrom(address(fundraisers.index(0)), address(fundraiser), allotedTime));
+        require(Time.transferFrom(address(fundraisers.index(0)), address(fundraiser), allottedTime));
         emit Fundraiser_event(fundraiser);
     }
 
@@ -213,3 +219,4 @@ contract MeDaoFactory is CloneFactory {
 
     event Register_event (address creator, MeDao medao);
 }
+*/

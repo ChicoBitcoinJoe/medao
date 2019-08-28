@@ -1,11 +1,101 @@
 pragma solidity ^0.5.0;
 
+import "./external/BancorFormula.sol";
 import "./external/MiniMeToken.sol";
 import "./external/ERC20Token.sol";
 import "./external/Owned.sol";
 import "./utility/Initialized.sol";
 import "./utility/SimpleTokenController.sol";
+import ".//Interfaces.sol";
 
+
+contract IFundraiserFactory {
+    function create (uint wage) public returns (IFundraiser);
+}
+
+contract ITimeReleased {
+    ITimeManager public Manager;
+    uint public timestampLastReleased;
+    function calculateElligibleTime () public view returns (uint);
+}
+
+contract IFundraiser is ITimeReleased {
+    ERC20Token public ReserveToken;
+    MiniMeToken public RewardToken;
+    function pledge (uint reserveAmount, uint minRewardAmount) public;
+    function unpledge (uint rewardAmount) public;
+    function collect () public returns (uint reserveAmount);
+}
+
+contract Fundraiser is IFundraiser, Owned, Initialized, SimpleTokenController {
+
+    BancorFormula public Formula;
+    uint32 public connectorWeight;
+    uint public derivedSupply;
+    uint public maxAllottableTime;
+
+    function initialize (
+        BancorFormula _Formula,
+        ITimeManager _Manager,
+        uint _derivedSupply
+    ) public runOnce {
+        Formula = _Formula;
+        Manager = _Manager;
+        connectorWeight = 400000; // CW = 0.4
+        maxAllottableTime = 40 hours;
+        derivedSupply = _derivedSupply;
+    }
+
+    function pledge (uint reserveAmount, uint minRewardAmount) public {
+        uint rewardAmount = Formula.calculatePurchaseReturn(
+            derivedSupply,
+            ReserveToken.balanceOf(address(this)),
+            connectorWeight,
+            reserveAmount
+        );
+        require(rewardAmount >= minRewardAmount);
+        require(ReserveToken.transferFrom(msg.sender, address(this), reserveAmount));
+        derivedSupply += rewardAmount;
+    }
+
+    function unpledge (uint rewardAmount) public {
+        uint depositRefund = Formula.calculateSaleReturn(
+            RewardToken.totalSupply(),
+            ReserveToken.balanceOf(address(this)),
+            connectorWeight,
+            rewardAmount
+        );
+
+        /* ... */
+        ReserveToken.transfer(owner, depositRefund);
+        derivedSupply -= rewardAmount;
+    }
+
+    function collect (uint workedTime) public onlyOwner returns (uint reserveAmount) {
+        uint allottedTime = Manager.Time().balanceOf(address(this));
+        uint elligibleTime = calculateElligibleTime(allottedTime);
+        require(workedTime <= elligibleTime);
+        reserveAmount = Formula.calculateSaleReturn(
+            derivedSupply,
+            ReserveToken.balanceOf(address(this)),
+            connectorWeight,
+            workedTime
+        );
+
+        ReserveToken.transfer(owner, reserveAmount);
+        timestampLastReleased = timestampLastReleased + workedTime * 604800 / allottedTime;
+    }
+
+    function calculateElligibleTime (uint allottedTime) public view returns (uint) {
+        if(allottedTime > maxAllottableTime)
+            allottedTime = maxAllottableTime;
+
+        return (now - timestampLastReleased) * 1 ether * allottedTime / 604800;
+    }
+
+}
+
+/*
 contract Fundraiser is Owned, Initialized, SimpleTokenController {
 
     address public Factory;
@@ -17,7 +107,7 @@ contract Fundraiser is Owned, Initialized, SimpleTokenController {
     uint public desiredWage;
     uint public fundingGoal;
     uint public currentWage;
-    uint public timestampLastCollected;
+    uint public timestampLastReleased;
 
     function initialize (
         ERC20Token _ReserveToken,
@@ -38,7 +128,7 @@ contract Fundraiser is Owned, Initialized, SimpleTokenController {
         uint workTime = calculateTime(Time.balanceOf(address(this)));
         collectedFunds = workTime * currentWage * reserveBalance / fundingGoal;
         require(ReserveToken.transfer(owner, collectedFunds));
-        timestampLastCollected = now;
+        timestampLastReleased = now;
         emit Collect_event(collectedFunds);
     }
 
@@ -50,7 +140,7 @@ contract Fundraiser is Owned, Initialized, SimpleTokenController {
     }
 
     function calculateTime (uint allotedTime) public view returns (uint) {
-        uint elapsedSeconds = now - timestampLastCollected;
+        uint elapsedSeconds = now - timestampLastReleased;
         return elapsedSeconds * allotedTime / 168;
     }
 
@@ -85,3 +175,4 @@ contract Fundraiser is Owned, Initialized, SimpleTokenController {
     event Pledge_event (address indexed msgSender, uint reserveTokens, uint pledgeReward);
 
 }
+*/
