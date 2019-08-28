@@ -13,6 +13,7 @@ contract Fundraiser is IFundraiser, ITimeReleased, Owned, Initialized, SimpleTok
     BancorFormula public Formula;
     uint32 public connectorWeight;
     uint public derivedSupply;
+    uint public expirationTimestamp;
 
     function initialize (
         ITimeManager _Manager,
@@ -59,6 +60,10 @@ contract Fundraiser is IFundraiser, ITimeReleased, Owned, Initialized, SimpleTok
         derivedSupply -= rewardAmount;
     }
 
+    function burn (uint rewardAmount) public {
+        require(RewardToken.destroyTokens(msg.sender, rewardAmount));
+    }
+
     function collect () public onlyOwner returns (uint reserveAmount) {
         uint allottedTime = Manager.Time().balanceOf(address(this));
         uint elligibleTime = calculateElligibleTime(allottedTime);
@@ -100,6 +105,10 @@ contract Fundraiser is IFundraiser, ITimeReleased, Owned, Initialized, SimpleTok
         return (now - timestampLastReleased) * 1 ether * allottedTime / 604800;
     }
 
+    function setExpirationDate (uint _expirationTimestamp) public onlyOwner {
+        expirationTimestamp = _expirationTimestamp;
+    }
+
 }
 
 contract FundraiserFactory is IFundraiserFactory, CloneFactory {
@@ -113,9 +122,15 @@ contract FundraiserFactory is IFundraiserFactory, CloneFactory {
     mapping (address => bool) public created;
 
     constructor (
-
+        Fundraiser _blueprint,
+        BancorFormula _Formula,
+        ERC20Token _ReserveToken,
+        MiniMeTokenFactory _TokenFactory
     ) public {
-
+        blueprint = _blueprint;
+        Formula = _Formula;
+        ReserveToken = _ReserveToken;
+        TokenFactory = _TokenFactory;
     }
 
     function createFundraiser (

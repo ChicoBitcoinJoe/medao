@@ -17,14 +17,10 @@ contract MeDao is ITimeManager, Owned, Initialized {
     uint public defaultFundraiser;
     string public hash;
 
-    function initialize (
-        MiniMeToken _Time,
-        Fundraiser _initialFundraiser
-    ) public runOnce {
+    function initialize (MiniMeToken _Time) public runOnce {
+        owner = msg.sender;
         Factory = MeDaoFactory(msg.sender);
         Time = _Time;
-        Time.generateTokens(address(_initialFundraiser), 80 hours);
-        fundraisers.add(address(_initialFundraiser));
     }
 
     function startFundraiser (
@@ -50,6 +46,11 @@ contract MeDao is ITimeManager, Owned, Initialized {
         nameRegistry.register(name);
     }
 
+    function setDefaultFundraiser (uint fundraiserIndex) public onlyOwner {
+        require(fundraiserIndex < fundraisers.getLength());
+        defaultFundraiser = fundraiserIndex;
+    }
+
     function updateHash (string memory newHash) public onlyOwner {
         hash = newHash;
         emit UpdateHash_event(newHash);
@@ -72,14 +73,43 @@ contract MeDao is ITimeManager, Owned, Initialized {
 
 }
 
-contract MeDaoFactory {
+contract MeDaoFactory is CloneFactory {
 
     MeDao public blueprint;
+    MiniMeTokenFactory public TokenFactory;
+
+    constructor (
+        MeDao _blueprint,
+        MiniMeTokenFactory _TokenFactory
+    ) public {
+        blueprint = _blueprint;
+        TokenFactory = _TokenFactory;
+    }
 
     function register (
-        string memory name
+        string memory name,
+        IFundraiserFactory factory,
+        uint desiredWage
     ) public returns (MeDao medao) {
+        MiniMeToken Time = TokenFactory.createCloneToken(
+            address(0x0),
+            0,
+            'Time Manager',
+            18,
+            'seconds',
+            true
+        );
 
+        medao = MeDao(createClone(address(blueprint)));
+        medao.initialize(Time);
+        medao.startFundraiser(factory, name, desiredWage, 16 hours)
+        Time.generateTokens(address(_initialFundraiser), 80 hours);
+
+
+        fundraisers.add(address(_initialFundraiser));
+        defaultFundraiser = _initialFundraiser;
+
+        Time.changeController(medao);
     }
 }
 

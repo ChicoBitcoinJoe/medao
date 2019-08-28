@@ -8,13 +8,18 @@ const MiniMeTokenBlueprint = artifacts.require("MiniMeToken");
 // Factories
 const MeDaoFactory = artifacts.require("MeDaoFactory");
 const MiniMeTokenFactory = artifacts.require("MiniMeTokenFactory");
+const FundraiserFactory = artifacts.require("FundraiserFactory");
 
-module.exports = function(deployer) {
+// Utility
+const BancorFormula = artifacts.require("BancorFormula");
+
+module.exports = function(deployer, network, accounts) {
     deployer.deploy(ListLib, {overwrite: false})
     .then(() => {
         deployer.link(ListLib, [MeDaoBlueprint]);
 
         return Promise.all([
+            deployer.deploy(BancorFormula),
             deployer.deploy(MeDaoBlueprint, {overwrite: false}),
             deployer.deploy(FundraiserBlueprint, {overwrite: false}),
             deployer.deploy(MiniMeTokenBlueprint, {overwrite: false}),
@@ -24,7 +29,10 @@ module.exports = function(deployer) {
         return deployer.deploy(MiniMeTokenFactory, MiniMeTokenBlueprint.address);
     })
     .then(() => {
-        return deployer.deploy(MeDaoFactory, MeDaoBlueprint.address, FundraiserBlueprint.address, MiniMeTokenFactory.address);
+        return deployer.deploy(FundraiserFactory, FundraiserBlueprint.address, BancorFormula.address, ReserveToken.address, MiniMeTokenFactory.address);
+    })
+    .then(() => {
+        return deployer.deploy(MeDaoFactory, MeDaoBlueprint.address, MiniMeTokenFactory.address);
     })
     .then(() => {
         console.log("")
