@@ -1,7 +1,9 @@
 pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
-contract NameRegistry {
+import "./Interfaces.sol";
+
+contract PublicNameRegistry is IPublicNameRegistry {
 
     struct Account {
         string[] names;
@@ -16,9 +18,10 @@ contract NameRegistry {
         id = registry[name].length;
         reverseLookup[msg.sender].names.push(name);
         reverseLookup[msg.sender].ids.push(id);
+        emit Register_event (msg.sender, name, id);
     }
 
-    function lookup (string memory name, uint id) public view returns (address){
+    function lookup (string memory name, uint id) public view returns (address) {
         return registry[name][id];
     }
 
@@ -26,8 +29,14 @@ contract NameRegistry {
         return (reverseLookup[account].names[i], reverseLookup[account].ids[i]);
     }
 
-    function getAccount (address account) public view returns (string[] memory names, uint[] memory ids) {
+    function getAccount (address account) public view returns (string[] memory, uint[] memory) {
         return (reverseLookup[account].names, reverseLookup[account].ids);
     }
 
+    function getTotalNames (address account) public view returns (uint) {
+        return reverseLookup[account].names.length;
+    }
+
+    event Register_event (address account, string name, uint id);
+    
 }

@@ -577,8 +577,8 @@ contract MiniMeTokenFactory is CloneFactory {
         string memory _tokenSymbol,
         bool _transfersEnabled
     ) public returns (MiniMeToken) {
-        MiniMeToken newToken = MiniMeToken(address(uint160(createClone(blueprint))));
-        newToken.initialize(
+        MiniMeToken token = MiniMeToken(address(uint160(createClone(blueprint))));
+        token.initialize(
             address(this),
             _parentToken,
             _snapshotBlock,
@@ -588,8 +588,10 @@ contract MiniMeTokenFactory is CloneFactory {
             _transfersEnabled
         );
 
-        newToken.changeController(msg.sender);
-        return newToken;
+        token.changeController(msg.sender);
+        emit Clone_event(token);
+        return token;
     }
 
+    event Clone_event (MiniMeToken token);
 }
